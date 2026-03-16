@@ -1,0 +1,650 @@
+:root {
+    /* Base Dark Mode */
+    --bg-base: #050505;
+    --bg-alt: #0a0a0f;
+    --text-main: #f0f0f0;
+    --text-muted: #a0a0a0;
+    
+    --neon-pink: #E91E63;
+    --neon-purple: #9C27B0;
+    --neon-blue: #2196F3;
+    --gradient-brand: linear-gradient(135deg, var(--neon-pink), var(--neon-purple), var(--neon-blue));
+    
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    
+    /* Font updated to Montserrat */
+    --font-heading: 'Montserrat', sans-serif;
+    --font-body: 'Montserrat', sans-serif;
+}
+
+/* Base Light Mode - dynamically switched */
+.light-mode {
+    --bg-base: #f5f5f5;
+    --bg-alt: #ffffff;
+    --text-main: #1a1a1a;
+    --text-muted: #4a4a4a;
+    
+    --neon-pink: #ff4081;
+    --neon-purple: #d500f9;
+    --neon-blue: #00b0ff;
+    --gradient-brand: linear-gradient(135deg, var(--neon-pink), var(--neon-purple), var(--neon-blue));
+    
+    --glass-bg: rgba(0, 0, 0, 0.03);
+    --glass-border: rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-weight: 500; /* Medium for body */
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Light mode specific background element tweaks */
+.light-mode #bg-canvas {
+    opacity: 0.6; /* Softer particles in light mode */
+}
+
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.section {
+    padding: 6rem 0;
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.section-title {
+    font-family: var(--font-heading);
+    font-weight: 900; /* Extra Bold */
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+    text-align: center;
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    display: inline-block;
+    align-self: center;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background: var(--gradient-brand);
+    border-radius: 2px;
+}
+
+/* Glassmorphism Cards */
+@property --neon-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
+    position: relative;
+    z-index: 1; /* For stacking context */
+    display: flex; /* Enforce flex context so content fills height */
+    flex-direction: column;
+}
+
+/* Ensure the glowing border is precisely a 2px stroke */
+.card::after {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    border-radius: 18px; /* Smooth extra outer radius */
+    background: conic-gradient(from var(--neon-angle), transparent 60%, var(--neon-blue) 80%, var(--neon-purple) 100%, transparent 100%);
+    z-index: -1;
+    opacity: 0;
+    /* Easy fade out animation! */
+    transition: opacity 0.6s ease;
+    /* Move animation here so it continues spinning while fading out! */
+    animation: neon-border-spin 2s linear infinite;
+    /* The CSS mask confines the visible gradient purely to the 2px padding ring! */
+    padding: 2px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: transparent; /* Remove static border while hovering */
+    box-shadow: 0 0 20px rgba(33, 150, 243, 0.2);
+}
+
+.card:hover::after {
+    opacity: 1; /* Fade in */
+}
+
+@keyframes neon-border-spin {
+    0% { --neon-angle: 0deg; }
+    100% { --neon-angle: 360deg; }
+}
+
+.light-mode .card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific Radiating Glow Overrides for Activities & Community sections */
+.project-card::after,
+.gallery-card::after {
+    animation: none !important; /* Disable spinning */
+    background: var(--gradient-brand) !important; /* Solid 3-color neon band */
+    top: -12px !important; left: -12px !important; right: -12px !important; bottom: -12px !important;
+    border-radius: 26px !important;
+    padding: 12px !important; /* Wide hollow track for spreading radiation */
+    filter: blur(10px) !important; /* Diffuse it into an aura */
+}
+
+.project-card:hover::after,
+.gallery-card:hover::after {
+    opacity: 0.8 !important; /* Show blurred aura */
+}
+
+.project-card:hover, .gallery-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: none; /* Let the aura do the work */
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 100vh;
+    text-align: center;
+}
+
+.avatar-container {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 2rem;
+    border-radius: 50%;
+    padding: 4px;
+    background: var(--gradient-brand);
+    position: relative;
+    animation: pulse-glow 3s infinite alternate;
+}
+
+.avatar-glow {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: var(--bg-base);
+    border: 4px solid var(--bg-base);
+    transition: background-color 0.5s ease, border-color 0.5s ease;
+}
+
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 15px rgba(233, 30, 99, 0.5), 0 0 30px rgba(156, 39, 176, 0.3); }
+    100% { box-shadow: 0 0 25px rgba(33, 150, 243, 0.6), 0 0 50px rgba(233, 30, 99, 0.4); }
+}
+
+.glitch {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: 4rem;
+    text-transform: uppercase;
+    position: relative;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    margin-bottom: 0.5rem;
+}
+
+.light-mode .glitch {
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.tagline-sub {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--neon-blue);
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px;
+}
+
+.tagline {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.social-btn {
+    padding: 0.8rem 1.8rem;
+    border-radius: 30px;
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 600;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.social-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--gradient-brand);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.social-btn:hover {
+    border-color: transparent;
+    box-shadow: 0 0 15px rgba(156, 39, 176, 0.4);
+    color: white; /* Ensure text visible on gradient */
+}
+
+.social-btn:hover::before {
+    opacity: 1;
+}
+
+.fb-btn {
+    border-color: rgba(33, 150, 243, 0.5);
+    color: var(--neon-blue);
+}
+
+/* Grid Layout */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    align-items: stretch; /* Explicitly force row heights to match */
+}
+
+.project-card {
+    position: relative;
+    overflow: hidden;
+    /* Inherits display: flex from .card now */
+}
+
+.project-card .card-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Allow content wrapper to expand */
+}
+
+.project-card p:last-child {
+    margin-top: auto; /* Push description to bottom to align consistently */
+}
+
+.project-card h3 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+.project-card .role {
+    color: var(--neon-pink);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Skills Section */
+.skills-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 3rem;
+}
+
+.skill-category h3 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--neon-purple);
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(156, 39, 176, 0.3);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.skill-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.skill-level {
+    color: var(--neon-blue);
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 14px;
+    background: rgba(100, 100, 100, 0.2);
+    border-radius: 7px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 2.5rem;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0; /* Animated by JS */
+    background: var(--gradient-brand);
+    border-radius: 7px;
+    box-shadow: 0 0 10px rgba(233, 30, 99, 0.6);
+    transition: width 1.5s cubic-bezier(0.1, 0.8, 0.2, 1);
+}
+
+.skill-item:hover .progress-bar {
+    box-shadow: 0 0 15px rgba(33, 150, 243, 0.8);
+}
+
+
+/* -------------------------------------
+   Interactive Gallery
+-------------------------------------- */
+.gallery-card {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 280px; /* Synchronized consistent height for both image and placeholders */
+    padding: 0; /* Remove default padding to allow image to span full width/height */
+    border: 2px solid transparent; 
+}
+
+/* Gallery Scaling element (representing an image) */
+.gallery-img {
+    position: absolute;
+    inset: 2px;
+    width: calc(100% - 4px); height: calc(100% - 4px);
+    border-radius: 14px;
+    object-fit: cover; /* Ensures image fills the standardized box proportions */
+    opacity: 0.6;
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+    z-index: 0;
+}
+
+/* Ensure placeholder background mimics standard card inset */
+.gallery-card::before {
+    content: '';
+    position: absolute;
+    inset: 2px; /* Force 2px inset so it doesn't obscure the card's neon hover */
+    border-radius: 14px;
+    background: var(--glass-bg); /* Placeholder for empty cards */
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.5s ease;
+    z-index: -1;
+}
+
+.gallery-card:hover .gallery-img, 
+.gallery-card:hover::before {
+    transform: scale(1.15); /* Restored smooth zoom on hover */
+    opacity: 1; /* Fully visible image on hover */
+}
+
+/* Fade out text on hover so image is clear */
+.gallery-card:hover p, 
+.gallery-card:hover .gallery-text {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Gallery text wrapper to keep it readable above the image */
+.gallery-card p, .gallery-text {
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.65); /* Dark semi-transparent background for readability */
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    text-align: center;
+    width: 85%;
+    transition: transform 0.5s ease;
+    font-weight: 600;
+}
+
+/* Removed redundant neon border logic since all .card elements share the global neon running effect now */
+
+
+/* -------------------------------------
+   Smart Contact Form Logic (Fly-in)
+-------------------------------------- */
+.contact-card {
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.smart-input-group {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.smart-input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.smart-input-group input,
+.smart-input-group textarea {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-weight: 500;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.light-mode .smart-input-group input,
+.light-mode .smart-input-group textarea {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.smart-input-group input:focus,
+.smart-input-group textarea:focus {
+    outline: none;
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 10px rgba(156, 39, 176, 0.2);
+}
+
+/* Fly-in Placeholder styling */
+.sample-fly-in {
+    position: absolute;
+    left: 1rem;
+    top: 1rem; /* Matches input padding */
+    color: var(--text-muted);
+    font-style: italic;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(20px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* When active (via JS class) or field possesses text */
+.smart-input-group.animating .sample-fly-in {
+    opacity: 0.6;
+    transform: translateX(0);
+}
+
+.smart-input-group.typing .sample-fly-in {
+    opacity: 0; 
+    transform: translateX(-10px);
+}
+
+
+.submit-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--gradient-brand);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+}
+
+.contact-email {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.contact-email a {
+    color: var(--neon-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 2rem 0;
+    border-top: 1px solid var(--glass-border);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+
+/* -------------------------------------
+   Interactive Sticky Footer UI Controls
+-------------------------------------- */
+.ui-controls {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Reverted from stretch so buttons size naturally */
+    gap: 15px;
+    z-index: 9999;
+}
+
+/* Shared Neon Border styling for floating buttons */
+.neon-border {
+    padding: 12px 24px;
+    text-align: center;
+    background: var(--bg-alt);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid var(--neon-purple);
+    border-radius: 30px;
+    color: var(--text-main);
+    font-family: var(--font-heading);
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 15px rgba(156, 39, 176, 0.5);
+    animation: neon-pulse-btn 2s infinite alternate;
+}
+
+.neon-border:hover {
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 25px rgba(233, 30, 99, 0.8), 0 0 10px rgba(33, 150, 243, 0.5);
+    transform: translateY(-5px) scale(1.05);
+    animation: none;
+}
+
+/* Light / Dark Mode specific overrides */
+.theme-toggle .mode-icon {
+    font-size: 1.1rem;
+}
+
+.light-mode .theme-toggle {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 15px rgba(33, 150, 243, 0.5);
+}
+
+@keyframes neon-pulse-btn {
+    0% { box-shadow: 0 0 10px rgba(156, 39, 176, 0.3); }
+    100% { box-shadow: 0 0 20px rgba(156, 39, 176, 0.7), 0 0 10px rgba(33, 150, 243, 0.4); }
+}
+
+@media (max-width: 768px) {
+    .glitch { font-size: 2.5rem; }
+    .section-title { font-size: 2rem; }
+    .avatar-container { width: 140px; height: 140px; }
+}
