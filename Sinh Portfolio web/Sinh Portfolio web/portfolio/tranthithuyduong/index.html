@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teemous Digital</title>
+    <link rel="icon" href="../../Logo/logo.png" type="image/png">
+    <meta name="description" content="IT Intern | Computer Science Student at VKU | ICPC | SheCodes Top 6 | Trần Thị Thùy Dương">
+    <link rel="stylesheet" href="../../style.css?v=5">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
+
+</head>
+
+<body class="light-mode">
+    <canvas id="bg-canvas"></canvas>
+
+    <main class="container">
+        <!-- Global Navigation Header -->
+        <header class="global-header">
+            <div class="header-logo">
+                <a href="../../index.html">
+                    <img src="../../Logo/logo.png" alt="Teemous Digital" class="header-logo-img"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span style="display:none;">TD</span>
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+
+            <nav class="header-nav">
+                <ul class="nav-links">
+                    <li><a href="../../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
+                    <li><a href="../../services/index.html" data-en="Service &amp; Shop" data-vi="Dịch vụ &amp; Cửa hàng">Service &amp; Shop</a></li>
+                    <li><a href="../index.html" class="active" data-en="Portfolio" data-vi="Hồ sơ Năng lực">Portfolio</a></li>
+                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us" data-vi="Liên Hệ">Contact Us</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- =================== HERO =================== -->
+        <section id="hero" class="section hero-section">
+            <div class="hero-content">
+                <div class="avatar-container">
+                    <img src="../../Avatar/tttduong.jpg" alt="Trần Thị Thùy Dương" class="avatar-glow"
+                        onerror="this.src='https://via.placeholder.com/200/9c27b0/ffffff?text=TTD'">
+                </div>
+                <h1 class="glitch" data-en="TRẦN THỊ THÙY DƯƠNG" data-vi="TRẦN THỊ THÙY DƯƠNG">TRẦN THỊ THÙY DƯƠNG</h1>
+                <h2 class="tagline-sub" data-en="TEEMOUS DIGITAL" data-vi="TEEMOUS DIGITAL">TEEMOUS DIGITAL</h2>
+                <span class="elite-badge">⭐ ELITE</span>
+                <p class="tagline"
+                    data-en="IT Intern | Computer Science — VKU | ICPC Honorable Mention | SheCodes Top 6"
+                    data-vi="Thực tập IT | Công nghệ Thông tin — VKU | Huy chương ICPC | Top 6 SheCodes">
+                    IT Intern | Computer Science — VKU | ICPC Honorable Mention | SheCodes Top 6</p>
+
+                <div class="social-links" style="display:flex; flex-wrap:wrap; justify-content:center; gap:0.75rem; margin-top:1.5rem;">
+                    <a href="https://duongttt.id.vn" target="_blank" class="social-btn"
+                        data-en="🌐 Website" data-vi="🌐 Website Cá nhân">🌐 Website</a>
+                    <a href="mailto:duongttt.dev@gmail.com" class="social-btn fb-btn"
+                        data-en="📧 Email" data-vi="📧 Email">📧 Email</a>
+                    <a href="tel:0768457143" class="social-btn fb-btn"
+                        data-en="📞 0768 457 143" data-vi="📞 0768 457 143">📞 0768 457 143</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================== SECTION 1: ABOUT ME =================== -->
+        <section id="about" class="section">
+            <h2 class="section-title" data-en="About Me" data-vi="Về Tôi">About Me</h2>
+            <div class="section-frame">
+                <div class="section-frame-inner">
+                    <p class="about-text"
+                        data-en="A passionate Computer Science student (2023–2027) at VKU (Vietnam-Korea University of Information and Communication Technology), Da Nang — current GPA: 3.61 / 4.0. Previously graduated from Quoc Hoc Hue Gifted High School (Specialized in Computer Science), scoring 9.3/10 in the major. Career goal: become a full-time developer and transition into Business Analytics within 3–5 years. Passionate about building real-world solutions through code."
+                        data-vi="Sinh viên Công nghệ Thông tin (2023–2027) tại VKU (Trường ĐH Công nghệ Thông tin và Truyền thông Việt–Hàn), Đà Nẵng — GPA hiện tại: 3.61 / 4.0. Từng học Chuyên Tin học tại THPT Chuyên Quốc Học Huế (điểm chuyên 9.3/10). Mục tiêu: trở thành lập trình viên toàn thời gian, sau 3–5 năm chuyển hướng sang Business Analytics. Đam mê tạo ra giải pháp thực tế thông qua lập trình.">
+                        A Computer Science student (2023–2027) at VKU, Da Nang — GPA <strong>3.61 / 4.0</strong>. Previously a Gifted CS student at Quoc Hoc Hue High School (9.3/10 specialty score). Career goal: full-time developer → Business Analytics in 3–5 years. Passionate about building real-world solutions through code.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================== SECTION 2: ACTIVITIES EXPERIENCE =================== -->
+        <section id="activities" class="section">
+            <h2 class="section-title" data-en="Activities Experience" data-vi="Hoạt động / Kinh nghiệm">Activities Experience</h2>
+            <div class="section-frame">
+                <div class="section-frame-inner">
+                    <div class="activities-layout">
+
+                        <!-- Card 1: BBE Aurora -->
+                        <div class="card project-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <h3 data-en="President — BBE Aurora Chapter (Term I)"
+                                    data-vi="Chủ tịch BBE Aurora Chapter (Nhiệm kỳ I)">President — BBE Aurora Chapter (Term I)</h3>
+                                <p class="role" data-en="Role: Chapter President | Soft Skills Development"
+                                    data-vi="Vai trò: Chủ tịch | Phát triển Kỹ năng Mềm">Role: Chapter President | Soft Skills Development</p>
+                                <p data-en="Led chapter operations focused on soft skills training (leadership, public speaking). Organized workshops and mentored members toward personal development."
+                                    data-vi="Điều hành hoạt động chi hội tập trung vào đào tạo kỹ năng mềm (lãnh đạo, thuyết trình). Tổ chức workshop và hỗ trợ thành viên phát triển bản thân.">
+                                    Led chapter operations focused on soft skills training — leadership, public speaking. Organized workshops and mentored members.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: TQR Robotics -->
+                        <div class="card project-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <h3 data-en="Club Leader — TQR Robotics (Quoc Hoc Hue)"
+                                    data-vi="Trưởng CLB Robotics TQR (THPT Quốc Học Huế)">Club Leader — TQR Robotics</h3>
+                                <p class="role" data-en="Role: Club Leader | Science &amp; Technology"
+                                    data-vi="Vai trò: Trưởng CLB | Khoa học Kỹ thuật">Role: Club Leader | Science &amp; Technology</p>
+                                <p data-en="Organized science and technology activities for students at Quoc Hoc Hue High School, guiding members in robotics design and programming."
+                                    data-vi="Tổ chức các hoạt động khoa học kỹ thuật cho học sinh THPT Quốc Học Huế, hướng dẫn thành viên thiết kế và lập trình robot.">
+                                    Organized science &amp; technology activities at Quoc Hoc Hue, guiding students in robotics design and programming.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: ICPC -->
+                        <div class="card project-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <h3 data-en="ICPC Vietnam Central — Honorable Mention (2023)"
+                                    data-vi="ICPC Việt Nam Cụm Miền Trung — Giải Khuyến Khích (2023)">ICPC Vietnam Central — Honorable Mention (2023)</h3>
+                                <p class="role" data-en="Role: Contestant | Competitive Programming"
+                                    data-vi="Vai trò: Thí sinh | Lập trình Thi đấu">Competitive Programming | Regional Level</p>
+                                <p data-en="Earned Honorable Mention at the ICPC Vietnam Central Regional programming contest — demonstrating strong algorithmic problem-solving under pressure."
+                                    data-vi="Đạt Giải Khuyến Khích kỳ thi lập trình ICPC Việt Nam cụm Miền Trung — thể hiện khả năng giải quyết vấn đề thuật toán mạnh mẽ dưới áp lực thi đấu.">
+                                    Earned Honorable Mention at ICPC Vietnam Central Regional — strong algorithmic problem-solving skills demonstrated under competition pressure.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: SheCodes -->
+                        <div class="card project-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <h3 data-en="SheCodes Hackathon 2023 — Top 6 Finalist"
+                                    data-vi="Hackathon SheCodes 2023 — Top 6 Vòng Chung kết">SheCodes Hackathon 2023 — Top 6</h3>
+                                <p class="role" data-en="Role: Developer | Women in Tech Hackathon"
+                                    data-vi="Vai trò: Lập trình viên | Hackathon Phụ nữ Công nghệ">Women in Tech | National Hackathon</p>
+                                <p data-en="Selected Top 6 finalist at the prestigious SheCodes Hackathon — applied full-stack skills in a fast-paced, innovation-driven competition environment."
+                                    data-vi="Được chọn là Top 6 chung kết Hackathon SheCodes uy tín — áp dụng kỹ năng full-stack trong môi trường thi đấu đổi mới, nhịp độ nhanh.">
+                                    Top 6 Finalist at SheCodes Hackathon 2023 — applied full-stack skills in a fast-paced, innovation-driven competition.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card 5: FLAMES -->
+                        <div class="card project-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <h3 data-en="FLAMES — Skin-care Mobile App"
+                                    data-vi="FLAMES — Ứng dụng Chăm sóc Da">FLAMES — Skin-care App</h3>
+                                <p class="role" data-en="Role: Developer | Flutter + Firebase"
+                                    data-vi="Vai trò: Lập trình viên | Flutter + Firebase">Role: Developer | Flutter + Firebase</p>
+                                <p data-en="A mobile skin-care app built with Flutter and Firebase. Users can assess their skin condition and connect with skincare specialists."
+                                    data-vi="Ứng dụng chăm sóc da xây dựng bằng Flutter và Firebase. Người dùng có thể kiểm tra tình trạng da và kết nối với chuyên gia.">
+                                    Mobile skin-care app built with Flutter &amp; Firebase — skin condition assessment and expert connection features.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card 6: Restaurant System -->
+                        <div class="card project-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <h3 data-en="Restaurant Management System"
+                                    data-vi="Hệ thống Quản lý Nhà hàng">Restaurant Management System</h3>
+                                <p class="role" data-en="Role: Developer | Java MVC + MySQL"
+                                    data-vi="Vai trò: Lập trình viên | Java MVC + MySQL">Role: Developer | Java MVC + MySQL</p>
+                                <p data-en="A full-featured desktop restaurant management application built with Java (MVC architecture) and MySQL database."
+                                    data-vi="Ứng dụng desktop quản lý nhà hàng đầy đủ tính năng, xây dựng bằng Java (kiến trúc MVC) và MySQL.">
+                                    Full-featured desktop restaurant management app — Java MVC architecture + MySQL database.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card 7: ECO-GUARDIAN -->
+                        <div class="card project-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <h3 data-en="ECO-GUARDIAN — E-commerce Website (Technical Lead)"
+                                    data-vi="ECO-GUARDIAN — Website Thương mại điện tử (Trưởng Nhóm Kỹ thuật)">ECO-GUARDIAN — Technical Lead</h3>
+                                <p class="role" data-en="Role: Technical Lead | Node.js + Express.js + SQL/NoSQL"
+                                    data-vi="Vai trò: Trưởng Nhóm Kỹ thuật | Node.js + Express.js + SQL/NoSQL">Technical Lead | Node.js + Express.js</p>
+                                <p data-en="E-commerce website selling eco-friendly seed paper products. Led the technical team — architecture design, database setup, and feature implementation."
+                                    data-vi="Website thương mại điện tử bán giấy hạt giống thân thiện môi trường. Dẫn dắt đội kỹ thuật — thiết kế kiến trúc hệ thống, cài đặt cơ sở dữ liệu và triển khai tính năng.">
+                                    E-commerce platform for eco-friendly seed paper — led technical team on architecture, database, and feature implementation.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- =================== SKILLS =================== -->
+        <section id="skills" class="section">
+            <h2 class="section-title" data-en="Skills &amp; Proficiency" data-vi="Đánh giá Kỹ năng">Skills &amp; Proficiency</h2>
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+
+                <div class="skill-category-group">
+                    <h4 data-en="Primary Technical Skills" data-vi="Kỹ năng Kỹ thuật Chính" style="font-family:var(--font-heading); color:var(--neon-purple); margin-bottom:1rem; text-transform:uppercase; letter-spacing:2px; font-size:0.9rem;">Primary Technical Skills</h4>
+                    
+                    <div class="skill-item-bar">
+                        <div class="skill-info-bar">
+                            <span>☕ Java (Core)</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="skill-bar-bg">
+                            <div class="skill-bar-fill" data-width="85%"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-item-bar">
+                        <div class="skill-info-bar">
+                            <span>⚡ C++</span>
+                            <span>80%</span>
+                        </div>
+                        <div class="skill-bar-bg">
+                            <div class="skill-bar-fill" data-width="80%"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-item-bar">
+                        <div class="skill-info-bar">
+                            <span>🌐 JavaScript</span>
+                            <span>75%</span>
+                        </div>
+                        <div class="skill-bar-bg">
+                            <div class="skill-bar-fill" data-width="75%"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-item-bar">
+                        <div class="skill-info-bar">
+                            <span>📱 Flutter (Mobile)</span>
+                            <span>70%</span>
+                        </div>
+                        <div class="skill-bar-bg">
+                            <div class="skill-bar-fill" data-width="70%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-tags-group">
+                    <h4 data-en="Web &amp; Other Technologies" data-vi="Web &amp; Công nghệ khác" class="skill-group-title">Web &amp; Other Technologies</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag" data-tippy-content="Architecture & Structure">🧱 HTML5</span>
+                        <span class="skill-tag" data-tippy-content="Styling & Design">🎨 CSS3</span>
+                        <span class="skill-tag" data-tippy-content="Interaction">💎 jQuery</span>
+                        <span class="skill-tag" data-tippy-content="Backend Runtime">🟢 Node.js</span>
+                        <span class="skill-tag" data-tippy-content="Web Framework">⚙️ Express.js</span>
+                        <span class="skill-tag" data-tippy-content="Relational Database">🗄️ SQL / MySQL</span>
+                        <span class="skill-tag" data-tippy-content="Real-time Database">🔥 NoSQL / Firebase</span>
+                    </div>
+                </div>
+
+                <div class="skill-tags-group">
+                    <h4 data-en="Tools &amp; Management" data-vi="Công cụ &amp; Quản lý" class="skill-group-title">Tools &amp; Management</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">🐙 Git / GitHub</span>
+                        <span class="skill-tag">💻 VS Code</span>
+                        <span class="skill-tag">🎨 Figma</span>
+                        <span class="skill-tag">📐 System Analysis</span>
+                        <span class="skill-tag">🧮 Data Structures</span>
+                        <span class="skill-tag">🚀 Agile/Scrum</span>
+                    </div>
+                </div>
+
+                <div class="skill-tags-group">
+                    <h4 data-en="Foreign Languages" data-vi="Ngoại ngữ" class="skill-group-title">Foreign Languages</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">🇻🇳 Vietnamese <span class="lang-level-badge">Native</span></span>
+                        <span class="skill-tag">🇬🇧 English <span class="lang-level-badge">Basic</span></span>
+                        <span class="skill-tag">🇨🇳 Chinese <span class="lang-level-badge">HSK4 + HSKK</span></span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- =================== SECTION 3: COMMUNITY & ACADEMIC RECORDS =================== -->
+        <section id="community-academic" class="section">
+            <h2 class="section-title" data-en="Community &amp; Academic Records" data-vi="Hoạt động Cộng đồng &amp; Thành tích">Community &amp; Academic Records</h2>
+            <div class="grid-container placeholder-grid interactive-gallery">
+
+                <!-- HIPE Volunteer (Moved from Community Service) -->
+                <div class="card project-card">
+                    <div class="card-glow"></div>
+                    <div class="card-content">
+                        <h3 data-en="HIPE Volunteer — Health &amp; Environment Awareness"
+                            data-vi="Tình nguyện viên HIPE — Sức khỏe &amp; Môi trường">HIPE Volunteer</h3>
+                        <p class="role" data-en="Role: Volunteer | Duration: 2018–Present"
+                            data-vi="Vai trò: Tình nguyện viên | Thời gian: 2018–Nay">Volunteer | 2018–Present</p>
+                        <p data-en="Active community volunteer with HIPE, participating in campaigns to raise public awareness on health and environmental issues since 2018."
+                            data-vi="Tình nguyện viên cộng đồng tích cực thuộc HIPE, tham gia các chiến dịch nâng cao nhận thức cộng đồng về sức khỏe và môi trường từ năm 2018.">
+                            Active HIPE volunteer since 2018 — raising community awareness on health and environmental issues.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card glass-card gallery-card">
+                    <div class="coming-soon-card" style="border:none; padding:2rem 1rem;">
+                        <span class="cs-icon">🏆</span>
+                        <span class="cs-text" data-en="ICPC Vietnam — Honorable Mention 2023" data-vi="ICPC Việt Nam — Giải Khuyến Khích 2023">ICPC Vietnam — Honorable Mention 2023</span>
+                    </div>
+                </div>
+
+                <div class="card glass-card gallery-card">
+                    <div class="coming-soon-card" style="border:none; padding:2rem 1rem;">
+                        <span class="cs-icon">💡</span>
+                        <span class="cs-text" data-en="SheCodes Top 6 — 2023" data-vi="SheCodes Top 6 — 2023">SheCodes Top 6 — 2023</span>
+                    </div>
+                </div>
+
+                <div class="card glass-card gallery-card">
+                    <div class="coming-soon-card" style="border:none; padding:2rem 1rem;">
+                        <span class="cs-icon">🥉</span>
+                        <span class="cs-text" data-en="Informatics Excellence — Provincial Award 2022–23" data-vi="Học sinh Giỏi Tin học cấp Tỉnh — Giải KK 2022–23">Province Informatics — Award 2022–23</span>
+                    </div>
+                </div>
+
+                <div class="card glass-card gallery-card">
+                    <div class="coming-soon-card" style="border:none; padding:2rem 1rem;">
+                        <span class="cs-icon">📜</span>
+                        <span class="cs-text" data-en="Chinese HSK4 &amp; HSKK Certification" data-vi="Chứng chỉ Tiếng Trung HSK4 &amp; HSKK">Chinese HSK4 + HSKK</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- =================== CONTACT ME =================== -->
+        <section id="contact" class="section">
+            <h2 class="section-title" data-en="Contact Me" data-vi="Liên hệ Tôi">Contact Me</h2>
+            <div class="card glass-card contact-card">
+                <ul class="contact-info-list">
+                    <li class="contact-info-item">
+                        <span class="contact-icon">📧</span>
+                        <div class="contact-detail">
+                            <span class="contact-label" data-en="Email" data-vi="Email">Email</span>
+                            <span class="contact-value"><a href="mailto:duongttt.dev@gmail.com">duongttt.dev@gmail.com</a></span>
+                        </div>
+                    </li>
+                    <li class="contact-info-item">
+                        <span class="contact-icon">🌐</span>
+                        <div class="contact-detail">
+                            <span class="contact-label" data-en="Personal Website" data-vi="Website Cá nhân">Personal Website</span>
+                            <span class="contact-value"><a href="https://duongttt.id.vn" target="_blank">duongttt.id.vn</a></span>
+                        </div>
+                    </li>
+                    <li class="contact-info-item">
+                        <span class="contact-icon">📞</span>
+                        <div class="contact-detail">
+                            <span class="contact-label" data-en="Phone" data-vi="Điện thoại">Phone</span>
+                            <span class="contact-value"><a href="tel:0768457143">0768 457 143</a></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p data-en="&copy; 2026 Teemous Digital. All Rights Reserved." data-vi="&copy; 2026 Teemous Digital. Tất cả quyền được bảo lưu.">&copy; 2026 Teemous Digital. All Rights Reserved.</p>
+        <div class="footer-socials">
+            <a href="https://duongttt.id.vn" target="_blank" class="social-icon">Web</a>
+            <a href="mailto:duongttt.dev@gmail.com" class="social-icon">Mail</a>
+        </div>
+    </footer>
+
+    <div class="ui-controls">
+        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
+            <span class="mode-icon">☀️ Day</span>
+        </button>
+        <button id="lang-toggle" class="lang-toggle neon-border">
+            Bạn là người Việt?
+        </button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="../../script.js?v=5"></script>
+</body>
+
+</html>
