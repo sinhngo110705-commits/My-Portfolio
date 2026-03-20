@@ -4,150 +4,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teemous Digital</title>
+    <title>Portfolio Hub | Teemous Digital</title>
     <link rel="icon" href="../Logo/logo.png" type="image/png">
-    <meta name="description" content="Discover talented creators and professionals on the TeemousDigital portfolio hub.">
-    <link rel="stylesheet" href="../style.css?v=4">
+    <meta name="description"
+        content="Discover talented creators and professionals on the TeemousDigital portfolio hub.">
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css?v=6">
+
+    <!-- Tailwind CSS for Grid -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-pink': '#E91E63',
+                        'neon-purple': '#9C27B0',
+                        'neon-blue': '#2196F3',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .portfolio-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .portfolio-card:hover .avatar-glow {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .avatar-glow {
+            position: absolute;
+            inset: -5px;
+            background: var(--gradient-brand);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0;
+            filter: blur(8px);
+            transition: all 0.4s ease;
+        }
+
+        .hidden-by-filter {
+            display: none !important;
+        }
+    </style>
 </head>
 
-<body class="light-mode">
+<body class="light-mode"> <!-- Default to light mode -->
     <canvas id="bg-canvas"></canvas>
 
-    <main class="container">
-        <!-- Global Navigation Header -->
-        <header class="global-header">
-            <div class="header-logo">
-                <a href="../index.html">
-                    <img src="../Logo/logo.png" alt="Teemous Digital" class="header-logo-img"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-                    <span style="display:none;">TD</span>
-                </a>
-            </div>
+    <!-- Global Navigation Header -->
+    <header class="global-header">
+        <div class="header-logo">
+            <a href="../index.html">
+                <img src="../Logo/logo.png" alt="Teemous Digital" class="header-logo-img">
+            </a>
+        </div>
 
-            <button class="mobile-menu-toggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
 
-            <nav class="header-nav">
-                <ul class="nav-links">
-                    <li><a href="../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
-                    <li><a href="../services/index.html" data-en="Service &amp; Shop" data-vi="Dịch vụ &amp; Cửa hàng">Service &amp; Shop</a></li>
-                    <li><a href="index.html" class="active" data-en="Portfolio" data-vi="Hồ sơ Năng lực">Portfolio</a></li>
-                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us" data-vi="Liên Hệ">Contact Us</a></li>
-                </ul>
-            </nav>
-        </header>
+        <nav class="header-nav">
+            <ul class="nav-links">
+                <li><a href="../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
+                <li><a href="../services/index.html" data-en="SERVICES & SHOP" data-vi="OUR SERVICES">SERVICES &
+                        SHOP</a></li>
+                <li><a href="index.html" class="active" data-en="Portfolio Hub" data-vi="Hồ sơ Năng lực">Portfolio
+                        Hub</a></li>
+                <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
+                        data-vi="Liên Hệ">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
 
+    <main class="container mx-auto px-6">
         <!-- Hub Hero -->
-        <section id="hero" class="section hero-section">
+        <section id="hero"
+            class="section hero-section flex flex-col items-center justify-center min-h-screen text-center">
             <div class="hero-content">
-                <h1 class="glitch" data-en="PORTFOLIO HUB" data-vi="TRUNG TÂM HỒ SƠ">PORTFOLIO HUB</h1>
-                <p class="tagline" data-en="Explore Talents &amp; Creators" data-vi="Khám Phá Tài Năng &amp; Nhà Sáng Tạo">Explore Talents &amp; Creators</p>
+                <h1 class="flat-title fly-in mb-4">PORTFOLIO HUB</h1>
+                <p class="hero-subtitle flat-subtitle" data-en="Discover Gen Z Talents & Creative Ecosystems"
+                    data-vi="Khám phá Tài năng Gen Z & Hệ sinh thái Sáng tạo">Discover Gen Z Talents & Creative
+                    Ecosystems
+                </p>
             </div>
         </section>
 
-        <!-- Filter System — Tier-based Category Only -->
-        <section id="filters" class="section" style="padding-top: 0;">
-            <div class="filter-bar">
-                <div class="filter-group">
-                    <label for="filter-tier" data-en="Browse by Tier" data-vi="Lọc theo Cấp Độ">Browse by Tier</label>
-                    <select id="filter-tier" class="glass-select">
-                        <option value="all" data-en="All" data-vi="Tất cả">All</option>
+        <!-- Filters -->
+        <section id="filters" class="mb-16">
+            <div class="glass-panel-premium p-6 flex flex-col md:flex-row gap-8 items-center justify-center">
+                <div class="flex flex-col gap-2 w-full md:w-64">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-neutral-500 pl-2"
+                        data-en="Browse by Tier" data-vi="Lọc theo Cấp Độ">Browse by Tier</label>
+                    <select id="filter-tier"
+                        class="glass-select w-full bg-transparent border-white/10 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-neon-blue transition-all">
+                        <option value="all" data-en="All Tiers" data-vi="Tất cả Cấp độ">All Tiers</option>
                         <option value="elite" data-en="ELITE" data-vi="TINH HOA">ELITE</option>
                         <option value="impressive" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</option>
-                        <option value="professional" data-en="PROFESSIONAL" data-vi="CHUYÊN NGHIỆP">PROFESSIONAL</option>
+                        <option value="professional" data-en="PROFESSIONAL" data-vi="CHUYÊN NGHIỆP">PROFESSIONAL
+                        </option>
                         <option value="standard" data-en="STANDARD" data-vi="TIÊU CHUẨN">STANDARD</option>
                     </select>
                 </div>
 
-                <div class="filter-group">
-                    <label for="filter-field" data-en="Browse by Field" data-vi="Lọc theo Ngành Nghề">Browse by Field</label>
-                    <select id="filter-field" class="glass-select">
+                <div class="flex flex-col gap-2 w-full md:w-64">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-neutral-500 pl-2"
+                        data-en="Browse by Field" data-vi="Lọc theo Ngành Nghề">Browse by Field</label>
+                    <select id="filter-field"
+                        class="glass-select w-full bg-transparent border-white/10 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-neon-blue transition-all">
                         <option value="all" data-en="All Fields" data-vi="Tất cả Ngành">All Fields</option>
-                        <option value="digital-marketing" data-en="Digital Marketing" data-vi="Digital Marketing">Digital Marketing</option>
+                        <option value="digital-marketing" data-en="Digital Marketing" data-vi="Digital Marketing">
+                            Digital Marketing</option>
                         <option value="it" data-en="IT & Software" data-vi="Công nghệ & Phần mềm">IT & Software</option>
-                        <option value="business" data-en="Business & Management" data-vi="Kinh doanh & Quản lý">Business & Management</option>
-                        <option value="creative" data-en="Graphic Design & Creative" data-vi="Thiết kế & Sáng tạo">Graphic Design & Creative</option>
+                        <option value="business" data-en="Business & Management" data-vi="Kinh doanh & Quản lý">Business
+                            & Management</option>
+                        <option value="creative" data-en="Graphic Design & Creative" data-vi="Thiết kế & Sáng tạo">
+                            Graphic Design & Creative</option>
                         <option value="other" data-en="Other" data-vi="Khác">Other</option>
                     </select>
                 </div>
-
             </div>
         </section>
 
-        <!-- Tiered Layout -->
-        <section id="portfolio-tiers" class="section">
+        <!-- Dynamic Content -->
+        <section id="portfolio-tiers" class="space-y-24 pb-32">
 
-            <!-- Elite Tier — Sinh (moved up) + Dương (new) -->
+            <!-- Elite Tier -->
             <div class="tier-section" data-tier="elite">
-                <h2 class="tier-heading elite" data-en="Elite" data-vi="Tinh Hoa">Elite</h2>
-                <div class="avatar-grid">
+                <h2 class="section-title mb-12" data-en="ELITE TALENTS" data-vi="TÀI NĂNG TINH HOA">ELITE TALENTS</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
 
-                    <!-- Ngô Quang Sinh — moved from Impressive to Elite -->
-                    <a href="ngoquangsinh/index.html" class="circular-avatar" data-tier="elite" data-field="digital-marketing">
-                        <div class="avatar-wrapper">
-                            <img src="https://scontent.fdad1-4.fna.fbcdn.net/v/t39.30808-6/646211181_1466823188411332_8165356710080014980_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=1d70fc&_nc_eui2=AeFLkDHzzt3WbRROAQ_9zQCvHmnuGq0H0-Qeae4arQfT5JsP-wcdm0roFBTSYuQTlrb6G1tkz3vuVGWdFvbK_1Ty&_nc_ohc=OX00a6ZEt-8Q7kNvwFi4y5w&_nc_oc=Adk5J8zvSgBg0WEx6P0I5BDiQMJ5rpzJYyYffRhoZb0CaNEIU61TQnQ86X5CZ_icaio&_nc_zt=23&_nc_ht=scontent.fdad1-4.fna&_nc_gid=nsDfZrdtmJtk8b0jyBA2sg&_nc_ss=8&oh=00_AfySqcxpkQVp0eRIegJB63mPXhVrxcK20KH3VVfnYnWLcw&oe=69BE412E" alt="Avatar Ngo Quang Sinh">
+                    <a href="ngoquangsinh/index.html"
+                        class="portfolio-card flex flex-col items-center text-center group"
+                        data-field="digital-marketing">
+                        <div class="relative mb-4">
+                            <div class="avatar-glow"></div>
+                            <div
+                                class="w-28 h-28 rounded-full border-2 border-neon-pink p-1 bg-black/20 backdrop-blur-sm shadow-xl transition-all group-hover:border-white">
+                                <img src="../Avatar/IMG_5907.jpg" alt="Ngô Quang Sinh"
+                                    class="w-full h-full rounded-full object-cover">
+                            </div>
                         </div>
-                        <span class="avatar-name">Ngô Quang Sinh</span>
+                        <span
+                            class="font-black text-xs uppercase tracking-widest text-[var(--text-main)] group-hover:text-neon-pink transition-colors">Ngô
+                            Quang Sinh</span>
+                        <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter mt-1">Digital
+                            Marketing</span>
                     </a>
 
-                    <!-- Trần Thị Thùy Dương — new ELITE member -->
-                    <a href="tranthithuyduong/index.html" class="circular-avatar" data-tier="elite" data-field="it">
-                        <div class="avatar-wrapper">
-                            <img src="../Avatar/tttduong.jpg" alt="Avatar Trần Thị Thùy Dương"
-                                onerror="this.src='../Avatar/tttduong.jpg'">
+                    <a href="tranthithuyduong/index.html"
+                        class="portfolio-card flex flex-col items-center text-center group" data-field="it">
+                        <div class="relative mb-4">
+                            <div class="avatar-glow"></div>
+                            <div
+                                class="w-28 h-28 rounded-full border-2 border-neon-blue p-1 bg-black/20 backdrop-blur-sm shadow-xl transition-all group-hover:border-white">
+                                <img src="../Avatar/tttduong.jpg" alt="Trần Thị Thùy Dương"
+                                    class="w-full h-full rounded-full object-cover">
+                            </div>
                         </div>
-                        <span class="avatar-name">Trần Thị Thùy Dương</span>
+                        <span
+                            class="font-black text-xs uppercase tracking-widest text-[var(--text-main)] group-hover:text-neon-blue transition-colors">Trần
+                            Thị Thùy Dương</span>
+                        <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter mt-1">IT &
+                            Software</span>
                     </a>
 
                 </div>
             </div>
 
-            <!-- Impressive Tier — now empty of Sinh -->
+            <!-- Impressive Tier -->
             <div class="tier-section" data-tier="impressive">
-                <h2 class="tier-heading impressive" data-en="Impressive" data-vi="Ấn Tượng">Impressive</h2>
-                <div class="avatar-grid">
-                    <a href="#" class="circular-avatar" data-tier="impressive" data-field="creative">
-                        <div class="avatar-wrapper">
-                            <img src="https://via.placeholder.com/150" alt="Placeholder Impressive">
+                <h2 class="section-title mb-12" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
+                    <div
+                        class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-not-allowed">
+                        <div class="w-24 h-24 rounded-full border-2 border-white/10 p-1 mb-4">
+                            <div class="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-neutral-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                                </svg>
+                            </div>
                         </div>
-                        <span class="avatar-name">John Smith</span>
-                    </a>
+                        <span class="font-black text-[10px] uppercase tracking-widest text-neutral-500">Reserved
+                            Slot</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Professional Tier -->
             <div class="tier-section" data-tier="professional">
-                <h2 class="tier-heading professional" data-en="Professional" data-vi="Chuyên Nghiệp">Professional</h2>
-                <div class="avatar-grid">
-                    <a href="#" class="circular-avatar" data-tier="professional" data-field="creative">
-                        <div class="avatar-wrapper">
-                            <img src="https://via.placeholder.com/150" alt="Placeholder Professional">
+                <h2 class="section-title mb-12" data-en="PROFESSIONAL" data-vi="CHUYÊN NGHIỆP">PROFESSIONAL</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
+                    <div
+                        class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-not-allowed">
+                        <div class="w-24 h-24 rounded-full border-2 border-white/10 p-1 mb-4">
+                            <div class="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-neutral-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                                </svg>
+                            </div>
                         </div>
-                        <span class="avatar-name">Alice Johnson</span>
-                    </a>
+                        <span class="font-black text-[10px] uppercase tracking-widest text-neutral-500">Reserved
+                            Slot</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Standard Tier -->
             <div class="tier-section" data-tier="standard">
-                <h2 class="tier-heading standard" data-en="Standard" data-vi="Tiêu Chuẩn">Standard</h2>
-                <div class="avatar-grid">
-                    <a href="#" class="circular-avatar" data-tier="standard" data-field="it">
-                        <div class="avatar-wrapper">
-                            <img src="https://via.placeholder.com/150" alt="Placeholder Standard">
+                <h2 class="section-title mb-12" data-en="STANDARD" data-vi="TIÊU CHUẨN">STANDARD</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
+                    <div
+                        class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-not-allowed">
+                        <div class="w-20 h-20 rounded-full border-2 border-white/10 p-1 mb-4">
+                            <div class="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-neutral-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                                </svg>
+                            </div>
                         </div>
-                        <span class="avatar-name">Bob Williams</span>
-                    </a>
+                        <span class="font-black text-[9px] uppercase tracking-widest text-neutral-500">Available</span>
+                    </div>
                 </div>
             </div>
 
         </section>
-
     </main>
+
+    <!-- Global UI Controls -->
+    <div class="ui-controls">
+        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
+            <span class="mode-icon">☀️ Day</span>
+        </button>
+        <button id="lang-toggle" class="lang-toggle neon-border">
+            Bạn là người Việt?
+        </button>
+    </div>
 
     <footer>
         <p>&copy; 2026 Teemous Digital. All Rights Reserved.</p>
@@ -158,18 +264,10 @@
         </div>
     </footer>
 
-    <div class="ui-controls">
-        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
-            <span class="mode-icon">☀️ Day</span>
-        </button>
-        <button id="lang-toggle" class="lang-toggle neon-border">
-            Bạn là người Việt?
-        </button>
-    </div>
-
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="../script.js?v=4"></script>
+    <script src="../script.js?v=5"></script>
 </body>
 
 </html>

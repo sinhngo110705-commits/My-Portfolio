@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>#AOV-001 — Cửa Hàng Liên Quân | Teemous Digital</title>
+    <link rel="icon" href="../../../Logo/logo.png" type="image/png">
+    <meta name="description"
+        content="Tài khoản Liên Quân #AOV-001: 119 tướng, 195 skin, Chiến Tướng, giá 999k ATM/Momo. Mua ngay tại Teemous Digital.">
+
+    <!-- Global Stylesheet -->
+    <link rel="stylesheet" href="../../../style.css?v=4">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* =============================================
+           AOV-001 DETAIL PAGE — Page-specific styles
+        ============================================= */
+
+        /* ── Light-mode contrast overrides ── */
+        /* Gold heading on white bg */
+        .light-mode .acc-id-block h1 {
+            color: #8a6200;
+            text-shadow: none;
+        }
+
+        .light-mode .acc-id-block {
+            background: rgba(0, 0, 0, 0.04);
+            border-left-color: #8a6200;
+        }
+
+        /* ATM price: dark green */
+        .light-mode .price-value.atm {
+            color: #1b6e3e;
+            text-shadow: none;
+        }
+
+        /* Card price: dark blue */
+        .light-mode .price-value.card {
+            color: #0d47a1;
+            text-shadow: none;
+        }
+
+        /* Price cells */
+        .light-mode .price-cell:first-child {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .light-mode .price-cell:last-child {
+            background: rgba(0, 0, 0, 0.09);
+        }
+
+        .light-mode .price-grid {
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .light-mode .price-cell:first-child {
+            border-right-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .light-mode .price-label {
+            color: #555;
+        }
+
+        .light-mode .price-note {
+            color: #777;
+        }
+
+        /* ── Breadcrumb ── */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-heading);
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin: 0 0 2rem;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--neon-purple);
+        }
+
+        .breadcrumb .sep {
+            opacity: 0.4;
+        }
+
+        .breadcrumb .current {
+            color: var(--neon-purple);
+            font-weight: 800;
+        }
+
+        /* ── Main Layout ── */
+        .detail-wrapper {
+            padding: 7rem 0 5rem;
+        }
+
+        .detail-layout {
+            display: flex;
+            flex-direction: row;
+            gap: 3rem;
+            align-items: flex-start;
+        }
+
+        /* Left col: 3/5 */
+        .detail-left {
+            flex: 3;
+            min-width: 0;
+        }
+
+        /* Right col: 2/5 */
+        .detail-right {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            position: sticky;
+            top: 90px;
+            /* Sit below the fixed header */
+        }
+
+        /* ── Showcase Image ── */
+        .showcase-img-wrap {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            background: #0a0a1a;
+        }
+
+        .showcase-img-wrap img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        /* Gallery thumbnail row (optional extra screenshots) */
+        .img-gallery-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .img-thumb {
+            width: 80px;
+            height: 55px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .img-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .img-thumb.active,
+        .img-thumb:hover {
+            border-color: var(--neon-purple);
+        }
+
+        /* ── Right Column Blocks ── */
+
+        /* Mã số block */
+        .acc-id-block {
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 4px solid #FFD700;
+            border-radius: 0 10px 10px 0;
+            padding: 16px 20px;
+        }
+
+        .acc-id-block .acc-label {
+            font-family: var(--font-heading);
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .acc-id-block h1 {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: clamp(1.3rem, 3vw, 1.9rem);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            line-height: 1.1;
+            margin: 0;
+        }
+
+        /* Status pill */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-heading);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #00c853;
+            background: rgba(0, 200, 83, 0.1);
+            border: 1px solid rgba(0, 200, 83, 0.6);
+            border-radius: 30px;
+            padding: 5px 14px;
+            animation: status-glow 2s ease-in-out infinite;
+            margin-top: 10px;
+        }
+
+        @keyframes status-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 6px rgba(0, 200, 83, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 16px rgba(0, 200, 83, 0.7);
+            }
+        }
+
+        /* Price grid */
+        .price-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .price-cell {
+            padding: 18px 16px;
+            text-align: center;
+        }
+
+        .price-cell:first-child {
+            background: rgba(255, 255, 255, 0.04);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .price-cell:last-child {
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .price-label {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .price-value {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            line-height: 1;
+        }
+
+        .price-value.atm {
+            color: #69f0ae;
+            text-shadow: 0 0 12px rgba(105, 240, 174, 0.5);
+        }
+
+        .price-value.card {
+            color: var(--neon-blue);
+            text-shadow: 0 0 12px rgba(33, 150, 243, 0.5);
+        }
+
+        .price-note {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Highlight quote */
+        .highlight-block {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px 18px;
+        }
+
+        .highlight-label {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .highlight-quote {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-style: italic;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Account info rows */
+        .info-block {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.2s ease;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .info-key {
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .info-val {
+            font-family: var(--font-heading);
+            font-size: 0.82rem;
+            font-weight: 800;
+            text-align: right;
+        }
+
+        .info-val.green {
+            color: #69f0ae;
+        }
+
+        .info-val.white {
+            color: var(--text-main);
+        }
+
+        .info-val.muted {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Stats row */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            padding: 14px 10px;
+            text-align: center;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .stat-box:hover {
+            border-color: rgba(156, 39, 176, 0.4);
+            background: rgba(156, 39, 176, 0.05);
+        }
+
+        .stat-box .stat-num {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: 1.3rem;
+            line-height: 1;
+            background: var(--gradient-brand);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-box .stat-lbl {
+            font-family: var(--font-body);
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* Action buttons */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-card-game {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-card-game:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-buy-now {
+            display: block;
+            text-align: center;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #c62828, #e53935);
+            color: #ffffff;
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: 0.9rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(198, 40, 40, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-buy-now::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-buy-now:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 35px rgba(198, 40, 40, 0.55), 0 0 20px rgba(229, 57, 53, 0.3);
+            background: linear-gradient(135deg, #d32f2f, #f44336);
+        }
+
+        .btn-buy-now:hover::before {
+            left: 100%;
+        }
+
+        /* Safety note */
+        .safety-note {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-body);
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-align: center;
+            justify-content: center;
+        }
+
+        /* ── Light mode overrides ── */
+        .light-mode .acc-id-block,
+        .light-mode .highlight-block,
+        .light-mode .info-block {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .light-mode .price-cell:first-child {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .light-mode .price-cell:last-child {
+            background: rgba(0, 0, 0, 0.07);
+        }
+
+        .light-mode .stat-box {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        /* ── Mobile Responsive ── */
+        @media (max-width: 900px) {
+            .detail-layout {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .detail-right {
+                position: static;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .stat-box .stat-num {
+                font-size: 1.1rem;
+            }
+
+            .acc-id-block h1 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="light-mode">
+    <!-- Background Particles -->
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="container">
+        <!-- Global Navigation Header -->
+        <header class="global-header">
+            <div class="header-logo">
+                <a href="../../../index.html">
+                    <img src="../../../Logo/logo.png" alt="Teemous Digital" class="header-logo-img"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span style="display:none;">TD</span>
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+
+            <nav class="header-nav">
+                <ul class="nav-links">
+                    <li><a href="../../../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
+                    <li><a href="../../index.html" data-en="SERVICES &amp; SHOP" data-vi="Dịch vụ &amp; Cửa hàng">SERVICES &amp; SHOP</a></li>
+                    <li><a href="../index.html" data-en="AOV Shop" data-vi="Liên Quân Shop" class="active">AOV Shop</a>
+                    </li>
+                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
+                            data-vi="Liên Hệ">Contact Us</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- ======= DETAIL WRAPPER ======= -->
+        <div class="detail-wrapper">
+
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="../../../index.html">🏠 Home</a>
+                <span class="sep">›</span>
+                <a href="../../index.html">Services</a>
+                <span class="sep">›</span>
+                <a href="../index.html">AOV Shop</a>
+                <span class="sep">›</span>
+                <span class="current">#AOV-001</span>
+            </nav>
+
+            <!-- Two-column layout -->
+            <div class="detail-layout">
+
+                <!-- ===== LEFT: SHOWCASE IMAGE ===== -->
+                <div class="detail-left">
+                    <div class="showcase-img-wrap">
+                        <img id="main-showcase" src="../../../aovacc/acc999k.jpg"
+                            onerror="this.src='https://placehold.co/900x600/0a0a1a/9C27B0?text=AOV-001+Showcase'"
+                            alt="Ảnh tổng hợp tài khoản Liên Quân #AOV-001 — 119 tướng, 195 skin, Chiến Tướng">
+                    </div>
+                    <!-- Thumbnail strip (same image for now, add more screenshots later) -->
+                    <div class="img-gallery-row">
+                        <div class="img-thumb active" onclick="setMain('../../../aovacc/acc999k.jpg')">
+                            <img src="../../../aovacc/acc999k.jpg"
+                                onerror="this.src='https://placehold.co/80x55/0a0a1a/9C27B0?text=1'" alt="Screenshot 1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== RIGHT: ACCOUNT DETAILS ===== -->
+                <div class="detail-right">
+
+                    <!-- Mã số Acc -->
+                    <div class="acc-id-block">
+                        <p class="acc-label">Mã số tài khoản</p>
+                        <h1 class="flat-title fly-in">Mã số: #AOV-001</h1>
+                        <span class="status-pill">
+                            <span>●</span> Đang bán
+                        </span>
+                    </div>
+
+                    <!-- Price Grid (ATM vs Thẻ Cào auto-calc) -->
+                    <div class="price-grid">
+                        <div class="price-cell">
+                            <p class="price-label">💳 Giá ATM / Momo</p>
+                            <p class="price-value atm" id="atm-price">999,000đ</p>
+                            <p class="price-note">Thanh toán ngay, nhanh nhất</p>
+                        </div>
+                        <div class="price-cell">
+                            <p class="price-label">📱 Giá Thẻ Cào</p>
+                            <p class="price-value card" id="card-price">1,198,800đ</p>
+                            <p class="price-note">Tự động tính × 1.2</p>
+                        </div>
+                    </div>
+
+                    <!-- Account Stats Summary -->
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <p class="stat-num">119</p>
+                            <p class="stat-lbl">⚔️ Tướng</p>
+                        </div>
+                        <div class="stat-box">
+                            <p class="stat-num">195</p>
+                            <p class="stat-lbl">🎨 Skin</p>
+                        </div>
+                        <div class="stat-box">
+                            <p class="stat-num">5265</p>
+                            <p class="stat-lbl">🎮 Trận</p>
+                        </div>
+                    </div>
+
+                    <!-- Nổi bật -->
+                    <div class="highlight-block">
+                        <p class="highlight-label">⭐ Nổi bật</p>
+                        <p class="highlight-quote">
+                            "Murad Chí Tôn, Butterfly V4, Nak Lôi Quang Sứ và dàn skin SS hữu hạn — acc giá cực mềm!"
+                        </p>
+                    </div>
+
+                    <!-- Thông tin bảo mật -->
+                    <div class="info-block">
+                        <div class="info-row">
+                            <span class="info-key">Thông tin acc:</span>
+                            <span class="info-val orange">⚠️ Có liên kết</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-key">Số điện thoại:</span>
+                            <span class="info-val white">📱 Có (liên kết)</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-key">Email:</span>
+                            <span class="info-val muted">Không</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-key">CCCD:</span>
+                            <span class="info-val muted">Không</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-key">Facebook:</span>
+                            <span class="info-val muted">Không</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-key">Rank hiện tại:</span>
+                            <span class="info-val" style="color:#FFD700;">🏆 Chiến Tướng</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-key">Tỉ lệ thắng:</span>
+                            <span class="info-val green">53.2%</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-key">Uy tín:</span>
+                            <span class="info-val green">100 / 100</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="btn-group">
+                        <button class="btn-card-game" id="btn-nap-the" onclick="showCardNote()">
+                            💳 Nạp Thẻ Cào
+                        </button>
+                        <a href="https://www.facebook.com/quang.sinh.5492" target="_blank" rel="noopener noreferrer"
+                            class="btn-buy-now" aria-label="Liên hệ mua tài khoản AOV-001">
+                            🔥 Mua Ngay
+                        </a>
+                    </div>
+
+                    <!-- Safety badge -->
+                    <p class="safety-note">
+                        🔒 Giao dịch an toàn &nbsp;·&nbsp; ✅ Tài khoản đã xác minh &nbsp;·&nbsp; 💬 Hỗ trợ 24/7
+                    </p>
+
+                </div>
+            </div><!-- /detail-layout -->
+        </div><!-- /detail-wrapper -->
+    </div><!-- /container -->
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Teemous Digital. All Rights Reserved.</p>
+        <div class="footer-socials">
+            <a href="https://www.facebook.com/quang.sinh.5492" target="_blank" rel="noopener noreferrer">Fb</a>
+        </div>
+    </footer>
+
+    <!-- Floating UI Controls -->
+    <div class="ui-controls">
+        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
+            <span class="mode-icon">☀️ Day</span>
+        </button>
+        <button id="lang-toggle" class="lang-toggle neon-border">
+            Bạn là người Việt?
+        </button>
+    </div>
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Global Script -->
+    <script src="../../../script.js?v=4"></script>
+
+    <script>
+        /* ── Price auto-calc ── */
+        const ATM_PRICE = 999000;
+        const CARD_PRICE = Math.round(ATM_PRICE * 1.2);
+
+        document.getElementById('atm-price').textContent = ATM_PRICE.toLocaleString('vi-VN') + 'đ';
+        document.getElementById('card-price').textContent = CARD_PRICE.toLocaleString('vi-VN') + 'đ';
+
+        /* ── Gallery main image switcher ── */
+        function setMain(src) {
+            const mainImg = document.getElementById('main-showcase');
+            if (mainImg) mainImg.src = src;
+            document.querySelectorAll('.img-thumb').forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        /* ── Card note popup ── */
+        function showCardNote() {
+            alert('Vui lòng liên hệ qua Facebook để biết thêm thông tin nạp thẻ cào!\nFacebook: https://www.facebook.com/quang.sinh.5492');
+        }
+
+        /* ── Entry animations ── */
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof gsap === 'undefined') return;
+
+            gsap.fromTo('.showcase-img-wrap',
+                { opacity: 0, x: -30 },
+                { opacity: 1, x: 0, duration: 0.8, ease: 'power3.out', delay: 0.1 }
+            );
+
+            gsap.fromTo('.detail-right > *',
+                { opacity: 0, y: 25 },
+                { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out', delay: 0.2 }
+            );
+
+            gsap.fromTo('.breadcrumb',
+                { opacity: 0, y: -10 },
+                { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
+            );
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cửa Hàng Liên Quân Mobile | Teemous Digital</title>
+    <link rel="icon" href="../../Logo/logo.png" type="image/png">
+    <meta name="description" content="Mua bán tài khoản Liên Quân Mobile uy tín, an toàn, giá tốt. Arena of Valor Account Shop by Teemous Digital.">
+
+    <!-- Global Stylesheet -->
+    <link rel="stylesheet" href="../../style.css?v=4">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* =============================================
+           AOV SHOP — PAGE-SPECIFIC STYLES
+           (Piggybacks on all global CSS variables)
+        ============================================= */
+
+        /* ---- Shop Hero ---- */
+        .aov-hero {
+            min-height: 40vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 0 3rem;
+        }
+
+        .aov-hero-badge {
+            display: inline-block;
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+            border-radius: 30px;
+            padding: 6px 18px;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 0 12px rgba(33, 150, 243, 0.3);
+            animation: badge-pulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes badge-pulse {
+            0%, 100% { box-shadow: 0 0 8px rgba(33, 150, 243, 0.3); }
+            50% { box-shadow: 0 0 22px rgba(33, 150, 243, 0.7); }
+        }
+
+        .aov-hero h1 {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            text-transform: uppercase;
+            color: #111827;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            letter-spacing: -0.025em;
+            text-shadow: none;
+        }
+
+        .light-mode .aov-hero h1 {
+            color: #111827;
+        }
+
+        .dark-mode .aov-hero h1,
+        body:not(.light-mode) .aov-hero h1 {
+            color: #F9FAFB;
+        }
+
+        .aov-hero p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            max-width: 500px;
+        }
+
+        /* ---- Filter Bar ---- */
+        .aov-filter-bar {
+            position: sticky;
+            top: 0;
+            z-index: 500;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(5, 5, 5, 0.75);
+            border-bottom: 1px solid var(--glass-border);
+            border-radius: 0;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(156, 39, 176, 0.5) transparent;
+            /* Prevent content jump when sticky */
+            margin: 0 -2rem;
+            width: calc(100% + 4rem);
+        }
+
+        .light-mode .aov-filter-bar {
+            background: rgba(245, 245, 245, 0.85);
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .aov-filter-bar::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .aov-filter-bar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .aov-filter-bar::-webkit-scrollbar-thumb {
+            background: rgba(156, 39, 176, 0.4);
+            border-radius: 10px;
+        }
+
+        .filter-label {
+            font-family: var(--font-heading);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--neon-purple);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .filter-divider {
+            width: 1px;
+            height: 28px;
+            background: var(--glass-border);
+            flex-shrink: 0;
+        }
+
+        /* Neon pill selects */
+        .aov-select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: transparent;
+            border: 1.5px solid rgba(156, 39, 176, 0.5);
+            color: var(--text-main);
+            padding: 7px 32px 7px 14px;
+            border-radius: 30px;
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            /* Custom dropdown arrow via background SVG */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239C27B0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+
+        .aov-select:hover,
+        .aov-select:focus {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 14px rgba(156, 39, 176, 0.45);
+            outline: none;
+        }
+
+        .aov-select option {
+            background: #0a0a0f;
+            color: #f0f0f0;
+        }
+
+        .light-mode .aov-select option {
+            background: #ffffff;
+            color: #1a1a1a;
+        }
+
+        /* ---- Shop Section ---- */
+        .aov-shop-section {
+            padding: 3rem 0 6rem;
+        }
+
+        .aov-results-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .aov-results-count {
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .aov-results-count strong {
+            color: var(--neon-pink);
+            font-size: 1rem;
+        }
+
+        /* ---- CSS Grid Layout ---- */
+        .aov-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            position: relative;
+        }
+
+        @media (max-width: 1200px) {
+            .aov-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .aov-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .aov-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .aov-filter-bar {
+                margin: 0 -1rem;
+                width: calc(100% + 2rem);
+                padding: 12px 16px;
+            }
+
+            .aov-hero {
+                padding-top: 6rem;
+            }
+        }
+
+        /* ---- Account Card ---- */
+        .aov-card {
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background: var(--glass-bg);
+            border: 1px solid rgba(156, 39, 176, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            /* Ensure z-index context for hover */
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        .aov-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(156, 39, 176, 0.4),
+                        0 4px 12px rgba(233, 30, 99, 0.2);
+            z-index: 2;
+            border-color: var(--neon-purple);
+        }
+
+        /* Subtle inner glow on hover */
+        .aov-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: var(--gradient-brand);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+
+        .aov-card:hover::before {
+            opacity: 0.04;
+        }
+
+        /* ---- Thumbnail ---- */
+        .card-thumb {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .card-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .aov-card:hover .card-thumb img {
+            transform: scale(1.07);
+        }
+
+        /* Thumbnail gradient overlay */
+        .card-thumb::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(5, 5, 5, 0.7) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* ---- Floating Badges ---- */
+        .badge {
+            position: absolute;
+            top: 10px;
+            font-family: var(--font-heading);
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 20px;
+            z-index: 3;
+            line-height: 1;
+        }
+
+        .badge-status {
+            left: 10px;
+            background: rgba(0, 200, 83, 0.15);
+            border: 1px solid rgba(0, 200, 83, 0.7);
+            color: #00c853;
+            box-shadow: 0 0 10px rgba(0, 200, 83, 0.4);
+            animation: status-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes status-glow {
+            0%, 100% { box-shadow: 0 0 8px rgba(0, 200, 83, 0.3); }
+            50% { box-shadow: 0 0 18px rgba(0, 200, 83, 0.7); }
+        }
+
+        .badge-tier {
+            right: 10px;
+            background: rgba(156, 39, 176, 0.2);
+            border: 1px solid rgba(156, 39, 176, 0.7);
+            color: #ce93d8;
+            box-shadow: 0 0 8px rgba(156, 39, 176, 0.3);
+        }
+
+        .badge-tier.tier-3s {
+            background: rgba(255, 215, 0, 0.12);
+            border-color: rgba(255, 215, 0, 0.7);
+            color: #FFD700;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+        }
+
+        .badge-tier.tier-2s {
+            background: rgba(156, 39, 176, 0.15);
+            border-color: rgba(156, 39, 176, 0.7);
+            color: #e040fb;
+            box-shadow: 0 0 8px rgba(156, 39, 176, 0.4);
+        }
+
+        /* Stack right-side badges vertically */
+        .badges-right {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 3;
+        }
+
+        .badges-right .badge {
+            position: static; /* override absolute so they stack in flex */
+        }
+
+        /* ---- Card Data Body ---- */
+        .card-body {
+            padding: 14px 15px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-id {
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .card-price {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: 1.1rem;
+            background: var(--gradient-brand);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+        }
+
+        /* ---- Stats Row ---- */
+        .card-stats {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .stat-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3px 10px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .stat-chip .stat-icon {
+            font-size: 0.75rem;
+        }
+
+        .stat-chip.rank-chip {
+            color: #FFD700;
+            border-color: rgba(255, 215, 0, 0.3);
+            background: rgba(255, 215, 0, 0.06);
+        }
+
+        .stat-chip.hero-chip {
+            color: var(--neon-blue);
+            border-color: rgba(33, 150, 243, 0.3);
+            background: rgba(33, 150, 243, 0.06);
+        }
+
+        .stat-chip.skin-chip {
+            color: var(--neon-pink);
+            border-color: rgba(233, 30, 99, 0.3);
+            background: rgba(233, 30, 99, 0.06);
+        }
+
+        /* ---- Action Button ---- */
+        .card-action {
+            display: block;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .btn-buy {
+            display: block;
+            text-align: center;
+            width: 100%;
+            padding: 10px;
+            background: var(--gradient-brand);
+            color: #ffffff;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 0.82rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-buy::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0);
+            transition: background 0.2s ease;
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.5), 0 0 10px rgba(156, 39, 176, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .btn-buy:hover::before {
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        /* ---- Empty State ---- */
+        .aov-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* ---- Light Mode Adjustments ---- */
+        .light-mode .aov-card {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(156, 39, 176, 0.15);
+        }
+
+        .light-mode .aov-card:hover {
+            box-shadow: 0 12px 32px rgba(156, 39, 176, 0.25),
+                        0 4px 12px rgba(233, 30, 99, 0.15);
+        }
+
+        .light-mode .stat-chip {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        /* ---- Responsive font for price on small screens ---- */
+        @media (max-width: 480px) {
+            .card-price {
+                font-size: 0.95rem;
+            }
+
+            .card-body {
+                padding: 10px 12px 12px;
+                gap: 8px;
+            }
+
+            .stat-chip {
+                font-size: 0.64rem;
+                padding: 2px 8px;
+            }
+
+            .btn-buy {
+                font-size: 0.75rem;
+                padding: 9px;
+            }
+        }
+    </style>
+</head>
+
+<body class="light-mode">
+    <!-- Background Animation Canvas (global particles.js) -->
+    <canvas id="bg-canvas"></canvas>
+
+    <main class="container">
+        <!-- Global Navigation Header -->
+        <header class="global-header">
+            <div class="header-logo">
+                <a href="../../index.html">
+                    <img src="../../Logo/logo.png" alt="Teemous Digital" class="header-logo-img"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span style="display:none;">TD</span>
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="header-nav">
+                <ul class="nav-links">
+                    <li><a href="../../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
+                    <li><a href="../index.html" data-en="SERVICES & SHOP" data-vi="Dịch vụ &amp; Cửa hàng">SERVICES & SHOP</a></li>
+                    <li><a href="../../portfolio/index.html" data-en="Portfolio Hub" data-vi="Hồ sơ Năng lực">Portfolio Hub</a></li>
+                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us" data-vi="Liên Hệ">Contact Us</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- ======= SHOP HERO ======= -->
+        <section class="aov-hero">
+            <span class="aov-hero-badge">🎮 Arena of Valor</span>
+            <h1 class="flat-title fly-in" data-en="AOV Account Shop" data-vi="Cửa Hàng Tài Khoản Liên Quân">AOV Account Shop</h1>
+            <p data-en="Premium verified accounts — safe, transparent, best price guaranteed."
+               data-vi="Tài khoản cao cấp đã xác minh — an toàn, minh bạch, giá tốt nhất.">
+               Premium verified accounts — safe, transparent, best price guaranteed.
+            </p>
+        </section>
+    </main>
+
+    <!-- ======= STICKY FILTER BAR (full-width, outside container) ======= -->
+    <div class="container">
+        <div class="aov-filter-bar" role="search" aria-label="Bộ lọc tài khoản">
+
+            <span class="filter-label">🔍 Lọc</span>
+            <div class="filter-divider"></div>
+
+            <!-- Mức giá -->
+            <select class="aov-select" id="filter-price" aria-label="Lọc theo mức giá" title="Mức giá">
+                <option value="all">💰 Mức giá</option>
+                <option value="under500">Dưới 500k</option>
+                <option value="500to2m">500k – 2M</option>
+                <option value="over2m">Trên 2M</option>
+            </select>
+
+            <!-- Skin Tier -->
+            <select class="aov-select" id="filter-tier-skin" aria-label="Lọc theo Skin Tier" title="Skin Tier">
+                <option value="all">✨ Skin Tier</option>
+                <option value="3s">Đồ 3S (Siêu Phẩm)</option>
+                <option value="2s">Đồ 2S</option>
+            </select>
+
+            <!-- Số lượng Skin -->
+            <select class="aov-select" id="filter-skin-count" aria-label="Lọc theo số lượng skin" title="Số lượng Skin">
+                <option value="all">🎨 Số lượng Skin</option>
+                <option value="under100">&lt; 100</option>
+                <option value="100to199">100 – 199</option>
+                <option value="200to299">200 – 299</option>
+                <option value="300plus">300+</option>
+            </select>
+
+            <!-- Rank hiện tại -->
+            <select class="aov-select" id="filter-rank" aria-label="Lọc theo rank" title="Rank hiện tại">
+                <option value="all">🏆 Rank</option>
+                <option value="chientuong">Chiến Tướng</option>
+                <option value="caothu">Cao Thủ</option>
+                <option value="tinhanh">Tinh Anh trở xuống</option>
+            </select>
+
+        </div>
+    </div>
+
+    <!-- ======= MAIN SHOP GRID ======= -->
+    <div class="container">
+        <section class="aov-shop-section">
+            <div class="aov-results-meta">
+                <p class="aov-results-count">Hiển thị <strong id="visible-count">3</strong> tài khoản</p>
+            </div>
+
+            <div class="aov-grid" id="aov-grid">
+
+                <!-- ===== CARD 1 ===== -->
+                <div class="aov-card"
+                     data-price="500to2m"
+                     data-tier="2s"
+                     data-skins="100to199"
+                     data-rank="chientuong">
+                    <div class="card-thumb">
+                        <img src="../../aovacc/acc999k.jpg"
+                             onerror="this.src='https://placehold.co/480x270/0a0a1a/9C27B0?text=AOV-001'"
+                             alt="AOV Account AOV-001 Thumbnail - Chiến Tướng 3S Skin">
+                        <span class="badge badge-status">🟢 Đang bán</span>
+                        <div class="badges-right">
+                            <span class="badge badge-tier tier-2s">📘 2S</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-id">#AOV-001</span>
+                        <p class="card-price">999,000 VNĐ</p>
+                        <div class="card-stats">
+                            <span class="stat-chip rank-chip">
+                                <span class="stat-icon">🏆</span> Chiến Tướng
+                            </span>
+                            <span class="stat-chip hero-chip">
+                                <span class="stat-icon">⚔️</span> 119 Tướng
+                            </span>
+                            <span class="stat-chip skin-chip">
+                                <span class="stat-icon">🎨</span> 195 Skin
+                            </span>
+                        </div>
+                        <div class="card-action">
+                            <a href="aov001/index.html"
+                               class="btn-buy"
+                               aria-label="Xem chi tiết tài khoản AOV-001">
+                               🔍 Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== CARD 2 ===== -->
+                <div class="aov-card"
+                     data-price="500to2m"
+                     data-tier="2s"
+                     data-skins="200to299"
+                     data-rank="caothu">
+                    <div class="card-thumb">
+                        <img src="../../aovacc/acc678k.jpg"
+                             onerror="this.src='https://placehold.co/480x270/0a0a1a/E91E63?text=AOV-002'"
+                             alt="AOV Account AOV-002 Thumbnail - Cao Thủ 2S Skin">
+                        <span class="badge badge-status">🟢 Đang bán</span>
+                        <div class="badges-right">
+                            <span class="badge badge-tier tier-2s">📘 2S</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-id">#AOV-002</span>
+                        <p class="card-price">678,000 VNĐ</p>
+                        <div class="card-stats">
+                            <span class="stat-chip rank-chip">
+                                <span class="stat-icon">💎</span> Cao Thủ
+                            </span>
+                            <span class="stat-chip hero-chip">
+                                <span class="stat-icon">⚔️</span> 119 Tướng
+                            </span>
+                            <span class="stat-chip skin-chip">
+                                <span class="stat-icon">🎨</span> 217 Skin
+                            </span>
+                        </div>
+                        <div class="card-action">
+                            <a href="aov002/index.html"
+                               class="btn-buy"
+                               aria-label="Xem chi tiết tài khoản AOV-002">
+                               🔍 Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== CARD 3 ===== -->
+                <div class="aov-card"
+                     data-price="over2m"
+                     data-tier="3s"
+                     data-skins="300plus"
+                     data-rank="chientuong">
+                    <div class="card-thumb">
+                        <img src="../../Avatar/aov-thumb.jpg"
+                             onerror="this.src='https://placehold.co/480x270/0a0a1a/2196F3?text=AOV+Shop'"
+                             alt="AOV Account AOV-003 Thumbnail - Chiến Tướng Full 3S">
+                        <span class="badge badge-status">🟢 Đang bán</span>
+                        <span class="badge badge-tier tier-3s">⭐ 3S</span>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-id">#AOV-003</span>
+                        <p class="card-price">3,200,000 VNĐ</p>
+                        <div class="card-stats">
+                            <span class="stat-chip rank-chip">
+                                <span class="stat-icon">🏆</span> Chiến Tướng
+                            </span>
+                            <span class="stat-chip hero-chip">
+                                <span class="stat-icon">⚔️</span> 120 Tướng
+                            </span>
+                            <span class="stat-chip skin-chip">
+                                <span class="stat-icon">🎨</span> 320 Skin
+                            </span>
+                        </div>
+                        <div class="card-action">
+                            <a href="https://www.facebook.com/quang.sinh.5492"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="btn-buy"
+                               aria-label="Mua tài khoản AOV-003">
+                               💬 Mua ngay
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /aov-grid -->
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Teemous Digital. All Rights Reserved.</p>
+        <div class="footer-socials">
+            <a href="https://www.facebook.com/quang.sinh.5492" target="_blank" rel="noopener noreferrer">Fb</a>
+        </div>
+    </footer>
+
+    <!-- Floating UI Controls (Theme + Lang) — identical to all pages -->
+    <div class="ui-controls">
+        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
+            <span class="mode-icon">☀️ Day</span>
+        </button>
+        <button id="lang-toggle" class="lang-toggle neon-border">
+            Bạn là người Việt?
+        </button>
+    </div>
+
+    <!-- GSAP CDN (required by global script.js) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Global Script (theme toggle, particles, lang toggle) -->
+    <script src="../../script.js?v=4"></script>
+
+    <!-- AOV Shop Page Script -->
+    <script>
+        (function () {
+            'use strict';
+
+            // ---- Card Entry Animation ----
+            document.addEventListener('DOMContentLoaded', () => {
+                const cards = document.querySelectorAll('.aov-card');
+
+                if (typeof gsap !== 'undefined') {
+                    gsap.fromTo(cards,
+                        { y: 40, opacity: 0 },
+                        {
+                            y: 0,
+                            opacity: 1,
+                            duration: 0.6,
+                            stagger: 0.1,
+                            ease: 'power3.out',
+                            delay: 0.2
+                        }
+                    );
+                }
+
+                // ---- Filter Logic ----
+                const filterPrice = document.getElementById('filter-price');
+                const filterTierSkin = document.getElementById('filter-tier-skin');
+                const filterSkinCount = document.getElementById('filter-skin-count');
+                const filterRank = document.getElementById('filter-rank');
+                const visibleCountEl = document.getElementById('visible-count');
+                const grid = document.getElementById('aov-grid');
+
+                function applyFilters() {
+                    const price = filterPrice.value;
+                    const tier = filterTierSkin.value;
+                    const skins = filterSkinCount.value;
+                    const rank = filterRank.value;
+
+                    let visibleCount = 0;
+
+                    cards.forEach(card => {
+                        const matchPrice = price === 'all' || card.dataset.price === price;
+                        const matchTier = tier === 'all' || card.dataset.tier === tier;
+                        const matchSkins = skins === 'all' || card.dataset.skins === skins;
+                        const matchRank = rank === 'all' || card.dataset.rank === rank;
+
+                        const show = matchPrice && matchTier && matchSkins && matchRank;
+
+                        if (show) {
+                            card.style.display = '';
+                            visibleCount++;
+                            if (typeof gsap !== 'undefined') {
+                                gsap.fromTo(card,
+                                    { scale: 0.92, opacity: 0 },
+                                    { scale: 1, opacity: 1, duration: 0.35, ease: 'power2.out' }
+                                );
+                            }
+                        } else {
+                            if (typeof gsap !== 'undefined') {
+                                gsap.to(card, {
+                                    scale: 0.92,
+                                    opacity: 0,
+                                    duration: 0.2,
+                                    ease: 'power2.in',
+                                    onComplete: () => { card.style.display = 'none'; }
+                                });
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        }
+                    });
+
+                    // Update empty state
+                    let emptyMsg = grid.querySelector('.aov-empty');
+                    if (visibleCount === 0) {
+                        if (!emptyMsg) {
+                            emptyMsg = document.createElement('div');
+                            emptyMsg.className = 'aov-empty';
+                            emptyMsg.innerHTML = '😢 Không tìm thấy tài khoản phù hợp. <br>Hãy thử bộ lọc khác hoặc liên hệ với chúng tôi!';
+                            grid.appendChild(emptyMsg);
+                        }
+                    } else if (emptyMsg) {
+                        emptyMsg.remove();
+                    }
+
+                    if (visibleCountEl) visibleCountEl.textContent = visibleCount;
+                }
+
+                [filterPrice, filterTierSkin, filterSkinCount, filterRank].forEach(el => {
+                    el.addEventListener('change', applyFilters);
+                });
+            });
+        })();
+    </script>
+
+</body>
+</html>

@@ -199,8 +199,7 @@ function initBackgroundAnimation() {
             this.baseX = this.x;
             this.baseY = this.y;
             this.density = (Math.random() * 20) + 1;
-            // Pink/Purple/Blue palette
-            const colors = ['rgba(233, 30, 99, 0.4)', 'rgba(156, 39, 176, 0.4)', 'rgba(33, 150, 243, 0.4)'];
+            const colors = ['rgba(156, 39, 176, 0.4)', 'rgba(33, 150, 243, 0.4)'];
             this.color = colors[Math.floor(Math.random() * colors.length)];
         }
         
@@ -308,14 +307,18 @@ function initBackgroundAnimation() {
 }
 
 // Multi-language Toggle Logic
-let currentLang = 'en'; // Global scope to be used by other functions
+let currentLang = localStorage.getItem('td-lang') || 'en'; // Global scope to be used by other functions // Use persisted state or default
 
 function initLanguageToggle() {
+    // Apply initial translation based on localStorage on load
+    updateAllTranslations();
+    
     const langBtn = document.getElementById('lang-toggle');
     if (!langBtn) return;
     
     langBtn.addEventListener('click', () => {
         currentLang = currentLang === 'en' ? 'vi' : 'en';
+        localStorage.setItem('td-lang', currentLang);
         updateAllTranslations();
     });
 }
@@ -454,7 +457,7 @@ function initPortfolioFilters() {
     const filterTier = document.getElementById('filter-tier');
     const filterField = document.getElementById('filter-field');
     const tierSections = document.querySelectorAll('.tier-section[data-tier]');
-    const avatars = document.querySelectorAll('.circular-avatar');
+    const avatars = document.querySelectorAll('.portfolio-card');
 
     // If not on Hub page, exit
     if (!filterTier && !filterField) return;
@@ -472,7 +475,7 @@ function initPortfolioFilters() {
             if (tierMatch) {
                 section.style.display = '';
                 // Within visible tier: apply field filter
-                const sectionAvatars = section.querySelectorAll('.circular-avatar');
+                const sectionAvatars = section.querySelectorAll('.portfolio-card');
                 let anyVisible = false;
                 sectionAvatars.forEach(avatar => {
                     const fieldMatch = (fieldVal === 'all') || (avatar.dataset.field === fieldVal);

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started | Teemous Digital</title>
+    <link rel="icon" href="../../Logo/logo.png" type="image/png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css?v=6">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-pink': '#E91E63',
+                        'neon-purple': '#9C27B0',
+                        'neon-blue': '#2196F3',
+                        'neon-gold': '#FFD700',
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'gradient-brand': 'linear-gradient(135deg, #E91E63, #9C27B0, #2196F3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- React & HTM (No-build JSX alternative) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
+
+    <style>
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Glass Panel Funnel Override */
+        .glass-panel-funnel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+        }
+
+        .light-mode .glass-panel-funnel {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Radio */
+        .plan-radio:checked+.plan-card {
+            border-color: var(--neon-blue);
+            background: rgba(33, 150, 243, 0.1);
+            box-shadow: 0 0 30px rgba(33, 150, 243, 0.2);
+        }
+
+        .plan-radio:checked+.plan-card.premium {
+            border-color: var(--neon-purple);
+            background: rgba(156, 39, 176, 0.1);
+            box-shadow: 0 0 30px rgba(156, 39, 176, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script>
+        const html = htm.bind(React.createElement);
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [selectedOption, setSelectedOption] = useState('basic');
+            const [profilePush, setProfilePush] = useState(false);
+            const [voucher, setVoucher] = useState('');
+            const [isVoucherApplied, setIsVoucherApplied] = useState(false);
+            const [voucherDiscount, setVoucherDiscount] = useState(0);
+            const [lang, setLang] = useState(localStorage.getItem('td-lang') || 'vi');
+            const [theme, setTheme] = useState(localStorage.getItem('td-theme') || 'dark');
+
+            const BASIC_PRICE = 50000;
+            const PUSH_PRICE = 30000;
+
+            useEffect(() => {
+                document.body.className = theme === 'light' ? 'light-mode' : 'dark';
+                document.documentElement.className = theme === 'light' ? 'light' : 'dark';
+                localStorage.setItem('td-theme', theme);
+            }, [theme]);
+
+            useEffect(() => {
+                localStorage.setItem('td-lang', lang);
+            }, [lang]);
+
+            // Background Particles with Mouse Tracking (Synced with main site)
+            useEffect(() => {
+                const canvas = document.getElementById('bg-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let width = (canvas.width = window.innerWidth);
+                let height = (canvas.height = window.innerHeight);
+                let particles = [];
+                let mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2 };
+
+                const handleMouseMove = (e) => {
+                    mouse.targetX = e.clientX;
+                    mouse.targetY = e.clientY;
+                };
+                window.addEventListener('mousemove', handleMouseMove);
+
+                const resize = () => {
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+                    init();
+                };
+                window.addEventListener('resize', resize);
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * width;
+                        this.y = Math.random() * height;
+                        this.baseX = this.x;
+                        this.baseY = this.y;
+                        this.size = Math.random() * 2;
+                        this.density = (Math.random() * 20) + 1;
+                        const colors = ['rgba(156, 39, 176, 0.8)', 'rgba(33, 150, 243, 0.8)'];
+                        this.color = colors[Math.floor(Math.random() * colors.length)];
+                    }
+                    update() {
+                        let dx = mouse.x - width / 2;
+                        let dy = mouse.y - height / 2;
+                        let targetX = this.baseX - (dx * 0.05 * (30 / this.density));
+                        let targetY = this.baseY - (dy * 0.05 * (30 / this.density));
+                        this.x += (targetX - this.x) * 0.05;
+                        this.y += (targetY - this.y) * 0.05;
+                    }
+                    draw() {
+                        ctx.fillStyle = this.color;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                const init = () => {
+                    particles = [];
+                    const numParticles = (width * height) / 6000;
+                    for (let i = 0; i < numParticles; i++) particles.push(new Particle());
+                };
+                init();
+
+                const drawGrid = () => {
+                    if (mouse.x == null) return;
+                    const dx = (mouse.x - width / 2) * 0.02;
+                    const dy = (mouse.y - height / 2) * 0.02;
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.lineWidth = 1;
+                    const gridSize = 50;
+                    const offsetX = (dx % gridSize) - gridSize;
+                    const offsetY = (dy % gridSize) - gridSize;
+                    ctx.beginPath();
+                    for (let x = offsetX; x < width + gridSize; x += gridSize) {
+                        ctx.moveTo(x, 0); ctx.lineTo(x, height);
+                    }
+                    for (let y = offsetY; y < height + gridSize; y += gridSize) {
+                        ctx.moveTo(0, y); ctx.lineTo(width, y);
+                    }
+                    ctx.stroke();
+                };
+
+                const connectParticles = () => {
+                    for (let a = 0; a < particles.length; a++) {
+                        for (let b = a; b < particles.length; b++) {
+                            let dx = particles[a].x - particles[b].x;
+                            let dy = particles[a].y - particles[b].y;
+                            let distance = dx * dx + dy * dy;
+                            if (distance < 15000) {
+                                let opacity = 1 - (distance / 15000);
+                                ctx.strokeStyle = `rgba(156, 39, 176, ${opacity * 0.2})`;
+                                ctx.lineWidth = 1;
+                                ctx.beginPath();
+                                ctx.moveTo(particles[a].x, particles[a].y);
+                                ctx.lineTo(particles[b].x, particles[b].y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                };
+
+                let animationFrameId;
+                const animate = () => {
+                    ctx.clearRect(0, 0, width, height);
+                    mouse.x += (mouse.targetX - mouse.x) * 0.1;
+                    mouse.y += (mouse.targetY - mouse.y) * 0.1;
+                    drawGrid();
+                    particles.forEach(p => {
+                        p.update();
+                        p.draw();
+                    });
+                    connectParticles();
+                    animationFrameId = requestAnimationFrame(animate);
+                };
+                animate();
+
+                return () => {
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    window.removeEventListener('resize', resize);
+                    cancelAnimationFrame(animationFrameId);
+                };
+            }, []);
+
+            const t = {
+                vi: {
+                    title: "Khởi tạo Portfolio &",
+                    subtitle_hub: "Tham gia Teemous Hub",
+                    hero_desc: "Xây dựng định danh số chuyên nghiệp. Bắt đầu hành trình của bạn tại Teemous Digital.",
+                    basic: "Khởi tạo cơ bản",
+                    premium: "KHỞI TẠO NÂNG CAO",
+                    basic_desc: "Được thiết kế layout chuẩn chỉnh, đưa profile lên danh sách STANDARD hoặc PROFESSIONAL của Teemous Hub (Tùy năng lực).",
+                    premium_desc: "Build giao diện custom riêng, phức tạp hơn. Trỏ tên miền cá nhân độc bản (VD: nguyenvana.com hoặc .id.vn).",
+                    path_default: "Đường dẫn mặc định:",
+                    deal: "Tự deal - Liên hệ báo giá",
+                    add_top: "Thêm vào Top Featured",
+                    add_desc: "Profile của bạn sẽ được ghim trên khu vực nổi bật nhất của Hub trong 30 ngày, tăng 300% lượt click từ những người đang tìm kiếm nhân sự.",
+                    ui_preview: "Teemous Hub UI Preview",
+                    total_cost: "Tổng chi phí",
+                    voucher: "MÃ ƯU ĐÃI",
+                    send: "GỬI THÔNG TIN / CHAT QUA FACEBOOK",
+                    home: "Trang Chủ",
+                    services: "OUR SERVICES",
+                    portfolio: "Hồ sơ Năng lực Hub",
+                    contact: "Liên Hệ",
+                    plus: "Cộng thêm",
+                },
+                en: {
+                    title: "Initialize Portfolio &",
+                    subtitle_hub: "Join Teemous Hub",
+                    hero_desc: "Build a professional digital identity. Start your journey at Teemous Digital.",
+                    basic: "Basic Initialization",
+                    premium: "Advanced Initialization",
+                    basic_desc: "Designed with standard layout, listed in STANDARD or PROFESSIONAL on Teemous Hub (based on capacity).",
+                    premium_desc: "Build custom interfaces, more complex. Point to a unique personal domain (e.g., nguyenvana.com or .id.vn).",
+                    path_default: "Default path:",
+                    deal: "Self-deal - Contact for quote",
+                    add_top: "Add to Top Featured",
+                    add_desc: "Your profile will be pinned in the Hub's most prominent area for 30 days, increasing clicks by 300%.",
+                    ui_preview: "Teemous Hub UI Preview",
+                    total_cost: "Total Cost",
+                    voucher: "GIFT CODE",
+                    send: "SEND INFO / CHAT VIA FACEBOOK",
+                    home: "Home",
+                    services: "SERVICES & SHOP",
+                    portfolio: "Portfolio Hub",
+                    contact: "Contact Us",
+                    plus: "Plus",
+                }
+            };
+
+            const calculateTotal = () => {
+                if (selectedOption === 'premium') return 'Deal';
+                let subtotal = BASIC_PRICE + (profilePush ? PUSH_PRICE : 0);
+                return Math.max(0, subtotal - voucherDiscount);
+            };
+
+            const total = calculateTotal();
+
+            const handleVoucher = (e) => {
+                const val = e.target.value.toUpperCase();
+                setVoucher(val);
+                if (val === 'TEEMOUSFREE' || val === 'TEEMOUSNEW') {
+                    setIsVoucherApplied(true);
+                    setVoucherDiscount(50000);
+                } else if (val === 'TEEMOUSVIP') {
+                    setIsVoucherApplied(true);
+                    setVoucherDiscount(999999);
+                } else {
+                    setIsVoucherApplied(false);
+                    setVoucherDiscount(0);
+                }
+            };
+
+            const formatVNĐ = (num) => {
+                if (typeof num === 'string') return num;
+                return new Intl.NumberFormat('vi-VN').format(num) + ' VNĐ';
+            };
+
+            const renderHeader = () => html`
+                <header className="global-header">
+                    <div className="header-logo">
+                        <a href="../../index.html">
+                            <img src="../../Logo/logo.png" alt="Teemous Digital" className="header-logo-img" />
+                        </a>
+                    </div>
+                    <nav className="header-nav hidden md:block">
+                        <ul className="nav-links flex gap-8">
+                            <li><a href="../../index.html">${t[lang].home}</a></li>
+                            <li><a href="../index.html">${t[lang].services}</a></li>
+                            <li><a href="../../portfolio/index.html">${t[lang].portfolio}</a></li>
+                            <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank">${t[lang].contact}</a></li>
+                        </ul>
+                    </nav>
+                </header>
+            `;
+
+            const renderHero = () => html`
+                <header className="container mx-auto pt-36 pb-16 px-6 text-center animate-slide-up flex flex-col items-center gap-8">
+                    <div className="group cursor-default">
+                        <h1 
+                            className="text-5xl md:text-8xl font-black uppercase mb-4 leading-[1.1] transform transition-all duration-700 group-hover:tracking-wider group-hover:scale-110 animate-fly-in max-w-[900px] mx-auto whitespace-nowrap" 
+                            style=${{ fontSize: '4.5rem' }}
+                        >
+                            ${t[lang].title} <br />
+                            <span className="text-neon-blue">${t[lang].subtitle_hub}</span>
+                        </h1>
+                        <div className="w-24 h-1 bg-gradient-to-r from-neon-blue to-neon-purple mx-auto mb-6 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                        <p className="flat-subtitle text-lg max-w-2xl mx-auto leading-relaxed text-[var(--text-muted)]">
+                            ${t[lang].hero_desc}
+                        </p>
+                    </div>
+                </header>
+            `;
+
+
+            const renderPlans = () => html`
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                    <label className="relative cursor-pointer group">
+                        <input
+                            type="radio"
+                            name="plan"
+                            className="hidden plan-radio"
+                            checked=${selectedOption === 'basic'}
+                            onChange=${() => setSelectedOption('basic')}
+                        />
+                        <div className="plan-card glass-panel-funnel p-10 h-full border-2 border-white/5 transition-all duration-300 group-hover:border-white/20">
+                            <h3 className="text-2xl font-black mb-1 uppercase italic text-[var(--text-main)]">${t[lang].basic}</h3>
+                            <div className="text-3xl font-black text-neon-blue mb-4">50,000 VNĐ</div>
+                            <p className="text-[var(--text-muted)] text-sm mb-8 leading-relaxed">
+                                ${t[lang].basic_desc}
+                            </p>
+                            <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">
+                                ${t[lang].path_default} <br />
+                                <span className="text-neon-blue">teemousdigital.id.vn/portfolio/your-name</span>
+                            </div>
+                            ${selectedOption === 'basic' && html`
+                                <div className="absolute top-4 right-4 w-6 h-6 bg-neon-blue rounded-full flex items-center justify-center">
+                                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            `}
+                        </div>
+                    </label>
+
+                    <label className="relative cursor-pointer group">
+                        <input
+                            type="radio"
+                            name="plan"
+                            className="hidden plan-radio"
+                            checked=${selectedOption === 'premium'}
+                            onChange=${() => setSelectedOption('premium')}
+                        />
+                        <div className=${`relative w-full h-full p-10 rounded-3xl border-2 transition-all duration-500 flex flex-col ${selectedOption === 'premium' ? 'border-neon-purple bg-neon-purple/[0.12] dark:bg-neon-purple/[0.15] shadow-[0_0_50px_rgba(156,39,176,0.5)] scale-[1.02]' : 'border-white/5 bg-white/60 dark:bg-black/40 shadow-sm hover:border-neon-purple/30 hover:bg-white/80 dark:hover:bg-black/60'}`}>
+                            <div className="flex justify-between items-start mb-1">
+                                <h3 className="text-2xl font-black text-[var(--text-main)] uppercase italic">${t[lang].premium}</h3>
+                                <div className="flex items-center gap-2">
+                                </div>
+                            </div>
+                            <div className="text-3xl font-black text-neon-purple mb-4">300k - 1,000k+</div>
+                            <p className="text-[var(--text-muted)] text-sm mb-8 leading-relaxed">
+                                ${t[lang].premium_desc}
+                            </p>
+                            <div className="text-[10px] font-bold text-neon-purple uppercase tracking-widest mt-auto">
+                                ${t[lang].deal}
+                            </div>
+                            ${selectedOption === 'premium' && html`
+                                <div className="absolute top-4 right-4 w-6 h-6 bg-neon-purple rounded-full flex items-center justify-center">
+                                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                            `}
+                        </div>
+                    </label>
+                </div>
+            `;
+
+            const renderPush = () => html`
+                <div className="glass-panel-premium p-8 mb-16 border-neon-blue/20">
+                    <div className="flex flex-col lg:flex-row gap-8 items-center">
+                        <div className="flex-1">
+                            <div className="flex items-center gap-4 mb-4">
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        id="toggle-featured"
+                                        className="sr-only peer"
+                                        checked=${profilePush}
+                                        onChange=${(e) => setProfilePush(e.target.checked)}
+                                    />
+                                    <div className="w-14 h-7 bg-slate-200 dark:bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-neon-purple peer-checked:to-neon-blue shadow-inner"></div>
+                                </label>
+                                <h3 className="text-2xl font-black uppercase text-[var(--text-main)]">${t[lang].add_top}</h3>
+                            </div>
+                            <div className="text-sm font-black bg-neon-blue/10 text-neon-blue px-3 py-1 rounded-full w-fit mb-4">
+                                ${t[lang].plus} 30,000 VNĐ / Month
+                            </div>
+                            <p className="text-[var(--text-muted)] mt-4 text-sm leading-relaxed">
+                                ${t[lang].add_desc}
+                            </p>
+                        </div>
+
+                        <div className="w-full lg:w-72 glass-panel-funnel p-5 bg-black/40 border-white/10">
+                            <div className="text-[8px] font-black uppercase tracking-[0.2em] text-neutral-500 mb-4 text-center">${t[lang].ui_preview}</div>
+                            <div className="space-y-4">
+                                <div>
+                                    <div className="text-[7px] font-black text-neon-gold mb-2 uppercase tracking-widest flex items-center gap-2">
+                                        <span className="w-1 h-1 bg-neon-gold rounded-full animate-ping"></span>
+                                        STANDARD / PROFESSIONAL
+                                    </div>
+                                    <div className="flex gap-3 items-center">
+                                    <div className=${`w-10 h-10 rounded-full border-2 transition-all duration-500 ${profilePush ? 'border-neon-blue shadow-[0_0_15px_rgba(33,150,243,0.5)] scale-105' : 'border-black/40 dark:border-white/10 opacity-60 dark:opacity-30'}`}>
+                                            <div className="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center overflow-hidden">
+                                                <svg className="w-5 h-5 text-neutral-600" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <div className="h-1.5 w-16 rounded-full transition-colors duration-500" style=${{ backgroundColor: profilePush ? 'var(--neon-purple)' : 'rgba(255,255,255,0.1)' }}></div>
+                                            <div className=${`h-1 w-10 rounded-full ${profilePush ? 'bg-neon-blue/40' : 'bg-black/10 dark:bg-white/5'}`}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2 opacity-20">
+                                    ${[1, 2, 3, 4].map(i => html`<div key=${i} className="w-6 h-6 rounded-full border border-dashed border-white/40"></div>`)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+
+            const renderCheckout = () => html`
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-5xl z-50 animate-slide-up">
+                    <div className="glass-panel-premium p-5 flex flex-col md:flex-row items-center justify-between gap-6 bg-black/10 dark:bg-black/70 backdrop-blur-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] border-white/20">
+                        <div className="flex flex-col md:flex-row items-center gap-6 w-full md:w-auto">
+                            <div className="text-center md:text-left min-w-[160px]">
+                                <div className="text-[8px] font-black uppercase tracking-[0.3em] text-neutral-500 mb-0.5">${t[lang].total_cost}</div>
+                                <div className="flex items-center justify-center md:justify-start gap-6">
+                                    ${isVoucherApplied && html`
+                                        <div className="text-neutral-500 line-through text-lg font-black italic mb-0.5">
+                                            ${formatVNĐ((selectedOption === 'basic' ? BASIC_PRICE : 0) + (profilePush ? PUSH_PRICE : 0))}
+                                        </div>
+                                    `}
+                                    <div className=${`text-3xl font-black tracking-tighter ${isVoucherApplied ? 'text-teal-600 dark:text-teal-400 drop-shadow-[0_0_10px_rgba(20,184,166,0.3)]' : 'text-[var(--text-main)]'}`}>
+                                        ${formatVNĐ(total)}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="h-10 w-[1px] bg-white/10 hidden md:block"></div>
+
+                            <div className="relative group w-full md:w-44">
+                                <input
+                                    type="text"
+                                    placeholder=${t[lang].voucher}
+                                    value=${voucher}
+                                    onChange=${handleVoucher}
+                                    className=${`bg-black/10 dark:bg-black/50 border rounded-2xl px-4 py-2.5 text-[10px] w-full font-black tracking-widest uppercase focus:outline-none transition-all ${isVoucherApplied ? 'border-emerald-500 text-emerald-500 ring-1 ring-emerald-500' : 'border-white/10 text-[var(--text-main)] focus:border-neon-purple focus:ring-1 focus:ring-neon-purple'}`}
+                                />
+                                ${isVoucherApplied && html`
+                                    <div className="absolute -right-2 -top-2 bg-emerald-600 text-[9px] font-black text-white px-2 py-0.5 rounded-full ring-2 ring-black shadow-lg animate-pulse-subtle">
+                                        -50,000 VNĐ
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+
+                        <a href="https://www.facebook.com/quang.sinh.5492" target="_blank" className="w-full md:w-auto bg-white text-black px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-neon-blue hover:text-white transition-all text-center transform hover:scale-105 active:scale-95 shadow-xl">
+                            ${t[lang].send}
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            const renderFooter = () => html`
+                <footer className="py-20 text-center">
+                    <p className="font-heading font-semibold text-sm">&copy; 2026 Teemous Digital. All Rights Reserved.</p>
+                    <div className="footer-socials">
+                        <a href="#" className="social-icon">Fb</a>
+                        <a href="#" className="social-icon">In</a>
+                        <a href="#" className="social-icon">Be</a>
+                    </div>
+                </footer>
+            `;
+
+            const renderUIControls = () => html`
+                <div className="ui-controls">
+                    <button id="theme-toggle" onClick=${() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="theme-toggle neon-border" title=${lang === 'vi' ? 'Chế độ' : 'Toggle Theme'}>
+                        <span className="mode-icon">${theme === 'dark' ? (lang === 'en' ? '🌙 Night' : '🌙 Đêm') : (lang === 'en' ? '☀️ Day' : '☀️ Ngày')}</span>
+                    </button>
+                    <button id="lang-toggle" onClick=${() => setLang(lang === 'en' ? 'vi' : 'en')} className="lang-toggle neon-border">
+                        ${lang === 'en' ? 'Bạn là người Việt?' : 'Having difficulty with Vietnamese?'}
+                    </button>
+                </div>
+            `;
+
+            return html`
+                <div className="min-h-screen pb-48 relative font-montserrat overflow-hidden">
+                    <canvas id="bg-canvas" className="fixed inset-0 z-[-1] pointer-events-none opacity-50"></canvas>
+                    
+                    ${renderHeader()}
+                    ${renderHero()}
+
+                    <main className="container mx-auto px-6 max-w-6xl">
+                        ${renderPlans()}
+                        ${renderPush()}
+                        ${renderCheckout()}
+                    </main>
+
+                    ${renderFooter()}
+                    ${renderUIControls()}
+                </div>
+            `;
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(App));
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="../../script.js?v=6"></script>
+</body>
+
+</html>
