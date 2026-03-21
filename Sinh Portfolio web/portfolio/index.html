@@ -11,7 +11,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css?v=6">
+    <link rel="stylesheet" href="../style.css?v=17">
 
     <!-- Tailwind CSS for Grid -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -57,6 +57,32 @@
 
         .hidden-by-filter {
             display: none !important;
+        }
+
+        /* Force Override for Professional Tier - To bypass local CSS cache */
+        .tier-section[data-tier="professional"] .section-title {
+            background: linear-gradient(to right, #FFD700, #FFA000, #F57C00) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            color: transparent !important;
+            filter: drop-shadow(0 0 6px rgba(255, 160, 0, 0.4)) !important;
+        }
+        .tier-section[data-tier="professional"] .section-title::after {
+            background: linear-gradient(90deg, #FFD700, #F57C00) !important;
+            box-shadow: 0 0 6px rgba(255, 160, 0, 0.4) !important;
+        }
+
+        /* Force Override for Impressive Tier Light Mode Contrast */
+        .light-mode .tier-section[data-tier="impressive"] .section-title {
+            background: linear-gradient(to right, #8E24AA, #1E88E5) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            color: transparent !important;
+        }
+        .light-mode .tier-section[data-tier="impressive"] .section-title::after {
+            background: linear-gradient(90deg, #8E24AA, #1E88E5) !important;
         }
     </style>
 </head>
@@ -114,9 +140,9 @@
                         class="glass-select w-full bg-transparent border-white/10 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-neon-blue transition-all">
                         <option value="all" data-en="All Tiers" data-vi="Tất cả Cấp độ">All Tiers</option>
                         <option value="elite" data-en="ELITE" data-vi="TINH HOA">ELITE</option>
-                        <option value="impressive" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</option>
                         <option value="professional" data-en="PROFESSIONAL" data-vi="CHUYÊN NGHIỆP">PROFESSIONAL
                         </option>
+                        <option value="impressive" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</option>
                         <option value="standard" data-en="STANDARD" data-vi="TIÊU CHUẨN">STANDARD</option>
                     </select>
                 </div>
@@ -143,35 +169,17 @@
         <!-- Dynamic Content -->
         <section id="portfolio-tiers" class="space-y-24 pb-32">
 
-            <!-- Elite Tier -->
+            <!-- Elite Tier — w-28 (112px), no Available slot -->
             <div class="tier-section" data-tier="elite">
-                <h2 class="section-title mb-12" data-en="ELITE TALENTS" data-vi="TÀI NĂNG TINH HOA">ELITE TALENTS</h2>
+                <h2 class="section-title mb-12" data-en="ELITE" data-vi="TINH HOA">ELITE</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
-
-                    <a href="ngoquangsinh/index.html"
-                        class="portfolio-card flex flex-col items-center text-center group"
-                        data-field="digital-marketing">
-                        <div class="relative mb-4">
-                            <div class="avatar-glow"></div>
-                            <div
-                                class="w-28 h-28 rounded-full border-2 border-neon-pink p-1 bg-black/20 backdrop-blur-sm shadow-xl transition-all group-hover:border-white">
-                                <img src="../Avatar/IMG_5907.jpg" alt="Ngô Quang Sinh"
-                                    class="w-full h-full rounded-full object-cover">
-                            </div>
-                        </div>
-                        <span
-                            class="font-black text-xs uppercase tracking-widest text-[var(--text-main)] group-hover:text-neon-pink transition-colors">Ngô
-                            Quang Sinh</span>
-                        <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter mt-1">Digital
-                            Marketing</span>
-                    </a>
 
                     <a href="tranthithuyduong/index.html"
                         class="portfolio-card flex flex-col items-center text-center group" data-field="it">
                         <div class="relative mb-4">
-                            <div class="avatar-glow"></div>
+                            <div class="avatar-glow-elite"></div>
                             <div
-                                class="w-28 h-28 rounded-full border-2 border-neon-blue p-1 bg-black/20 backdrop-blur-sm shadow-xl transition-all group-hover:border-white">
+                                class="w-28 h-28 rounded-full border-2 border-elite-power p-1 avatar-ring-bg shadow-xl transition-all">
                                 <img src="../Avatar/tttduong.jpg" alt="Trần Thị Thùy Dương"
                                     class="w-full h-full rounded-full object-cover">
                             </div>
@@ -186,51 +194,32 @@
                 </div>
             </div>
 
-            <!-- Impressive Tier -->
-            <div class="tier-section" data-tier="impressive">
-                <h2 class="section-title mb-12" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</h2>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
-                    <div
-                        class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-not-allowed">
-                        <div class="w-24 h-24 rounded-full border-2 border-white/10 p-1 mb-4">
-                            <div class="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center">
-                                <svg class="w-8 h-8 text-neutral-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <span class="font-black text-[10px] uppercase tracking-widest text-neutral-500">Reserved
-                            Slot</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Professional Tier -->
+            <!-- Professional Tier — w-[100px] (100px) -->
             <div class="tier-section" data-tier="professional">
                 <h2 class="section-title mb-12" data-en="PROFESSIONAL" data-vi="CHUYÊN NGHIỆP">PROFESSIONAL</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
-                    <div
-                        class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-not-allowed">
-                        <div class="w-24 h-24 rounded-full border-2 border-white/10 p-1 mb-4">
-                            <div class="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center">
-                                <svg class="w-8 h-8 text-neutral-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
-                                </svg>
+
+                    <a href="ngoquangsinh/index.html"
+                        class="portfolio-card flex flex-col items-center text-center group"
+                        data-field="digital-marketing">
+                        <div class="relative mb-4">
+                            <div class="owner-speech-bubble">🔑</div>
+                            <div
+                                class="w-[100px] h-[100px] rounded-full border-2 border-tier-pro p-1 avatar-ring-bg shadow-xl transition-all group-hover:border-white">
+                                <img src="../Avatar/IMG_5907_compressed.jpg" alt="Ngô Quang Sinh" loading="eager"
+                                    class="w-full h-full rounded-full object-cover">
                             </div>
                         </div>
-                        <span class="font-black text-[10px] uppercase tracking-widest text-neutral-500">Reserved
-                            Slot</span>
-                    </div>
-                </div>
-            </div>
+                        <span
+                            class="font-black text-xs uppercase tracking-widest text-[var(--text-main)] group-hover:text-[#FFB000] transition-colors">Ngô
+                            Quang Sinh</span>
+                        <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter mt-1">Digital
+                            Marketing</span>
+                    </a>
 
-            <!-- Standard Tier -->
-            <div class="tier-section" data-tier="standard">
-                <h2 class="section-title mb-12" data-en="STANDARD" data-vi="TIÊU CHUẨN">STANDARD</h2>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
-                    <div
-                        class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-not-allowed">
-                        <div class="w-20 h-20 rounded-full border-2 border-white/10 p-1 mb-4">
+                    <!-- Available slot -->
+                    <div class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-70 transition-all cursor-not-allowed">
+                        <div class="w-[100px] h-[100px] rounded-full border-2 border-[#F97316]/50 p-1 mb-4">
                             <div class="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center">
                                 <svg class="w-6 h-6 text-neutral-600" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
@@ -239,10 +228,68 @@
                         </div>
                         <span class="font-black text-[9px] uppercase tracking-widest text-neutral-500">Available</span>
                     </div>
+
+                </div>
+            </div>
+
+            <!-- Impressive Tier — w-[88px] (88px) -->
+            <div class="tier-section" data-tier="impressive">
+                <h2 class="section-title mb-12" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
+
+                    <a href="builuubaohan/index.html"
+                        class="portfolio-card flex flex-col items-center text-center group"
+                        data-field="business">
+                        <div class="relative mb-4">
+                            <div
+                                class="w-[88px] h-[88px] rounded-full border-2 border-tier-imp p-1 avatar-ring-bg shadow-xl transition-all group-hover:border-white">
+                                <img src="../Avatar/baohan2007.jpg" alt="Bùi Lưu Bảo Hân" loading="eager"
+                                    class="w-full h-full rounded-full object-cover">
+                            </div>
+                        </div>
+                        <span
+                            class="font-black text-xs uppercase tracking-widest text-[var(--text-main)] group-hover:text-[#C042FF] transition-colors">Bùi
+                            Lưu Bảo Hân</span>
+                        <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter mt-1">Business
+                            &amp; Management</span>
+                    </a>
+
+                    <!-- Available slot -->
+                    <div class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-70 transition-all cursor-not-allowed">
+                        <div class="w-[88px] h-[88px] rounded-full border-2 border-[#22C55E]/50 p-1 mb-4">
+                            <div class="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-neutral-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="font-black text-[9px] uppercase tracking-widest text-neutral-500">Available</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Standard Tier — w-20 (80px) -->
+            <div class="tier-section" data-tier="standard">
+                <h2 class="section-title mb-12" data-en="STANDARD" data-vi="TIÊU CHUẨN">STANDARD</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
+                    <a href="#"
+                        class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-not-allowed">
+                        <div class="w-20 h-20 rounded-full border-2 border-tier-std p-1 mb-4 avatar-ring-bg group-hover:border-white transition-colors">
+                            <div class="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-neutral-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="font-black text-[9px] uppercase tracking-widest text-[var(--text-main)] group-hover:text-[#90A4AE] transition-colors">Available</span>
+                    </a>
                 </div>
             </div>
 
         </section>
+
+
     </main>
 
     <!-- Global UI Controls -->

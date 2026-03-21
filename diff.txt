@@ -1,0 +1,114 @@
+diff --git a/Sinh Portfolio web/Sinh Portfolio web/portfolio/index.html b/Sinh Portfolio web/Sinh Portfolio web/portfolio/index.html
+index 0279938..f45575a 100644
+--- a/Sinh Portfolio web/Sinh Portfolio web/portfolio/index.html	
++++ b/Sinh Portfolio web/Sinh Portfolio web/portfolio/index.html	
+@@ -57,8 +57,8 @@
+                     <select id="filter-tier" class="glass-select">
+                         <option value="all" data-en="All" data-vi="Tất cả">All</option>
+                         <option value="elite" data-en="ELITE" data-vi="TINH HOA">ELITE</option>
+-                        <option value="impressive" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</option>
+                         <option value="professional" data-en="PROFESSIONAL" data-vi="CHUYÊN NGHIỆP">PROFESSIONAL</option>
++                        <option value="impressive" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</option>
+                         <option value="standard" data-en="STANDARD" data-vi="TIÊU CHUẨN">STANDARD</option>
+                     </select>
+                 </div>
+@@ -89,7 +89,7 @@
+                     <!-- Ngô Quang Sinh — moved from Impressive to Elite -->
+                     <a href="ngoquangsinh/index.html" class="circular-avatar" data-tier="elite" data-field="digital-marketing">
+                         <div class="avatar-wrapper">
+-                            <img src="https://scontent.fdad1-4.fna.fbcdn.net/v/t39.30808-6/646211181_1466823188411332_8165356710080014980_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=1d70fc&_nc_eui2=AeFLkDHzzt3WbRROAQ_9zQCvHmnuGq0H0-Qeae4arQfT5JsP-wcdm0roFBTSYuQTlrb6G1tkz3vuVGWdFvbK_1Ty&_nc_ohc=OX00a6ZEt-8Q7kNvwFi4y5w&_nc_oc=Adk5J8zvSgBg0WEx6P0I5BDiQMJ5rpzJYyYffRhoZb0CaNEIU61TQnQ86X5CZ_icaio&_nc_zt=23&_nc_ht=scontent.fdad1-4.fna&_nc_gid=nsDfZrdtmJtk8b0jyBA2sg&_nc_ss=8&oh=00_AfySqcxpkQVp0eRIegJB63mPXhVrxcK20KH3VVfnYnWLcw&oe=69BE412E" alt="Avatar Ngo Quang Sinh">
++                            <img src="../Avatar/IMG_5907_compressed.jpg" alt="Avatar Ngo Quang Sinh" loading="eager">
+                         </div>
+                         <span class="avatar-name">Ngô Quang Sinh</span>
+                     </a>
+@@ -106,28 +106,28 @@
+                 </div>
+             </div>
+ 
+-            <!-- Impressive Tier — now empty of Sinh -->
+-            <div class="tier-section" data-tier="impressive">
+-                <h2 class="tier-heading impressive" data-en="Impressive" data-vi="Ấn Tượng">Impressive</h2>
++            <!-- Professional Tier -->
++            <div class="tier-section" data-tier="professional">
++                <h2 class="tier-heading professional" data-en="Professional" data-vi="Chuyên Nghiệp">Professional</h2>
+                 <div class="avatar-grid">
+-                    <a href="#" class="circular-avatar" data-tier="impressive" data-field="creative">
++                    <a href="#" class="circular-avatar" data-tier="professional" data-field="creative">
+                         <div class="avatar-wrapper">
+-                            <img src="https://via.placeholder.com/150" alt="Placeholder Impressive">
++                            <img src="https://via.placeholder.com/150" alt="Placeholder Professional">
+                         </div>
+-                        <span class="avatar-name">John Smith</span>
++                        <span class="avatar-name">Alice Johnson</span>
+                     </a>
+                 </div>
+             </div>
+ 
+-            <!-- Professional Tier -->
+-            <div class="tier-section" data-tier="professional">
+-                <h2 class="tier-heading professional" data-en="Professional" data-vi="Chuyên Nghiệp">Professional</h2>
++            <!-- Impressive Tier — now empty of Sinh -->
++            <div class="tier-section" data-tier="impressive">
++                <h2 class="tier-heading impressive" data-en="Impressive" data-vi="Ấn Tượng">Impressive</h2>
+                 <div class="avatar-grid">
+-                    <a href="#" class="circular-avatar" data-tier="professional" data-field="creative">
++                    <a href="#" class="circular-avatar" data-tier="impressive" data-field="creative">
+                         <div class="avatar-wrapper">
+-                            <img src="https://via.placeholder.com/150" alt="Placeholder Professional">
++                            <img src="https://via.placeholder.com/150" alt="Placeholder Impressive">
+                         </div>
+-                        <span class="avatar-name">Alice Johnson</span>
++                        <span class="avatar-name">John Smith</span>
+                     </a>
+                 </div>
+             </div>
+diff --git a/Sinh Portfolio web/portfolio/index.html b/Sinh Portfolio web/portfolio/index.html
+index e10f4ee..4a57d2d 100644
+--- a/Sinh Portfolio web/portfolio/index.html	
++++ b/Sinh Portfolio web/portfolio/index.html	
+@@ -114,9 +114,9 @@
+                         class="glass-select w-full bg-transparent border-white/10 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-neon-blue transition-all">
+                         <option value="all" data-en="All Tiers" data-vi="Tất cả Cấp độ">All Tiers</option>
+                         <option value="elite" data-en="ELITE" data-vi="TINH HOA">ELITE</option>
+-                        <option value="impressive" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</option>
+                         <option value="professional" data-en="PROFESSIONAL" data-vi="CHUYÊN NGHIỆP">PROFESSIONAL
+                         </option>
++                        <option value="impressive" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</option>
+                         <option value="standard" data-en="STANDARD" data-vi="TIÊU CHUẨN">STANDARD</option>
+                     </select>
+                 </div>
+@@ -155,7 +155,7 @@
+                             <div class="avatar-glow"></div>
+                             <div
+                                 class="w-28 h-28 rounded-full border-2 border-neon-pink p-1 bg-black/20 backdrop-blur-sm shadow-xl transition-all group-hover:border-white">
+-                                <img src="../Avatar/IMG_5907.jpg" alt="Ngô Quang Sinh"
++                                <img src="../Avatar/IMG_5907_compressed.jpg" alt="Ngô Quang Sinh" loading="eager"
+                                     class="w-full h-full rounded-full object-cover">
+                             </div>
+                         </div>
+@@ -186,9 +186,9 @@
+                 </div>
+             </div>
+ 
+-            <!-- Impressive Tier -->
+-            <div class="tier-section" data-tier="impressive">
+-                <h2 class="section-title mb-12" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</h2>
++            <!-- Professional Tier -->
++            <div class="tier-section" data-tier="professional">
++                <h2 class="section-title mb-12" data-en="PROFESSIONAL" data-vi="CHUYÊN NGHIỆP">PROFESSIONAL</h2>
+                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
+                     <div
+                         class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-not-allowed">
+@@ -205,9 +205,9 @@
+                 </div>
+             </div>
+ 
+-            <!-- Professional Tier -->
+-            <div class="tier-section" data-tier="professional">
+-                <h2 class="section-title mb-12" data-en="PROFESSIONAL" data-vi="CHUYÊN NGHIỆP">PROFESSIONAL</h2>
++            <!-- Impressive Tier -->
++            <div class="tier-section" data-tier="impressive">
++                <h2 class="section-title mb-12" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</h2>
+                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10">
+                     <div
+                         class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-not-allowed">
