@@ -813,9 +813,9 @@ body:not(.light-mode) .glitch {
     /* Fully visible image on hover */
 }
 
-/* Fade out text on hover so image is clear */
-.gallery-card:hover p,
-.gallery-card:hover .gallery-text {
+/* Fade out text on hover so image is clear — but NOT for content-only cards */
+.gallery-card:not(.content-card):hover p,
+.gallery-card:not(.content-card):hover .gallery-text {
     opacity: 0;
     visibility: hidden;
 }
@@ -2858,3 +2858,80 @@ select option {
 .animate-fly-in {
     animation: fly-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+/* Verified Badge & Tooltip */
+.verified-badge-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: help;
+    vertical-align: middle;
+}
+
+.verified-badge {
+    height: 1.45em;
+    width: auto;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.verified-tooltip {
+    position: absolute;
+    bottom: 140%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(13, 17, 23, 0.95);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+}
+
+.verified-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: rgba(13, 17, 23, 0.95) transparent transparent transparent;
+}
+
+.verified-badge-container:hover .verified-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+
+/* Title Stability & Scaling Overrides */
+.flat-title {
+    max-width: none !important;
+    white-space: nowrap !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+}
+
+.flat-title:hover {
+    transform: scale(1.05) !important;
+    letter-spacing: 0.05em !important;
+}
+
+.verified-badge {
+    height: 1.5em !important;
+    width: auto !important;
+}
+
