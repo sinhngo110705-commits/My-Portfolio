@@ -9,7 +9,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../style.css?v=6">
+    <link rel="stylesheet" href="../../style.css?v=22">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -41,6 +41,18 @@
     <script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
 
     <style>
+        html {
+            zoom: 0.8;
+        }
+
+        @supports not (zoom: 1) {
+            html {
+                transform: scale(0.8);
+                transform-origin: top center;
+                width: 125%;
+            }
+        }
+
         body {
             background-color: var(--bg-base);
             color: var(--text-main);
@@ -89,10 +101,10 @@
             const [voucher, setVoucher] = useState('');
             const [isVoucherApplied, setIsVoucherApplied] = useState(false);
             const [voucherDiscount, setVoucherDiscount] = useState(0);
-            const [lang, setLang] = useState(localStorage.getItem('td-lang') || 'vi');
+            const [lang, setLang] = useState(localStorage.getItem('td-lang') || 'en');
             const [theme, setTheme] = useState(localStorage.getItem('td-theme') || 'dark');
 
-            const BASIC_PRICE = 50000;
+            const BASIC_PRICE = 49000;
             const PUSH_PRICE = 30000;
 
             useEffect(() => {
@@ -282,7 +294,7 @@
                 setVoucher(val);
                 if (val === 'TEEMOUSFREE' || val === 'TEEMOUSNEW') {
                     setIsVoucherApplied(true);
-                    setVoucherDiscount(50000);
+                    setVoucherDiscount(49000);
                 } else if (val === 'TEEMOUSVIP') {
                     setIsVoucherApplied(true);
                     setVoucherDiscount(999999);
@@ -319,8 +331,7 @@
                 <header className="container mx-auto pt-36 pb-16 px-6 text-center animate-slide-up flex flex-col items-center gap-8">
                     <div className="group cursor-default">
                         <h1 
-                            className="text-5xl md:text-8xl font-black uppercase mb-4 leading-[1.1] transform transition-all duration-700 group-hover:tracking-wider group-hover:scale-110 animate-fly-in max-w-[900px] mx-auto whitespace-nowrap" 
-                            style=${{ fontSize: '4.5rem' }}
+                            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase mb-4 leading-[1.1] transform transition-all duration-700 group-hover:tracking-wider animate-fly-in max-w-[1000px] mx-auto" 
                         >
                             ${t[lang].title} <br />
                             <span className="text-neon-blue">${t[lang].subtitle_hub}</span>
@@ -344,9 +355,17 @@
                             checked=${selectedOption === 'basic'}
                             onChange=${() => setSelectedOption('basic')}
                         />
-                        <div className="plan-card glass-panel-funnel p-10 h-full border-2 border-white/5 transition-all duration-300 group-hover:border-white/20">
-                            <h3 className="text-2xl font-black mb-1 uppercase italic text-[var(--text-main)]">${t[lang].basic}</h3>
-                            <div className="text-3xl font-black text-neon-blue mb-4">50,000 VNĐ</div>
+                        <div className=${`plan-card glass-panel-funnel p-10 h-full border-2 transition-all duration-300 relative rounded-3xl ${selectedOption === 'basic' ? 'border-neon-blue bg-neon-blue/[0.12] dark:bg-neon-blue/[0.15] shadow-[0_0_50px_rgba(33,150,243,0.5)] scale-[1.02]' : 'border-white/5 bg-white/60 dark:bg-black/40 shadow-sm hover:border-neon-blue/20 hover:bg-white/80 dark:hover:bg-black/60'}`}>
+                            <div className="flex items-center gap-4 mb-2">
+                                <h3 className="text-2xl font-black uppercase italic text-[var(--text-main)]">${t[lang].basic}</h3>
+                                <span className="bg-red-600 text-white text-[12px] font-black px-3 py-1.5 rounded-full animate-pulse shadow-[0_0_20px_rgba(220,38,38,0.7)] flex items-center justify-center">
+                                    -75% OFF
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-4 mb-4 flex-wrap">
+                                <span className="text-2xl font-black text-neutral-500 line-through italic opacity-50">199,000 VNĐ</span>
+                                <span className="text-4xl font-black text-neon-blue">49,000 VNĐ</span>
+                            </div>
                             <p className="text-[var(--text-muted)] text-sm mb-8 leading-relaxed">
                                 ${t[lang].basic_desc}
                             </p>
@@ -478,7 +497,7 @@
                                 />
                                 ${isVoucherApplied && html`
                                     <div className="absolute -right-2 -top-2 bg-emerald-600 text-[9px] font-black text-white px-2 py-0.5 rounded-full ring-2 ring-black shadow-lg animate-pulse-subtle">
-                                        -50,000 VNĐ
+                                        -49,000 VNĐ
                                     </div>
                                 `}
                             </div>

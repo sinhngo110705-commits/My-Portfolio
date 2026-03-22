@@ -1,3 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    zoom: 0.8;
+}
+
+@supports not (zoom: 1) {
+    html {
+        transform: scale(0.8);
+        transform-origin: top center;
+        width: 125%;
+    }
+}
+
 :root {
     /* Base Dark Mode */
     --bg-base: #050505;
@@ -139,19 +155,30 @@ body:not(.light-mode) .section-title {
 
 /* Elite Tier Power Branding Overrides */
 .tier-section[data-tier="elite"] {
-    --neon-blue: #FF00FF; /* Shift blue to Fuchsia for Elite */
-    --neon-pink: #FF0000; /* Shift pink to Red for Elite */
-    --neon-purple: #800080;
-    --gradient-brand: linear-gradient(135deg, #FF0000, #FF00FF, #800080);
+    --neon-blue: #00A3FF;
+    /* Electric Blue */
+    --neon-pink: #FF00FF;
+    /* Magenta */
+    --neon-purple: #9C27B0;
+    --gradient-brand: linear-gradient(135deg, #FF00FF, #00A3FF);
 }
 
 .tier-section[data-tier="elite"] .section-title {
-    background: linear-gradient(to right, #FF0000, #FF00FF);
+    background: linear-gradient(to right, #FF00FF, #00A3FF);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    text-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+    text-shadow: 0 0 20px rgba(255, 0, 255, 0.6), 0 0 30px rgba(0, 163, 255, 0.6);
+}
+
+.tier-section[data-tier="elite"] .portfolio-card:hover span:first-of-type {
+    background: linear-gradient(to right, #FF00FF, #00A3FF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
 }
 
 /* Professional Tier Branding */
@@ -163,6 +190,7 @@ body:not(.light-mode) .section-title {
     color: transparent;
     filter: drop-shadow(0 0 6px rgba(255, 160, 0, 0.4));
 }
+
 .tier-section[data-tier="professional"] .section-title::after {
     background: linear-gradient(90deg, #FFD700, #F57C00);
     box-shadow: 0 0 6px rgba(255, 160, 0, 0.4);
@@ -191,6 +219,7 @@ body:not(.light-mode) .section-title {
     background: linear-gradient(90deg, #9C27B0, #2196F3);
     box-shadow: 0 0 8px rgba(156, 39, 176, 0.4);
 }
+
 .light-mode .tier-section[data-tier="impressive"] .section-title::after {
     background: linear-gradient(90deg, #8E24AA, #1E88E5);
 }
@@ -203,6 +232,7 @@ body:not(.light-mode) .section-title {
     -webkit-text-fill-color: transparent;
     color: transparent;
 }
+
 .tier-section[data-tier="standard"] .section-title::after {
     background: linear-gradient(90deg, #607D8B, #90A4AE);
 }
@@ -436,15 +466,13 @@ body:not(.light-mode) .flat-subtitle {
 .avatar-container.elite-aura::before {
     content: '';
     position: absolute;
-    inset: -3px;                  /* 3px border thickness */
+    inset: -3px;
+    /* 3px border thickness */
     border-radius: 50%;
-    background: conic-gradient(
-        from var(--elite-angle),
-        #ff2a85 0%,
-        #bd34fe 33%,
-        #2196F3 66%,
-        #ff2a85 100%
-    );
+    background: conic-gradient(from var(--elite-angle),
+            #FF00FF 0%,
+            #00A3FF 50%,
+            #FF00FF 100%);
     /* Mask: show only the ring (exclude inner circle = image area) */
     -webkit-mask:
         radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 3px));
@@ -453,6 +481,7 @@ body:not(.light-mode) .flat-subtitle {
     animation: elite-border-spin 4s linear infinite;
     z-index: 2;
     pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Glowing aura behind avatar */
@@ -461,13 +490,10 @@ body:not(.light-mode) .flat-subtitle {
     position: absolute;
     inset: -10px;
     border-radius: 50%;
-    background: conic-gradient(
-        from var(--elite-angle),
-        #ff2a85,
-        #bd34fe,
-        #2196F3,
-        #ff2a85
-    );
+    background: conic-gradient(from var(--elite-angle),
+            #FF00FF,
+            #00A3FF,
+            #FF00FF);
     filter: blur(18px);
     opacity: 0.45;
     animation:
@@ -475,23 +501,24 @@ body:not(.light-mode) .flat-subtitle {
         elite-pulse 3s ease-in-out infinite alternate;
     z-index: 0;
     pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Hover: intensify glow + speed up spin */
 .avatar-container.elite-aura:hover::before {
-    animation-duration: 1.5s;
-    inset: -4px;
+    animation-duration: 3s;
+    inset: -5px;
     -webkit-mask:
-        radial-gradient(farthest-side, transparent calc(100% - 4px), #fff calc(100% - 4px));
+        radial-gradient(farthest-side, transparent calc(100% - 5px), #fff calc(100% - 5px));
     mask:
-        radial-gradient(farthest-side, transparent calc(100% - 4px), #fff calc(100% - 4px));
+        radial-gradient(farthest-side, transparent calc(100% - 5px), #fff calc(100% - 5px));
 }
 
 .avatar-container.elite-aura:hover::after {
-    animation-duration: 1.5s, 3s;
+    animation-duration: 3s, 3s;
     opacity: 0.8;
-    filter: blur(22px);
-    inset: -15px;
+    filter: blur(25px);
+    inset: -20px;
 }
 
 .avatar-glow {
@@ -502,18 +529,37 @@ body:not(.light-mode) .flat-subtitle {
     background-color: var(--bg-base);
     border: none;
     position: relative;
-    z-index: 1;      /* sits above the aura ::after but below the border ::before */
+    z-index: 1;
+    /* sits above the aura ::after but below the border ::before */
     transition: background-color 0.5s ease;
 }
 
 @keyframes elite-border-spin {
-    from { --elite-angle: 0deg; }
-    to   { --elite-angle: 360deg; }
+    from {
+        --elite-angle: 0deg;
+    }
+
+    to {
+        --elite-angle: 360deg;
+    }
 }
 
 @keyframes elite-pulse {
-    0%   { opacity: 0.35; top: -8px; left: -8px; right: -8px; bottom: -8px; }
-    100% { opacity: 0.6;  top: -14px; left: -14px; right: -14px; bottom: -14px; }
+    0% {
+        opacity: 0.35;
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+    }
+
+    100% {
+        opacity: 0.6;
+        top: -14px;
+        left: -14px;
+        right: -14px;
+        bottom: -14px;
+    }
 }
 
 .glitch {
@@ -1174,7 +1220,8 @@ footer {
     background: conic-gradient(from 0deg, #2196F3, #bd34fe, #2196F3);
     border-radius: 50%;
     z-index: -1;
-    opacity: 0.25; /* Subtle static glow always visible */
+    opacity: 0.25;
+    /* Subtle static glow always visible */
     filter: blur(14px);
     animation: elite-aura-spin 6s linear infinite;
     transition: opacity 0.5s ease, filter 0.5s ease, inset 0.5s ease;
@@ -1183,7 +1230,7 @@ footer {
 /* Luxury Elite Border (Static Gradient) - blue-purple neon */
 .border-elite-power {
     background: linear-gradient(var(--bg-base), var(--bg-base)) padding-box,
-                linear-gradient(135deg, #2196F3, #bd34fe) border-box !important;
+        linear-gradient(135deg, #2196F3, #bd34fe) border-box !important;
     border: 2px solid transparent !important;
 }
 
@@ -1195,8 +1242,13 @@ footer {
 }
 
 @keyframes elite-aura-spin {
-    from { filter: blur(14px) hue-rotate(0deg); }
-    to   { filter: blur(14px) hue-rotate(360deg); }
+    from {
+        filter: blur(14px) hue-rotate(0deg);
+    }
+
+    to {
+        filter: blur(14px) hue-rotate(360deg);
+    }
 }
 
 /* Circular Avatars Grid base styles */
@@ -1286,8 +1338,15 @@ footer {
 }
 
 @keyframes float-bubble {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
 }
 
 .avatar-wrapper {
@@ -1308,6 +1367,7 @@ footer {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
 }
+
 .light-mode .avatar-ring-bg {
     background: rgba(255, 255, 255, 0.9);
 }
@@ -1337,6 +1397,46 @@ footer {
 .circular-avatar:hover .avatar-name {
     color: var(--neon-pink);
     text-shadow: 0 0 15px rgba(233, 30, 99, 0.8);
+}
+
+/* Avatar Glow Effects */
+.avatar-glow {
+    position: relative;
+    z-index: 10;
+}
+
+/* Avatar Border Background (Gap mechanism logic) */
+.avatar-ring-bg {
+    background: rgba(10, 14, 23, 1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.light-mode .avatar-ring-bg {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+/* Elite Aura (Pulsing Neon Gradient Background for Wrapper) */
+.elite-aura {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(135deg, #ff2a85, #bd34fe);
+    box-shadow: 0 0 15px rgba(255, 42, 133, 0.5);
+    animation: elite-pulse 2s infinite alternate;
+}
+
+@keyframes elite-pulse {
+    0% {
+        box-shadow: 0 0 10px rgba(255, 42, 133, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 0 25px rgba(189, 52, 254, 0.8), 0 0 10px rgba(33, 150, 243, 0.4);
+    }
 }
 
 
@@ -1755,10 +1855,10 @@ footer {
 .elite-badge {
     display: inline-block;
     color: #fff;
-    font-size: 0.7rem;
+    font-size: 0.9rem;
     font-weight: 900;
-    letter-spacing: 3px;
-    padding: 3px 14px;
+    letter-spacing: 2px;
+    padding: 5px 18px;
     border-radius: 20px;
     text-transform: uppercase;
     margin: 0.5rem auto 1rem;
@@ -2173,12 +2273,12 @@ footer {
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* UI Controls Standardization */
+/* UI Controls Standardization (90% of NgoQuangSinh standard 8px/16px size) */
 .theme-toggle,
 .lang-toggle {
-    padding: 8px 16px;
-    font-size: 0.85rem;
-    border-radius: 30px;
+    padding: 7.2px 14.4px !important;
+    font-size: 0.765rem !important;
+    border-radius: 30px !important;
 }
 
 /* Filtering Options & Glass Select Contrast */
@@ -2189,7 +2289,8 @@ footer {
     background-repeat: no-repeat !important;
     background-position: right 1rem center !important;
     background-size: 1.25rem !important;
-    padding-right: 2.5rem !important; /* Fixed: Added enough padding to prevent text overlap */
+    padding-right: 2.5rem !important;
+    /* Fixed: Added enough padding to prevent text overlap */
     cursor: pointer;
 }
 

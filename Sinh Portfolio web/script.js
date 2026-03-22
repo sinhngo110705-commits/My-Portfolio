@@ -307,7 +307,10 @@ function initBackgroundAnimation() {
 }
 
 // Multi-language Toggle Logic
-let currentLang = localStorage.getItem('td-lang') || 'en'; // Global scope to be used by other functions // Use persisted state or default
+let currentLang = localStorage.getItem('td-lang') || 'en'; 
+if (!localStorage.getItem('td-lang')) {
+    localStorage.setItem('td-lang', currentLang);
+}
 
 function initLanguageToggle() {
     // Apply initial translation based on localStorage on load
