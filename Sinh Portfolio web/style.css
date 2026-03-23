@@ -2935,3 +2935,56 @@ select option {
     width: auto !important;
 }
 
+
+/* ==========================================================================
+   MOBILE RESPONSIVE OVERRIDES (Teemous Digital Update)
+   ========================================================================== */
+@media (max-width: 768px) {
+    html {
+        zoom: 1 !important;
+        transform: none !important;
+        width: 100% !important;
+    }
+
+    .global-header {
+        padding: 0.8rem 1.2rem !important;
+    }
+
+    .mobile-menu-toggle {
+        display: flex !important;
+    }
+
+    .mobile-menu-toggle span {
+        box-shadow: 0 0 10px rgba(33, 150, 243, 0.7) !important;
+    }
+
+    .header-nav {
+        position: fixed !important;
+        top: 0 !important;
+        right: -100% !important;
+        width: 100% !important;
+        height: 100vh !important;
+        background: rgba(5, 5, 5, 0.98) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    }
+
+    .header-nav.active {
+        right: 0 !important;
+    }
+
+    .nav-links {
+        flex-direction: column !important;
+        gap: 2.5rem !important;
+    }
+
+    .nav-links a {
+        font-size: 1.8rem !important;
+    }
+}
+

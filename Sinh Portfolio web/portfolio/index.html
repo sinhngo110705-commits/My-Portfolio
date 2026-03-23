@@ -125,6 +125,36 @@
         .light-mode .tier-section[data-tier="impressive"] .section-title::after {
             background: linear-gradient(90deg, #8E24AA, #1E88E5) !important;
         }
+
+        /* Responsive Portfolio Hub Fixes */
+        @media (max-width: 640px) {
+            .verified-badge-container {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 4px;
+            }
+            .verified-badge-container span {
+                font-size: 0.85rem !important;
+                line-height: 1.2;
+            }
+            .verified-badge {
+                height: 1.1em !important;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            #portfolio-tiers .grid {
+                grid-template-columns: 1fr !important;
+                gap: 2.5rem;
+            }
+            .w-28, .h-28, .w-\[100px\], .h-\[100px\], .w-\[88px\], .h-\[88px\], .w-20, .h-20 {
+                width: 130px !important;
+                height: 130px !important;
+            }
+            .verified-badge-container span {
+                font-size: 1rem !important; /* Slightly larger once in 1 column */
+            }
+        }
     </style>
 </head>
 
@@ -227,7 +257,7 @@
                                     class="w-full h-full rounded-full object-cover">
                             </div>
                         </div>
-                        <div class="verified-badge-container whitespace-nowrap">
+                        <div class="verified-badge-container">
                             <span class="font-black text-base uppercase tracking-widest text-[var(--text-main)] transition-colors">Ngô Quang Sinh</span>
                             <img src="../Logo/tickxanh.png" class="verified-badge" alt="Verified">
                             <div class="verified-tooltip" data-en="Verified secure Portfolio, authenticity confirmed." data-vi="Hồ sơ năng lực an toàn, đã được xác minh có thực.">Hồ sơ năng lực an toàn, đã được xác minh có thực.</div>
@@ -246,7 +276,7 @@
                                     class="w-full h-full rounded-full object-cover">
                             </div>
                         </div>
-                        <div class="verified-badge-container whitespace-nowrap">
+                        <div class="verified-badge-container">
                             <span class="font-black text-base uppercase tracking-widest text-[var(--text-main)] transition-colors">Nguyễn Thị Thùy Dương</span>
                             <img src="../Logo/tickxanh.png" class="verified-badge" alt="Verified">
                             <div class="verified-tooltip" data-en="Verified secure Portfolio, authenticity confirmed." data-vi="Hồ sơ năng lực an toàn, đã được xác minh có thực.">Hồ sơ năng lực an toàn, đã được xác minh có thực.</div>
