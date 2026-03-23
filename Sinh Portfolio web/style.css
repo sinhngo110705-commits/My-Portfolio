@@ -74,12 +74,12 @@ body {
 }
 
 #bg-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: -1 !important;
     pointer-events: none;
     transition: opacity 0.5s ease;
 }
@@ -2337,6 +2337,14 @@ select option {
 /* Layout & Flexbox */
 .flex {
     display: flex;
+}
+
+.whitespace-nowrap {
+    white-space: nowrap;
+}
+
+.flex-nowrap {
+    flex-wrap: nowrap;
 }
 
 .flex-col {
