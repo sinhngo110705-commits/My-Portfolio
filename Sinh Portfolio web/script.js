@@ -9,7 +9,24 @@ document.addEventListener('DOMContentLoaded', () => {
     initPortfolioFilters(); // Ensure Hub filtering initializes
     initMobileMenu();
     initGalleryToggle();
+    initScrollProgress();
 });
+
+function initScrollProgress() {
+    const container = document.createElement('div');
+    container.className = 'scroll-progress-container';
+    const bar = document.createElement('div');
+    bar.className = 'scroll-progress-bar';
+    container.appendChild(bar);
+    document.body.appendChild(container);
+
+    window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        bar.style.width = scrolled + "%";
+    });
+}
 
 function initScrollAnimations() {
     // Hero Entrance

@@ -50,7 +50,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css?v=22">
+    <link rel="stylesheet" href="../style.css?v=24">
 
     <!-- Tailwind CSS for Grid -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -111,6 +111,19 @@
         .tier-section[data-tier="professional"] .section-title::after {
             background: linear-gradient(90deg, #FFD700, #F57C00) !important;
             box-shadow: 0 0 6px rgba(255, 160, 0, 0.4) !important;
+        }
+
+        /* Fix: Ensure gradient clip on hover does not cut off Vietnamese diacritics */
+        .tier-section[data-tier="elite"] .portfolio-card:hover span:first-of-type {
+            overflow: visible !important;
+            padding-bottom: 6px !important;
+            line-height: 1.5 !important;
+        }
+
+        /* Make verified-badge-container allow diacritic overflow */
+        .verified-badge-container {
+            overflow: visible !important;
+            padding-bottom: 4px;
         }
 
         /* Force Override for Impressive Tier Light Mode Contrast */
@@ -277,7 +290,7 @@
                             </div>
                         </div>
                         <div class="verified-badge-container">
-                            <span class="font-black text-base uppercase tracking-widest text-[var(--text-main)] transition-colors" style="white-space: nowrap;">Nguyễn Thị Thùy Dương</span>
+                            <span class="font-black text-base uppercase tracking-widest text-[var(--text-main)] transition-colors" style="overflow: visible; line-height: 1.5; padding-bottom: 4px; display: inline-block;">Nguyễn Thị Thùy Dương</span>
                             <img src="../Logo/tickxanh.png" class="verified-badge" alt="Verified">
                             <div class="verified-tooltip" data-en="Verified secure Portfolio, authenticity confirmed." data-vi="Hồ sơ năng lực an toàn, đã được xác minh có thực.">Hồ sơ năng lực an toàn, đã được xác minh có thực.</div>
                         </div>
