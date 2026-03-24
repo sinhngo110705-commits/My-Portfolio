@@ -18,7 +18,39 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://teemousdigital.id.vn/portfolio/ngoquangsinh/">
     <meta property="og:site_name" content="Teemous Digital">
-    <link rel="stylesheet" href="../../style.css?v=22">
+    <link rel="stylesheet" href="../../style.css?v=28">
+    <style>
+        .interactive-gallery {
+            max-height: none !important;
+            overflow: visible !important;
+            height: auto !important;
+        }
+        .grid-container {
+            display: grid !important;
+            gap: 2.5rem !important;
+            grid-template-rows: auto !important;
+            min-height: 250px !important;
+        }
+        .gallery-card {
+            position: relative !important;
+            min-height: 280px !important;
+            display: block !important;
+            opacity: 1;
+            visibility: visible;
+        }
+        .gallery-card.hidden-item {
+            display: none !important;
+            opacity: 0 !important;
+        }
+        .gallery-img {
+            position: relative !important;
+            width: 100% !important;
+            height: 280px !important;
+            object-fit: cover !important;
+            display: block !important;
+            border-radius: 12px !important;
+        }
+    </style>
     <!-- Updated Font to Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
 
@@ -214,106 +246,111 @@
         <section id="skills" class="section">
             <h2 class="section-title" data-en="Skills & Proficiency" data-vi="Đánh giá Kỹ năng">Skills & Proficiency
             </h2>
-            <div class="skills-container">
+            
+            <div class="skills-dual-layout">
+                <!-- Left Column: Progress Bars -->
+                <div class="skills-left">
+                    <div class="skill-category">
+                        <h3 data-en="Core Marketing" data-vi="Marketing Cốt lõi" style="color:var(--neon-pink); margin-bottom:1.5rem;">Core Marketing</h3>
+                        
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Digital Marketing Strategy</span>
+                                <span class="skill-level-label">MID</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 50%; background: linear-gradient(135deg, #FF00FF, #00A3FF); box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);"></div>
+                            </div>
+                        </div>
 
-                <div class="skill-category">
-                    <h3 data-en="Core Marketing" data-vi="Marketing Cốt lõi">Core Marketing</h3>
-                    <div class="skill-item">
-                        <div class="skill-info">
-                            <span class="skill-name" data-en="Digital Marketing Strategy"
-                                data-vi="Chiến lược Digital Marketing">Digital Marketing Strategy</span>
-                            <span class="skill-level" data-en="Mid" data-vi="Trung bình">Mid</span>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Social Media Management (TikTok/FB)</span>
+                                <span class="skill-level-label">HIGH</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 80%; background: linear-gradient(135deg, #FF00FF, #00A3FF); box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);"></div>
+                            </div>
                         </div>
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar" data-width="50%"></div>
-                        </div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info">
-                            <span class="skill-name" data-en="Social Media Management (TikTok/FB)"
-                                data-vi="Quản lý Mạng xã hội (TikTok/FB)">Social Media Management (TikTok/FB)</span>
-                            <span class="skill-level" data-en="High" data-vi="Tốt">High</span>
-                        </div>
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar" data-width="80%"></div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Market Research (Gen Z Behavior)</span>
+                                <span class="skill-level-label">MID</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 50%; background: linear-gradient(135deg, #FF00FF, #00A3FF); box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="skill-item">
-                        <div class="skill-info">
-                            <span class="skill-name" data-en="Market Research (Gen Z Behavior)"
-                                data-vi="Nghiên cứu Thị trường (Hành vi Gen Z)">Market Research (Gen Z Behavior)</span>
-                            <span class="skill-level" data-en="Mid" data-vi="Trung bình">Mid</span>
+
+                    <div class="skill-category" style="margin-top: 3rem;">
+                        <h3 data-en="Soft Skills" data-vi="Kỹ năng Mềm" style="color:var(--neon-pink); margin-bottom:1.5rem;">Soft Skills</h3>
+                        
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Campaign Planning</span>
+                                <span class="skill-level-label">HIGH+</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 85%; background: linear-gradient(135deg, #FF00FF, #00A3FF); box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);"></div>
+                            </div>
                         </div>
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar" data-width="50%"></div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Content Creation</span>
+                                <span class="skill-level-label">MID+</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 60%; background: linear-gradient(135deg, #FF00FF, #00A3FF); box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Adaptability & Agility</span>
+                                <span class="skill-level-label">HIGH</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 80%; background: linear-gradient(135deg, #FF00FF, #00A3FF); box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Interpersonal Skills</span>
+                                <span class="skill-level-label">HIGH</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 80%; background: linear-gradient(135deg, #FF00FF, #00A3FF); box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="skill-category skill-tags-group">
-                    <h4 data-en="Tools &amp; Tech" data-vi="Công cụ &amp; Công nghệ" class="skill-group-title">Tools
-                        &amp; Tech</h4>
-                    <div class="skill-tags">
-                        <span class="skill-tag" data-tippy-content="Automation & Scripting">🤖 Google AppsScript</span>
-                        <span class="skill-tag" data-tippy-content="Workflow Management">📓 Notion Architecture</span>
-                        <span class="skill-tag" data-tippy-content="Prompt Engineering">🧠 AI Agent Strategy</span>
-                        <span class="skill-tag">📊 Google Sheets (Expert)</span>
-                        <span class="skill-tag">🤖 ChatGPT/Claude Mastery</span>
+                <!-- Right Column: Tools & Languages Tags -->
+                <div class="skills-right">
+                    <div class="skill-tags-group">
+                        <h4 data-en="TOOLS & TECH" data-vi="CÔNG CỤ & CÔNG NGHỆ" class="skill-group-title">TOOLS & TECH</h4>
+                        <div class="skill-tags">
+                            <span class="skill-tag" data-tippy-content="AI Assistant">🤖 Google Gemini Mastery</span>
+                            <span class="skill-tag">📊 Google Sheets (Expert)</span>
+                            <span class="skill-tag">🛠️ Google Productivity Tools</span>
+                            <span class="skill-tag" data-tippy-content="Automation & Scripting">🤖 Google AppsScript</span>
+                            <span class="skill-tag" data-tippy-content="Workflow Management">📓 Notion Architecture</span>
+                            <span class="skill-tag" data-tippy-content="Prompt Engineering">🧠 AI Agent Strategy</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="skill-category">
-                    <h3 data-en="Soft Skills" data-vi="Kỹ năng Mềm">Soft Skills</h3>
-                    <div class="skill-item">
-                        <div class="skill-info">
-                            <span class="skill-name" data-en="Campaign Planning"
-                                data-vi="Lập kế hoạch Chiến dịch">Campaign Planning</span>
-                            <span class="skill-level" data-en="High+" data-vi="Rất Tốt">High+</span>
-                        </div>
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar" data-width="85%"></div>
-                        </div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info">
-                            <span class="skill-name" data-en="Content Creation" data-vi="Sáng tạo Nội dung">Content
-                                Creation</span>
-                            <span class="skill-level" data-en="Mid+" data-vi="Khá">Mid+</span>
-                        </div>
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar" data-width="60%"></div>
-                        </div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info">
-                            <span class="skill-name" data-en="Adaptability & Agility"
-                                data-vi="Thích ứng & Linh hoạt">Adaptability & Agility</span>
-                            <span class="skill-level" data-en="High" data-vi="Tốt">High</span>
-                        </div>
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar" data-width="80%"></div>
-                        </div>
-                    </div>
-                    <div class="skill-item">
-                        <div class="skill-info">
-                            <span class="skill-name" data-en="Interpersonal Skills"
-                                data-vi="Kỹ năng Giao tiếp">Interpersonal Skills</span>
-                            <span class="skill-level" data-en="High" data-vi="Tốt">High</span>
-                        </div>
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar" data-width="80%"></div>
+                    <div class="skill-tags-group" style="margin-top: 4rem;">
+                        <h4 data-en="FOREIGN LANGUAGE" data-vi="NGOẠI NGỮ" class="skill-group-title">FOREIGN LANGUAGE</h4>
+                        <div class="skill-tags">
+                            <span class="skill-tag">🇬🇧 English <span class="lang-level-badge">Intermediate</span></span>
+                            <span class="skill-tag">🇨🇳 Chinese <span class="lang-level-badge">HSK 1-2</span></span>
                         </div>
                     </div>
                 </div>
-
-                <div class="skill-category skill-tags-group">
-                    <h4 data-en="Foreign Language" data-vi="Ngoại ngữ" class="skill-group-title">Foreign Language</h4>
-                    <div class="skill-tags">
-                        <span class="skill-tag">🇬🇧 English <span class="lang-level-badge">Intermediate</span></span>
-                        <span class="skill-tag">🇨🇳 Chinese <span class="lang-level-badge">HSK 1-2</span></span>
-                    </div>
-                </div>
-
             </div>
         </section>
 
@@ -323,20 +360,18 @@
         <section id="community-academic" class="section">
             <h2 class="section-title" data-en="Community &amp; Academic Records"
                 data-vi="Hoạt động Cộng đồng &amp; Thành tích">Community &amp; Academic Records</h2>
-            <div class="grid-container placeholder-grid interactive-gallery">
+            <div class="grid-container interactive-gallery gallery-grid-3">
 
                 <div class="card glass-card gallery-card">
-                    <img src="../../cer/Cer-training-comm.jpg" alt="Chứng nhận Đào tạo" class="gallery-img">
-                    <p data-en="Training Certification — Community Service"
-                        data-vi="Chứng nhận Đào tạo — Hoạt động Cộng đồng">Community Service Certification</p>
+                    <img src="../../cer/Quang Sinh 2005/KPI XANH BBE.jpg" alt="Certificate" class="gallery-img">
                 </div>
 
                 <div class="card glass-card gallery-card">
-                    <div class="coming-soon-card" style="border:none; padding:2rem 1rem;">
-                        <span class="cs-icon">🤝</span>
-                        <span class="cs-text" data-en="Community Service — Coming Soon"
-                            data-vi="Hoạt động Cộng đồng — Sắp có">Community Service — Coming Soon</span>
-                    </div>
+                    <img src="../../cer/Quang Sinh 2005/Aurora chứng nhận thành tích nk1.png" alt="Certificate" class="gallery-img">
+                </div>
+
+                <div class="card glass-card gallery-card">
+                    <img src="../../cer/Quang Sinh 2005/Cer-training-comm.jpg" alt="Certificate" class="gallery-img">
                 </div>
 
             </div>
@@ -410,7 +445,7 @@
     <!-- Use CDN GSAP as fallback or main while local might conflict with simple static hosting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="../../script.js?v=4"></script>
+    <script src="../../script.js?v=17"></script>
 </body>
 
 </html>

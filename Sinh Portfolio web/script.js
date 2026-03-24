@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initHoverEffects();
     initPortfolioFilters(); // Ensure Hub filtering initializes
     initMobileMenu();
+    initGalleryToggle();
 });
 
 function initScrollAnimations() {
@@ -119,37 +120,47 @@ function initScrollAnimations() {
         });
     }
 
-    // Evidence & Contact Entrance
-    if (document.getElementById('evidence')) {
-        gsap.from('#evidence .card', {
+    // Community & Academic Records Entrance
+    if (document.getElementById('community-academic')) {
+        const cards = document.querySelectorAll('#community-academic .gallery-card:not(.hidden-item)');
+        console.log("Gallery Init Cards found:", cards.length);
+        
+        gsap.from(cards, {
             scrollTrigger: {
-                trigger: '#evidence',
-                start: 'top 80%',
+                trigger: '#community-academic',
+                start: 'top 95%',
+                once: true
             },
-            duration: 0.8,
+            // Remove opacity: 0 to ensure images stay visible from CSS
             y: 40,
-            opacity: 0,
-            stagger: 0.2,
+            duration: 0.8,
+            stagger: 0.1,
             ease: 'power3.out'
         });
     }
 
     if (document.getElementById('contact')) {
-        gsap.from('#contact-form', {
-            scrollTrigger: {
-                trigger: '#contact',
-                start: 'top 80%',
-            },
-            duration: 1,
-            y: 30,
-            opacity: 0,
-            ease: 'power3.out'
-        });
+        gsap.fromTo('#contact-form', 
+            { opacity: 0 },
+            {
+                scrollTrigger: {
+                    trigger: '#contact',
+                    start: 'top 98%',
+                    once: true
+                },
+                duration: 1,
+                opacity: 1,
+                ease: 'power2.out',
+                onComplete: () => {
+                   gsap.set('#contact-form', { clearProps: 'all', opacity: 1, visibility: 'visible' });
+                }
+            }
+        );
     }
 
     // Safety fallback: Ensure everything is visible after 3 seconds if animations stall
     setTimeout(() => {
-        const criticalElements = document.querySelectorAll('.social-btn, .project-card, .section-frame');
+        const criticalElements = document.querySelectorAll('.social-btn, .project-card, .section-frame, .contact-card');
         criticalElements.forEach(el => {
             if (window.getComputedStyle(el).opacity === '0') {
                 console.warn('GSAP safety fallback triggered for:', el);
@@ -526,3 +537,175 @@ function initMobileMenu() {
         });
     });
 }
+
+// Expandable Gallery Toggle Logic
+function initGalleryToggle() {
+    const galleryGrids = document.querySelectorAll('.interactive-gallery');
+    
+    galleryGrids.forEach(grid => {
+        const items = grid.querySelectorAll('.gallery-card, .project-card, .gallery-item');
+        if (items.length <= 6) return; // No need for toggle if 6 or fewer
+
+        // Wrap the grid in a wrapper if not already done
+        if (!grid.parentElement.classList.contains('gallery-wrapper')) {
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('gallery-wrapper');
+            grid.parentNode.insertBefore(wrapper, grid);
+            wrapper.appendChild(grid);
+        }
+
+        const wrapper = grid.parentElement;
+        
+        // Initial state: Hide items beyond 6
+        items.forEach((item, index) => {
+            if (index >= 6) {
+                item.classList.add('hidden-item');
+                item.style.display = 'none';
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+            }
+        });
+
+        // Create the toggle button
+        const btn = document.createElement('button');
+        btn.classList.add('gallery-toggle-btn');
+        btn.setAttribute('data-en', 'Show All');
+        btn.setAttribute('data-vi', 'Xem Tất Cả');
+        btn.innerHTML = `<span class="btn-text" data-en="Show All" data-vi="Xem Tất Cả">${currentLang === 'en' ? 'Show All' : 'Xem Tất Cả'}</span> <span class="icon">▼</span>`;
+        wrapper.appendChild(btn);
+
+        let isExpanded = false;
+
+        btn.addEventListener('click', () => {
+            isExpanded = !isExpanded;
+            
+            if (isExpanded) {
+                // Expand
+                btn.classList.add('expanded');
+                const textSpan = btn.querySelector('.btn-text');
+                textSpan.innerHTML = currentLang === 'en' ? 'Show Less' : 'Thu Gọn';
+
+                // Show hidden items
+                const hiddenItems = grid.querySelectorAll('.hidden-item');
+                hiddenItems.forEach((item, index) => {
+                    item.style.setProperty('display', 'block', 'important');
+                    item.style.setProperty('opacity', '0', 'important');
+                    
+                    gsap.to(item, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.5,
+                        delay: index * 0.1,
+                        ease: 'power2.out',
+                        onStart: () => {
+                            item.style.setProperty('visibility', 'visible', 'important');
+                        },
+                        onComplete: () => {
+                            item.classList.remove('hidden-item');
+                            item.style.removeProperty('display');
+                            item.style.removeProperty('opacity');
+                            item.style.removeProperty('visibility');
+                            // Ensure layout reflows correctly
+                            ScrollTrigger.refresh();
+                        }
+                    });
+                });
+                // Also ensure the parent is clear
+                grid.parentElement.style.maxHeight = 'none';
+                grid.parentElement.style.overflow = 'visible';
+            } else {
+                // Collapse
+                btn.classList.remove('expanded');
+                const textSpan = btn.querySelector('.btn-text');
+                textSpan.innerHTML = currentLang === 'en' ? 'Show All' : 'Xem Tất Cả';
+
+                const hItems = Array.from(items).slice(6);
+                hItems.forEach((item, index) => {
+                    gsap.to(item, {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.4,
+                        ease: 'power2.in',
+                        onComplete: () => {
+                            item.classList.add('hidden-item');
+                            item.style.setProperty('display', 'none', 'important');
+                        }
+                    });
+                });
+                grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+}
+
+// Add click-to-view (Lightbox Lite)
+function initLightbox() {
+    const galleryImages = document.querySelectorAll('.gallery-img');
+    galleryImages.forEach(img => {
+        img.style.transition = 'filter 0.3s ease';
+        img.addEventListener('mouseenter', () => img.style.filter = 'brightness(1.1)');
+        img.addEventListener('mouseleave', () => img.style.filter = 'brightness(1)');
+        
+        img.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.inset = '0';
+            overlay.style.background = 'rgba(0,0,0,0.9)';
+            overlay.style.zIndex = '9999';
+            overlay.style.display = 'flex';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.style.cursor = 'zoom-out';
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity 0.3s ease';
+            
+            const fullImg = document.createElement('img');
+            fullImg.src = img.src;
+            fullImg.style.maxWidth = '90%';
+            fullImg.style.maxHeight = '90%';
+            fullImg.style.borderRadius = '8px';
+            fullImg.style.boxShadow = '0 0 30px rgba(0,163,255,0.5)';
+            fullImg.style.transform = 'scale(0.8)';
+            fullImg.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            
+            overlay.appendChild(fullImg);
+            document.body.appendChild(overlay);
+            
+            requestAnimationFrame(() => {
+                overlay.style.opacity = '1';
+                fullImg.style.transform = 'scale(1)';
+            });
+            
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    fullImg.style.transform = 'scale(0.8)';
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.remove(), 300);
+                }
+            });
+
+            const closeBtn = document.createElement('div');
+            closeBtn.innerHTML = '✕';
+            closeBtn.style.position = 'absolute';
+            closeBtn.style.top = '20px';
+            closeBtn.style.right = '20px';
+            closeBtn.style.color = 'white';
+            closeBtn.style.fontSize = '30px';
+            closeBtn.style.cursor = 'pointer';
+            overlay.appendChild(closeBtn);
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                fullImg.style.transform = 'scale(0.8)';
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.remove(), 300);
+            });
+        });
+    });
+}
+
+// Final Global Initialization
+window.addEventListener('load', () => {
+    initLightbox();
+    ScrollTrigger.refresh();
+});

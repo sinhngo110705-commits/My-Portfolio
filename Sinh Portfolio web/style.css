@@ -1,3 +1,5 @@
+@charset "UTF-8";
+/* Tailwind CSS Base */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -147,10 +149,14 @@ body:not(.light-mode) .section-title {
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 50px;
-    height: 3px;
+    width: 60px;
+    height: 4px;
     background: var(--gradient-brand);
-    border-radius: 2px;
+    border-radius: 20px;
+}
+
+#community-academic .section-title::after {
+    width: 120px;
 }
 
 /* Elite Tier Power Branding Overrides */
@@ -663,7 +669,22 @@ body:not(.light-mode) .glitch {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     align-items: stretch;
-    /* Explicitly force row heights to match */
+}
+
+.gallery-grid-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+}
+
+@media (max-width: 968px) {
+    .gallery-grid-3 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .gallery-grid-3 {
+        grid-template-columns: 1fr !important;
+    }
 }
 
 .project-card {
@@ -787,7 +808,7 @@ body:not(.light-mode) .glitch {
     border-radius: 14px;
     object-fit: cover;
     /* Ensures image fills the standardized box proportions */
-    opacity: 0.6;
+    opacity: 1;
     transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
     z-index: 0;
 }
@@ -807,32 +828,14 @@ body:not(.light-mode) .glitch {
 
 .gallery-card:hover .gallery-img,
 .gallery-card:hover::before {
-    transform: scale(1.15);
-    /* Restored smooth zoom on hover */
+    /* No zoom effect as per user request */
     opacity: 1;
-    /* Fully visible image on hover */
 }
 
-/* Fade out text on hover so image is clear — but NOT for content-only cards */
-.gallery-card:not(.content-card):hover p,
-.gallery-card:not(.content-card):hover .gallery-text {
-    opacity: 0;
-    visibility: hidden;
-}
-
-/* Gallery text wrapper to keep it readable above the image */
+/* Redesign: Remove text overlay styles to keep cards clean */
 .gallery-card p,
 .gallery-text {
-    position: relative;
-    z-index: 2;
-    background: rgba(0, 0, 0, 0.65);
-    /* Dark semi-transparent background for readability */
-    padding: 0.8rem 1.2rem;
-    border-radius: 8px;
-    text-align: center;
-    width: 85%;
-    transition: transform 0.5s ease;
-    font-weight: 600;
+    display: none !important;
 }
 
 /* Removed redundant neon border logic since all .card elements share the global neon running effect now */
@@ -845,6 +848,22 @@ body:not(.light-mode) .glitch {
     max-width: 600px;
     margin: 0 auto;
     width: 100%;
+    /* Ensure visibility fallback */
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Ensure gallery cards are visible by default to prevent GSAP clearProps from hiding them */
+.gallery-card {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+}
+
+/* Hide only when explicitly handled by our toggle script */
+.gallery-card.hidden-item {
+    display: none !important;
+    opacity: 0 !important;
 }
 
 .smart-input-group {
@@ -1977,21 +1996,63 @@ footer {
     font-weight: 600;
 }
 
+/* --- Dual Column Skills Layout --- */
+.skills-dual-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+@media (max-width: 992px) {
+    .skills-dual-layout {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+}
+
+.skill-item {
+    margin-bottom: 1.5rem;
+}
+
+.skill-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+}
+
+.skill-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.skill-level-label {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--neon-blue);
+}
+
+.light-mode .skill-level-label {
+    color: var(--neon-blue);
+}
+
 .skill-bar-bg {
     width: 100%;
-    height: 12px;
+    height: 10px;
     background: var(--glass-border);
-    border-radius: 6px;
+    border-radius: 5px;
     overflow: hidden;
 }
 
 .skill-bar-fill {
     height: 100%;
-    background: var(--gradient-brand);
-    border-radius: 6px;
-    box-shadow: 0 0 15px var(--neon-purple);
-    width: 0;
-    transition: width 2s cubic-bezier(0.1, 0.8, 0.2, 1);
+    border-radius: 5px;
+    transition: width 1.5s cubic-bezier(0.1, 0.8, 0.2, 1);
 }
 
 /* --- Activities 4-Column Layout (Optimized) --- */
@@ -2108,9 +2169,19 @@ footer {
     box-shadow: 0 5px 20px rgba(156, 39, 176, 0.4);
 }
 
+.light-mode .skill-tags-group:nth-of-type(odd) .skill-tag:hover {
+    background: rgba(156, 39, 176, 0.1);
+    color: var(--neon-purple);
+}
+
 .skill-tags-group:nth-of-type(even) .skill-tag:hover {
     border-color: var(--neon-pink);
     box-shadow: 0 5px 20px rgba(233, 30, 99, 0.4);
+}
+
+.light-mode .skill-tags-group:nth-of-type(even) .skill-tag:hover {
+    background: rgba(233, 30, 99, 0.1);
+    color: var(--neon-pink);
 }
 
 .lang-level-badge {
@@ -2996,3 +3067,72 @@ select option {
     }
 }
 
+/* ==========================================================================
+   EXPANDABLE GALLERY SYSTEM
+   ========================================================================== */
+.gallery-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.interactive-gallery {
+    overflow: hidden;
+    transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* .gallery-collapsed - (Placeholder - Logic handled via JS/GSAP) */
+
+/* Hide items beyond 6 by default in JS, but ensure grid looks good */
+.gallery-item.hidden-item {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.gallery-toggle-btn {
+    padding: 0.8rem 2.5rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--neon-blue);
+    color: var(--neon-blue);
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 163, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.gallery-toggle-btn:hover {
+    background: var(--neon-blue);
+    color: #fff;
+    box-shadow: 0 0 25px rgba(0, 163, 255, 0.5);
+    transform: translateY(-3px);
+}
+
+.gallery-toggle-btn .icon {
+    font-size: 1.1rem;
+    transition: transform 0.5s ease;
+}
+
+.gallery-toggle-btn.expanded .icon {
+    transform: rotate(180deg);
+}
+
+/* Responsive adjustment for dual layout */
+@media (max-width: 968px) {
+    .skills-dual-layout {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+    
+    .skills-right {
+        margin-top: 1rem;
+    }
+}

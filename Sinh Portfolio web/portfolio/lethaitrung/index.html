@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lê Thái Trung | Teemous Digital</title>
+    <link rel="icon" href="../../Logo/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="../../Logo/favicon.png">
+    <link rel="canonical" href="https://teemousdigital.id.vn/portfolio/lethaitrung/">
+    <meta name="description"
+        content="Software Engineering | Internal Person | High-energy Person | Lê Thái Trung">
+
+    <!-- Site Name for Search Results -->
+    <meta name="application-name" content="Teemous Digital">
+    <meta name="apple-mobile-web-app-title" content="Teemous Digital">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://teemousdigital.id.vn/portfolio/lethaitrung/">
+    <meta property="og:site_name" content="Teemous Digital">
+    <link rel="stylesheet" href="../../style.css?v=28">
+    <style>
+        .interactive-gallery {
+            max-height: none !important;
+            overflow: visible !important;
+            height: auto !important;
+        }
+        .grid-container {
+            display: grid !important;
+            gap: 2.5rem !important;
+            min-height: 250px !important;
+        }
+        .gallery-card {
+            position: relative !important;
+            min-height: 280px !important;
+            display: block !important;
+            opacity: 1;
+            visibility: visible;
+        }
+        .gallery-card.hidden-item {
+            display: none !important;
+            opacity: 0 !important;
+        }
+        .gallery-img {
+            position: relative !important;
+            width: 100% !important;
+            height: 280px !important;
+            object-fit: cover !important;
+            display: block !important;
+            border-radius: 12px !important;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        .professional-aura {
+            position: relative;
+        }
+        .professional-aura::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            background: linear-gradient(45deg, #FFD700, #FFA000, #F57C00);
+            filter: blur(15px);
+            opacity: 0.6;
+            border-radius: 50%;
+            z-index: -1;
+            animation: pulse-gold 3s infinite ease-in-out;
+        }
+        @keyframes pulse-gold {
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.05); opacity: 0.7; }
+        }
+        .professional-badge {
+            display: inline-block;
+            background: linear-gradient(to right, #FFD700, #F57C00);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 900;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 10px rgba(255, 160, 0, 0.4);
+        }
+    </style>
+</head>
+
+<body class="light-mode">
+    <canvas id="bg-canvas"></canvas>
+
+    <main class="container">
+        <!-- Global Navigation Header -->
+        <header class="global-header">
+            <div class="header-logo">
+                <a href="../../index.html">
+                    <img src="../../Logo/logo.png" alt="Teemous Digital" class="header-logo-img"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span style="display:none;">TD</span>
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+
+            <nav class="header-nav">
+                <ul class="nav-links">
+                    <li><a href="../../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
+                    <li><a href="../../services/index.html" data-en="SERVICES & SHOP"
+                            data-vi="Dịch vụ &amp; Cửa hàng">SERVICES & SHOP</a></li>
+                    <li><a href="../index.html" class="active" data-en="Portfolio Hub"
+                            data-vi="Hồ sơ Năng lực">Portfolio Hub</a></li>
+                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
+                            data-vi="Liên Hệ">Contact Us</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- =================== HERO =================== -->
+        <section id="hero" class="section hero-section">
+            <div class="hero-content">
+                <div class="avatar-container professional-aura">
+                    <img src="../../Avatar/lethaitrung2003.jpg" alt="Lê Thái Trung" class="avatar-glow avatar-ring-bg"
+                        style="border: 3px solid #FFA000; padding: 4px; box-shadow: 0 0 20px rgba(255, 160, 0, 0.6); width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                </div>
+                <h1 class="flat-title fly-in flex items-center justify-center flex-nowrap"
+                    style="white-space: nowrap; max-width: none; font-size: clamp(2rem, 8vw, 4rem); letter-spacing: -0.05em;">
+                    <span data-en="LÊ THÁI TRUNG" data-vi="LÊ THÁI TRUNG">LÊ THÁI TRUNG</span>
+                </h1>
+                <h2 class="tagline-sub" data-en="(Last Updated: 24/3/2026)" data-vi="(Cập nhật lần cuối: 24/3/2026)">
+                    (Last Updated: 24/3/2026)</h2>
+                <span class="professional-badge">🏆 PROFESSIONAL</span>
+                <p class="tagline"
+                    data-en="Software Engineering | Internal Person | High-energy Person"
+                    data-vi="Công nghệ Phần mềm | Internal Person | High-energy Person">
+                    Software Engineering | Internal Person | High-energy Person</p>
+
+                <div class="social-links"
+                    style="display:flex; flex-wrap:wrap; justify-content:center; gap:0.75rem; margin-top:1.5rem;">
+                    <a href="https://www.facebook.com/thaitrung.le.94" target="_blank" class="social-btn fb-btn" data-en="FB: 2.7K followers"
+                        data-vi="FB: 2.7K followers">FB: 2.7K followers</a>
+                    <a href="mailto:lethaitrung03@gmail.com" class="social-btn" data-en="📧 Email"
+                        data-vi="📧 Email">📧 Email</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================== SECTION 1: ABOUT ME =================== -->
+        <section id="about" class="section">
+            <h2 class="section-title" data-en="About Me" data-vi="Về Tôi">About Me</h2>
+            <div class="section-frame">
+                <div class="section-frame-inner">
+                    <p class="about-text"
+                        data-en="A high-energy 22 years old Software Engineering at Duy Tan University (DTU), Danang, love nature and work with people, hand out creative thinking for hard decision."
+                        data-vi="Một kỹ sư phần mềm 22 tuổi đầy năng lượng tại Đại học Duy Tân (DTU), Đà Nẵng, yêu thiên nhiên và thích làm việc với con người, luôn đưa ra những suy nghĩ sáng tạo cho những quyết định khó khăn.">
+                        A high-energy 22 years old Software Engineering at Duy Tan University (DTU), Danang, love nature and work with people, hand out creative thinking for hard decision.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================== SECTION 2: ACTIVITIES EXPERIENCE =================== -->
+        <section id="activities" class="section">
+            <h2 class="section-title" data-en="Activities Experience" data-vi="Hoạt động / Kinh nghiệm">Activities
+                Experience</h2>
+            <div class="section-frame">
+                <div class="section-frame-inner">
+                    <div class="activities-layout">
+
+                        <!-- Card 1: Teaching Assistant -->
+                        <div class="card project-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <h3 data-en="Teaching Assistant (Intern) - DZFullStack"
+                                    data-vi="Trợ giảng (Thực tập) - DZFullStack">Teaching Assistant (Intern) - DZFullStack</h3>
+                                <p class="role" data-en="Feb 2024 - Jun 2024"
+                                    data-vi="Tháng 2/2024 - Tháng 6/2024">Feb 2024 - Jun 2024</p>
+                                <ul style="list-style-type: disc; margin-left: 1.5rem; text-align: left;">
+                                    <li data-en="Supported lecturers in programming courses for IT students in Danang." data-vi="Hỗ trợ giảng viên trong các khóa học lập trình cho sinh viên IT tại Đà Nẵng.">Supported lecturers in programming courses for IT students in Danang.</li>
+                                    <li data-en="Guided students in using technologies such as PHP, Laravel, VueJS, Navicat, Git, VS Code, and phpMyAdmin." data-vi="Hướng dẫn sinh viên sử dụng các công nghệ như PHP, Laravel, VueJS, Navicat, Git, VS Code và phpMyAdmin.">Guided students in technologies: PHP, Laravel, VueJS, Git, etc.</li>
+                                    <li data-en="Assisted with debugging, exercises, and improved teamwork and knowledge-sharing skills." data-vi="Hỗ trợ sửa lỗi, làm bài tập và cải thiện kỹ năng làm việc nhóm, chia sẻ kiến thức.">Assisted with debugging, exercises, and knowledge-sharing.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: DNA BBE -->
+                        <div class="card project-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <h3 data-en="Leadership & Member Development - DNA BBE"
+                                    data-vi="Lãnh đạo & Phát triển Thành viên - DNA BBE">Leadership & Member Development - DNA BBE</h3>
+                                <p class="role" data-en="Dec 2023 - April 2025"
+                                    data-vi="Tháng 12/2023 - Tháng 4/2025">Dec 2023 - April 2025</p>
+                                <ul style="list-style-type: disc; margin-left: 1.5rem; text-align: left;">
+                                    <li data-en="Participated in operating a youth development club/project, ensuring business system activities and expanding members (26 people)." data-vi="Tham gia vận hành câu lạc bộ/dự án phát triển thanh niên, đảm bảo các hoạt động hệ thống kinh doanh và mở rộng thành viên (26 người).">Operated youth development club, expanded members to 26 people.</li>
+                                    <li data-en="Gained skills in professional working style, teamwork, leadership, and communication." data-vi="Đạt được các kỹ năng về phong cách làm việc chuyên nghiệp, làm việc nhóm, lãnh đạo và giao tiếp.">Gained skills in professional style, leadership, and communication.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Bluesea Food -->
+                        <div class="card project-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <h3 data-en="Sales Representative - Bluesea Food Co., Ltd"
+                                    data-vi="Đại diện Kinh doanh - Bluesea Food Co., Ltd">Sales Representative - Bluesea Food</h3>
+                                <p class="role" data-en="Jun 2025 - Now"
+                                    data-vi="Tháng 6/2025 - Nay">Jun 2025 - Now</p>
+                                <ul style="list-style-type: disc; margin-left: 1.5rem; text-align: left;">
+                                    <li data-en="Supplied frozen, fresh, and dry food to 3-5 stars hotels and resorts." data-vi="Cung cấp thực phẩm đông lạnh, tươi sống và đồ khô cho các khách sạn và resort 3-5 sao.">Supplied food to 3-5 star hotels and resorts.</li>
+                                    <li data-en="Built and maintained B2B customer relationships, provided product consultation, and negotiated contracts." data-vi="Xây dựng và duy trì mối quan hệ khách hàng B2B, tư vấn sản phẩm và đàm phán hợp đồng.">Built B2B relationships and negotiated contracts.</li>
+                                    <li data-en="Enhanced communication, persuasion, and time management skills in a competitive business environment." data-vi="Nâng cao kỹ năng giao tiếp, thuyết phục và quản lý thời gian trong môi trường kinh doanh cạnh tranh.">Enhanced communication and persuasion skills.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: JCI Danang -->
+                        <div class="card project-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <h3 data-en="Vice president Membership & Training - JCI Danang"
+                                    data-vi="Phó Chủ tịch Hội viên & Đào tạo - JCI Danang">VP Membership & Training - JCI Danang</h3>
+                                <p class="role" data-en="November 29th, 2025 - Now"
+                                    data-vi="29/11/2025 - Nay">Nov 29, 2025 - Now</p>
+                                <p data-en="Experience in update!" data-vi="Đang cập nhật kinh nghiệm!">
+                                    Experience in update!
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================== SKILLS =================== -->
+        <section id="skills" class="section">
+            <h2 class="section-title" data-en="Skills &amp; Proficiency" data-vi="Đánh giá Kỹ năng">Skills &amp;
+                Proficiency</h2>
+            
+            <div class="skills-dual-layout">
+                <!-- Left Column: Progress Bars -->
+                <div class="skills-left">
+                    <div class="skill-category">
+                        <h3 data-en="Technical Development" data-vi="Phát triển Kỹ thuật" style="color:var(--neon-purple); margin-bottom:1.5rem;">Technical Development</h3>
+                        
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Backend (Java, Spring, JPA)</span>
+                                <span class="skill-level-label" style="color:#F57C00;">MID</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 60%; background: linear-gradient(to right, #FFD700, #F57C00); box-shadow: 0 0 10px rgba(245, 124, 0, 0.4);"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Frontend (ReactJS, Bootstrap)</span>
+                                <span class="skill-level-label" style="color:#F57C00;">MID</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 60%; background: linear-gradient(to right, #FFD700, #F57C00); box-shadow: 0 0 10px rgba(245, 124, 0, 0.4);"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Database (MySQL, Workbench)</span>
+                                <span class="skill-level-label" style="color:#F57C00;">HIGH</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 80%; background: linear-gradient(to right, #FFD700, #F57C00); box-shadow: 0 0 15px rgba(245, 124, 0, 0.5);"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Others (OOP, API, Agile)</span>
+                                <span class="skill-level-label" style="color:#F57C00;">MID</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 65%; background: linear-gradient(to right, #FFD700, #F57C00); box-shadow: 0 0 10px rgba(245, 124, 0, 0.4);"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category" style="margin-top: 3rem;">
+                        <h3 data-en="Soft Skills" data-vi="Kỹ năng Mềm" style="color:var(--neon-purple); margin-bottom:1.5rem;">Soft Skills</h3>
+                        
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Teamwork & Collaboration</span>
+                                <span class="skill-level-label" style="color:#F57C00;">HIGH</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 80%; background: linear-gradient(to right, #FFD700, #F57C00); box-shadow: 0 0 15px rgba(245, 124, 0, 0.5);"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">Mentoring & Motivation</span>
+                                <span class="skill-level-label" style="color:#F57C00;">HIGH+</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 90%; background: linear-gradient(to right, #FFD700, #F57C00); box-shadow: 0 0 20px rgba(245, 124, 0, 0.6);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Tools & Languages Tags -->
+                <div class="skills-right">
+                    <div class="skill-tags-group">
+                        <h4 data-en="TOOLS & TECH" data-vi="CÔNG CỤ & CÔNG NGHỆ" class="skill-group-title">TOOLS & TECH</h4>
+                        <div class="skill-tags">
+                            <span class="skill-tag">💻 IntelliJ IDEA</span>
+                            <span class="skill-tag">🚀 Postman</span>
+                            <span class="skill-tag">📝 VS Code</span>
+                            <span class="skill-tag">🐙 GitHub/GitLab</span>
+                            <span class="skill-tag">📊 Google Sheets</span>
+                            <span class="skill-tag">🐧 Linux / Terminal</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-tags-group" style="margin-top: 4rem;">
+                        <h4 data-en="FOREIGN LANGUAGE" data-vi="NGOẠI NGỮ" class="skill-group-title">FOREIGN LANGUAGE</h4>
+                        <div class="skill-tags">
+                            <span class="skill-tag">🇬🇧 English <span class="lang-level-badge" style="background:#F57C00;">B2 - C1</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================== CONTACT ME =================== -->
+        <section id="contact" class="section">
+            <h2 class="section-title" data-en="Contact Me" data-vi="Liên hệ Tôi">Contact Me</h2>
+            <div class="card glass-card contact-card">
+                <ul class="contact-info-list">
+                    <li class="contact-info-item">
+                        <span class="contact-icon">📧</span>
+                        <div class="contact-detail">
+                            <span class="contact-label" data-en="Main Email" data-vi="Email chính">Main Email</span>
+                            <span class="contact-value"><a href="mailto:lethaitrung03@gmail.com">lethaitrung03@gmail.com</a></span>
+                        </div>
+                    </li>
+                    <li class="contact-info-item">
+                        <span class="contact-icon">💼</span>
+                        <div class="contact-detail">
+                            <span class="contact-label" data-en="Work Email" data-vi="Email công việc">Work Email</span>
+                            <span class="contact-value"><a href="mailto:lethaitrungwork@gmail.com">lethaitrungwork@gmail.com</a></span>
+                        </div>
+                    </li>
+                    <li class="contact-info-item">
+                        <span class="contact-icon">🌐</span>
+                        <div class="contact-detail">
+                            <span class="contact-label" data-en="Facebook" data-vi="Facebook">Facebook</span>
+                            <span class="contact-value"><a href="https://www.facebook.com/thaitrung.le.94" target="_blank">thaitrung.le.94</a></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Teemous Digital. All Rights Reserved.</p>
+        <div class="footer-socials">
+            <a href="https://www.facebook.com/thaitrung.le.94" target="_blank" class="social-icon">Fb</a>
+            <a href="mailto:lethaitrungwork@gmail.com" class="social-icon">Mail</a>
+        </div>
+    </footer>
+
+    <div class="ui-controls">
+        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
+            <span class="mode-icon">☀️ Day</span>
+        </button>
+        <button id="lang-toggle" class="lang-toggle neon-border">
+            Bạn là người Việt?
+        </button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="../../script.js?v=17"></script>
+</body>
+
+</html>

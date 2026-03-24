@@ -19,7 +19,39 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://teemousdigital.id.vn/portfolio/tranthithuyduong/">
     <meta property="og:site_name" content="Teemous Digital">
-    <link rel="stylesheet" href="../../style.css?v=22">
+    <link rel="stylesheet" href="../../style.css?v=28">
+    <style>
+        .interactive-gallery {
+            max-height: none !important;
+            overflow: visible !important;
+            height: auto !important;
+        }
+        .grid-container {
+            display: grid !important;
+            gap: 2.5rem !important;
+            grid-template-rows: auto !important;
+            min-height: 250px !important;
+        }
+        .gallery-card {
+            position: relative !important;
+            min-height: 280px !important;
+            display: block !important;
+            opacity: 1;
+            visibility: visible;
+        }
+        .gallery-card.hidden-item {
+            display: none !important;
+            opacity: 0 !important;
+        }
+        .gallery-img {
+            position: relative !important;
+            width: 100% !important;
+            height: 280px !important;
+            object-fit: cover !important;
+            display: block !important;
+            border-radius: 12px !important;
+        }
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
 
 </head>
@@ -71,8 +103,11 @@
                         <div class="verified-tooltip" data-en="Verified secure Portfolio, authenticity confirmed." data-vi="Hồ sơ năng lực an toàn, đã được xác minh có thực.">Hồ sơ năng lực an toàn, đã được xác minh có thực.</div>
                     </div>
                 </h1>
-                <h2 class="tagline-sub" data-en="(Last Updated: 18/3/2026)" data-vi="(Cập nhật lần cuối: 18/3/2026)">
-                    (Last Updated: 18/3/2026)</h2>
+                <h2 class="tagline-sub" data-en="(Last Updated: 2025)" data-vi="(Cập nhật lần cuối: 2025)">
+                    (Last Updated: 2025)</h2>
+                <div style="margin-bottom:0.5rem;">
+                    <span style="font-size: 1.4rem; font-weight: 800; color: var(--neon-blue);">2005</span>
+                </div>
                 <span class="elite-badge">⭐ ELITE</span>
                 <p class="tagline"
                     data-en="IT Intern | Computer Science — VKU | ICPC Honorable Mention | SheCodes Top 6"
@@ -251,89 +286,91 @@
         <section id="skills" class="section">
             <h2 class="section-title" data-en="Skills &amp; Proficiency" data-vi="Đánh giá Kỹ năng">Skills &amp;
                 Proficiency</h2>
-            <div style="display:flex; flex-direction:column; gap:1.5rem;">
-
-                <div class="skill-category-group">
-                    <h4 data-en="Primary Technical Skills" data-vi="Kỹ năng Kỹ thuật Chính"
-                        style="font-family:var(--font-heading); color:var(--neon-purple); margin-bottom:1rem; text-transform:uppercase; letter-spacing:2px; font-size:0.9rem;">
-                        Primary Technical Skills</h4>
-
-                    <div class="skill-item-bar">
-                        <div class="skill-info-bar">
-                            <span>☕ Java (Core)</span>
-                            <span>85%</span>
+            <div class="skills-dual-layout">
+                <!-- Left Column: Progress Bars -->
+                <div class="skills-left">
+                    <div class="skill-category">
+                        <h3 data-en="Technical Development" data-vi="Phát triển Kỹ thuật" style="color:var(--neon-pink); margin-bottom:1.5rem;">Technical Development</h3>
+                        
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name" data-en="Mobile Development (Flutter)" data-vi="Phát triển Di động (Flutter)">Mobile Development (Flutter)</span>
+                                <span class="skill-level-label">MID</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 40%; background: linear-gradient(135deg, #FF00FF, #00A3FF); box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);"></div>
+                            </div>
                         </div>
-                        <div class="skill-bar-bg">
-                            <div class="skill-bar-fill" data-width="85%"></div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name" data-en="Web Development" data-vi="Phát triển Web">Web Development</span>
+                                <span class="skill-level-label">MID+</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 60%; background: linear-gradient(135deg, #FF00FF, #00A3FF); box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name" data-en="Programming (Java, C++)" data-vi="Lập trình (Java, C++)">Programming (Java, C++)</span>
+                                <span class="skill-level-label" style="color:var(--neon-blue);">HIGH</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 80%; background: linear-gradient(135deg, #FF00FF, #00A3FF); box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name" data-en="Database (SQL, Firebase)" data-vi="Cơ sở dữ liệu (SQL, Firebase)">Database (SQL, Firebase)</span>
+                                <span class="skill-level-label">MID+</span>
+                            </div>
+                            <div class="skill-bar-bg">
+                                <div class="skill-bar-fill" style="width: 70%; background: linear-gradient(135deg, #FF00FF, #00A3FF); box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);"></div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="skill-item-bar">
-                        <div class="skill-info-bar">
-                            <span>⚡ C++</span>
-                            <span>80%</span>
+                    <div class="skill-category" style="margin-top: 3rem;">
+                        <h4 data-en="Skills Developed" data-vi="Kỹ năng Phát triển" class="skill-group-title" style="margin-bottom:1.5rem;">Skills Developed</h4>
+                        <div class="skill-tags">
+                            <span class="skill-tag" data-en="Teamwork" data-vi="Làm việc nhóm">👥 Teamwork</span>
+                            <span class="skill-tag" data-en="Self-motivation" data-vi="Tự chủ">🔥 Self-motivation</span>
+                            <span class="skill-tag" data-en="Public-speaking" data-vi="Nói trước đám đông">🎤 Public-speaking</span>
+                            <span class="skill-tag" data-en="Presentation" data-vi="Thuyết trình">📊 Presentation</span>
+                            <span class="skill-tag" data-en="Communication" data-vi="Giao tiếp">💬 Communication</span>
+                            <span class="skill-tag" data-en="Training" data-vi="Đào tạo">🏫 Training</span>
                         </div>
-                        <div class="skill-bar-bg">
-                            <div class="skill-bar-fill" data-width="80%"></div>
-                        </div>
-                    </div>
-
-                    <div class="skill-item-bar">
-                        <div class="skill-info-bar">
-                            <span>🌐 JavaScript</span>
-                            <span>75%</span>
-                        </div>
-                        <div class="skill-bar-bg">
-                            <div class="skill-bar-fill" data-width="75%"></div>
-                        </div>
-                    </div>
-
-                    <div class="skill-item-bar">
-                        <div class="skill-info-bar">
-                            <span>📱 Flutter (Mobile)</span>
-                            <span>70%</span>
-                        </div>
-                        <div class="skill-bar-bg">
-                            <div class="skill-bar-fill" data-width="70%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="skill-tags-group">
-                    <h4 data-en="Web &amp; Other Technologies" data-vi="Web &amp; Công nghệ khác"
-                        class="skill-group-title">Web &amp; Other Technologies</h4>
-                    <div class="skill-tags">
-                        <span class="skill-tag" data-tippy-content="Architecture & Structure">🧱 HTML5</span>
-                        <span class="skill-tag" data-tippy-content="Styling & Design">🎨 CSS3</span>
-                        <span class="skill-tag" data-tippy-content="Interaction">💎 jQuery</span>
-                        <span class="skill-tag" data-tippy-content="Backend Runtime">🟢 Node.js</span>
-                        <span class="skill-tag" data-tippy-content="Web Framework">⚙️ Express.js</span>
-                        <span class="skill-tag" data-tippy-content="Relational Database">🗄️ SQL / MySQL</span>
-                        <span class="skill-tag" data-tippy-content="Real-time Database">🔥 NoSQL / Firebase</span>
                     </div>
                 </div>
 
-                <div class="skill-tags-group">
-                    <h4 data-en="Tools &amp; Management" data-vi="Công cụ &amp; Quản lý" class="skill-group-title">Tools
-                        &amp; Management</h4>
-                    <div class="skill-tags">
-                        <span class="skill-tag">🐙 Git / GitHub</span>
-                        <span class="skill-tag">💻 VS Code</span>
-                        <span class="skill-tag">🎨 Figma</span>
-                        <span class="skill-tag">📐 System Analysis</span>
-                        <span class="skill-tag">🧮 Data Structures</span>
-                        <span class="skill-tag">🚀 Agile/Scrum</span>
+                <!-- Right Column: Tools & Languages Tags -->
+                <div class="skills-right">
+                    <div class="skill-tags-group">
+                        <h4 data-en="TOOLS & TECH" data-vi="CÔNG CỤ & CÔNG NGHỆ" class="skill-group-title">TOOLS & TECH</h4>
+                        <div class="skill-tags">
+                            <span class="skill-tag">💙 Flutter</span>
+                            <span class="skill-tag">🔥 Firebase</span>
+                            <span class="skill-tag">🌐 HTML/CSS/JS</span>
+                            <span class="skill-tag">🟢 Node.js</span>
+                            <span class="skill-tag">☕ Java</span>
+                            <span class="skill-tag">⚙️ C++</span>
+                            <span class="skill-tag">📊 SQL</span>
+                            <span class="skill-tag">🐙 Git</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="skill-tags-group">
-                    <h4 data-en="Foreign Languages" data-vi="Ngoại ngữ" class="skill-group-title">Foreign Languages</h4>
-                    <div class="skill-tags">
-                        <span class="skill-tag">🇻🇳 Vietnamese <span class="lang-level-badge">Native</span></span>
-                        <span class="skill-tag">🇬🇧 English <span class="lang-level-badge">Basic</span></span>
-                        <span class="skill-tag">🇨🇳 Chinese <span class="lang-level-badge">HSK4 + HSKK</span></span>
+                    <div class="skill-tags-group" style="margin-top: 4rem;">
+                        <h4 data-en="FOREIGN LANGUAGE" data-vi="NGOẠI NGỮ" class="skill-group-title">FOREIGN LANGUAGE</h4>
+                        <div class="skill-tags">
+                            <span class="skill-tag">🇬🇧 English <span class="lang-level-badge">Basic</span></span>
+                            <span class="skill-tag">🇨🇳 Chinese <span class="lang-level-badge">HSK4 + HSKK</span></span>
+                        </div>
                     </div>
                 </div>
+            </div>
 
             </div>
         </section>
@@ -342,56 +379,42 @@
         <section id="community-academic" class="section">
             <h2 class="section-title" data-en="Community &amp; Academic Records"
                 data-vi="Hoạt động Cộng đồng &amp; Thành tích">Community &amp; Academic Records</h2>
-            <div class="grid-container placeholder-grid interactive-gallery">
+            <div class="grid-container interactive-gallery gallery-grid-3">
 
-                <!-- HIPE Volunteer (Moved from Community Service) -->
-                <div class="card project-card">
-                    <div class="card-glow"></div>
-                    <div class="card-content">
-                        <h3 data-en="HIPE Volunteer — Health &amp; Environment Awareness"
-                            data-vi="Tình nguyện viên HIPE — Sức khỏe &amp; Môi trường">HIPE Volunteer</h3>
-                        <p class="role" data-en="Role: Volunteer | Duration: 2018–Present"
-                            data-vi="Vai trò: Tình nguyện viên | Thời gian: 2018–Nay">Volunteer | 2018–Present</p>
-                        <p data-en="Active community volunteer with HIPE, participating in campaigns to raise public awareness on health and environmental issues since 2018."
-                            data-vi="Tình nguyện viên cộng đồng tích cực thuộc HIPE, tham gia các chiến dịch nâng cao nhận thức cộng đồng về sức khỏe và môi trường từ năm 2018.">
-                            Active HIPE volunteer since 2018 — raising community awareness on health and environmental
-                            issues.
-                        </p>
-                    </div>
+                <div class="card glass-card gallery-card">
+                    <img src="../../cer/Thùy Dương 2005/bbe-1.png" alt="Certificate" class="gallery-img">
                 </div>
 
                 <div class="card glass-card gallery-card">
-                    <div class="coming-soon-card" style="border:none; padding:2rem 1rem;">
-                        <span class="cs-icon">🏆</span>
-                        <span class="cs-text" data-en="ICPC Vietnam — Honorable Mention 2023"
-                            data-vi="ICPC Việt Nam — Giải Khuyến Khích 2023">ICPC Vietnam — Honorable Mention
-                            2023</span>
-                    </div>
+                    <img src="../../cer/Thùy Dương 2005/bbe-2.png" alt="Certificate" class="gallery-img">
                 </div>
 
                 <div class="card glass-card gallery-card">
-                    <div class="coming-soon-card" style="border:none; padding:2rem 1rem;">
-                        <span class="cs-icon">💡</span>
-                        <span class="cs-text" data-en="SheCodes Top 6 — 2023" data-vi="SheCodes Top 6 — 2023">SheCodes
-                            Top 6 — 2023</span>
-                    </div>
+                    <img src="../../cer/Thùy Dương 2005/certi-1.png" alt="Certificate" class="gallery-img">
                 </div>
 
                 <div class="card glass-card gallery-card">
-                    <div class="coming-soon-card" style="border:none; padding:2rem 1rem;">
-                        <span class="cs-icon">🥉</span>
-                        <span class="cs-text" data-en="Informatics Excellence — Provincial Award 2022–23"
-                            data-vi="Học sinh Giỏi Tin học cấp Tỉnh — Giải KK 2022–23">Province Informatics — Award
-                            2022–23</span>
-                    </div>
+                    <img src="../../cer/Thùy Dương 2005/certi-2.png" alt="Certificate" class="gallery-img">
                 </div>
 
                 <div class="card glass-card gallery-card">
-                    <div class="coming-soon-card" style="border:none; padding:2rem 1rem;">
-                        <span class="cs-icon">📜</span>
-                        <span class="cs-text" data-en="Chinese HSK4 &amp; HSKK Certification"
-                            data-vi="Chứng chỉ Tiếng Trung HSK4 &amp; HSKK">Chinese HSK4 + HSKK</span>
-                    </div>
+                    <img src="../../cer/Thùy Dương 2005/certi-3.png" alt="Certificate" class="gallery-img">
+                </div>
+
+                <div class="card glass-card gallery-card">
+                    <img src="../../cer/Thùy Dương 2005/certi-4.png" alt="Certificate" class="gallery-img">
+                </div>
+
+                <div class="card glass-card gallery-card">
+                    <img src="../../cer/Thùy Dương 2005/certi-5.png" alt="Certificate" class="gallery-img">
+                </div>
+
+                <div class="card glass-card gallery-card">
+                    <img src="../../cer/Thùy Dương 2005/certi-7.jpg" alt="Certificate" class="gallery-img">
+                </div>
+
+                <div class="card glass-card gallery-card">
+                    <img src="../../cer/Thùy Dương 2005/certi-8.jpg" alt="Certificate" class="gallery-img">
                 </div>
 
             </div>
@@ -451,7 +474,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="../../script.js?v=5"></script>
+    <script src="../../script.js?v=17"></script>
 </body>
 
 </html>
