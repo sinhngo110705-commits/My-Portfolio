@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "rog-g14": {
+      "command": "node",
+      "args": [
+        "C:/Users/sinhn/.gemini/antigravity/mcp-bridge-v4.mjs"
+      ],
+      "env": {
+        "LM_STUDIO_URL": "http://127.0.0.1:1234/v1"
+      }
+    }
+  }
+}
