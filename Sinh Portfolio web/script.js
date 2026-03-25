@@ -418,12 +418,18 @@ function updateThemeButtonText() {
     
     const isLight = document.body.classList.contains('light-mode');
     
-    // Use root-relative paths to ensure icons load correctly from any subfolder
-    const dayIcon = '/Logo/daymodeicon.png';
-    const nightIcon = '/Logo/nightmodeicon.png';
+    // FOOLPROOF ASSET PATH: Use the script's own src location to find the root
+    let rootPath = '';
+    const scriptTag = document.querySelector('script[src*="script.js"]');
+    if (scriptTag) {
+        const src = scriptTag.getAttribute('src');
+        rootPath = src.split('script.js')[0]; 
+    }
+
+    const dayIcon = `${rootPath}Logo/daymodeicon.png`;
+    const nightIcon = `${rootPath}Logo/nightmodeicon.png`;
     const currentIcon = isLight ? dayIcon : nightIcon;
     
-    // Inject the specific icon asset (removed previous invert filter)
     modeIcon.innerHTML = `<img src="${currentIcon}" alt="Theme Icon" class="theme-icon-img" style="width: 24px; height: 24px; vertical-align: middle;">`;
 }
 
