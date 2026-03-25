@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initLanguageToggle();
     initThemeToggle();
     initHoverEffects();
-    initPortfolioFilters(); 
+    initPortfolioFilters();
     initMobileMenu();
     initGalleryToggle();
     initScrollProgress();
@@ -45,9 +45,9 @@ function initScrollAnimations() {
 
     const titles = document.querySelectorAll('.glitch, .tagline-sub, .tagline');
     if (titles.length > 0) {
-        gsap.fromTo(titles, 
+        gsap.fromTo(titles,
             { y: 30, opacity: 0 },
-            { 
+            {
                 duration: 1,
                 y: 0,
                 opacity: 1,
@@ -114,7 +114,7 @@ function initScrollAnimations() {
     // Skills Animation
     const skillsSection = document.getElementById('skills');
     const progressBars = document.querySelectorAll('.progress-bar, .skill-bar-fill');
-    
+
     if (skillsSection && progressBars.length > 0) {
         ScrollTrigger.create({
             trigger: '#skills',
@@ -144,7 +144,7 @@ function initScrollAnimations() {
     const academicSection = document.getElementById('community-academic');
     if (academicSection) {
         const cards = academicSection.querySelectorAll('.gallery-card:not(.hidden-item)');
-        
+
         if (cards.length > 0) {
             gsap.from(cards, {
                 scrollTrigger: {
@@ -162,7 +162,7 @@ function initScrollAnimations() {
 
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
-        gsap.fromTo(contactForm, 
+        gsap.fromTo(contactForm,
             { opacity: 0 },
             {
                 scrollTrigger: {
@@ -174,7 +174,7 @@ function initScrollAnimations() {
                 opacity: 1,
                 ease: 'power2.out',
                 onComplete: () => {
-                   gsap.set(contactForm, { clearProps: 'all', opacity: 1, visibility: 'visible' });
+                    gsap.set(contactForm, { clearProps: 'all', opacity: 1, visibility: 'visible' });
                 }
             }
         );
@@ -197,17 +197,17 @@ function initBackgroundAnimation() {
     if (!canvas) return; // Silent safety exit if no canvas exists
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    
+
     let width, height;
     let particles = [];
-    
+
     // Mouse tracking
     let mouse = { x: null, y: null, targetX: null, targetY: null };
-    
+
     window.addEventListener('mousemove', (e) => {
         mouse.targetX = e.x;
         mouse.targetY = e.y;
-        if(mouse.x === null) {
+        if (mouse.x === null) {
             mouse.x = e.x;
             mouse.y = e.y;
         }
@@ -220,9 +220,9 @@ function initBackgroundAnimation() {
         canvas.height = height;
         initParticles();
     }
-    
+
     window.addEventListener('resize', resize);
-    
+
     class Particle {
         constructor() {
             this.x = Math.random() * width;
@@ -234,7 +234,7 @@ function initBackgroundAnimation() {
             const colors = ['rgba(156, 39, 176, 0.4)', 'rgba(33, 150, 243, 0.4)'];
             this.color = colors[Math.floor(Math.random() * colors.length)];
         }
-        
+
         draw() {
             ctx.fillStyle = this.color;
             ctx.beginPath();
@@ -242,23 +242,23 @@ function initBackgroundAnimation() {
             ctx.closePath();
             ctx.fill();
         }
-        
+
         update() {
-            if(mouse.x != null) {
+            if (mouse.x != null) {
                 // Parallax effect based on mouse distance to center
-                let dx = mouse.x - width/2;
-                let dy = mouse.y - height/2;
-                
+                let dx = mouse.x - width / 2;
+                let dy = mouse.y - height / 2;
+
                 // Shift particles smoothly
-                let targetX = this.baseX - (dx * 0.05 * (30/this.density));
-                let targetY = this.baseY - (dy * 0.05 * (30/this.density));
-                
+                let targetX = this.baseX - (dx * 0.05 * (30 / this.density));
+                let targetY = this.baseY - (dy * 0.05 * (30 / this.density));
+
                 this.x += (targetX - this.x) * 0.05;
                 this.y += (targetY - this.y) * 0.05;
             }
         }
     }
-    
+
     function initParticles() {
         particles = [];
         const numParticles = (width * height) / 8000; // Density
@@ -266,20 +266,20 @@ function initBackgroundAnimation() {
             particles.push(new Particle());
         }
     }
-    
+
     function drawGrid() {
         if (!mouse.x) return;
-        
-        const dx = (mouse.x - width/2) * 0.02;
-        const dy = (mouse.y - height/2) * 0.02;
-        
+
+        const dx = (mouse.x - width / 2) * 0.02;
+        const dy = (mouse.y - height / 2) * 0.02;
+
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
         ctx.lineWidth = 1;
-        
+
         const gridSize = 50;
         const offsetX = (dx % gridSize) - gridSize;
         const offsetY = (dy % gridSize) - gridSize;
-        
+
         ctx.beginPath();
         for (let x = offsetX; x < width + gridSize; x += gridSize) {
             ctx.moveTo(x, 0);
@@ -294,7 +294,7 @@ function initBackgroundAnimation() {
 
     function animate() {
         ctx.clearRect(0, 0, width, height);
-        
+
         // Smooth mouse following
         if (mouse.targetX !== null) {
             mouse.x += (mouse.targetX - mouse.x) * 0.1;
@@ -302,27 +302,27 @@ function initBackgroundAnimation() {
         }
 
         drawGrid();
-        
+
         for (let i = 0; i < particles.length; i++) {
             particles[i].update();
             particles[i].draw();
         }
-        
+
         // Draw connections for close particles
         connectParticles();
-        
+
         requestAnimationFrame(animate);
     }
-    
+
     function connectParticles() {
         for (let a = 0; a < particles.length; a++) {
             for (let b = a; b < particles.length; b++) {
                 let dx = particles[a].x - particles[b].x;
                 let dy = particles[a].y - particles[b].y;
                 let distance = dx * dx + dy * dy;
-                
+
                 if (distance < 12000) {
-                    let opacity = 1 - (distance/12000);
+                    let opacity = 1 - (distance / 12000);
                     ctx.strokeStyle = `rgba(156, 39, 176, ${opacity * 0.2})`;
                     ctx.lineWidth = 1;
                     ctx.beginPath();
@@ -339,7 +339,7 @@ function initBackgroundAnimation() {
 }
 
 // Multi-language Toggle Logic
-let currentLang = localStorage.getItem('td-lang') || 'en'; 
+let currentLang = localStorage.getItem('td-lang') || 'en';
 if (!localStorage.getItem('td-lang')) {
     localStorage.setItem('td-lang', currentLang);
 }
@@ -347,10 +347,10 @@ if (!localStorage.getItem('td-lang')) {
 function initLanguageToggle() {
     // Apply initial translation based on localStorage on load
     updateAllTranslations();
-    
+
     const langBtn = document.getElementById('lang-toggle');
     if (!langBtn) return;
-    
+
     langBtn.addEventListener('click', () => {
         currentLang = currentLang === 'en' ? 'vi' : 'en';
         localStorage.setItem('td-lang', currentLang);
@@ -373,7 +373,7 @@ function updateAllTranslations() {
             el.innerHTML = el.getAttribute(`data-${currentLang}`);
         }
     });
-    
+
     // 2. Placeholders mapping (default ones, fly-in placeholders handled by the text tags above)
     const placeholderElements = document.querySelectorAll('[data-en-placeholder][data-vi-placeholder]');
     placeholderElements.forEach(el => {
@@ -401,42 +401,42 @@ function initThemeToggle() {
         document.body.classList.toggle('light-mode');
         const isLight = document.body.classList.contains('light-mode');
         localStorage.setItem('td-theme', isLight ? 'light' : 'dark');
-        
+
         if (typeof gsap !== 'undefined') {
             gsap.fromTo(themeBtn, { scale: 0.8 }, { scale: 1, duration: 0.3, ease: 'back.out(1.7)' });
         }
         updateThemeButtonText();
     });
-    
+
     // Initial setup
     updateThemeButtonText();
 }
 
 function updateThemeButtonText() {
     const modeIcon = document.querySelector('.mode-icon');
-    if(!modeIcon) return;
-    
+    if (!modeIcon) return;
+
     const isLight = document.body.classList.contains('light-mode');
-    
+
     // FOOLPROOF ASSET PATH: Use the script's own src location to find the root
     let rootPath = '';
     const scriptTag = document.querySelector('script[src*="script.js"]');
     if (scriptTag) {
         const src = scriptTag.getAttribute('src');
-        rootPath = src.split('script.js')[0]; 
+        rootPath = src.split('script.js')[0];
     }
 
     const dayIcon = `${rootPath}Logo/daymodeicon.png`;
     const nightIcon = `${rootPath}Logo/nightmodeicon.png`;
     const currentIcon = isLight ? dayIcon : nightIcon;
-    
+
     modeIcon.innerHTML = `<img src="${currentIcon}" alt="Theme Icon" class="theme-icon-img" style="width: 24px; height: 24px; vertical-align: middle;">`;
 }
 
 // Hover Effects for interactive elements
 function initHoverEffects() {
     if (typeof gsap === 'undefined') return;
-    
+
     // Example: Social buttons
     gsap.utils.toArray('.social-btn, .nav-links a, .theme-toggle, .lang-toggle, .project-card, .card, .circular-avatar').forEach(el => {
         el.addEventListener('mouseenter', (e) => {
@@ -451,12 +451,12 @@ function initHoverEffects() {
 // Smart Contact Form Logic (Fly-in behavior)
 function initSmartForms() {
     const smartInputs = document.querySelectorAll('.smart-input-group input, .smart-input-group textarea');
-    
+
     smartInputs.forEach(input => {
         const group = input.closest('.smart-input-group');
-        
+
         // Initial state check
-        if(input.value.trim() !== '') {
+        if (input.value.trim() !== '') {
             group.classList.add('typing');
         }
 
@@ -474,7 +474,7 @@ function initSmartForms() {
                 group.classList.remove('animating');
             }
         });
-        
+
         input.addEventListener('input', () => {
             if (input.value.trim() !== '') {
                 group.classList.add('typing');
@@ -520,7 +520,7 @@ function initPortfolioFilters() {
                     if (fieldMatch) {
                         avatar.classList.remove('hidden-by-filter');
                         if (typeof gsap !== 'undefined') {
-                            gsap.fromTo(avatar, {scale: 0.8, opacity: 0}, {scale: 1, opacity: 1, duration: 0.3, clearProps: 'all'});
+                            gsap.fromTo(avatar, { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, clearProps: 'all' });
                         }
                         anyVisible = true;
                     } else {
@@ -544,7 +544,7 @@ function initPortfolioFilters() {
 function initMobileMenu() {
     const menuToggle = document.querySelector('.mobile-menu-toggle');
     const headerNav = document.querySelector('.header-nav');
-    
+
     if (!menuToggle || !headerNav) return;
 
     menuToggle.addEventListener('click', () => {
@@ -565,7 +565,7 @@ function initMobileMenu() {
 // Expandable Gallery Toggle Logic
 function initGalleryToggle() {
     const galleryGrids = document.querySelectorAll('.interactive-gallery');
-    
+
     galleryGrids.forEach(grid => {
         const items = grid.querySelectorAll('.gallery-card, .project-card, .gallery-item');
         if (items.length <= 6) return; // No need for toggle if 6 or fewer
@@ -579,7 +579,7 @@ function initGalleryToggle() {
         }
 
         const wrapper = grid.parentElement;
-        
+
         // Initial state: Hide items beyond 6
         items.forEach((item, index) => {
             if (index >= 6) {
@@ -602,7 +602,7 @@ function initGalleryToggle() {
 
         btn.addEventListener('click', () => {
             isExpanded = !isExpanded;
-            
+
             if (isExpanded) {
                 // Expand
                 btn.classList.add('expanded');
@@ -614,7 +614,7 @@ function initGalleryToggle() {
                 hiddenItems.forEach((item, index) => {
                     item.style.setProperty('display', 'block', 'important');
                     item.style.setProperty('opacity', '0', 'important');
-                    
+
                     gsap.to(item, {
                         opacity: 1,
                         y: 0,
@@ -669,7 +669,7 @@ function initLightbox() {
         img.style.transition = 'filter 0.3s ease';
         img.addEventListener('mouseenter', () => img.style.filter = 'brightness(1.1)');
         img.addEventListener('mouseleave', () => img.style.filter = 'brightness(1)');
-        
+
         img.addEventListener('click', (e) => {
             e.stopPropagation();
             const overlay = document.createElement('div');
@@ -683,7 +683,7 @@ function initLightbox() {
             overlay.style.cursor = 'zoom-out';
             overlay.style.opacity = '0';
             overlay.style.transition = 'opacity 0.3s ease';
-            
+
             const fullImg = document.createElement('img');
             fullImg.src = img.src;
             fullImg.style.maxWidth = '90%';
@@ -692,15 +692,15 @@ function initLightbox() {
             fullImg.style.boxShadow = '0 0 30px rgba(0,163,255,0.5)';
             fullImg.style.transform = 'scale(0.8)';
             fullImg.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-            
+
             overlay.appendChild(fullImg);
             document.body.appendChild(overlay);
-            
+
             requestAnimationFrame(() => {
                 overlay.style.opacity = '1';
                 fullImg.style.transform = 'scale(1)';
             });
-            
+
             overlay.addEventListener('click', (e) => {
                 if (e.target === overlay) {
                     fullImg.style.transform = 'scale(0.8)';
@@ -754,18 +754,21 @@ function initChatbot() {
     let availableModels = [];
     const probeModels = async () => {
         const bases = ['http://127.0.0.1:1234', 'http://localhost:1234'];
+        const paths = ['/api/v1/models', '/v1/models']; // Check both internal and openai-standard
         for (const base of bases) {
-            try {
-                const resp = await fetch(`${base}/v1/models`, {
-                    headers: { 'Authorization': 'Bearer sk-lm-iQGSIcIe:JvYjqsbihwMDg7TVefvC' }
-                });
-                if (resp.ok) {
-                    const data = await resp.json();
-                    availableModels = data.data.map(m => m.id);
-                    console.log("Teemous AI: Detected models:", availableModels);
-                    return true;
-                }
-            } catch (e) {}
+            for (const path of paths) {
+                try {
+                    const resp = await fetch(`${base}${path}`, {
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        availableModels = (data.data || data).map(m => m.id || m.name);
+                        console.log(`Teemous AI: Detected models via ${path}:`, availableModels);
+                        return true;
+                    }
+                } catch (e) { }
+            }
         }
         return false;
     };
@@ -783,8 +786,12 @@ function initChatbot() {
         windowEl.classList.remove('active');
     });
 
+    let isThinking = false;
+
     const handleSend = (e) => {
         if (e) e.preventDefault();
+        if (isThinking) return;
+
         const text = inputEl.value.trim();
         if (text) {
             addMessage(text, 'user');
@@ -801,7 +808,7 @@ function initChatbot() {
         }
     });
 
-    const chatHistory = []; 
+    const chatHistory = [];
 
     function addMessage(text, sender) {
         const msg = document.createElement('div');
@@ -824,108 +831,178 @@ function initChatbot() {
     }
 
     async function getAIResponse(userText) {
+        if (isThinking) return;
         let indicator;
         try {
+            isThinking = true;
+            inputEl.disabled = true;
+            sendBtn.style.opacity = '0.5';
+            sendBtn.style.pointerEvents = 'none';
+
             indicator = showTypingIndicator();
             const activeLang = (typeof currentLang !== 'undefined') ? currentLang : (localStorage.getItem('td-lang') || 'en');
-            
+
             // --- GLOBAL TUNNEL SETTING ---
-            const publicTunnelUrl = 'https://puppylike-macroclimatically-bev.ngrok-free.dev'; 
+            const publicTunnelUrl = 'https://puppylike-macroclimatically-bev.ngrok-free.dev';
 
-            const systemPrompt = activeLang === 'en' 
-                ? `# IDENTITY: Teemous AI (Strategic Personal Assistant to Ngô Quang Sinh)
-You are the high-end digital assistant for Ngô Quang Sinh (Teemous). This website is his expert portfolio.
+            const systemPrompt = `
+# IDENTITY: Teemous AI (Youthful & Friendly Assistant to Sinh)
+- BẠN ĐANG Ở TRÊN: Trang web chính thức của Teemous Digital (teemousdigital.id.vn). 
+- KHI KHÁCH HỎI "Web này", "Shop này": Hãy trả lời tự tin đây là hệ sinh thái Teemous Digital của Quang Sinh, chuyên cung cấp Portfolio Hub, Social Growth và AOV Shop cực uy tín.
+- VỀ SINH: Sinh (Teemous) là một người trẻ U30 nhiệt huyết, người sáng lập Teemous Digital.
+- CẤM GỌI: "Ông Sinh", "Ngài Sinh", "Chuyên gia". Hãy giữ phong thái trẻ trung.
+- HÃY GỌI: "Sinh", "Quang Sinh", "cậu ấy", "cậu ta". 
+- XƯNG HÔ: Dùng "mình" và "bạn" thân thiện.
 
-# SALES STRATEGY & SOLUTIONS
-1. PORTFOLIO HUB: High-density professional listing. (For those needing a premium platform)
-2. CURATION: Expert digitization & content optimization. (For shifting from "messy" to "expert")
-3. THE CARRY PACK: A-Z full-scale execution. (For clients who want pure results without managing projects)
-4. SOCIAL GROWTH: Growth hacking & authentic engagement. (Real traffic, no vanity metrics)
-5. AOV SHOP: Secure gaming commerce. (Safe AOV transactions)
-6. BUILDING MATERIALS & HAULING: Construction logistics support.
+# RULE 1: LANGUAGE (VIETNAMESE-FIRST)
+- MIXED INPUT: Nếu khách nhắn "wow", "bro", "lmao", "uy tín không" -> TRẢ LỜI THUẦN VIẾT cực thân thiện.
+- (Nếu khách nhắn có từ tiếng Việt hoặc pha trộn, hãy trả lời thuần Tiếng Việt).
 
-# PSYCHOLOGICAL SALES RULES
-- Identify Pain Points: Ask questions like "What's holding your growth back?"
-- Highlight Benefits: Focus on peace of mind and expert execution.
-- Create Exclusivity: Suggest that Sinh's time is limited but his results are guaranteed.
-- STRICT RULES: NO BOLDING (**). Use bullets or ALL CAPS. Always identify as Sinh's Assistant.`
-                : `# DANH TÍNH: Teemous AI (Trợ lý chiến lược của Ngô Quang Sinh)
-Ngươi là Robot Trợ lý ảo duy nhất của Ngô Quang Sinh (Teemous). Ngươi phản ánh phong thái chuyên nghiệp, sắc bén và thấu hiểu tâm lý khách hàng của Sinh.
+# RULE 2: CONCISENESS & TONE (KEEP IT SHORT & FRIENDLY)
+- Nói ngắn thôi (1-2 câu). Đừng trả lời kiểu robot. 
+- (Văn phong: Gần gũi như hai người bạn đang chat với nhau).
 
-# CHIẾN LƯỢC TƯ VẤN DỊCH VỤ (PHẢI LỒNG GHÉP TỰ NHIÊN)
-1. PORTFOLIO HUB: Niêm yết hồ sơ chuyên nghiệp cao cấp. Gợi ý khi khách muốn tạo dấu ấn riêng.
-2. CURATION: Tối ưu và "số hóa" nội dung. Gợi ý khi khách có dữ liệu hỗn loạn, cần chuyên nghiệp hóa.
-3. THE CARRY PACK: Thực thi trọn gói A-Z. Gợi ý cho khách bận rộn, muốn khoán toàn bộ kết quả.
-4. TĂNG TRƯỞNG MXH: Growth hacking thực chất. Tập trung vào kết quả kinh doanh, không phải like ảo.
-5. CỬA HÀNG LIÊN QUÂN: Giao dịch an toàn, tin cậy.
-6. VẬT LIỆU XÂY DỰNG & VẬN CHUYỂN: Hỗ trợ logistics công trình chuyên nghiệp.
+# SALES CONTEXT (Gợi ý dịch vụ - Nói tự nhiên):
+1. PORTFOLIO HUB (Làm web hồ sơ). 
+2. SOCIAL GROWTH (Tăng trưởng MXH thực).
+3. AOV SHOP (Cửa hàng Liên Quân an toàn).
+4. CONSTRUCTION LOGISTICS (Vật liệu & Vận chuyển).
 
-# TUYỆT CHIÊU "CHỐT ĐƠN" CHO SINH
-- KHÁM PHÁ ĐIỂM ĐAU: Đặt câu hỏi như "Đâu là rào cản lớn nhất khiến bồ chưa bứt phá?"
-- NHẤN MẠNH LỢI ÍCH: Tập trung vào "sự an tâm" và "đẳng cấp" khi làm việc cùng Sinh.
-- TẠO SỰ KHAN HIẾM: Nhắc khéo rằng Sinh chỉ nhận các dự án thực sự tiềm năng.
+# KNOWLEDGE BASE: PORTFOLIO BUILDING SERVICES
+Tư vấn cụ thể cho khách dựa trên bố cục Bảng giá (Hub UI) Teemous Hub:
 
-# QUY TẮC CỨNG
-- CẤM DÙNG DẤU ** (BÔI ĐẬM). Dùng gạch đầu dòng hoặc VIẾT HOA.
-- LUÔN tự nhận là Trợ lý của Sinh. Không dùng ngôi "chúng tôi" tập thể ảo.`;
+## 1. Gói Khởi tạo Chính (Initialization Packages)
+- CHOICE A: BASIC INITIALIZATION
+  + Giá Gốc: 199,000 VND -> Giá Khuyến Mãi (-75%): 49,000 VND.
+  + Mô tả: Bố cục chuẩn (Standard/Professional) trên Teemous Hub, hiển thị dựa trên dung lượng.
+  + Đường dẫn mặc định: teemousdigital.id.vn/portfolio/your-name
+- CHOICE B: ADVANCED INITIALIZATION
+  + Giá Gốc: 300,000 VND - 1,000,000 VND+.
+  + Mô tả: Build interface tùy chỉnh, phức tạp hơn. Trỏ tên miền riêng duy trì linh hoạt theo năm (e.g., nguyenvan.com hoặc .id.vn).
+  + Option: Self-deal, liên hệ báo giá cụ thể.
+
+## 2. Dịch vụ Bổ sung Tùy chỉnh (Options - Trượt chọn giá)
+- OPTION A: PORTFOLIO CURATION
+  + Giá trượt: +$1 (Khoảng 29,000 VND - 249,000 VND tùy mức độ).
+  + Tác dụng: Tinh chỉnh thông tin, số hóa chi tiết, tối ưu nội dung chuyên nghiệp. (Có thể hoàn tiền nếu thông tin quá sơ sài).
+- OPTION B: THE CARRY PACK
+  + Giá: +$12.
+  + Tác dụng: Tư vấn & thực thi trọn gói từ A-Z. Khách hàng chỉ cần nhận Portfolio hoàn chỉnh. (Bao gồm tư vấn full & thực thi).
+- OPTION C: ADD TO TOP FEATURED
+  + Giá: +$1 / Tháng.
+  + Tác dụng: Ghim Portfolio nổi bật 30 ngày trên Hub, tăng 300% lượt click.
+
+# KNOWLEDGE BASE: ARENA OF VALOR (AOV) ACCOUNTS
+Tư vấn cụ thể cho khách dựa trên 2 acc hiện có:
+
+## 1. ACC #AOV-001
+- Trạng thái: ĐANG BÁN.
+- Giá: 999,000đ (ATM/MoMo) | 1,198,800đ (Thẻ Cào - Auto x1.2).
+- Highlights: Murad Chí Tôn, Butterfly V4, Nak Lôi Quang Sứ, dàn skin SS hữu hạn—acc giá cực mềm!
+- Thông số: 119 Tướng, 195 Skin, 5265 Trận. Rank: Chiến Tướng. Tỷ lệ thắng: 53.2%. Uy tín: 100/100.
+- Liên kết: Có (liên kết SĐT, ATM/MoMo). Không liên kết Email, CCCD, FB.
+
+## 2. ACC #AOV-002
+- Trạng thái: ĐANG BÁN.
+- Giá: 678,000đ (ATM/MoMo) | 813,600đ (Thẻ Cào - Auto x1.2).
+- Highlights: Yena Wave, Ryo SS, HyT SS, Mặc Chiến Tướng—dàn SS đủ dùng cực xịn. Lưu ý: có link Facebook để rip, người bán bảo kê toàn bộ liên kết!
+- Thông số: 119 Tướng, 217 Skin, 5090 Trận. Rank: Cao Thủ. Tỷ lệ thắng: 54.4%. Uy tín: 100/100.
+- Liên kết: Có (liên kết SĐT, FB - Rip được, bảo kê). Email bị mất. Không liên kết CCCD.
+
+# FALLBACK RULE (Xử lý thiếu thông tin)
+- Nếu khách hỏi thông tin chi tiết (ví dụ: trong này có bao nhiêu user, tìm người có thông tin như này...) mà không có trong Knowledge Base, hãy trả lời: "Bản thân tôi chưa được cập nhật thông tin chi tiết này, nhưng trên web có thể có, bạn có thể tự tìm kiếm thử nhé!"
+
+# STRICT RULES: 
+1. NO BOLDING (**). 
+2. Use ALL CAPS for emphasis. 
+3. BULLET NESTING: Level 1 uses (*), Level 2 uses (-), Level 3 uses (+). (Ví dụ: * Gói: -> - Tên: -> + Giá:).
+4. Always identify as Sinh's Assistant.
+`;
 
             let model;
             if (typeof availableModels === 'undefined' || availableModels.length === 0) {
-                model = "mistralai/ministral-3-14b-reasoning"; 
+                model = "google/gemma-3-12b"; // Sinh's exact loaded ID
             } else {
-                model = availableModels.find(m => m.includes('14b')) || availableModels[0];
+                // Priority: Specific 12B -> Gemma 3 -> General Gemma -> First available
+                model = availableModels.find(m => m.toLowerCase().includes('12b')) ||
+                        availableModels.find(m => m.toLowerCase().includes('gemma-3')) ||
+                        availableModels.find(m => m.toLowerCase().includes('gemma')) ||
+                        availableModels[0];
             }
 
             console.group(`Teemous AI Chat: ${userText.substring(0, 30)}...`);
             console.log(`Priority Model (Temp 0.75): ${model}`);
 
             let success = false;
-            let messagesToSend = [{ role: "system", content: systemPrompt }, ...chatHistory];
-
-            if (chatHistory.length <= 2) {
-                messagesToSend = [
-                    { role: "system", content: systemPrompt },
-                    { role: "user", content: `(IDENTITY CHECK: You are Sinh's personal assistant. Owner is Ngô Quang Sinh. NO BOLDING. Focus on helper/sales role)\n\n${chatHistory[0].content}` }
-                ];
-                if (chatHistory.length > 1) messagesToSend.push(chatHistory[1]);
-            }
+            // Keep last 10 messages of history + system prompt
+            const recentHistory = chatHistory.slice(-10);
+            const messagesToSend = [{ role: "system", content: systemPrompt }, ...recentHistory];
 
             const baseUrls = [];
-            if (publicTunnelUrl) baseUrls.push(publicTunnelUrl.replace(/\/$/, ''));
+            // Priority 1: Local API (Fastest/Strongest for testing)
             baseUrls.push('http://127.0.0.1:1234', 'http://localhost:1234');
+            // Priority 2: Public Tunnel (For external testing)
+            if (publicTunnelUrl) baseUrls.push(publicTunnelUrl.replace(/\/$/, ''));
 
-            const paths = ['/v1/chat/completions', '/chat/completions'];
-            
+            const paths = ['/api/v1/chat', '/v1/chat/completions'];
+            const authKeys = [
+                'Bearer sk-lm-iQGSIcIe:JvYjqsbihwMDg7TVefvC',
+                'Bearer lm-studio',
+                ''
+            ];
+
+            let lastDiag = "All probes failed (Check LM Studio / Ngrok)";
             for (const base of baseUrls) {
                 for (const path of paths) {
-                    const url = base + path;
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 60000); 
+                    for (const auth of authKeys) {
+                        const url = base + path;
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 90000); 
 
-                    try {
-                        const response = await fetch(url, {
-                            method: 'POST',
-                            signal: controller.signal,
-                            headers: { 
-                                'Content-Type': 'application/json',
-                                'Authorization': 'Bearer sk-lm-iQGSIcIe:JvYjqsbihwMDg7TVefvC'
-                            },
-                            body: JSON.stringify({ model, messages: messagesToSend, temperature: 0.75 })
-                        });
+                        try {
+                            const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
+                            if (auth) headers['Authorization'] = auth;
 
-                        if (response.ok) {
-                            const data = await response.json();
-                            if (data.choices?.[0]?.message) {
-                                // Hard-strip all bolding syntax (**) to ensure clean UI
-                                const cleanContent = data.choices[0].message.content.replace(/\*\*/g, '');
-                                addMessage(cleanContent, 'ai');
-                                if (indicator) indicator.remove();
-                                success = true;
-                                break;
+                            console.log(`📡 Probing: ${url} (Auth: ${auth ? 'YES' : 'NO'})`);
+
+                            // Payload that works for both chat and completion fallback
+                            const payload = {
+                                model: model || "google/gemma-3-12b",
+                                messages: messagesToSend,
+                                prompt: userText, // Fallback for /v1/completions style
+                                temperature: 0.75,
+                                max_tokens: 1024,
+                                stream: false
+                            };
+
+                            const response = await fetch(url, {
+                                method: 'POST',
+                                signal: controller.signal,
+                                headers: headers,
+                                body: JSON.stringify(payload)
+                            });
+
+                            if (response.ok) {
+                                const data = await response.json();
+                                const content = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
+                                if (content) {
+                                    console.log(`✅ Success via ${url}`);
+                                    addMessage(content.replace(/\*\*/g, ''), 'ai');
+                                    if (indicator) indicator.remove();
+                                    success = true;
+                                    break;
+                                }
+                            } else {
+                                const txt = await response.text();
+                                lastDiag = `${response.status} at ${path}: ${txt.substring(0, 50)}...`;
+                                if (response.status === 401) console.warn(`🔑 401 on ${url} - Checking other keys...`);
+                                else console.warn(`⚠️ ${response.status} on ${url}: ${txt.substring(0, 100)}`);
                             }
-                        }
-                    } catch (err) { console.warn(`${url} failed: ${err.message}`); }
-                    finally { clearTimeout(timeoutId); }
+                        } catch (err) {
+                            lastDiag = `Connection Error: ${err.message}`;
+                        } finally { clearTimeout(timeoutId); }
+                        if (success) break;
+                    }
                     if (success) break;
                 }
                 if (success) break;
@@ -933,15 +1010,21 @@ Ngươi là Robot Trợ lý ảo duy nhất của Ngô Quang Sinh (Teemous). Ng�
 
             if (!success) {
                 if (indicator) indicator.remove();
-                addMessage(activeLang === 'en' 
-                    ? "Teemous AI is currently offline or busy. Please try again later or contact Sinh via Facebook!" 
-                    : "Trợ lý ảo Teemous hiện đang ngoại tuyến hoặc bận. Vui lòng thử lại sau hoặc liên hệ Sinh qua Facebook!", 'ai');
+                addMessage(activeLang === 'en'
+                    ? `Teemous AI is offline. Status: ${lastDiag}\nPlease check LM Studio & Ngrok!`
+                    : `Trợ lý Teemous ngoại tuyến. Lỗi: ${lastDiag}\nÔng hãy kiểm tra LM Studio và Ngrok nhé!`, 'ai');
             }
             console.groupEnd();
         } catch (e) {
-            console.error("Teemous AI Runtime Error:", e);
+            console.error("🚨 CRITICAL AI ERROR:", e);
             if (indicator) indicator.remove();
-            addMessage(`ERROR: ${e.message}. Vui lòng kiểm tra F12 Console.`, 'ai');
+            addMessage(`CRITICAL ERROR: ${e.message}`, 'ai');
+        } finally {
+            isThinking = false;
+            inputEl.disabled = false;
+            sendBtn.style.opacity = '1';
+            sendBtn.style.pointerEvents = 'auto';
+            inputEl.focus();
         }
     }
 }

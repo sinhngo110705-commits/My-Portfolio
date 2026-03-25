@@ -3351,6 +3351,10 @@ select option {
     border-radius: 1rem;
     font-size: 0.9rem;
     line-height: 1.4;
+    word-wrap: break-word;
+    word-break: break-word; /* Safer for URLs */
+    overflow-wrap: anywhere; 
+    white-space: pre-wrap;
     animation: messageIn 0.3s ease-out forwards;
 }
 
