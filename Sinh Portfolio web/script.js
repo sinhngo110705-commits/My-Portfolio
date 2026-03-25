@@ -754,7 +754,7 @@ function initChatbot() {
     let availableModels = [];
     const probeModels = async () => {
         const bases = ['http://127.0.0.1:1234', 'http://localhost:1234'];
-        const paths = ['/api/v1/models', '/v1/models']; // Check both internal and openai-standard
+        const paths = ['/api/v1/models', '/v1/models'];
         for (const base of bases) {
             for (const path of paths) {
                 try {
@@ -842,13 +842,17 @@ function initChatbot() {
             indicator = showTypingIndicator();
             const activeLang = (typeof currentLang !== 'undefined') ? currentLang : (localStorage.getItem('td-lang') || 'en');
 
-            // --- GLOBAL TUNNEL SETTING ---
-            const publicTunnelUrl = 'https://puppylike-macroclimatically-bev.ngrok-free.dev';
+            const publicTunnelBase = 'https://puppylike-macroclimaticaly-bev.ngrok-free';
+            const baseUrls = [
+                publicTunnelBase + '.app',
+                publicTunnelBase + '.dev',
+                'http://127.0.0.1:1234',
+                'http://localhost:1234'
+            ];
 
             const systemPrompt = `
 # IDENTITY: Teemous AI (Youthful & Friendly Assistant to Sinh)
-- BẠN ĐANG Ở TRÊN: Trang web chính thức của Teemous Digital (teemousdigital.id.vn). 
-- KHI KHÁCH HỎI "Web này", "Shop này": Hãy trả lời tự tin đây là hệ sinh thái Teemous Digital của Quang Sinh, chuyên cung cấp Portfolio Hub, Social Growth và AOV Shop cực uy tín.
+- KHI KHÁCH HỎI "Web này", "Của ai": Hãy trả lời tự tin đây là Hệ sinh thái Dịch vụ & Portfolio Hub của Quang Sinh. KHÔNG PHẢI chỉ là một cái Shop thuần túy. Đây là nơi tập trung các giải pháp xây dựng thương hiệu cá nhân, Portfolio chuyên nghiệp và hệ sinh thái sáng tạo cho người trẻ.
 - VỀ SINH: Sinh (Teemous) là một người trẻ U30 nhiệt huyết, người sáng lập Teemous Digital.
 - CẤM GỌI: "Ông Sinh", "Ngài Sinh", "Chuyên gia". Hãy giữ phong thái trẻ trung.
 - HÃY GỌI: "Sinh", "Quang Sinh", "cậu ấy", "cậu ta". 
@@ -921,98 +925,96 @@ Tư vấn cụ thể cho khách dựa trên 2 acc hiện có:
 
             let model;
             if (typeof availableModels === 'undefined' || availableModels.length === 0) {
-                model = "google/gemma-3-12b"; // Sinh's exact loaded ID
+                model = "google/gemma-3-12b";
             } else {
-                // Priority: Specific 12B -> Gemma 3 -> General Gemma -> First available
                 model = availableModels.find(m => m.toLowerCase().includes('12b')) ||
                         availableModels.find(m => m.toLowerCase().includes('gemma-3')) ||
                         availableModels.find(m => m.toLowerCase().includes('gemma')) ||
                         availableModels[0];
             }
 
-            console.group(`Teemous AI Chat: ${userText.substring(0, 30)}...`);
-            console.log(`Priority Model (Temp 0.75): ${model}`);
-
             let success = false;
-            // Keep last 10 messages of history + system prompt
-            const recentHistory = chatHistory.slice(-10);
-            const messagesToSend = [{ role: "system", content: systemPrompt }, ...recentHistory];
-
-            const baseUrls = [];
-            // Priority 1: Local API (Fastest/Strongest for testing)
-            baseUrls.push('http://127.0.0.1:1234', 'http://localhost:1234');
-            // Priority 2: Public Tunnel (For external testing)
-            if (publicTunnelUrl) baseUrls.push(publicTunnelUrl.replace(/\/$/, ''));
-
-            const paths = ['/api/v1/chat', '/v1/chat/completions'];
-            const authKeys = [
-                'Bearer sk-lm-iQGSIcIe:JvYjqsbihwMDg7TVefvC',
-                'Bearer lm-studio',
-                ''
-            ];
-
             let lastDiag = "All probes failed (Check LM Studio / Ngrok)";
+            
+            console.group(`Teemous AI Chat: ${userText.substring(0, 30)}...`);
+            console.log(`Model: ${model}`);
+
+            const recentHistory = chatHistory.slice(-10);
+            const messagesToSend = [{ role: "system", content: systemPrompt }, ...recentHistory.map(m => ({
+                role: m.role,
+                content: m.content
+            }))];
+
+            // 1. PHASE 1: FIND ACTIVE ENDPOINT
+            let activeBase = null;
+            // baseUrls already defined above
             for (const base of baseUrls) {
-                for (const path of paths) {
-                    for (const auth of authKeys) {
-                        const url = base + path;
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), 90000); 
-
-                        try {
-                            const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
-                            if (auth) headers['Authorization'] = auth;
-
-                            console.log(`📡 Probing: ${url} (Auth: ${auth ? 'YES' : 'NO'})`);
-
-                            // Payload that works for both chat and completion fallback
-                            const payload = {
-                                model: model || "google/gemma-3-12b",
-                                messages: messagesToSend,
-                                prompt: userText, // Fallback for /v1/completions style
-                                temperature: 0.75,
-                                max_tokens: 1024,
-                                stream: false
-                            };
-
-                            const response = await fetch(url, {
-                                method: 'POST',
-                                signal: controller.signal,
-                                headers: headers,
-                                body: JSON.stringify(payload)
-                            });
-
-                            if (response.ok) {
-                                const data = await response.json();
-                                const content = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
-                                if (content) {
-                                    console.log(`✅ Success via ${url}`);
-                                    addMessage(content.replace(/\*\*/g, ''), 'ai');
-                                    if (indicator) indicator.remove();
-                                    success = true;
-                                    break;
-                                }
-                            } else {
-                                const txt = await response.text();
-                                lastDiag = `${response.status} at ${path}: ${txt.substring(0, 50)}...`;
-                                if (response.status === 401) console.warn(`🔑 401 on ${url} - Checking other keys...`);
-                                else console.warn(`⚠️ ${response.status} on ${url}: ${txt.substring(0, 100)}`);
-                            }
-                        } catch (err) {
-                            lastDiag = `Connection Error: ${err.message}`;
-                        } finally { clearTimeout(timeoutId); }
-                        if (success) break;
+                if (!base) continue;
+                const ctrl = new AbortController();
+                const tid = setTimeout(() => ctrl.abort(), 5000);
+                try {
+                    console.log(`🔍 Connectivity check: ${base}/v1/models`);
+                    const check = await fetch(base + '/v1/models', { 
+                        method: 'GET', 
+                        signal: ctrl.signal 
+                    });
+                    clearTimeout(tid);
+                    if (check.ok) {
+                        activeBase = base;
+                        console.log(`📡 Server detected at: ${base}`);
+                        break;
                     }
-                    if (success) break;
+                } catch (e) {
+                    clearTimeout(tid);
+                    console.log(`❌ ${base} unreachable: ${e.message}`);
                 }
-                if (success) break;
             }
 
+            if (!activeBase) {
+                lastDiag = "Cannot reach LM Studio (Timeout or Offline)";
+            } else {
+                // 2. PHASE 2: SEND MESSAGE TO ACTIVE ENDPOINT
+                const url = activeBase + '/v1/chat/completions';
+                const ctrl = new AbortController();
+                const tid = setTimeout(() => ctrl.abort(), 20000); // 20s for generation
+                try {
+                    console.log(`🚀 Sending message to: ${url}`);
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        signal: ctrl.signal,
+                        headers: { 'Content-Type': 'application/json' }, // Reverting to standard JSON
+                        body: JSON.stringify({
+                            model: model,
+                            messages: messagesToSend,
+                            temperature: 0.7,
+                            max_tokens: 1000
+                        })
+                    });
+                    clearTimeout(tid);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const content = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
+                        if (content) {
+                            addMessage(content.replace(/\*\*/g, ''), 'ai');
+                            success = true;
+                        } else {
+                            lastDiag = "Empty response from AI";
+                        }
+                    } else {
+                        const err = await response.text();
+                        lastDiag = `Server Error (${response.status}): ${err.substring(0, 40)}`;
+                    }
+                } catch (e) {
+                    lastDiag = e.message;
+                }
+            }
+
+            if (indicator) indicator.remove();
             if (!success) {
-                if (indicator) indicator.remove();
                 addMessage(activeLang === 'en'
-                    ? `Teemous AI is offline. Status: ${lastDiag}\nPlease check LM Studio & Ngrok!`
-                    : `Trợ lý Teemous ngoại tuyến. Lỗi: ${lastDiag}\nÔng hãy kiểm tra LM Studio và Ngrok nhé!`, 'ai');
+                    ? `Teemous AI is currently offline for maintenance. Please contact the website owner (Quang Sinh) directly for support!`
+                    : `Hiện tại tôi đang offline để bảo trì não bộ một chút. Bạn hãy liên hệ trực tiếp với chủ web (Quang Sinh) để được hỗ trợ nhanh nhất nhé!`, 'ai');
             }
             console.groupEnd();
         } catch (e) {
