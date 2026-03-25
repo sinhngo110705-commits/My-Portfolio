@@ -418,9 +418,9 @@ function updateThemeButtonText() {
     
     const isLight = document.body.classList.contains('light-mode');
     
-    // Use dedicated assets provided by Sinh for pixel-perfect branding
-    const dayIcon = 'Logo/daymodeicon.png';
-    const nightIcon = 'Logo/nightmodeicon.png';
+    // Use root-relative paths to ensure icons load correctly from any subfolder
+    const dayIcon = '/Logo/daymodeicon.png';
+    const nightIcon = '/Logo/nightmodeicon.png';
     const currentIcon = isLight ? dayIcon : nightIcon;
     
     // Inject the specific icon asset (removed previous invert filter)
@@ -928,8 +928,8 @@ Ngươi là Robot Trợ lý ảo duy nhất của Ngô Quang Sinh (Teemous). Ng�
             if (!success) {
                 if (indicator) indicator.remove();
                 addMessage(activeLang === 'en' 
-                    ? "Teemous AI is currently busy. Please try again or contact Sinh via Facebook!" 
-                    : "Teemous AI hiện đang bận (Máy chủ chưa sẵn sàng hoặc model 14B chưa tải xong). Ông thử lại sau lát nhé!", 'ai');
+                    ? "Teemous AI is currently offline or busy. Please try again later or contact Sinh via Facebook!" 
+                    : "Trợ lý ảo Teemous hiện đang ngoại tuyến hoặc bận. Vui lòng thử lại sau hoặc liên hệ Sinh qua Facebook!", 'ai');
             }
             console.groupEnd();
         } catch (e) {

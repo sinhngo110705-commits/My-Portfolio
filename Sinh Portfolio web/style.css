@@ -2409,6 +2409,20 @@ footer {
     border-radius: 1.875rem !important;
 }
 
+.beta-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.45rem;
+    border: 1px solid var(--neon-purple);
+    border-radius: 4px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+    background: rgba(156, 39, 176, 0.1);
+    color: var(--neon-purple);
+    box-shadow: 0 0 10px rgba(156, 39, 176, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 /* Filtering Options & Glass Select Contrast */
 .glass-select {
     appearance: none !important;
