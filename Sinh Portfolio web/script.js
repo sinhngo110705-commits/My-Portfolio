@@ -1,15 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
-    gsap.registerPlugin(ScrollTrigger);
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+    }
 
     initBackgroundAnimation();
     initScrollAnimations();
     initLanguageToggle();
     initThemeToggle();
     initHoverEffects();
-    initPortfolioFilters(); // Ensure Hub filtering initializes
+    initPortfolioFilters(); 
     initMobileMenu();
     initGalleryToggle();
     initScrollProgress();
+    initChatbot();
 });
 
 function initScrollProgress() {
@@ -138,26 +141,28 @@ function initScrollAnimations() {
     }
 
     // Community & Academic Records Entrance
-    if (document.getElementById('community-academic')) {
-        const cards = document.querySelectorAll('#community-academic .gallery-card:not(.hidden-item)');
-        console.log("Gallery Init Cards found:", cards.length);
+    const academicSection = document.getElementById('community-academic');
+    if (academicSection) {
+        const cards = academicSection.querySelectorAll('.gallery-card:not(.hidden-item)');
         
-        gsap.from(cards, {
-            scrollTrigger: {
-                trigger: '#community-academic',
-                start: 'top 95%',
-                once: true
-            },
-            // Remove opacity: 0 to ensure images stay visible from CSS
-            y: 40,
-            duration: 0.8,
-            stagger: 0.1,
-            ease: 'power3.out'
-        });
+        if (cards.length > 0) {
+            gsap.from(cards, {
+                scrollTrigger: {
+                    trigger: academicSection,
+                    start: 'top 95%',
+                    once: true
+                },
+                y: 40,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: 'power3.out'
+            });
+        }
     }
 
-    if (document.getElementById('contact')) {
-        gsap.fromTo('#contact-form', 
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        gsap.fromTo(contactForm, 
             { opacity: 0 },
             {
                 scrollTrigger: {
@@ -169,7 +174,7 @@ function initScrollAnimations() {
                 opacity: 1,
                 ease: 'power2.out',
                 onComplete: () => {
-                   gsap.set('#contact-form', { clearProps: 'all', opacity: 1, visibility: 'visible' });
+                   gsap.set(contactForm, { clearProps: 'all', opacity: 1, visibility: 'visible' });
                 }
             }
         );
@@ -180,7 +185,6 @@ function initScrollAnimations() {
         const criticalElements = document.querySelectorAll('.social-btn, .project-card, .section-frame, .contact-card');
         criticalElements.forEach(el => {
             if (window.getComputedStyle(el).opacity === '0') {
-                console.warn('GSAP safety fallback triggered for:', el);
                 gsap.to(el, { opacity: 1, y: 0, duration: 0.5, clearProps: 'all' });
             }
         });
@@ -358,7 +362,7 @@ function updateAllTranslations() {
     // 0. Update the Lang Toggle button text depending on current language
     const langBtn = document.getElementById('lang-toggle');
     if (langBtn) {
-        langBtn.innerText = currentLang === 'en' ? 'Bạn là người Việt?' : 'Having difficulty with Vietnamese?';
+        langBtn.innerText = currentLang === 'en' ? 'EN' : 'VI';
     }
 
     // 1. Text elements
@@ -397,7 +401,10 @@ function initThemeToggle() {
         document.body.classList.toggle('light-mode');
         const isLight = document.body.classList.contains('light-mode');
         localStorage.setItem('td-theme', isLight ? 'light' : 'dark');
-        gsap.fromTo(themeBtn, { scale: 0.8 }, { scale: 1, duration: 0.3, ease: 'back.out(1.7)' });
+        
+        if (typeof gsap !== 'undefined') {
+            gsap.fromTo(themeBtn, { scale: 0.8 }, { scale: 1, duration: 0.3, ease: 'back.out(1.7)' });
+        }
         updateThemeButtonText();
     });
     
@@ -410,28 +417,22 @@ function updateThemeButtonText() {
     if(!modeIcon) return;
     
     const isLight = document.body.classList.contains('light-mode');
-    if(isLight) {
-        modeIcon.setAttribute('data-en', '☀️ Day');
-        modeIcon.setAttribute('data-vi', '☀️ Ngày');
-    } else {
-        modeIcon.setAttribute('data-en', '🌙 Night');
-        modeIcon.setAttribute('data-vi', '🌙 Đêm');
-    }
-    modeIcon.innerHTML = modeIcon.getAttribute(`data-${currentLang}`);
+    
+    // Use dedicated assets provided by Sinh for pixel-perfect branding
+    const dayIcon = 'Logo/daymodeicon.png';
+    const nightIcon = 'Logo/nightmodeicon.png';
+    const currentIcon = isLight ? dayIcon : nightIcon;
+    
+    // Inject the specific icon asset (removed previous invert filter)
+    modeIcon.innerHTML = `<img src="${currentIcon}" alt="Theme Icon" class="theme-icon-img" style="width: 24px; height: 24px; vertical-align: middle;">`;
 }
 
 // Hover Effects for interactive elements
 function initHoverEffects() {
+    if (typeof gsap === 'undefined') return;
+    
     // Example: Social buttons
     gsap.utils.toArray('.social-btn, .nav-links a, .theme-toggle, .lang-toggle, .project-card, .card, .circular-avatar').forEach(el => {
-        gsap.to(el, {
-            scale: 1.05,
-            duration: 0.2,
-            paused: true,
-            ease: 'power1.inOut',
-            overwrite: true
-        }).revertOnReverse = true;
-
         el.addEventListener('mouseenter', (e) => {
             gsap.to(e.currentTarget, { scale: 1.05, duration: 0.2, ease: 'power1.inOut' });
         });
@@ -705,10 +706,10 @@ function initLightbox() {
             const closeBtn = document.createElement('div');
             closeBtn.innerHTML = '✕';
             closeBtn.style.position = 'absolute';
-            closeBtn.style.top = '20px';
-            closeBtn.style.right = '20px';
+            closeBtn.style.top = '1.25rem';
+            closeBtn.style.right = '1.25rem';
             closeBtn.style.color = 'white';
-            closeBtn.style.fontSize = '30px';
+            closeBtn.style.fontSize = '1.875rem';
             closeBtn.style.cursor = 'pointer';
             overlay.appendChild(closeBtn);
             closeBtn.addEventListener('click', (e) => {
@@ -724,5 +725,217 @@ function initLightbox() {
 // Final Global Initialization
 window.addEventListener('load', () => {
     initLightbox();
-    ScrollTrigger.refresh();
+    if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+    }
 });
+
+/**
+ * Local AI Chatbot Logic
+ * Connects to local AI API (LM Studio/Ollama) or uses Mock Mode
+ */
+function initChatbot() {
+    const container = document.getElementById('chatbot-container');
+    const toggle = document.getElementById('chatbot-toggle');
+    const windowEl = document.getElementById('chatbot-window');
+    const closeBtn = document.getElementById('chatbot-close');
+    const messagesEl = document.getElementById('chatbot-messages');
+    const inputEl = document.getElementById('chatbot-input');
+    const sendBtn = document.getElementById('chatbot-send');
+
+    if (!container || !toggle || !windowEl) return;
+
+    let availableModels = [];
+    const probeModels = async () => {
+        const bases = ['http://127.0.0.1:1234', 'http://localhost:1234'];
+        for (const base of bases) {
+            try {
+                const resp = await fetch(`${base}/v1/models`, {
+                    headers: { 'Authorization': 'Bearer sk-lm-iQGSIcIe:JvYjqsbihwMDg7TVefvC' }
+                });
+                if (resp.ok) {
+                    const data = await resp.json();
+                    availableModels = data.data.map(m => m.id);
+                    console.log("Teemous AI: Detected models:", availableModels);
+                    return true;
+                }
+            } catch (e) {}
+        }
+        return false;
+    };
+    probeModels();
+
+    toggle.addEventListener('click', () => {
+        windowEl.classList.toggle('active');
+        if (windowEl.classList.contains('active')) {
+            inputEl.focus();
+            if (availableModels.length === 0) probeModels();
+        }
+    });
+
+    closeBtn.addEventListener('click', () => {
+        windowEl.classList.remove('active');
+    });
+
+    const handleSend = (e) => {
+        if (e) e.preventDefault();
+        const text = inputEl.value.trim();
+        if (text) {
+            addMessage(text, 'user');
+            inputEl.value = '';
+            getAIResponse(text);
+        }
+    };
+
+    sendBtn.addEventListener('click', handleSend);
+    inputEl.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSend(e);
+        }
+    });
+
+    const chatHistory = []; 
+
+    function addMessage(text, sender) {
+        const msg = document.createElement('div');
+        msg.className = `message ${sender}-message`;
+        msg.innerText = text;
+        messagesEl.appendChild(msg);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        chatHistory.push({ role: sender === 'ai' ? 'assistant' : 'user', content: text });
+        if (chatHistory.length > 10) chatHistory.shift();
+        return msg;
+    }
+
+    function showTypingIndicator() {
+        const indicator = document.createElement('div');
+        indicator.className = 'typing-indicator ai-message';
+        indicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+        messagesEl.appendChild(indicator);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        return indicator;
+    }
+
+    async function getAIResponse(userText) {
+        let indicator;
+        try {
+            indicator = showTypingIndicator();
+            const activeLang = (typeof currentLang !== 'undefined') ? currentLang : (localStorage.getItem('td-lang') || 'en');
+            
+            // --- GLOBAL TUNNEL SETTING ---
+            const publicTunnelUrl = 'https://puppylike-macroclimatically-bev.ngrok-free.dev'; 
+
+            const systemPrompt = activeLang === 'en' 
+                ? `# IDENTITY: Teemous AI (Strategic Personal Assistant to Ngô Quang Sinh)
+You are the high-end digital assistant for Ngô Quang Sinh (Teemous). This website is his expert portfolio.
+
+# SALES STRATEGY & SOLUTIONS
+1. PORTFOLIO HUB: High-density professional listing. (For those needing a premium platform)
+2. CURATION: Expert digitization & content optimization. (For shifting from "messy" to "expert")
+3. THE CARRY PACK: A-Z full-scale execution. (For clients who want pure results without managing projects)
+4. SOCIAL GROWTH: Growth hacking & authentic engagement. (Real traffic, no vanity metrics)
+5. AOV SHOP: Secure gaming commerce. (Safe AOV transactions)
+6. BUILDING MATERIALS & HAULING: Construction logistics support.
+
+# PSYCHOLOGICAL SALES RULES
+- Identify Pain Points: Ask questions like "What's holding your growth back?"
+- Highlight Benefits: Focus on peace of mind and expert execution.
+- Create Exclusivity: Suggest that Sinh's time is limited but his results are guaranteed.
+- STRICT RULES: NO BOLDING (**). Use bullets or ALL CAPS. Always identify as Sinh's Assistant.`
+                : `# DANH TÍNH: Teemous AI (Trợ lý chiến lược của Ngô Quang Sinh)
+Ngươi là Robot Trợ lý ảo duy nhất của Ngô Quang Sinh (Teemous). Ngươi phản ánh phong thái chuyên nghiệp, sắc bén và thấu hiểu tâm lý khách hàng của Sinh.
+
+# CHIẾN LƯỢC TƯ VẤN DỊCH VỤ (PHẢI LỒNG GHÉP TỰ NHIÊN)
+1. PORTFOLIO HUB: Niêm yết hồ sơ chuyên nghiệp cao cấp. Gợi ý khi khách muốn tạo dấu ấn riêng.
+2. CURATION: Tối ưu và "số hóa" nội dung. Gợi ý khi khách có dữ liệu hỗn loạn, cần chuyên nghiệp hóa.
+3. THE CARRY PACK: Thực thi trọn gói A-Z. Gợi ý cho khách bận rộn, muốn khoán toàn bộ kết quả.
+4. TĂNG TRƯỞNG MXH: Growth hacking thực chất. Tập trung vào kết quả kinh doanh, không phải like ảo.
+5. CỬA HÀNG LIÊN QUÂN: Giao dịch an toàn, tin cậy.
+6. VẬT LIỆU XÂY DỰNG & VẬN CHUYỂN: Hỗ trợ logistics công trình chuyên nghiệp.
+
+# TUYỆT CHIÊU "CHỐT ĐƠN" CHO SINH
+- KHÁM PHÁ ĐIỂM ĐAU: Đặt câu hỏi như "Đâu là rào cản lớn nhất khiến bồ chưa bứt phá?"
+- NHẤN MẠNH LỢI ÍCH: Tập trung vào "sự an tâm" và "đẳng cấp" khi làm việc cùng Sinh.
+- TẠO SỰ KHAN HIẾM: Nhắc khéo rằng Sinh chỉ nhận các dự án thực sự tiềm năng.
+
+# QUY TẮC CỨNG
+- CẤM DÙNG DẤU ** (BÔI ĐẬM). Dùng gạch đầu dòng hoặc VIẾT HOA.
+- LUÔN tự nhận là Trợ lý của Sinh. Không dùng ngôi "chúng tôi" tập thể ảo.`;
+
+            let model;
+            if (typeof availableModels === 'undefined' || availableModels.length === 0) {
+                model = "mistralai/ministral-3-14b-reasoning"; 
+            } else {
+                model = availableModels.find(m => m.includes('14b')) || availableModels[0];
+            }
+
+            console.group(`Teemous AI Chat: ${userText.substring(0, 30)}...`);
+            console.log(`Priority Model (Temp 0.75): ${model}`);
+
+            let success = false;
+            let messagesToSend = [{ role: "system", content: systemPrompt }, ...chatHistory];
+
+            if (chatHistory.length <= 2) {
+                messagesToSend = [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: `(IDENTITY CHECK: You are Sinh's personal assistant. Owner is Ngô Quang Sinh. NO BOLDING. Focus on helper/sales role)\n\n${chatHistory[0].content}` }
+                ];
+                if (chatHistory.length > 1) messagesToSend.push(chatHistory[1]);
+            }
+
+            const baseUrls = [];
+            if (publicTunnelUrl) baseUrls.push(publicTunnelUrl.replace(/\/$/, ''));
+            baseUrls.push('http://127.0.0.1:1234', 'http://localhost:1234');
+
+            const paths = ['/v1/chat/completions', '/chat/completions'];
+            
+            for (const base of baseUrls) {
+                for (const path of paths) {
+                    const url = base + path;
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 60000); 
+
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            signal: controller.signal,
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer sk-lm-iQGSIcIe:JvYjqsbihwMDg7TVefvC'
+                            },
+                            body: JSON.stringify({ model, messages: messagesToSend, temperature: 0.75 })
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.choices?.[0]?.message) {
+                                // Hard-strip all bolding syntax (**) to ensure clean UI
+                                const cleanContent = data.choices[0].message.content.replace(/\*\*/g, '');
+                                addMessage(cleanContent, 'ai');
+                                if (indicator) indicator.remove();
+                                success = true;
+                                break;
+                            }
+                        }
+                    } catch (err) { console.warn(`${url} failed: ${err.message}`); }
+                    finally { clearTimeout(timeoutId); }
+                    if (success) break;
+                }
+                if (success) break;
+            }
+
+            if (!success) {
+                if (indicator) indicator.remove();
+                addMessage(activeLang === 'en' 
+                    ? "Teemous AI is currently busy. Please try again or contact Sinh via Facebook!" 
+                    : "Teemous AI hiện đang bận (Máy chủ chưa sẵn sàng hoặc model 14B chưa tải xong). Ông thử lại sau lát nhé!", 'ai');
+            }
+            console.groupEnd();
+        } catch (e) {
+            console.error("Teemous AI Runtime Error:", e);
+            if (indicator) indicator.remove();
+            addMessage(`ERROR: ${e.message}. Vui lòng kiểm tra F12 Console.`, 'ai');
+        }
+    }
+}
