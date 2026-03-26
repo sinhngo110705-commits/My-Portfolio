@@ -2,7 +2,18 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // 1. Handle API routes
+    // 1. Handle CORS preflight
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type",
+        }
+      });
+    }
+
+    // 2. Handle API routes
     if (url.pathname === "/api/chat" && request.method === "POST") {
       try {
         const { provider, model, messages, temperature, max_tokens } = await request.json();
