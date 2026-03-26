@@ -977,6 +977,11 @@ function initChatbot() {
                     ? `Teemous AI (${displayName}) Error: ${lastApiError || "Unknown Error"}.`
                     : `Lỗi chế độ ${displayName}: ${lastApiError || "Lỗi không xác định"}.`, 'ai');
             }
+        } catch (e) {
+            console.error("🚨 CRITICAL AI ERROR:", e);
+            if (indicator) indicator.remove();
+            addMessage(`CRITICAL ERROR: ${e.message}`, 'ai');
+        } finally {
             isThinking = false;
             inputEl.disabled = false;
             sendBtn.style.opacity = '1';
