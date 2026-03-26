@@ -842,95 +842,52 @@ function initChatbot() {
             indicator = showTypingIndicator();
             const activeLang = (typeof currentLang !== 'undefined') ? currentLang : (localStorage.getItem('td-lang') || 'en');
 
-            const publicTunnelBase = 'https://puppylike-macroclimaticaly-bev.ngrok-free';
+            const publicTunnelBase = 'https://puppylike-macroclimatically-bev.ngrok-free.dev';
             const baseUrls = [
-                publicTunnelBase + '.app',
-                publicTunnelBase + '.dev',
+                publicTunnelBase,
                 'http://127.0.0.1:1234',
                 'http://localhost:1234'
             ];
+            // Header required to bypass ngrok browser interstitial page
+            const ngrokHeaders = { 'ngrok-skip-browser-warning': 'true', 'Content-Type': 'application/json' };
 
             const systemPrompt = `
-# IDENTITY: Teemous AI (Youthful & Friendly Assistant to Sinh)
-- KHI KHÁCH HỎI "Web này", "Của ai": Hãy trả lời tự tin đây là Hệ sinh thái Dịch vụ & Portfolio Hub của Quang Sinh. KHÔNG PHẢI chỉ là một cái Shop thuần túy. Đây là nơi tập trung các giải pháp xây dựng thương hiệu cá nhân, Portfolio chuyên nghiệp và hệ sinh thái sáng tạo cho người trẻ.
-- VỀ SINH: Sinh (Teemous) là một người trẻ U30 nhiệt huyết, người sáng lập Teemous Digital.
-- CẤM GỌI: "Ông Sinh", "Ngài Sinh", "Chuyên gia". Hãy giữ phong thái trẻ trung.
-- HÃY GỌI: "Sinh", "Quang Sinh", "cậu ấy", "cậu ta". 
-- XƯNG HÔ: Dùng "mình" và "bạn" thân thiện.
+# IDENTITY: Teemous AI (Youthful/Friendly Assistant to Sinh)
+- WEB: Hệ sinh thái Dịch vụ & Portfolio Hub của Quang Sinh (không chỉ là Shop).
+- VỀ SINH: Người sáng lập Teemous Digital, U30, nhiệt huyết.
+- XƯNG HÔ: Gọi "Sinh"/"Quang Sinh"/"cậu ấy". Xưng "mình", gọi khách là "bạn". Tránh "Ông/Ngài/Chuyên gia".
+- NGÔN NGỮ: Ưu tiên Tiếng Việt thuần túy, kể cả khi khách dùng slang (wow, bro, lmao).
+- PHONG CÁCH: Ngắn gọn (1-2 câu), thân thiện như bạn bè.
 
-# RULE 1: LANGUAGE (VIETNAMESE-FIRST)
-- MIXED INPUT: Nếu khách nhắn "wow", "bro", "lmao", "uy tín không" -> TRẢ LỜI THUẦN VIẾT cực thân thiện.
-- (Nếu khách nhắn có từ tiếng Việt hoặc pha trộn, hãy trả lời thuần Tiếng Việt).
+# KNOWLEDGE BASE (DỊCH VỤ & GIÁ):
+1. KHỞI TẠO PORTFOLIO:
+- Basic: 199k -> 49k (-75%). Bố cục chuẩn, sub-domain teemousdigital.id.vn.
+- Advanced: 300k - 1M+. Custom UI, tên miền riêng (.com/.vn).
+2. DỊCH VỤ BỔ SUNG:
+- Curation: +29k-249k (Tinh chỉnh/Số hóa nội dung chuyên nghiệp).
+- The Carry Pack: +12$ (Tư vấn & thực thi trọn gói A-Z).
+- Add to Top: +1$/tháng (Ghim nổi bật trên Hub).
+3. ARENA OF VALOR ACCS:
+- #AOV-001: 999k (ATM). Murad Chí Tôn, Full SS hữu hạn. Rank Chiến Tướng.
+- #AOV-002: 678k (ATM). Yena Wave, Ryo SS. Rank Cao Thủ. (Có link FB bảo kê).
 
-# RULE 2: CONCISENESS & TONE (KEEP IT SHORT & FRIENDLY)
-- Nói ngắn thôi (1-2 câu). Đừng trả lời kiểu robot. 
-- (Văn phong: Gần gũi như hai người bạn đang chat với nhau).
-
-# SALES CONTEXT (Gợi ý dịch vụ - Nói tự nhiên):
-1. PORTFOLIO HUB (Làm web hồ sơ). 
-2. SOCIAL GROWTH (Tăng trưởng MXH thực).
-3. AOV SHOP (Cửa hàng Liên Quân an toàn).
-4. CONSTRUCTION LOGISTICS (Vật liệu & Vận chuyển).
-
-# KNOWLEDGE BASE: PORTFOLIO BUILDING SERVICES
-Tư vấn cụ thể cho khách dựa trên bố cục Bảng giá (Hub UI) Teemous Hub:
-
-## 1. Gói Khởi tạo Chính (Initialization Packages)
-- CHOICE A: BASIC INITIALIZATION
-  + Giá Gốc: 199,000 VND -> Giá Khuyến Mãi (-75%): 49,000 VND.
-  + Mô tả: Bố cục chuẩn (Standard/Professional) trên Teemous Hub, hiển thị dựa trên dung lượng.
-  + Đường dẫn mặc định: teemousdigital.id.vn/portfolio/your-name
-- CHOICE B: ADVANCED INITIALIZATION
-  + Giá Gốc: 300,000 VND - 1,000,000 VND+.
-  + Mô tả: Build interface tùy chỉnh, phức tạp hơn. Trỏ tên miền riêng duy trì linh hoạt theo năm (e.g., nguyenvan.com hoặc .id.vn).
-  + Option: Self-deal, liên hệ báo giá cụ thể.
-
-## 2. Dịch vụ Bổ sung Tùy chỉnh (Options - Trượt chọn giá)
-- OPTION A: PORTFOLIO CURATION
-  + Giá trượt: +$1 (Khoảng 29,000 VND - 249,000 VND tùy mức độ).
-  + Tác dụng: Tinh chỉnh thông tin, số hóa chi tiết, tối ưu nội dung chuyên nghiệp. (Có thể hoàn tiền nếu thông tin quá sơ sài).
-- OPTION B: THE CARRY PACK
-  + Giá: +$12.
-  + Tác dụng: Tư vấn & thực thi trọn gói từ A-Z. Khách hàng chỉ cần nhận Portfolio hoàn chỉnh. (Bao gồm tư vấn full & thực thi).
-- OPTION C: ADD TO TOP FEATURED
-  + Giá: +$1 / Tháng.
-  + Tác dụng: Ghim Portfolio nổi bật 30 ngày trên Hub, tăng 300% lượt click.
-
-# KNOWLEDGE BASE: ARENA OF VALOR (AOV) ACCOUNTS
-Tư vấn cụ thể cho khách dựa trên 2 acc hiện có:
-
-## 1. ACC #AOV-001
-- Trạng thái: ĐANG BÁN.
-- Giá: 999,000đ (ATM/MoMo) | 1,198,800đ (Thẻ Cào - Auto x1.2).
-- Highlights: Murad Chí Tôn, Butterfly V4, Nak Lôi Quang Sứ, dàn skin SS hữu hạn—acc giá cực mềm!
-- Thông số: 119 Tướng, 195 Skin, 5265 Trận. Rank: Chiến Tướng. Tỷ lệ thắng: 53.2%. Uy tín: 100/100.
-- Liên kết: Có (liên kết SĐT, ATM/MoMo). Không liên kết Email, CCCD, FB.
-
-## 2. ACC #AOV-002
-- Trạng thái: ĐANG BÁN.
-- Giá: 678,000đ (ATM/MoMo) | 813,600đ (Thẻ Cào - Auto x1.2).
-- Highlights: Yena Wave, Ryo SS, HyT SS, Mặc Chiến Tướng—dàn SS đủ dùng cực xịn. Lưu ý: có link Facebook để rip, người bán bảo kê toàn bộ liên kết!
-- Thông số: 119 Tướng, 217 Skin, 5090 Trận. Rank: Cao Thủ. Tỷ lệ thắng: 54.4%. Uy tín: 100/100.
-- Liên kết: Có (liên kết SĐT, FB - Rip được, bảo kê). Email bị mất. Không liên kết CCCD.
-
-# FALLBACK RULE (Xử lý thiếu thông tin)
-- Nếu khách hỏi thông tin chi tiết (ví dụ: trong này có bao nhiêu user, tìm người có thông tin như này...) mà không có trong Knowledge Base, hãy trả lời: "Bản thân tôi chưa được cập nhật thông tin chi tiết này, nhưng trên web có thể có, bạn có thể tự tìm kiếm thử nhé!"
-
-# STRICT RULES: 
-1. NO BOLDING (**). 
-2. Use ALL CAPS for emphasis. 
-3. BULLET NESTING: Level 1 uses (*), Level 2 uses (-), Level 3 uses (+). (Ví dụ: * Gói: -> - Tên: -> + Giá:).
-4. Always identify as Sinh's Assistant.
+# RULES: NO BOLDING (**), ALL CAPS for emphasis, nesting: (*) -> (-) -> (+). Trả lời ngắn!
 `;
+
 
             let model;
             if (typeof availableModels === 'undefined' || availableModels.length === 0) {
                 model = "google/gemma-3-12b";
             } else {
-                model = availableModels.find(m => m.toLowerCase().includes('12b')) ||
-                        availableModels.find(m => m.toLowerCase().includes('gemma-3')) ||
-                        availableModels.find(m => m.toLowerCase().includes('gemma')) ||
-                        availableModels[0];
+                // Filter out non-chat models if possible (e.g. embeddings)
+                const chatModels = availableModels.filter(m => !m.toLowerCase().includes('embed'));
+                const pool = chatModels.length > 0 ? chatModels : availableModels;
+                
+                model = pool.find(m => m.toLowerCase().includes('12b')) ||
+                        pool.find(m => m.toLowerCase().includes('gemma-3')) ||
+                        pool.find(m => m.toLowerCase().includes('gemma')) ||
+                        pool[0];
+                console.log("Teemous AI: Selected model:", model, "from", pool);
             }
 
             let success = false;
@@ -944,6 +901,7 @@ Tư vấn cụ thể cho khách dựa trên 2 acc hiện có:
                 role: m.role,
                 content: m.content
             }))];
+            console.log("Teemous AI: Messages to send:", messagesToSend);
 
             // 1. PHASE 1: FIND ACTIVE ENDPOINT
             let activeBase = null;
@@ -955,7 +913,8 @@ Tư vấn cụ thể cho khách dựa trên 2 acc hiện có:
                 try {
                     console.log(`🔍 Connectivity check: ${base}/v1/models`);
                     const check = await fetch(base + '/v1/models', { 
-                        method: 'GET', 
+                        method: 'GET',
+                        headers: ngrokHeaders,
                         signal: ctrl.signal 
                     });
                     clearTimeout(tid);
@@ -982,7 +941,7 @@ Tư vấn cụ thể cho khách dựa trên 2 acc hiện có:
                     const response = await fetch(url, {
                         method: 'POST',
                         signal: ctrl.signal,
-                        headers: { 'Content-Type': 'application/json' }, // Reverting to standard JSON
+                        headers: ngrokHeaders,
                         body: JSON.stringify({
                             model: model,
                             messages: messagesToSend,
