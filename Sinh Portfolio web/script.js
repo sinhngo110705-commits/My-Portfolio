@@ -995,9 +995,10 @@ function initChatbot() {
             if (success && content) {
                 addMessage(content.replace(/\*\*/g, ''), 'ai');
             } else {
+                const displayName = provider === 'gemini' ? 'Umareru' : provider;
                 addMessage(activeLang === 'en'
-                    ? `Teemous AI (${provider}) is currently offline. Please try another provider or contact Quang Sinh!`
-                    : `Hiện tại chế độ ${provider} đang offline. Bạn thử đổi nhà cung cấp khác hoặc nhắn tin trực tiếp cho Quang Sinh nhé!`, 'ai');
+                    ? `Teemous AI (${displayName}) is currently offline. Please try another provider or contact Quang Sinh!`
+                    : `Hiện tại chế độ ${displayName} đang offline. Bạn thử đổi nhà cung cấp khác hoặc nhắn tin trực tiếp cho Quang Sinh nhé!`, 'ai');
             }
         console.groupEnd();
         } catch (e) {
