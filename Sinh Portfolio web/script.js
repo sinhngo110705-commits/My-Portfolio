@@ -876,19 +876,16 @@ function initChatbot() {
 
             let content = "";
             let success = false;
+            let lastApiError = "";
 
             if (provider === 'local') {
                 const publicTunnelBase = 'https://puppylike-macroclimatically-bev.ngrok-free.dev';
-                const baseUrls = [
-                    publicTunnelBase,
-                    'http://127.0.0.1:1234',
-                    'http://localhost:1234'
-                ];
+                const baseUrls = [publicTunnelBase, 'http://127.0.0.1:1234', 'http://localhost:1234'];
                 const ngrokHeaders = { 'ngrok-skip-browser-warning': 'true', 'Content-Type': 'application/json' };
 
                 let model;
                 if (typeof availableModels === 'undefined' || availableModels.length === 0) {
-                    model = "qwen/qwen3-vl-8b"; // Default: Qwen3-VL-8B (lighter, faster)
+                    model = "qwen/qwen3-vl-8b";
                 } else {
                     const chatModels = availableModels.filter(m => !m.toLowerCase().includes('embed'));
                     const pool = chatModels.length > 0 ? chatModels : availableModels;
@@ -902,89 +899,59 @@ function initChatbot() {
 
                 console.group(`Teemous AI Chat: ${userText.substring(0, 30)}...`);
                 console.log(`Provider: ${provider} | Model: ${model}`);
-                console.log("Messages to send:", messagesToSend);
 
-        let lastApiError = ""; 
-
-        try {
-            if (provider === 'local') {
-                // ... (existing local logic)
                 let activeBase = null;
                 for (const base of baseUrls) {
                     if (!base) continue;
                     const ctrl = new AbortController();
-                    const tid = setTimeout(() => ctrl.abort(), 8000); 
+                    const tid = setTimeout(() => ctrl.abort(), 8000);
                     try {
                         console.log(`🔍 Checking endpoint: ${base}/v1/models`);
-                        const check = await fetch(base + '/v1/models', { 
-                            method: 'GET',
-                            headers: ngrokHeaders,
-                            signal: ctrl.signal 
-                        });
+                        const check = await fetch(base + '/v1/models', { method: 'GET', headers: ngrokHeaders, signal: ctrl.signal });
                         clearTimeout(tid);
-                        if (check.ok) { 
-                            activeBase = base; 
-                            console.log(`📡 Selected endpoint: ${base}`);
-                            break; 
-                        }
-                    } catch (e) { 
-                        clearTimeout(tid);
-                        console.log(`❌ Endpoint unreachable: ${base} (${e.message})`);
-                    }
+                        if (check.ok) { activeBase = base; console.log(`📡 Selected: ${base}`); break; }
+                    } catch (e) { clearTimeout(tid); console.log(`❌ Unreachable: ${base}`); }
                 }
 
                 if (activeBase) {
-                    const url = activeBase + '/v1/chat/completions';
                     const ctrl = new AbortController();
-                    const tid = setTimeout(() => ctrl.abort(), 300000); 
+                    const tid = setTimeout(() => ctrl.abort(), 300000);
                     try {
-                        console.log(`🚀 Sending request to AI...`);
+                        console.log(`🚀 Sending request...`);
                         console.time('Generation Time');
-                        const resp = await fetch(url, {
-                            method: 'POST',
-                            signal: ctrl.signal,
-                            headers: ngrokHeaders,
-                            body: JSON.stringify({
-                                model: model,
-                                messages: messagesToSend,
-                                temperature: 0.6,
-                                max_tokens: 250 
-                            })
+                        const resp = await fetch(activeBase + '/v1/chat/completions', {
+                            method: 'POST', signal: ctrl.signal, headers: ngrokHeaders,
+                            body: JSON.stringify({ model, messages: messagesToSend, temperature: 0.6, max_tokens: 250 })
                         });
                         clearTimeout(tid);
                         console.timeEnd('Generation Time');
-
                         if (resp.ok) {
                             const data = await resp.json();
-                            console.log("AI Response Data:", data);
                             content = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
                             if (content) success = true;
                         } else {
-                            const errText = await resp.text();
-                            lastApiError = `Local AI Error (${resp.status}): ${errText.substring(0, 100)}`;
-                            console.error(lastApiError);
+                            lastApiError = `Local AI Error (${resp.status})`;
+                            console.error(lastApiError, await resp.text());
                         }
-                    } catch (e) { 
+                    } catch (e) {
                         console.timeEnd('Generation Time');
                         lastApiError = `Local AI Exception: ${e.message}`;
-                        console.error(lastApiError); 
+                        console.error(lastApiError);
                     }
                 } else {
-                    lastApiError = "Cannot connect to Local AI (ngrok/localhost down)";
+                    lastApiError = "Cannot connect to Local AI (ngrok/LM Studio offline)";
                 }
+                console.groupEnd();
+
             } else {
-                // Cloud Provider Logic
-                console.group(`Teemous AI Chat (Proxy): ${userText.substring(0, 30)}...`);
+                // Cloud Provider (Gemini/etc.) via Cloudflare Functions
+                console.group(`Teemous AI Chat (Cloud): ${userText.substring(0, 30)}...`);
                 try {
                     const response = await fetch('/api/chat', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            provider: provider,
-                            messages: messagesToSend
-                        })
+                        body: JSON.stringify({ provider, messages: messagesToSend })
                     });
-
                     if (response.ok) {
                         const data = await response.json();
                         content = data.content;
@@ -992,16 +959,16 @@ function initChatbot() {
                     } else {
                         const errorData = await response.json().catch(() => ({}));
                         lastApiError = errorData.error || `Server Error (${response.status})`;
-                        console.error("Backend Proxy Error:", errorData);
+                        console.error("Cloud API Error:", lastApiError);
                     }
-                } catch (e) { 
+                } catch (e) {
                     lastApiError = `Connection Error: ${e.message}`;
-                    console.error(lastApiError); 
+                    console.error(lastApiError);
                 }
+                console.groupEnd();
             }
 
             if (indicator) indicator.remove();
-            
             if (success && content) {
                 addMessage(content.replace(/\*\*/g, ''), 'ai');
             } else {
@@ -1010,12 +977,6 @@ function initChatbot() {
                     ? `Teemous AI (${displayName}) Error: ${lastApiError || "Unknown Error"}.`
                     : `Lỗi chế độ ${displayName}: ${lastApiError || "Lỗi không xác định"}.`, 'ai');
             }
-        console.groupEnd();
-        } catch (e) {
-            console.error("🚨 CRITICAL AI ERROR:", e);
-            if (indicator) indicator.remove();
-            addMessage(`CRITICAL ERROR: ${e.message}`, 'ai');
-        } finally {
             isThinking = false;
             inputEl.disabled = false;
             sendBtn.style.opacity = '1';
