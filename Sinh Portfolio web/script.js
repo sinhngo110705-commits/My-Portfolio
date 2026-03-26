@@ -748,6 +748,7 @@ function initChatbot() {
     const messagesEl = document.getElementById('chatbot-messages');
     const inputEl = document.getElementById('chatbot-input');
     const sendBtn = document.getElementById('chatbot-send');
+    const providerEl = document.getElementById('chatbot-provider');
 
     if (!container || !toggle || !windowEl) return;
 
@@ -832,6 +833,7 @@ function initChatbot() {
 
     async function getAIResponse(userText) {
         if (isThinking) return;
+        const provider = providerEl ? providerEl.value : 'local';
         let indicator;
         try {
             isThinking = true;
@@ -842,16 +844,19 @@ function initChatbot() {
             indicator = showTypingIndicator();
             const activeLang = (typeof currentLang !== 'undefined') ? currentLang : (localStorage.getItem('td-lang') || 'en');
 
-            const publicTunnelBase = 'https://puppylike-macroclimatically-bev.ngrok-free.dev';
-            const baseUrls = [
-                publicTunnelBase,
-                'http://127.0.0.1:1234',
-                'http://localhost:1234'
-            ];
-            // Header required to bypass ngrok browser interstitial page
-            const ngrokHeaders = { 'ngrok-skip-browser-warning': 'true', 'Content-Type': 'application/json' };
+            let content = "";
+            let success = false;
 
-            const systemPrompt = `
+            if (provider === 'local') {
+                const publicTunnelBase = 'https://puppylike-macroclimatically-bev.ngrok-free.dev';
+                const baseUrls = [
+                    publicTunnelBase,
+                    'http://127.0.0.1:1234',
+                    'http://localhost:1234'
+                ];
+                const ngrokHeaders = { 'ngrok-skip-browser-warning': 'true', 'Content-Type': 'application/json' };
+
+                const systemPrompt = `
 # IDENTITY: Teemous AI (Youthful/Friendly Assistant to Sinh)
 - WEB: Hệ sinh thái Dịch vụ & Portfolio Hub của Quang Sinh (không chỉ là Shop).
 - VỀ SINH: Người sáng lập Teemous Digital, U30, nhiệt huyết.
@@ -874,108 +879,124 @@ function initChatbot() {
 # RULES: NO BOLDING (**), ALL CAPS for emphasis, nesting: (*) -> (-) -> (+). Trả lời ngắn!
 `;
 
-
-            let model;
-            if (typeof availableModels === 'undefined' || availableModels.length === 0) {
-                model = "google/gemma-3-12b";
-            } else {
-                // Filter out non-chat models if possible (e.g. embeddings)
-                const chatModels = availableModels.filter(m => !m.toLowerCase().includes('embed'));
-                const pool = chatModels.length > 0 ? chatModels : availableModels;
-                
-                model = pool.find(m => m.toLowerCase().includes('12b')) ||
-                        pool.find(m => m.toLowerCase().includes('gemma-3')) ||
-                        pool.find(m => m.toLowerCase().includes('gemma')) ||
-                        pool[0];
-                console.log("Teemous AI: Selected model:", model, "from", pool);
-            }
-
-            let success = false;
-            let lastDiag = "All probes failed (Check LM Studio / Ngrok)";
-            
-            console.group(`Teemous AI Chat: ${userText.substring(0, 30)}...`);
-            console.log(`Model: ${model}`);
-
-            const recentHistory = chatHistory.slice(-10);
-            const messagesToSend = [{ role: "system", content: systemPrompt }, ...recentHistory.map(m => ({
-                role: m.role,
-                content: m.content
-            }))];
-            console.log("Teemous AI: Messages to send:", messagesToSend);
-
-            // 1. PHASE 1: FIND ACTIVE ENDPOINT
-            let activeBase = null;
-            // baseUrls already defined above
-            for (const base of baseUrls) {
-                if (!base) continue;
-                const ctrl = new AbortController();
-                const tid = setTimeout(() => ctrl.abort(), 5000);
-                try {
-                    console.log(`🔍 Connectivity check: ${base}/v1/models`);
-                    const check = await fetch(base + '/v1/models', { 
-                        method: 'GET',
-                        headers: ngrokHeaders,
-                        signal: ctrl.signal 
-                    });
-                    clearTimeout(tid);
-                    if (check.ok) {
-                        activeBase = base;
-                        console.log(`📡 Server detected at: ${base}`);
-                        break;
-                    }
-                } catch (e) {
-                    clearTimeout(tid);
-                    console.log(`❌ ${base} unreachable: ${e.message}`);
+                let model;
+                if (typeof availableModels === 'undefined' || availableModels.length === 0) {
+                    model = "google/gemma-3-12b";
+                } else {
+                    const chatModels = availableModels.filter(m => !m.toLowerCase().includes('embed'));
+                    const pool = chatModels.length > 0 ? chatModels : availableModels;
+                    model = pool.find(m => m.toLowerCase().includes('12b')) ||
+                            pool.find(m => m.toLowerCase().includes('gemma-3')) ||
+                            pool.find(m => m.toLowerCase().includes('gemma')) ||
+                            pool[0];
                 }
-            }
 
-            if (!activeBase) {
-                lastDiag = "Cannot reach LM Studio (Timeout or Offline)";
+                const recentHistory = chatHistory.slice(-10);
+                const messagesToSend = [{ role: "system", content: systemPrompt }, ...recentHistory.map(m => ({
+                    role: m.role,
+                    content: m.content
+                }))];
+
+                console.group(`Teemous AI Chat: ${userText.substring(0, 30)}...`);
+                console.log(`Provider: ${provider} | Model: ${model}`);
+                console.log("Messages to send:", messagesToSend);
+
+                let activeBase = null;
+                for (const base of baseUrls) {
+                    if (!base) continue;
+                    const ctrl = new AbortController();
+                    const tid = setTimeout(() => ctrl.abort(), 8000); // 8 seconds probe for ngrok
+                    try {
+                        console.log(`🔍 Checking endpoint: ${base}/v1/models`);
+                        const check = await fetch(base + '/v1/models', { 
+                            method: 'GET',
+                            headers: ngrokHeaders,
+                            signal: ctrl.signal 
+                        });
+                        clearTimeout(tid);
+                        if (check.ok) { 
+                            activeBase = base; 
+                            console.log(`📡 Selected endpoint: ${base}`);
+                            break; 
+                        }
+                    } catch (e) { 
+                        clearTimeout(tid);
+                        console.log(`❌ Endpoint unreachable: ${base} (${e.message})`);
+                    }
+                }
+
+                if (activeBase) {
+                    const url = activeBase + '/v1/chat/completions';
+                    const ctrl = new AbortController();
+                    const tid = setTimeout(() => ctrl.abort(), 300000); // 5 minutes for local generation
+                    try {
+                        console.log(`🚀 Sending request to AI...`);
+                        console.time('Generation Time');
+                        const resp = await fetch(url, {
+                            method: 'POST',
+                            signal: ctrl.signal,
+                            headers: ngrokHeaders,
+                            body: JSON.stringify({
+                                model: model,
+                                messages: messagesToSend,
+                                temperature: 0.7,
+                                max_tokens: 1000
+                            })
+                        });
+                        clearTimeout(tid);
+                        console.timeEnd('Generation Time');
+
+                        if (resp.ok) {
+                            const data = await resp.json();
+                            content = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
+                            if (content) success = true;
+                        } else {
+                            const errText = await resp.text();
+                            console.error(`AI Error (${resp.status}):`, errText);
+                        }
+                    } catch (e) { 
+                        console.timeEnd('Generation Time');
+                        console.error("Local AI Error:", e); 
+                    }
+                }
             } else {
-                // 2. PHASE 2: SEND MESSAGE TO ACTIVE ENDPOINT
-                const url = activeBase + '/v1/chat/completions';
-                const ctrl = new AbortController();
-                const tid = setTimeout(() => ctrl.abort(), 300000); // 5 minutes - local models can be slow!
+                const systemPrompt = `Teemous AI. Youthful, friendly assistant to Quang Sinh. Use Vietnamese. Short answers. No bolding.`;
+                const recentHistory = chatHistory.slice(-10);
+                const messagesToSend = [{ role: "system", content: systemPrompt }, ...recentHistory.map(m => ({
+                    role: m.role,
+                    content: m.content
+                }))];
+
+                console.group(`Teemous AI Chat (Proxy): ${userText.substring(0, 30)}...`);
+                console.log(`Provider: ${provider}`);
+
                 try {
-                    console.log(`🚀 Sending message to: ${url}`);
-                    const response = await fetch(url, {
+                    const response = await fetch('/api/chat', {
                         method: 'POST',
-                        signal: ctrl.signal,
-                        headers: ngrokHeaders,
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            model: model,
-                            messages: messagesToSend,
-                            temperature: 0.7,
-                            max_tokens: 1000
+                            provider: provider,
+                            messages: messagesToSend
                         })
                     });
-                    clearTimeout(tid);
 
                     if (response.ok) {
                         const data = await response.json();
-                        const content = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
-                        if (content) {
-                            addMessage(content.replace(/\*\*/g, ''), 'ai');
-                            success = true;
-                        } else {
-                            lastDiag = "Empty response from AI";
-                        }
-                    } else {
-                        const err = await response.text();
-                        lastDiag = `Server Error (${response.status}): ${err.substring(0, 40)}`;
+                        content = data.content;
+                        if (content) success = true;
                     }
-                } catch (e) {
-                    lastDiag = e.message;
-                }
+                } catch (e) { console.error("Backend Proxy Error:", e); }
             }
 
             if (indicator) indicator.remove();
-            if (!success) {
+            if (success && content) {
+                addMessage(content.replace(/\*\*/g, ''), 'ai');
+            } else {
                 addMessage(activeLang === 'en'
-                    ? `Teemous AI is currently offline for maintenance. Please contact the website owner (Quang Sinh) directly for support!`
-                    : `Hiện tại tôi đang offline để bảo trì não bộ một chút. Bạn hãy liên hệ trực tiếp với chủ web (Quang Sinh) để được hỗ trợ nhanh nhất nhé!`, 'ai');
+                    ? `Teemous AI (${provider}) is currently offline. Please try another provider or contact Quang Sinh!`
+                    : `Hiện tại chế độ ${provider} đang offline. Bạn thử đổi nhà cung cấp khác hoặc nhắn tin trực tiếp cho Quang Sinh nhé!`, 'ai');
             }
-            console.groupEnd();
+        console.groupEnd();
         } catch (e) {
             console.error("🚨 CRITICAL AI ERROR:", e);
             if (indicator) indicator.remove();
