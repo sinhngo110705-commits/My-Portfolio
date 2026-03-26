@@ -55,7 +55,7 @@ export async function onRequest(context) {
                     return new Response(JSON.stringify({ error: "GEMINI_API_KEY or GEMINI_API is missing in Cloudflare environment variables." }), { status: 500 });
                 }
 
-                const geminiModel = model || "gemini-1.5-flash"; // Default to 1.5-flash for stability
+                const geminiModel = model || "gemini-2.0-flash"; // Use stable 2.0 flash on free tier
                 apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`;
                 
                 // Extract system message
