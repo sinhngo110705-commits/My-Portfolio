@@ -50,9 +50,9 @@ export async function onRequest(context) {
 
             case 'gemini':
                 // Google Gemini integration
-                const geminiKey = env.GEMINI_API_KEY;
+                const geminiKey = env.GEMINI_API_KEY || env.GEMINI_API;
                 if (!geminiKey) {
-                    return new Response(JSON.stringify({ error: "GEMINI_API_KEY is missing in Cloudflare environment variables." }), { status: 500 });
+                    return new Response(JSON.stringify({ error: "GEMINI_API_KEY or GEMINI_API is missing in Cloudflare environment variables." }), { status: 500 });
                 }
 
                 const geminiModel = model || "gemini-1.5-flash"; // Default to 1.5-flash for stability
