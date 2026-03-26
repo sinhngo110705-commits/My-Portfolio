@@ -935,7 +935,7 @@ function initChatbot() {
                 // 2. PHASE 2: SEND MESSAGE TO ACTIVE ENDPOINT
                 const url = activeBase + '/v1/chat/completions';
                 const ctrl = new AbortController();
-                const tid = setTimeout(() => ctrl.abort(), 20000); // 20s for generation
+                const tid = setTimeout(() => ctrl.abort(), 60000); // Increased to 60s for slow local generation
                 try {
                     console.log(`🚀 Sending message to: ${url}`);
                     const response = await fetch(url, {
