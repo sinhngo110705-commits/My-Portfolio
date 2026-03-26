@@ -844,19 +844,7 @@ function initChatbot() {
             indicator = showTypingIndicator();
             const activeLang = (typeof currentLang !== 'undefined') ? currentLang : (localStorage.getItem('td-lang') || 'en');
 
-            let content = "";
-            let success = false;
-
-            if (provider === 'local') {
-                const publicTunnelBase = 'https://puppylike-macroclimatically-bev.ngrok-free.dev';
-                const baseUrls = [
-                    publicTunnelBase,
-                    'http://127.0.0.1:1234',
-                    'http://localhost:1234'
-                ];
-                const ngrokHeaders = { 'ngrok-skip-browser-warning': 'true', 'Content-Type': 'application/json' };
-
-                const systemPrompt = `
+            const systemPrompt = `
 # IDENTITY: Teemous AI (Youthful/Friendly Assistant to Sinh)
 - WEB: Hệ sinh thái Dịch vụ & Portfolio Hub của Quang Sinh (không chỉ là Shop).
 - VỀ SINH: Người sáng lập Teemous Digital, U30, nhiệt huyết.
@@ -879,6 +867,24 @@ function initChatbot() {
 # RULES: NO BOLDING (**), ALL CAPS for emphasis, nesting: (*) -> (-) -> (+). Trả lời ngắn!
 `;
 
+            const recentHistory = chatHistory.slice(-10);
+            const messagesToSend = [{ role: "system", content: systemPrompt }, ...recentHistory.map(m => ({
+                role: m.role,
+                content: m.content
+            }))];
+
+            let content = "";
+            let success = false;
+
+            if (provider === 'local') {
+                const publicTunnelBase = 'https://puppylike-macroclimatically-bev.ngrok-free.dev';
+                const baseUrls = [
+                    publicTunnelBase,
+                    'http://127.0.0.1:1234',
+                    'http://localhost:1234'
+                ];
+                const ngrokHeaders = { 'ngrok-skip-browser-warning': 'true', 'Content-Type': 'application/json' };
+
                 let model;
                 if (typeof availableModels === 'undefined' || availableModels.length === 0) {
                     model = "google/gemma-3-12b";
@@ -890,12 +896,6 @@ function initChatbot() {
                             pool.find(m => m.toLowerCase().includes('gemma')) ||
                             pool[0];
                 }
-
-                const recentHistory = chatHistory.slice(-10);
-                const messagesToSend = [{ role: "system", content: systemPrompt }, ...recentHistory.map(m => ({
-                    role: m.role,
-                    content: m.content
-                }))];
 
                 console.group(`Teemous AI Chat: ${userText.substring(0, 30)}...`);
                 console.log(`Provider: ${provider} | Model: ${model}`);
@@ -939,8 +939,8 @@ function initChatbot() {
                             body: JSON.stringify({
                                 model: model,
                                 messages: messagesToSend,
-                                temperature: 0.7,
-                                max_tokens: 1000
+                                temperature: 0.6,
+                                max_tokens: 250 // Lowered to speed up generation
                             })
                         });
                         clearTimeout(tid);
@@ -948,6 +948,7 @@ function initChatbot() {
 
                         if (resp.ok) {
                             const data = await resp.json();
+                            console.log("AI Response Data:", data);
                             content = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
                             if (content) success = true;
                         } else {
@@ -960,13 +961,7 @@ function initChatbot() {
                     }
                 }
             } else {
-                const systemPrompt = `Teemous AI. Youthful, friendly assistant to Quang Sinh. Use Vietnamese. Short answers. No bolding.`;
-                const recentHistory = chatHistory.slice(-10);
-                const messagesToSend = [{ role: "system", content: systemPrompt }, ...recentHistory.map(m => ({
-                    role: m.role,
-                    content: m.content
-                }))];
-
+                // Cloud Provider Logic (Proxy via Cloudflare Functions)
                 console.group(`Teemous AI Chat (Proxy): ${userText.substring(0, 30)}...`);
                 console.log(`Provider: ${provider}`);
 
@@ -984,8 +979,13 @@ function initChatbot() {
                         const data = await response.json();
                         content = data.content;
                         if (content) success = true;
+                    } else {
+                        const errorData = await response.json().catch(() => ({}));
+                        console.error(`Backend Proxy Error (${response.status}):`, errorData);
                     }
-                } catch (e) { console.error("Backend Proxy Error:", e); }
+                } catch (e) { 
+                    console.error("Backend Proxy Error:", e); 
+                }
             }
 
             if (indicator) indicator.remove();
