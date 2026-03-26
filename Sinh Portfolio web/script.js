@@ -904,11 +904,16 @@ function initChatbot() {
                 console.log(`Provider: ${provider} | Model: ${model}`);
                 console.log("Messages to send:", messagesToSend);
 
+        let lastApiError = ""; 
+
+        try {
+            if (provider === 'local') {
+                // ... (existing local logic)
                 let activeBase = null;
                 for (const base of baseUrls) {
                     if (!base) continue;
                     const ctrl = new AbortController();
-                    const tid = setTimeout(() => ctrl.abort(), 8000); // 8 seconds probe for ngrok
+                    const tid = setTimeout(() => ctrl.abort(), 8000); 
                     try {
                         console.log(`🔍 Checking endpoint: ${base}/v1/models`);
                         const check = await fetch(base + '/v1/models', { 
@@ -931,7 +936,7 @@ function initChatbot() {
                 if (activeBase) {
                     const url = activeBase + '/v1/chat/completions';
                     const ctrl = new AbortController();
-                    const tid = setTimeout(() => ctrl.abort(), 300000); // 5 minutes for local generation
+                    const tid = setTimeout(() => ctrl.abort(), 300000); 
                     try {
                         console.log(`🚀 Sending request to AI...`);
                         console.time('Generation Time');
@@ -943,7 +948,7 @@ function initChatbot() {
                                 model: model,
                                 messages: messagesToSend,
                                 temperature: 0.6,
-                                max_tokens: 250 // Lowered to speed up generation
+                                max_tokens: 250 
                             })
                         });
                         clearTimeout(tid);
@@ -956,18 +961,20 @@ function initChatbot() {
                             if (content) success = true;
                         } else {
                             const errText = await resp.text();
-                            console.error(`AI Error (${resp.status}):`, errText);
+                            lastApiError = `Local AI Error (${resp.status}): ${errText.substring(0, 100)}`;
+                            console.error(lastApiError);
                         }
                     } catch (e) { 
                         console.timeEnd('Generation Time');
-                        console.error("Local AI Error:", e); 
+                        lastApiError = `Local AI Exception: ${e.message}`;
+                        console.error(lastApiError); 
                     }
+                } else {
+                    lastApiError = "Cannot connect to Local AI (ngrok/localhost down)";
                 }
             } else {
-                // Cloud Provider Logic (Proxy via Cloudflare Functions)
+                // Cloud Provider Logic
                 console.group(`Teemous AI Chat (Proxy): ${userText.substring(0, 30)}...`);
-                console.log(`Provider: ${provider}`);
-
                 try {
                     const response = await fetch('/api/chat', {
                         method: 'POST',
@@ -984,21 +991,24 @@ function initChatbot() {
                         if (content) success = true;
                     } else {
                         const errorData = await response.json().catch(() => ({}));
-                        console.error(`Backend Proxy Error (${response.status}):`, errorData);
+                        lastApiError = errorData.error || `Server Error (${response.status})`;
+                        console.error("Backend Proxy Error:", errorData);
                     }
                 } catch (e) { 
-                    console.error("Backend Proxy Error:", e); 
+                    lastApiError = `Connection Error: ${e.message}`;
+                    console.error(lastApiError); 
                 }
             }
 
             if (indicator) indicator.remove();
+            
             if (success && content) {
                 addMessage(content.replace(/\*\*/g, ''), 'ai');
             } else {
                 const displayName = provider === 'gemini' ? 'Umareru' : provider;
                 addMessage(activeLang === 'en'
-                    ? `Teemous AI (${displayName}) is currently offline. Please try another provider or contact Quang Sinh!`
-                    : `Hiện tại chế độ ${displayName} đang offline. Bạn thử đổi nhà cung cấp khác hoặc nhắn tin trực tiếp cho Quang Sinh nhé!`, 'ai');
+                    ? `Teemous AI (${displayName}) Error: ${lastApiError || "Unknown Error"}.`
+                    : `Lỗi chế độ ${displayName}: ${lastApiError || "Lỗi không xác định"}.`, 'ai');
             }
         console.groupEnd();
         } catch (e) {
