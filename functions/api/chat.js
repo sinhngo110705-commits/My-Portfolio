@@ -49,7 +49,7 @@ export async function onRequest(context) {
                 break;
 
             case 'gemini':
-                const geminiKey = env.GEMINI_API_KEY || env.GEMINI_API;
+                let geminiKey = env.GEMINI_API_KEY || env.GEMINI_API;
                 if (!geminiKey) {
                     const keys = Object.keys(env).join(', ');
                     return new Response(JSON.stringify({ 
@@ -57,66 +57,69 @@ export async function onRequest(context) {
                     }), { status: 500 });
                 }
 
-                // Fallback loop for Gemini models
+                geminiKey = geminiKey.trim();
+
                 const modelFallback = [
                     model,
                     "gemini-1.5-flash",
                     "gemini-1.5-flash-8b",
                     "gemini-2.0-flash",
-                    "gemini-pro"
+                    "gemini-1.5-pro"
                 ].filter(Boolean);
 
-                let lastError = null;
+                const apiVersions = ["v1beta", "v1"];
+                let attemptsLog = [];
 
                 for (const geminiModel of modelFallback) {
-                    try {
-                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`;
-                        const systemMsg = messages.find(m => m.role === 'system')?.content;
-                        const rawMsgs = messages.filter(m => m.role !== 'system');
-                        const contents = [];
-                        
-                        rawMsgs.forEach(m => {
-                            const role = m.role === 'assistant' ? 'model' : 'user';
-                            if (contents.length > 0 && contents[contents.length - 1].role === role) {
-                                contents[contents.length - 1].parts[0].text += "\n\n" + m.content;
-                            } else {
-                                contents.push({ role: role, parts: [{ text: m.content }] });
-                            }
-                        });
-
-                        if (contents.length > 0 && contents[0].role !== 'user') {
-                            contents.unshift({ role: 'user', parts: [{ text: "Continue the conversation." }] });
-                        }
-
-                        const response = await fetch(apiUrl, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                systemInstruction: systemMsg ? { parts: [{ text: systemMsg }] } : undefined,
-                                contents,
-                                generationConfig: { maxOutputTokens: 1000, temperature: 0.7 }
-                            })
-                        });
-
-                        if (response.ok) {
-                            const data = await response.json();
-                            const resultText = data.candidates[0].content.parts[0].text;
-                            return new Response(JSON.stringify({ content: resultText }), {
-                                headers: { "Content-Type": "application/json" }
+                    for (const version of apiVersions) {
+                        try {
+                            const apiUrl = `https://generativelanguage.googleapis.com/${version}/models/${geminiModel}:generateContent?key=${geminiKey}`;
+                            const systemMsg = messages.find(m => m.role === 'system')?.content;
+                            const rawMsgs = messages.filter(m => m.role !== 'system');
+                            const contents = [];
+                            
+                            rawMsgs.forEach(m => {
+                                const role = m.role === 'assistant' ? 'model' : 'user';
+                                if (contents.length > 0 && contents[contents.length - 1].role === role) {
+                                    contents[contents.length - 1].parts[0].text += "\n\n" + m.content;
+                                } else {
+                                    contents.push({ role: role, parts: [{ text: m.content }] });
+                                }
                             });
-                        }
 
-                        const errorText = await response.text();
-                        lastError = { status: response.status, body: errorText, model: geminiModel };
-                        
-                    } catch (err) {
-                        lastError = { error: err.message };
+                            if (contents.length > 0 && contents[0].role !== 'user') {
+                                contents.unshift({ role: 'user', parts: [{ text: "Continue the conversation." }] });
+                            }
+
+                            const response = await fetch(apiUrl, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    systemInstruction: systemMsg ? { parts: [{ text: systemMsg }] } : undefined,
+                                    contents,
+                                    generationConfig: { maxOutputTokens: 1000, temperature: 0.7 }
+                                })
+                            });
+
+                            if (response.ok) {
+                                const data = await response.json();
+                                const resultText = data.candidates[0].content.parts[0].text;
+                                return new Response(JSON.stringify({ content: resultText }), {
+                                    headers: { "Content-Type": "application/json" }
+                                });
+                            }
+
+                            attemptsLog.push(`${geminiModel}(${version}): ${response.status}`);
+                            
+                        } catch (err) {
+                            attemptsLog.push(`${geminiModel}(${version}): ERR ${err.message}`);
+                        }
                     }
                 }
 
                 return new Response(JSON.stringify({ 
-                    error: `All Gemini models failed. Last error (${lastError.model}): ${lastError.body || lastError.error}` 
-                }), { status: lastError.status || 500 });
+                    error: `All models failed. Attempts: ${attemptsLog.join(', ')}. Please check your API key permissions at ai.google.dev.` 
+                }), { status: 500 });
 
             default:
                 return new Response(JSON.stringify({ error: "Unsupported provider" }), { status: 400 });

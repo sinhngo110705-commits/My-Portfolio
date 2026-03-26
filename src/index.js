@@ -69,86 +69,76 @@ async function handleAnthropic(messages, model, temperature, max_tokens, env) {
 }
 
 async function handleGemini(messages, model, temperature, max_tokens, env) {
-  const geminiKey = env.GEMINI_API_KEY || env.GEMINI_API;
+  let geminiKey = env.GEMINI_API_KEY || env.GEMINI_API;
   if (!geminiKey) {
     const keys = Object.keys(env).join(', ');
     return new Response(JSON.stringify({ 
       error: `GEMINI_API_KEY is missing. Available keys: [${keys || "None"}]. Please add GEMINI_API_KEY to your Worker Variables.` 
     }), { status: 500 });
   }
+  
+  geminiKey = geminiKey.trim(); // Ensure no whitespace
 
-  // List of models to try in order of preference for free tier
   const modelFallback = [
-    model, // Try the one requested first (if any)
+    model,
     "gemini-1.5-flash",
     "gemini-1.5-flash-8b",
     "gemini-2.0-flash",
-    "gemini-pro"
+    "gemini-1.5-pro"
   ].filter(Boolean);
 
-  let lastError = null;
+  const apiVersions = ["v1beta", "v1"];
+  let attemptsLog = [];
 
   for (const geminiModel of modelFallback) {
-    try {
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`;
-      
-      const systemMsg = messages.find(m => m.role === 'system')?.content;
-      const rawMsgs = messages.filter(m => m.role !== 'system');
-      const contents = [];
-      
-      rawMsgs.forEach(m => {
-        const role = m.role === 'assistant' ? 'model' : 'user';
-        if (contents.length > 0 && contents[contents.length - 1].role === role) {
-          contents[contents.length - 1].parts[0].text += "\n\n" + m.content;
-        } else {
-          contents.push({ role: role, parts: [{ text: m.content }] });
+    for (const version of apiVersions) {
+      try {
+        const apiUrl = `https://generativelanguage.googleapis.com/${version}/models/${geminiModel}:generateContent?key=${geminiKey}`;
+        
+        const systemMsg = messages.find(m => m.role === 'system')?.content;
+        const rawMsgs = messages.filter(m => m.role !== 'system');
+        const contents = [];
+        
+        rawMsgs.forEach(m => {
+          const role = m.role === 'assistant' ? 'model' : 'user';
+          if (contents.length > 0 && contents[contents.length - 1].role === role) {
+            contents[contents.length - 1].parts[0].text += "\n\n" + m.content;
+          } else {
+            contents.push({ role: role, parts: [{ text: m.content }] });
+          }
+        });
+
+        if (contents.length > 0 && contents[0].role !== 'user') {
+          contents.unshift({ role: 'user', parts: [{ text: "Continue the conversation." }] });
         }
-      });
 
-      if (contents.length > 0 && contents[0].role !== 'user') {
-        contents.unshift({ role: 'user', parts: [{ text: "Continue the conversation." }] });
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: systemMsg ? { parts: [{ text: systemMsg }] } : undefined,
+            contents,
+            generationConfig: { maxOutputTokens: 1000, temperature: 0.7 }
+          })
+        });
+
+        if (response.ok) {
+          return await standardResponse(response, 'gemini');
+        }
+
+        const errorText = await response.text();
+        attemptsLog.push(`${geminiModel}(${version}): ${response.status}`);
+        console.log(`Gemini ${geminiModel} (${version}) failed: ${response.status}`);
+        
+      } catch (err) {
+        attemptsLog.push(`${geminiModel}(${version}): ERR ${err.message}`);
       }
-
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          systemInstruction: systemMsg ? { parts: [{ text: systemMsg }] } : undefined,
-          contents,
-          generationConfig: { maxOutputTokens: 1000, temperature: 0.7 }
-        })
-      });
-
-      // If we get a 200 OK, return the response immediately
-      if (response.ok) {
-        return await standardResponse(response, 'gemini');
-      }
-
-      // If we get an error (like 404 or 429), log it and try the next model
-      const errorText = await response.text();
-      lastError = { status: response.status, body: errorText, model: geminiModel };
-      console.log(`Gemini model ${geminiModel} failed with ${response.status}: ${errorText}`);
-      
-    } catch (err) {
-      lastError = { error: err.message };
     }
-  }
-
-  // If all models fail, try to fetch the list of available models to help with debugging
-  let availableModelsText = "Unknown";
-  try {
-    const listResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${geminiKey}`);
-    if (listResponse.ok) {
-      const listData = await listResponse.json();
-      availableModelsText = listData.models.map(m => m.name.replace('models/', '')).join(', ');
-    }
-  } catch (e) {
-    availableModelsText = `Failed to list models: ${e.message}`;
   }
 
   return new Response(JSON.stringify({ 
-    error: `All Gemini models failed. Available in your region/key: [${availableModelsText}]. Last error (${lastError.model}): ${lastError.body || lastError.error}` 
-  }), { status: lastError.status || 500 });
+    error: `All models failed. Attempts: ${attemptsLog.join(', ')}. Please check your API key permissions and regional availability at ai.google.dev.` 
+  }), { status: 500 });
 }
 
 async function standardResponse(response, provider) {
