@@ -77,36 +77,67 @@ async function handleGemini(messages, model, temperature, max_tokens, env) {
     }), { status: 500 });
   }
 
-  const geminiModel = model || "gemini-1.5-flash-latest"; // Use -latest suffix for better mapping
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`;
-  
-  const systemMsg = messages.find(m => m.role === 'system')?.content;
-  const rawMsgs = messages.filter(m => m.role !== 'system');
-  const contents = [];
-  
-  rawMsgs.forEach(m => {
-    const role = m.role === 'assistant' ? 'model' : 'user';
-    if (contents.length > 0 && contents[contents.length - 1].role === role) {
-      contents[contents.length - 1].parts[0].text += "\n\n" + m.content;
-    } else {
-      contents.push({ role: role, parts: [{ text: m.content }] });
-    }
-  });
+  // List of models to try in order of preference for free tier
+  const modelFallback = [
+    model, // Try the one requested first (if any)
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-8b",
+    "gemini-2.0-flash",
+    "gemini-pro"
+  ].filter(Boolean);
 
-  if (contents.length > 0 && contents[0].role !== 'user') {
-    contents.unshift({ role: 'user', parts: [{ text: "Continue the conversation." }] });
+  let lastError = null;
+
+  for (const geminiModel of modelFallback) {
+    try {
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`;
+      
+      const systemMsg = messages.find(m => m.role === 'system')?.content;
+      const rawMsgs = messages.filter(m => m.role !== 'system');
+      const contents = [];
+      
+      rawMsgs.forEach(m => {
+        const role = m.role === 'assistant' ? 'model' : 'user';
+        if (contents.length > 0 && contents[contents.length - 1].role === role) {
+          contents[contents.length - 1].parts[0].text += "\n\n" + m.content;
+        } else {
+          contents.push({ role: role, parts: [{ text: m.content }] });
+        }
+      });
+
+      if (contents.length > 0 && contents[0].role !== 'user') {
+        contents.unshift({ role: 'user', parts: [{ text: "Continue the conversation." }] });
+      }
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: systemMsg ? { parts: [{ text: systemMsg }] } : undefined,
+          contents,
+          generationConfig: { maxOutputTokens: 1000, temperature: 0.7 }
+        })
+      });
+
+      // If we get a 200 OK, return the response immediately
+      if (response.ok) {
+        return await standardResponse(response, 'gemini');
+      }
+
+      // If we get an error (like 404 or 429), log it and try the next model
+      const errorText = await response.text();
+      lastError = { status: response.status, body: errorText, model: geminiModel };
+      console.log(`Gemini model ${geminiModel} failed with ${response.status}: ${errorText}`);
+      
+    } catch (err) {
+      lastError = { error: err.message };
+    }
   }
 
-  const response = await fetch(apiUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      systemInstruction: systemMsg ? { parts: [{ text: systemMsg }] } : undefined,
-      contents,
-      generationConfig: { maxOutputTokens: 1000, temperature: 0.7 }
-    })
-  });
-  return await standardResponse(response, 'gemini');
+  // If all models fail, return the last error
+  return new Response(JSON.stringify({ 
+    error: `All Gemini models failed. Last error (${lastError.model}): ${lastError.body || lastError.error}` 
+  }), { status: lastError.status || 500 });
 }
 
 async function standardResponse(response, provider) {

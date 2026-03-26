@@ -49,7 +49,6 @@ export async function onRequest(context) {
                 break;
 
             case 'gemini':
-                // Google Gemini integration
                 const geminiKey = env.GEMINI_API_KEY || env.GEMINI_API;
                 if (!geminiKey) {
                     const keys = Object.keys(env).join(', ');
@@ -58,45 +57,66 @@ export async function onRequest(context) {
                     }), { status: 500 });
                 }
 
-                const geminiModel = model || "gemini-1.5-flash-latest"; // Use 1.5 flash for better free-tier availability
-                apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`;
-                
-                // Extract system message
-                const systemMsg_gemini = messages.find(m => m.role === 'system')?.content;
-                
-                // Group and alternate messages (Gemini requires: user, model, user, model...)
-                const rawMsgs = messages.filter(m => m.role !== 'system');
-                const contents = [];
-                
-                rawMsgs.forEach(m => {
-                    const role = m.role === 'assistant' ? 'model' : 'user';
-                    if (contents.length > 0 && contents[contents.length - 1].role === role) {
-                        // Merge consecutive same-role messages
-                        contents[contents.length - 1].parts[0].text += "\n\n" + m.content;
-                    } else {
-                        contents.push({
-                            role: role,
-                            parts: [{ text: m.content }]
-                        });
-                    }
-                });
+                // Fallback loop for Gemini models
+                const modelFallback = [
+                    model,
+                    "gemini-1.5-flash",
+                    "gemini-1.5-flash-8b",
+                    "gemini-2.0-flash",
+                    "gemini-pro"
+                ].filter(Boolean);
 
-                // Gemini must START with 'user'
-                if (contents.length > 0 && contents[0].role !== 'user') {
-                    contents.unshift({ role: 'user', parts: [{ text: "Continue the conversation." }] });
+                let lastError = null;
+
+                for (const geminiModel of modelFallback) {
+                    try {
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`;
+                        const systemMsg = messages.find(m => m.role === 'system')?.content;
+                        const rawMsgs = messages.filter(m => m.role !== 'system');
+                        const contents = [];
+                        
+                        rawMsgs.forEach(m => {
+                            const role = m.role === 'assistant' ? 'model' : 'user';
+                            if (contents.length > 0 && contents[contents.length - 1].role === role) {
+                                contents[contents.length - 1].parts[0].text += "\n\n" + m.content;
+                            } else {
+                                contents.push({ role: role, parts: [{ text: m.content }] });
+                            }
+                        });
+
+                        if (contents.length > 0 && contents[0].role !== 'user') {
+                            contents.unshift({ role: 'user', parts: [{ text: "Continue the conversation." }] });
+                        }
+
+                        const response = await fetch(apiUrl, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                systemInstruction: systemMsg ? { parts: [{ text: systemMsg }] } : undefined,
+                                contents,
+                                generationConfig: { maxOutputTokens: 1000, temperature: 0.7 }
+                            })
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            const resultText = data.candidates[0].content.parts[0].text;
+                            return new Response(JSON.stringify({ content: resultText }), {
+                                headers: { "Content-Type": "application/json" }
+                            });
+                        }
+
+                        const errorText = await response.text();
+                        lastError = { status: response.status, body: errorText, model: geminiModel };
+                        
+                    } catch (err) {
+                        lastError = { error: err.message };
+                    }
                 }
 
-                body = {
-                    systemInstruction: systemMsg_gemini ? { parts: [{ text: systemMsg_gemini }] } : undefined,
-                    contents,
-                    generationConfig: { 
-                        maxOutputTokens: 1000, 
-                        temperature: 0.7,
-                        topP: 0.95,
-                        topK: 40
-                    }
-                };
-                break;
+                return new Response(JSON.stringify({ 
+                    error: `All Gemini models failed. Last error (${lastError.model}): ${lastError.body || lastError.error}` 
+                }), { status: lastError.status || 500 });
 
             default:
                 return new Response(JSON.stringify({ error: "Unsupported provider" }), { status: 400 });
