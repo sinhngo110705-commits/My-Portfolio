@@ -750,8 +750,8 @@ function initChatbot() {
     const closeBtn = document.getElementById('chatbot-close');
     const messagesEl = document.getElementById('chatbot-messages');
     const inputEl = document.getElementById('chatbot-input');
-    const sendBtn = document.getElementById('chatbot-send');
-    const providerEl = document.getElementById('chatbot-provider');
+    const sendBtn = document.getElementById('send-btn') || document.getElementById('chatbot-send');
+    // Provider select removed from UI
 
     if (!container || !toggle || !windowEl) return;
 
@@ -836,7 +836,7 @@ function initChatbot() {
 
     async function getAIResponse(userText) {
         if (isThinking) return;
-        const provider = providerEl ? providerEl.value : 'local';
+        const provider = 'gemini'; // Unified Gemini/Umareru backend
         let indicator;
         try {
             isThinking = true;
@@ -975,10 +975,10 @@ function initChatbot() {
             if (success && content) {
                 addMessage(content.replace(/\*\*/g, ''), 'ai');
             } else {
-                const displayName = provider === 'gemini' ? 'Umareru' : provider;
+                const displayName = "Teemous AI";
                 addMessage(activeLang === 'en'
-                    ? `Teemous AI (${displayName}) Error: ${lastApiError || "Unknown Error"}.`
-                    : `Lỗi chế độ ${displayName}: ${lastApiError || "Lỗi không xác định"}.`, 'ai');
+                    ? `${displayName} Error: ${lastApiError || "Unknown Error"}.`
+                    : `Lỗi ${displayName}: ${lastApiError || "Lỗi không xác định"}.`, 'ai');
             }
         } catch (e) {
             console.error("🚨 CRITICAL AI ERROR:", e);
