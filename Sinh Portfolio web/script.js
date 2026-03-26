@@ -308,8 +308,11 @@ function initBackgroundAnimation() {
             particles[i].draw();
         }
 
-        // Draw connections for close particles
-        connectParticles();
+        // Draw connections for close particles if not in light mode
+        const isLight = document.body.classList.contains('light-mode');
+        if (!isLight) {
+            connectParticles();
+        }
 
         requestAnimationFrame(animate);
     }
