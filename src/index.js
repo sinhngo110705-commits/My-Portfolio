@@ -77,7 +77,7 @@ async function handleGemini(messages, model, temperature, max_tokens, env) {
     }), { status: 500 });
   }
 
-  const geminiModel = model || "gemini-1.5-flash"; // Use 1.5 flash for better free-tier availability
+  const geminiModel = model || "gemini-1.5-flash-latest"; // Use -latest suffix for better mapping
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`;
   
   const systemMsg = messages.find(m => m.role === 'system')?.content;

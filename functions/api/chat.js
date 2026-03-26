@@ -58,7 +58,7 @@ export async function onRequest(context) {
                     }), { status: 500 });
                 }
 
-                const geminiModel = model || "gemini-1.5-flash"; // Use 1.5 flash for better free-tier availability
+                const geminiModel = model || "gemini-1.5-flash-latest"; // Use 1.5 flash for better free-tier availability
                 apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`;
                 
                 // Extract system message
