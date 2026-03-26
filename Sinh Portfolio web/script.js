@@ -887,11 +887,13 @@ function initChatbot() {
 
                 let model;
                 if (typeof availableModels === 'undefined' || availableModels.length === 0) {
-                    model = "google/gemma-3-12b";
+                    model = "qwen/qwen3-vl-8b"; // Default: Qwen3-VL-8B (lighter, faster)
                 } else {
                     const chatModels = availableModels.filter(m => !m.toLowerCase().includes('embed'));
                     const pool = chatModels.length > 0 ? chatModels : availableModels;
-                    model = pool.find(m => m.toLowerCase().includes('12b')) ||
+                    model = pool.find(m => m.toLowerCase().includes('qwen3-vl')) ||
+                            pool.find(m => m.toLowerCase().includes('qwen')) ||
+                            pool.find(m => m.toLowerCase().includes('12b')) ||
                             pool.find(m => m.toLowerCase().includes('gemma-3')) ||
                             pool.find(m => m.toLowerCase().includes('gemma')) ||
                             pool[0];
