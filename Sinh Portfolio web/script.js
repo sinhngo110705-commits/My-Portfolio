@@ -836,7 +836,7 @@ function initChatbot() {
 
     async function getAIResponse(userText) {
         if (isThinking) return;
-        const provider = 'gemini'; // Unified Gemini/Umareru backend
+        const provider = 'local'; // Restored to Local AI (LM Studio/ngrok) as requested
         let indicator;
         try {
             isThinking = true;
