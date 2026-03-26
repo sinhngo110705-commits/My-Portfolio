@@ -112,12 +112,18 @@ async function handleGemini(messages, model, temperature, max_tokens, env) {
           contents.unshift({ role: 'user', parts: [{ text: "Continue the conversation." }] });
         }
 
+        // Universal approach: Prepend system message to the first user message
+        // This avoids "Unknown name systemInstruction" errors on older/v1 endpoints
+        const geminiContents = [...contents];
+        if (systemMsg && geminiContents.length > 0 && geminiContents[0].role === 'user') {
+          geminiContents[0].parts[0].text = `SYSTEM INSTRUCTION: ${systemMsg}\n\nUSER MESSAGE: ${geminiContents[0].parts[0].text}`;
+        }
+
         const response = await fetch(apiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            systemInstruction: systemMsg ? { parts: [{ text: systemMsg }] } : undefined,
-            contents,
+            contents: geminiContents,
             generationConfig: { maxOutputTokens: 1000, temperature: 0.7 }
           })
         });
