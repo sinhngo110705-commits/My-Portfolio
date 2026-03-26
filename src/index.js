@@ -134,9 +134,20 @@ async function handleGemini(messages, model, temperature, max_tokens, env) {
     }
   }
 
-  // If all models fail, return the last error
+  // If all models fail, try to fetch the list of available models to help with debugging
+  let availableModelsText = "Unknown";
+  try {
+    const listResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${geminiKey}`);
+    if (listResponse.ok) {
+      const listData = await listResponse.json();
+      availableModelsText = listData.models.map(m => m.name.replace('models/', '')).join(', ');
+    }
+  } catch (e) {
+    availableModelsText = `Failed to list models: ${e.message}`;
+  }
+
   return new Response(JSON.stringify({ 
-    error: `All Gemini models failed. Last error (${lastError.model}): ${lastError.body || lastError.error}` 
+    error: `All Gemini models failed. Available in your region/key: [${availableModelsText}]. Last error (${lastError.model}): ${lastError.body || lastError.error}` 
   }), { status: lastError.status || 500 });
 }
 
