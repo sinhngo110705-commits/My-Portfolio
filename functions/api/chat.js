@@ -52,7 +52,10 @@ export async function onRequest(context) {
                 // Google Gemini integration
                 const geminiKey = env.GEMINI_API_KEY || env.GEMINI_API;
                 if (!geminiKey) {
-                    return new Response(JSON.stringify({ error: "GEMINI_API_KEY or GEMINI_API is missing in Cloudflare environment variables." }), { status: 500 });
+                    const keys = Object.keys(env).join(', ');
+                    return new Response(JSON.stringify({ 
+                        error: `GEMINI_API_KEY is missing. Available keys: [${keys || "None"}]. Please add GEMINI_API_KEY to your Cloudflare Variables.` 
+                    }), { status: 500 });
                 }
 
                 const geminiModel = model || "gemini-2.0-flash"; // Use stable 2.0 flash on free tier
