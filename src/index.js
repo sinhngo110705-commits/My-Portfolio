@@ -127,8 +127,9 @@ async function handleGemini(messages, model, temperature, max_tokens, env) {
         }
 
         const errorText = await response.text();
-        attemptsLog.push(`${geminiModel}(${version}): ${response.status}`);
-        console.log(`Gemini ${geminiModel} (${version}) failed: ${response.status}`);
+        const shortError = errorText.substring(0, 100).replace(/[\r\n]/g, ' ');
+        attemptsLog.push(`${geminiModel}(${version}): ${response.status} [${shortError}]`);
+        console.log(`Gemini ${geminiModel} (${version}) failed: ${response.status} - ${shortError}`);
         
       } catch (err) {
         attemptsLog.push(`${geminiModel}(${version}): ERR ${err.message}`);
@@ -137,7 +138,7 @@ async function handleGemini(messages, model, temperature, max_tokens, env) {
   }
 
   return new Response(JSON.stringify({ 
-    error: `All models failed. Attempts: ${attemptsLog.join(', ')}. Please check your API key permissions and regional availability at ai.google.dev.` 
+    error: `All models failed. Attempts: ${attemptsLog.join(' | ')}. Please check your API key permissions at ai.google.dev.` 
   }), { status: 500 });
 }
 
