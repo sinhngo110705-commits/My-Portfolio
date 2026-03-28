@@ -267,13 +267,13 @@ function initBackgroundAnimation() {
         }
     }
 
-    function drawGrid() {
+    function drawGrid(isLight) {
         if (!mouse.x) return;
 
         const dx = (mouse.x - width / 2) * 0.02;
         const dy = (mouse.y - height / 2) * 0.02;
 
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+        ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.02)';
         ctx.lineWidth = 1;
 
         const gridSize = 50;
@@ -301,23 +301,22 @@ function initBackgroundAnimation() {
             mouse.y += (mouse.targetY - mouse.y) * 0.1;
         }
 
-        drawGrid();
+        const isLight = document.body.classList.contains('light-mode');
+        
+        drawGrid(isLight);
 
         for (let i = 0; i < particles.length; i++) {
             particles[i].update();
             particles[i].draw();
         }
 
-        // Draw connections for close particles if not in light mode
-        const isLight = document.body.classList.contains('light-mode');
-        if (!isLight) {
-            connectParticles();
-        }
+        // Draw connections for close particles in both modes
+        connectParticles(isLight);
 
         requestAnimationFrame(animate);
     }
 
-    function connectParticles() {
+    function connectParticles(isLight) {
         for (let a = 0; a < particles.length; a++) {
             for (let b = a; b < particles.length; b++) {
                 let dx = particles[a].x - particles[b].x;
@@ -326,7 +325,9 @@ function initBackgroundAnimation() {
 
                 if (distance < 12000) {
                     let opacity = 1 - (distance / 12000);
-                    ctx.strokeStyle = `rgba(156, 39, 176, ${opacity * 0.2})`;
+                    // Use neon-purple color (156, 39, 176) with balanced intensity for both modes
+                    const lineOpacity = isLight ? opacity * 0.15 : opacity * 0.2;
+                    ctx.strokeStyle = `rgba(156, 39, 176, ${lineOpacity})`;
                     ctx.lineWidth = 1;
                     ctx.beginPath();
                     ctx.moveTo(particles[a].x, particles[a].y);
