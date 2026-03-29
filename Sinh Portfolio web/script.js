@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initGalleryToggle();
     initScrollProgress();
     initChatbot();
+    initAuthModal();
+    initDashboard();
 });
 
 function initScrollProgress() {
@@ -994,3 +996,441 @@ function initChatbot() {
         }
     }
 }
+
+/**
+ * Authentication Modal Logic
+ */
+function initAuthModal() {
+    const navLoginBtn = document.getElementById('nav-login-btn');
+    const authOverlay = document.getElementById('auth-modal-overlay');
+    const closeBtn = document.getElementById('close-auth-modal');
+    
+    const tabLogin = document.getElementById('tab-login');
+    const tabSignup = document.getElementById('tab-signup');
+    const loginSection = document.getElementById('login-section');
+    const signupSection = document.getElementById('signup-section');
+    
+    if (!navLoginBtn || !authOverlay) return;
+
+    // Check if user is already logged in
+    const token = localStorage.getItem('teemous_jwt');
+    const userJson = localStorage.getItem('teemous_user');
+    
+    if (token && userJson) {
+        try {
+            const user = JSON.parse(userJson);
+            navLoginBtn.innerHTML = `Hi, ${user.username}`;
+            navLoginBtn.classList.add('logged-in');
+            
+            navLoginBtn.onclick = (e) => {
+                e.preventDefault();
+                openDashboard();
+            };
+            return;
+        } catch(e) {}
+    }
+
+    function openModal() {
+        authOverlay.classList.add('active');
+        if (typeof gsap !== 'undefined') {
+            const modalContainer = document.getElementById('auth-modal');
+            gsap.fromTo(modalContainer, 
+                { y: 30, scale: 0.95, opacity: 0 },
+                { y: 0, scale: 1, opacity: 1, duration: 0.4, ease: "power3.out" }
+            );
+        }
+    }
+
+    function closeModal() {
+        if (typeof gsap !== 'undefined') {
+            const modalContainer = document.getElementById('auth-modal');
+            gsap.to(modalContainer, {
+                y: 20,
+                scale: 0.95,
+                opacity: 0,
+                duration: 0.3,
+                onComplete: () => authOverlay.classList.remove('active')
+            });
+        } else {
+            authOverlay.classList.remove('active');
+        }
+    }
+
+    navLoginBtn.addEventListener('click', (e) => {
+        if (!navLoginBtn.classList.contains('logged-in')) {
+            e.preventDefault();
+            openModal();
+        }
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+
+    authOverlay.addEventListener('click', (e) => {
+        if (e.target === authOverlay) closeModal();
+    });
+
+    // Tab Logic
+    tabLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        tabLogin.classList.add('active');
+        tabSignup.classList.remove('active');
+        loginSection.style.display = 'block';
+        signupSection.style.display = 'none';
+        if (typeof gsap !== 'undefined') {
+            gsap.fromTo(loginSection, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3 });
+        }
+    });
+
+    tabSignup.addEventListener('click', (e) => {
+        e.preventDefault();
+        tabSignup.classList.add('active');
+        tabLogin.classList.remove('active');
+        signupSection.style.display = 'block';
+        loginSection.style.display = 'none';
+        if (typeof gsap !== 'undefined') {
+            gsap.fromTo(signupSection, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3 });
+        }
+    });
+
+    function authShowAlert(message, type = 'error') {
+        const alertBox = document.getElementById('auth-alert');
+        if(!alertBox) return;
+        alertBox.innerHTML = message;
+        alertBox.className = `auth-alert ${type}`;
+        alertBox.style.display = 'block';
+        if (typeof gsap !== 'undefined') {
+            gsap.fromTo(alertBox, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3 });
+        }
+    }
+
+    // Handle Login Submit
+    const authForm = document.getElementById('auth-form');
+    authForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const isLogin = tabLogin.classList.contains('active');
+        if(!isLogin) return; 
+
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const lang = (typeof currentLang !== 'undefined') ? currentLang : 'en';
+
+        if (!email || !password) {
+            authShowAlert(lang === 'vi' ? 'Vui lòng điền đủ thông tin!' : 'Please fill all fields.');
+            return;
+        }
+
+        const submitBtn = loginSection.querySelector('.auth-submit-btn');
+        const origText = submitBtn.innerText;
+        submitBtn.innerText = 'Routing...';
+        submitBtn.disabled = true;
+
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                localStorage.setItem('teemous_jwt', data.token);
+                localStorage.setItem('teemous_user', JSON.stringify(data.user));
+                authShowAlert(lang === 'vi' ? 'Đăng nhập thành công!' : 'Login successful!', 'success');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                authShowAlert(data.error || 'Authentication failed');
+            }
+        } catch (err) {
+            authShowAlert('Network error. Please try again.');
+        } finally {
+            submitBtn.innerText = origText;
+            submitBtn.disabled = false;
+        }
+    });
+
+    // Handle Signup Click
+    const submitBtnSignup = document.getElementById('auth-submit-signup');
+    if (submitBtnSignup) {
+        submitBtnSignup.addEventListener('click', async () => {
+            const username = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-confirm').value;
+            const lang = (typeof currentLang !== 'undefined') ? currentLang : 'en';
+
+            if (!username || !email || !password || !confirm) {
+                authShowAlert(lang === 'vi' ? 'Vui lòng điền đủ thông tin!' : 'Please fill all fields.');
+                return;
+            }
+
+            if (password !== confirm) {
+                authShowAlert(lang === 'vi' ? 'Mật khẩu nhập lại không khớp!' : 'Passwords do not match!');
+                return;
+            }
+
+            const origText = submitBtnSignup.innerText;
+            submitBtnSignup.innerText = 'Initializing...';
+            submitBtnSignup.disabled = true;
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    authShowAlert(lang === 'vi' ? 'Khởi tạo thành công!' : 'Initialization successful!', 'success');
+                    setTimeout(() => tabLogin.click(), 1000);
+                } else {
+                    authShowAlert(data.error || 'Registration failed');
+                }
+            } catch (err) {
+                authShowAlert('Network error. Please try again.');
+            } finally {
+                submitBtnSignup.innerText = origText;
+                submitBtnSignup.disabled = false;
+            }
+        });
+    }
+}
+
+/**
+ * Dashboard Logic
+ */
+/**
+ * Dashboard Logic
+ */
+function initDashboard() {
+    const dashboardOverlay = document.getElementById('dashboard-modal-overlay');
+    const closeBtn = document.getElementById('close-dashboard-modal');
+    const logoutBtn = document.getElementById('logout-btn');
+    const avatarInput = document.getElementById('avatar-input');
+    const saveProfileBtn = document.getElementById('save-profile-btn');
+    
+    if (!dashboardOverlay || !closeBtn) return;
+
+    closeBtn.addEventListener('click', closeDashboard);
+    dashboardOverlay.addEventListener('click', (e) => {
+        if (e.target === dashboardOverlay) closeDashboard();
+    });
+
+    // Logout handling
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('teemous_jwt');
+            localStorage.removeItem('teemous_user');
+            window.location.reload();
+        });
+    }
+
+    // Tab Switching Logic
+    const tabs = document.querySelectorAll('.dash-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.dataset.tab;
+            
+            // Toggle Tab Buttons
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            // Toggle Sections
+            const sections = document.querySelectorAll('.dash-section');
+            sections.forEach(s => s.classList.remove('active'));
+            const activeSection = document.getElementById(`tab-${target}`);
+            if (activeSection) activeSection.classList.add('active');
+        });
+    });
+
+    // Avatar Upload handling
+    if (avatarInput) {
+        avatarInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const container = document.querySelector('.avatar-edit-container');
+            container.classList.add('uploading');
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const token = localStorage.getItem('teemous_jwt');
+
+            try {
+                const res = await fetch('/api/user/upload-avatar', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    const user = JSON.parse(localStorage.getItem('teemous_user'));
+                    user.avatar_url = data.avatar_url;
+                    localStorage.setItem('teemous_user', JSON.stringify(user));
+                    document.getElementById('dashboard-avatar').src = data.avatar_url;
+                    alert(currentLang === 'vi' ? 'Cập nhật ảnh thành công!' : 'Avatar updated!');
+                } else {
+                    alert(data.error || 'Upload failed');
+                }
+            } catch (err) {
+                alert('Network error during upload');
+            } finally {
+                container.classList.remove('uploading');
+            }
+        });
+    }
+
+    // Profile (Username) Update handling
+    if (saveProfileBtn) {
+        saveProfileBtn.addEventListener('click', async () => {
+            const username = document.getElementById('dashboard-username-input').value;
+            if (!username || username.length < 3) {
+                alert(currentLang === 'vi' ? 'Tên phải có ít nhất 3 ký tự!' : 'Username too short!');
+                return;
+            }
+
+            const token = localStorage.getItem('teemous_jwt');
+            saveProfileBtn.disabled = true;
+            saveProfileBtn.innerText = '⌛';
+
+            try {
+                const res = await fetch('/api/user/update-profile', {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username })
+                });
+
+                if (res.ok) {
+                    const user = JSON.parse(localStorage.getItem('teemous_user'));
+                    user.username = username;
+                    localStorage.setItem('teemous_user', JSON.stringify(user));
+                    
+                    const navBtn = document.getElementById('nav-login-btn');
+                    if (navBtn) navBtn.innerHTML = `Hi, ${username}`;
+                    
+                    alert(currentLang === 'vi' ? 'Đã lưu thay đổi!' : 'Profile saved!');
+                } else {
+                    const data = await res.json();
+                    alert(data.error || 'Update failed');
+                }
+            } catch (err) {
+                alert('Network error');
+            } finally {
+                saveProfileBtn.disabled = false;
+                saveProfileBtn.innerText = '💾';
+            }
+        });
+    }
+}
+
+async function openDashboard() {
+    const overlay = document.getElementById('dashboard-modal-overlay');
+    const token = localStorage.getItem('teemous_jwt');
+    if (!overlay || !token) return;
+
+    // Show modal with stale data first for speed
+    const user = JSON.parse(localStorage.getItem('teemous_user') || '{}');
+    if (user.username) {
+        document.getElementById('dashboard-username-input').value = user.username;
+        document.getElementById('dashboard-email').innerText = user.email || '';
+        document.getElementById('dashboard-balance').innerText = `${user.balance || 0} VND`;
+        document.getElementById('dashboard-role').innerText = user.role === 'admin' ? 'Administrator' : 'Elite';
+        document.getElementById('dashboard-avatar').src = user.avatar_url || `https://api.dicebear.com/8.x/identicon/svg?seed=${user.username}`;
+    }
+
+    overlay.classList.add('active');
+    
+    if (typeof gsap !== 'undefined') {
+        const modal = document.getElementById('dashboard-modal');
+        gsap.fromTo(modal, 
+            { y: 30, scale: 0.95, opacity: 0 },
+            { y: 0, scale: 1, opacity: 1, duration: 0.4, ease: "power3.out" }
+        );
+    }
+
+    // Now fetch FRESH data from server
+    try {
+        const res = await fetch('/api/user/profile', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+            // Update Local Storage
+            localStorage.setItem('teemous_user', JSON.stringify(data.user));
+            
+            // Refresh UI fields
+            document.getElementById('dashboard-username-input').value = data.user.username;
+            document.getElementById('dashboard-balance').innerText = `${data.user.balance.toLocaleString()} VND`;
+            document.getElementById('dashboard-role').innerText = data.user.role === 'admin' ? 'Administrator' : 'Elite';
+            document.getElementById('dashboard-avatar').src = data.user.avatar_url || `https://api.dicebear.com/8.x/identicon/svg?seed=${data.user.username}`;
+
+            // Render Tables
+            renderOrders(data.orders);
+            renderTransactions(data.transactions);
+        }
+    } catch (e) {
+        console.error("Failed to refresh dashboard data", e);
+    }
+}
+
+function renderOrders(orders) {
+    const tbody = document.getElementById('orders-list-body');
+    if (!tbody) return;
+    
+    if (!orders || orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 2rem; color: var(--text-muted);">${currentLang === 'vi' ? 'Chưa có đơn hàng nào.' : 'No orders found.'}</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = orders.map(order => `
+        <tr>
+            <td><strong>${order.product_name}</strong></td>
+            <td>${order.price_at_purchase.toLocaleString()}</td>
+            <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+        </tr>
+    `).join('');
+}
+
+function renderTransactions(txs) {
+    const tbody = document.getElementById('transactions-list-body');
+    if (!tbody) return;
+
+    if (!txs || txs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 2rem; color: var(--text-muted);">${currentLang === 'vi' ? 'Chưa có giao dịch nào.' : 'No transactions found.'}</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = txs.map(tx => `
+        <tr>
+            <td style="color: ${tx.type === 'topup' ? '#81c784' : '#ff8a80'}">${tx.type === 'topup' ? '+' : '-'}${tx.amount.toLocaleString()}</td>
+            <td>${tx.type}</td>
+            <td><span class="status-badge status-${tx.status}">${tx.status}</span></td>
+        </tr>
+    `).join('');
+}
+
+function closeDashboard() {
+    const overlay = document.getElementById('dashboard-modal-overlay');
+    if (!overlay) return;
+
+    if (typeof gsap !== 'undefined') {
+        const modal = document.getElementById('dashboard-modal');
+        gsap.to(modal, {
+            y: 20,
+            scale: 0.95,
+            opacity: 0,
+            duration: 0.3,
+            onComplete: () => overlay.classList.remove('active')
+        });
+    } else {
+        overlay.classList.remove('active');
+    }
+}
+
+

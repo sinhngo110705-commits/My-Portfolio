@@ -1,6 +1,13 @@
-name = "my-portfolio-no-1"
-main = "src/index.js"
-compatibility_date = "2024-03-22"
+name = "teemous-digital"
+pages_build_output_dir = "web"
+compatibility_date = "2024-03-29"
 
-[assets]
-directory = "./Sinh Portfolio web"
+[[d1_databases]]
+binding = "teemous_db"
+database_name = "teemous-db"
+database_id = "94b0cf54-594e-4e57-9c4f-83b7652c62b3"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "teemous-assets"
+
