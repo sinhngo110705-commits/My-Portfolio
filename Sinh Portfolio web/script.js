@@ -1027,6 +1027,9 @@ function initAuthModal() {
                 e.preventDefault();
                 openDashboard();
             };
+            
+            // Render Mini Profile
+            setTimeout(initMiniProfile, 100);
             return;
         } catch(e) {}
     }
@@ -1340,7 +1343,14 @@ async function openDashboard() {
         document.getElementById('dashboard-username-input').value = user.username;
         document.getElementById('dashboard-email').innerText = user.email || '';
         document.getElementById('dashboard-balance').innerText = `${user.balance || 0} VND`;
-        document.getElementById('dashboard-role').innerText = user.role === 'admin' ? 'Administrator' : 'Elite';
+        
+        const rankSpan = document.getElementById('dashboard-rank');
+        if (rankSpan) {
+            const rank = getUserRank(user);
+            rankSpan.innerText = rank;
+            rankSpan.className = `stat-value rank-badge rank-${rank.toLowerCase()}`;
+        }
+        
         document.getElementById('dashboard-avatar').src = user.avatar_url || `https://api.dicebear.com/8.x/identicon/svg?seed=${user.username}`;
     }
 
@@ -1368,8 +1378,19 @@ async function openDashboard() {
             // Refresh UI fields
             document.getElementById('dashboard-username-input').value = data.user.username;
             document.getElementById('dashboard-balance').innerText = `${data.user.balance.toLocaleString()} VND`;
-            document.getElementById('dashboard-role').innerText = data.user.role === 'admin' ? 'Administrator' : 'Elite';
+            
+            const rankSpan = document.getElementById('dashboard-rank');
+            if (rankSpan) {
+                const rank = getUserRank(data.user);
+                rankSpan.innerText = rank;
+                rankSpan.className = `stat-value rank-badge rank-${rank.toLowerCase()}`;
+            }
+
+            // Sync avatar
             document.getElementById('dashboard-avatar').src = data.user.avatar_url || `https://api.dicebear.com/8.x/identicon/svg?seed=${data.user.username}`;
+            
+            // Re-render Mini Profile to sync data
+            initMiniProfile();
 
             // Render Tables
             renderOrders(data.orders);
@@ -1537,4 +1558,66 @@ async function refreshBalance() {
             }
         }
     } catch (e) {}
+}
+
+// === ROLE TO RANK LOGIC ===
+function getUserRank(user) {
+    if (user.role === 'admin') return 'Elite';
+    const bal = user.balance || 0;
+    if (bal >= 500000) return 'Professional';
+    if (bal >= 100000) return 'Impressive';
+    return 'Standard';
+}
+
+function initMiniProfile() {
+    const userJson = localStorage.getItem('teemous_user');
+    if (!userJson) return;
+    try {
+        const user = JSON.parse(userJson);
+        const rank = getUserRank(user);
+        const avatarUrl = user.avatar_url || `https://api.dicebear.com/8.x/identicon/svg?seed=${user.username}`;
+        
+        let miniProfile = document.getElementById('teemous-mini-profile');
+        if (!miniProfile) {
+            miniProfile = document.createElement('div');
+            miniProfile.id = 'teemous-mini-profile';
+            miniProfile.className = 'mini-profile-popup glass-card';
+            document.body.appendChild(miniProfile);
+        }
+        
+        miniProfile.innerHTML = `
+            <div class="mp-header">
+                <img src="${avatarUrl}" alt="Avatar" class="mp-avatar">
+                <div class="mp-info">
+                    <h4 class="mp-username">${user.username}</h4>
+                    <span class="mp-rank rank-badge rank-${rank.toLowerCase()}">${rank}</span>
+                </div>
+            </div>
+            <div class="mp-balance-box">
+                <span class="mp-lbl">Balance:</span>
+                <span class="mp-val">${(user.balance || 0).toLocaleString()} VND</span>
+            </div>
+            <button class="mp-btn neon-border" onclick="openDashboard()">Dashboard</button>
+        `;
+
+        const navBtn = document.getElementById('nav-login-btn');
+        if (navBtn) {
+            navBtn.addEventListener('mouseenter', () => {
+                const rect = navBtn.getBoundingClientRect();
+                miniProfile.style.top = (rect.bottom + window.scrollY + 10) + 'px';
+                miniProfile.style.left = Math.max(10, rect.right + window.scrollX - 250) + 'px'; 
+                miniProfile.classList.add('show');
+            });
+            navBtn.addEventListener('mouseleave', (e) => {
+                if (!e.relatedTarget || !miniProfile.contains(e.relatedTarget)) {
+                    miniProfile.classList.remove('show');
+                }
+            });
+            miniProfile.addEventListener('mouseleave', (e) => {
+                if (!e.relatedTarget || e.relatedTarget !== navBtn) {
+                    miniProfile.classList.remove('show');
+                }
+            });
+        }
+    } catch(e) {}
 }

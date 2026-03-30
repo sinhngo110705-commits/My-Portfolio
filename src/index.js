@@ -200,7 +200,7 @@ async function handleSePayWebhook(request, env) {
 
   const authHeader = request.headers.get("Authorization");
   const expectedToken = env.SEPAY_TOKEN; // Cần set trên Cloudflare Dashboard
-  if (expectedToken && authHeader !== `Bearer ${expectedToken}`) {
+  if (expectedToken && (!authHeader || !authHeader.includes(expectedToken))) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
