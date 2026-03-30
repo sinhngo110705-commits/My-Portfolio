@@ -1617,22 +1617,27 @@ function initMiniProfile() {
         `;
 
         const navBtn = document.getElementById('nav-login-btn');
+        let hideTimeout;
         if (navBtn) {
             navBtn.addEventListener('mouseenter', () => {
+                clearTimeout(hideTimeout);
                 const rect = navBtn.getBoundingClientRect();
                 miniProfile.style.top = (rect.bottom + window.scrollY + 10) + 'px';
                 miniProfile.style.left = Math.max(10, rect.right + window.scrollX - 250) + 'px'; 
                 miniProfile.classList.add('show');
             });
             navBtn.addEventListener('mouseleave', (e) => {
-                if (!e.relatedTarget || !miniProfile.contains(e.relatedTarget)) {
+                hideTimeout = setTimeout(() => {
                     miniProfile.classList.remove('show');
-                }
+                }, 300);
+            });
+            miniProfile.addEventListener('mouseenter', () => {
+                clearTimeout(hideTimeout);
             });
             miniProfile.addEventListener('mouseleave', (e) => {
-                if (!e.relatedTarget || e.relatedTarget !== navBtn) {
+                hideTimeout = setTimeout(() => {
                     miniProfile.classList.remove('show');
-                }
+                }, 300);
             });
         }
     } catch(e) {}
