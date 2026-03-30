@@ -207,10 +207,17 @@ async function handleSePayWebhook(request, env) {
   try {
     const body = await request.json();
     const { code, transferAmount, referenceCode, content } = body;
+    
+    // Log để kiểm tra nội dung SePay gửi tới
+    console.log(`SePay Webhook Received: Content="${content}", Amount=${transferAmount}`);
 
-    // Tìm User ID từ mã chuyển khoản (VD: NAP 123)
-    const match = (code || content || "").match(/NAP\s?(\d+)/i);
-    if (!match) return new Response(JSON.stringify({ success: true, message: "No payment code detected" }));
+    // Regex thông minh hơn: Tìm chữ NAP, sau đó là các ký tự phân cách (trống, gạch ngang, gạch dưới) rồi đến số ID
+    const match = (code || content || "").match(/NAP[\s\-|_]*(\d+)/i);
+    
+    if (!match) {
+        console.log("No payment code (NAP ID) found in content.");
+        return new Response(JSON.stringify({ success: true, message: "No payment code (NAP ID) found" }));
+    }
 
     const userId = parseInt(match[1]);
     const amount = parseInt(transferAmount);
