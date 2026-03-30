@@ -31,7 +31,7 @@
     <meta property="twitter:image" content="https://teemousdigital.id.vn/Logo/logo.png">
 
     <!-- Global Stylesheet -->
-    <link rel="stylesheet" href="../../style.css?v=24">
+    <link rel="stylesheet" href="../../style.css?v=restore-elite-v4">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
@@ -584,6 +584,8 @@
             }
         }
     </style>
+
+
 <!-- Theme Initialization Script (Prevent FOUC) -->
     <script>
         (function() {
@@ -622,19 +624,15 @@
 
             <nav class="header-nav">
                 <ul class="nav-links">
-                    <li><a href="../../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
-                    <li><a href="../index.html" data-en="SERVICES & SHOP" data-vi="Dịch vụ &amp; Cửa hàng">SERVICES &
-                            SHOP</a></li>
+                    <li><a href="../../index.html" class="active" data-en="Home" data-vi="Trang Chủ">Home</a></li>
+                    <li><a href="../../services/index.html" data-en="SERVICES & SHOP"
+                            data-vi="Dịch vụ &amp; Cửa hàng">SERVICES & SHOP</a></li>
                     <li><a href="../../portfolio/index.html" data-en="Portfolio Hub" data-vi="Hồ sơ Năng lực">Portfolio
                             Hub</a></li>
                     <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
                             data-vi="Liên Hệ">Contact Us</a></li>
-                    
-                
-                
-                
-                <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
-            </ul>
+                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
+                </ul>
             </nav>
         </header>
 
@@ -821,6 +819,101 @@
 
 
 
+
+<script>
+        (function () {
+            'use strict';
+
+            // ---- Card Entry Animation ----
+            document.addEventListener('DOMContentLoaded', () => {
+                const cards = document.querySelectorAll('.aov-card');
+
+                if (typeof gsap !== 'undefined') {
+                    gsap.fromTo(cards,
+                        { y: 40, opacity: 0 },
+                        {
+                            y: 0,
+                            opacity: 1,
+                            duration: 0.6,
+                            stagger: 0.1,
+                            ease: 'power3.out',
+                            delay: 0.2
+                        }
+                    );
+                }
+
+                // ---- Filter Logic ----
+                const filterPrice = document.getElementById('filter-price');
+                const filterTierSkin = document.getElementById('filter-tier-skin');
+                const filterSkinCount = document.getElementById('filter-skin-count');
+                const filterRank = document.getElementById('filter-rank');
+                const visibleCountEl = document.getElementById('visible-count');
+                const grid = document.getElementById('aov-grid');
+
+                function applyFilters() {
+                    const price = filterPrice.value;
+                    const tier = filterTierSkin.value;
+                    const skins = filterSkinCount.value;
+                    const rank = filterRank.value;
+
+                    let visibleCount = 0;
+
+                    cards.forEach(card => {
+                        const matchPrice = price === 'all' || card.dataset.price === price;
+                        const matchTier = tier === 'all' || card.dataset.tier === tier;
+                        const matchSkins = skins === 'all' || card.dataset.skins === skins;
+                        const matchRank = rank === 'all' || card.dataset.rank === rank;
+
+                        const show = matchPrice && matchTier && matchSkins && matchRank;
+
+                        if (show) {
+                            card.style.display = '';
+                            visibleCount++;
+                            if (typeof gsap !== 'undefined') {
+                                gsap.fromTo(card,
+                                    { scale: 0.92, opacity: 0 },
+                                    { scale: 1, opacity: 1, duration: 0.35, ease: 'power2.out' }
+                                );
+                            }
+                        } else {
+                            if (typeof gsap !== 'undefined') {
+                                gsap.to(card, {
+                                    scale: 0.92,
+                                    opacity: 0,
+                                    duration: 0.2,
+                                    ease: 'power2.in',
+                                    onComplete: () => { card.style.display = 'none'; }
+                                });
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        }
+                    });
+
+                    // Update empty state
+                    let emptyMsg = grid.querySelector('.aov-empty');
+                    if (visibleCount === 0) {
+                        if (!emptyMsg) {
+                            emptyMsg = document.createElement('div');
+                            emptyMsg.className = 'aov-empty';
+                            emptyMsg.innerHTML = '😢 Không tìm thấy tài khoản phù hợp. <br>Hãy thử bộ lọc khác hoặc liên hệ với chúng tôi!';
+                            grid.appendChild(emptyMsg);
+                        }
+                    } else if (emptyMsg) {
+                        emptyMsg.remove();
+                    }
+
+                    if (visibleCountEl) visibleCountEl.textContent = visibleCount;
+                }
+
+                [filterPrice, filterTierSkin, filterSkinCount, filterRank].forEach(el => {
+                    el.addEventListener('change', applyFilters);
+                });
+            });
+        })();
+    </script>
+
+    
 <!-- Fixed UI Controls -->
     <div class="ui-controls">
         <!-- Light/Dark Mode Toggle -->
@@ -954,7 +1047,7 @@
                             <span id="dashboard-balance" class="stat-value" style="font-size: 1.1rem; font-weight: 800; color: var(--neon-pink);">0 VND</span>
                         </div>
                         <div class="stat-item" style="display: flex; flex-direction: column; align-items: center;">
-                            <span class="stat-label" data-en="Role" data-vi="Chức danh" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Role</span>
+                            <span class="stat-label" data-en="Rank" data-vi="Rank/Hạng" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Rank</span>
                             <span id="dashboard-role" class="stat-value" style="font-size: 1.1rem; font-weight: 800; color: var(--neon-blue);">Elite</span>
                         </div>
                     </div>
@@ -1045,102 +1138,8 @@
     </div>
 
     
-    <script src="../../script.js?v=4"></script>
-
-    <!-- AOV Shop Page Script -->
-    <script>
-        (function () {
-            'use strict';
-
-            // ---- Card Entry Animation ----
-            document.addEventListener('DOMContentLoaded', () => {
-                const cards = document.querySelectorAll('.aov-card');
-
-                if (typeof gsap !== 'undefined') {
-                    gsap.fromTo(cards,
-                        { y: 40, opacity: 0 },
-                        {
-                            y: 0,
-                            opacity: 1,
-                            duration: 0.6,
-                            stagger: 0.1,
-                            ease: 'power3.out',
-                            delay: 0.2
-                        }
-                    );
-                }
-
-                // ---- Filter Logic ----
-                const filterPrice = document.getElementById('filter-price');
-                const filterTierSkin = document.getElementById('filter-tier-skin');
-                const filterSkinCount = document.getElementById('filter-skin-count');
-                const filterRank = document.getElementById('filter-rank');
-                const visibleCountEl = document.getElementById('visible-count');
-                const grid = document.getElementById('aov-grid');
-
-                function applyFilters() {
-                    const price = filterPrice.value;
-                    const tier = filterTierSkin.value;
-                    const skins = filterSkinCount.value;
-                    const rank = filterRank.value;
-
-                    let visibleCount = 0;
-
-                    cards.forEach(card => {
-                        const matchPrice = price === 'all' || card.dataset.price === price;
-                        const matchTier = tier === 'all' || card.dataset.tier === tier;
-                        const matchSkins = skins === 'all' || card.dataset.skins === skins;
-                        const matchRank = rank === 'all' || card.dataset.rank === rank;
-
-                        const show = matchPrice && matchTier && matchSkins && matchRank;
-
-                        if (show) {
-                            card.style.display = '';
-                            visibleCount++;
-                            if (typeof gsap !== 'undefined') {
-                                gsap.fromTo(card,
-                                    { scale: 0.92, opacity: 0 },
-                                    { scale: 1, opacity: 1, duration: 0.35, ease: 'power2.out' }
-                                );
-                            }
-                        } else {
-                            if (typeof gsap !== 'undefined') {
-                                gsap.to(card, {
-                                    scale: 0.92,
-                                    opacity: 0,
-                                    duration: 0.2,
-                                    ease: 'power2.in',
-                                    onComplete: () => { card.style.display = 'none'; }
-                                });
-                            } else {
-                                card.style.display = 'none';
-                            }
-                        }
-                    });
-
-                    // Update empty state
-                    let emptyMsg = grid.querySelector('.aov-empty');
-                    if (visibleCount === 0) {
-                        if (!emptyMsg) {
-                            emptyMsg = document.createElement('div');
-                            emptyMsg.className = 'aov-empty';
-                            emptyMsg.innerHTML = '😢 Không tìm thấy tài khoản phù hợp. <br>Hãy thử bộ lọc khác hoặc liên hệ với chúng tôi!';
-                            grid.appendChild(emptyMsg);
-                        }
-                    } else if (emptyMsg) {
-                        emptyMsg.remove();
-                    }
-
-                    if (visibleCountEl) visibleCountEl.textContent = visibleCount;
-                }
-
-                [filterPrice, filterTierSkin, filterSkinCount, filterRank].forEach(el => {
-                    el.addEventListener('change', applyFilters);
-                });
-            });
-        })();
-    </script>
-
+    
+    <script src="../../script.js?v=restore-elite-v4"></script>
 </body>
 
 </html>

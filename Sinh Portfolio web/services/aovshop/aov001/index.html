@@ -20,7 +20,7 @@
     <meta property="og:url" content="https://teemousdigital.id.vn/services/aovshop/aov001/">
     <meta property="og:site_name" content="Teemous Digital">
     <!-- Global Stylesheet -->
-    <link rel="stylesheet" href="../../../style.css?v=22">
+    <link rel="stylesheet" href="../../../style.css?v=restore-elite-v4">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
 
@@ -601,6 +601,8 @@
             }
         }
     </style>
+
+
 <!-- Theme Initialization Script (Prevent FOUC) -->
     <script>
         (function() {
@@ -625,31 +627,29 @@
         <header class="global-header">
             <div class="header-logo">
                 <a href="../../../index.html">
-                    <img src="../../../Logo/logo.png" alt="Teemous Digital" class="header-logo-img"
+                    <img src="../../../Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
                     <span style="display:none;">TD</span>
                 </a>
             </div>
 
             <button class="mobile-menu-toggle" aria-label="Toggle menu">
-                <span></span><span></span><span></span>
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
 
             <nav class="header-nav">
                 <ul class="nav-links">
-                    <li><a href="../../../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
-                    <li><a href="../../index.html" data-en="SERVICES &amp; SHOP"
-                            data-vi="Dịch vụ &amp; Cửa hàng">SERVICES &amp; SHOP</a></li>
-                    <li><a href="../index.html" data-en="AOV Shop" data-vi="Liên Quân Shop" class="active">AOV Shop</a>
-                    </li>
+                    <li><a href="../../../index.html" class="active" data-en="Home" data-vi="Trang Chủ">Home</a></li>
+                    <li><a href="../../../services/index.html" data-en="SERVICES & SHOP"
+                            data-vi="Dịch vụ &amp; Cửa hàng">SERVICES & SHOP</a></li>
+                    <li><a href="../../../portfolio/index.html" data-en="Portfolio Hub" data-vi="Hồ sơ Năng lực">Portfolio
+                            Hub</a></li>
                     <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
                             data-vi="Liên Hệ">Contact Us</a></li>
-                    
-                
-                
-                
-                <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
-            </ul>
+                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
+                </ul>
             </nav>
         </header>
 
@@ -810,6 +810,49 @@
 
 
 
+
+<script>
+        /* ── Price auto-calc ── */
+        const ATM_PRICE = 999000;
+        const CARD_PRICE = Math.round(ATM_PRICE * 1.2);
+
+        document.getElementById('atm-price').textContent = ATM_PRICE.toLocaleString('vi-VN') + 'đ';
+        document.getElementById('card-price').textContent = CARD_PRICE.toLocaleString('vi-VN') + 'đ';
+
+        /* ── Gallery main image switcher ── */
+        function setMain(src) {
+            const mainImg = document.getElementById('main-showcase');
+            if (mainImg) mainImg.src = src;
+            document.querySelectorAll('.img-thumb').forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        /* ── Card note popup ── */
+        function showCardNote() {
+            alert('Vui lòng liên hệ qua Facebook để biết thêm thông tin nạp thẻ cào!\nFacebook: https://www.facebook.com/quang.sinh.5492');
+        }
+
+        /* ── Entry animations ── */
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof gsap === 'undefined') return;
+
+            gsap.fromTo('.showcase-img-wrap',
+                { opacity: 0, x: -30 },
+                { opacity: 1, x: 0, duration: 0.8, ease: 'power3.out', delay: 0.1 }
+            );
+
+            gsap.fromTo('.detail-right > *',
+                { opacity: 0, y: 25 },
+                { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out', delay: 0.2 }
+            );
+
+            gsap.fromTo('.breadcrumb',
+                { opacity: 0, y: -10 },
+                { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
+            );
+        });
+    </script>
+    
 <!-- Fixed UI Controls -->
     <div class="ui-controls">
         <!-- Light/Dark Mode Toggle -->
@@ -943,7 +986,7 @@
                             <span id="dashboard-balance" class="stat-value" style="font-size: 1.1rem; font-weight: 800; color: var(--neon-pink);">0 VND</span>
                         </div>
                         <div class="stat-item" style="display: flex; flex-direction: column; align-items: center;">
-                            <span class="stat-label" data-en="Role" data-vi="Chức danh" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Role</span>
+                            <span class="stat-label" data-en="Rank" data-vi="Rank/Hạng" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Rank</span>
                             <span id="dashboard-role" class="stat-value" style="font-size: 1.1rem; font-weight: 800; color: var(--neon-blue);">Elite</span>
                         </div>
                     </div>
@@ -1034,49 +1077,8 @@
     </div>
 
     
-    <script src="../../../script.js?v=4"></script>
-
-    <script>
-        /* ── Price auto-calc ── */
-        const ATM_PRICE = 999000;
-        const CARD_PRICE = Math.round(ATM_PRICE * 1.2);
-
-        document.getElementById('atm-price').textContent = ATM_PRICE.toLocaleString('vi-VN') + 'đ';
-        document.getElementById('card-price').textContent = CARD_PRICE.toLocaleString('vi-VN') + 'đ';
-
-        /* ── Gallery main image switcher ── */
-        function setMain(src) {
-            const mainImg = document.getElementById('main-showcase');
-            if (mainImg) mainImg.src = src;
-            document.querySelectorAll('.img-thumb').forEach(t => t.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-        }
-
-        /* ── Card note popup ── */
-        function showCardNote() {
-            alert('Vui lòng liên hệ qua Facebook để biết thêm thông tin nạp thẻ cào!\nFacebook: https://www.facebook.com/quang.sinh.5492');
-        }
-
-        /* ── Entry animations ── */
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof gsap === 'undefined') return;
-
-            gsap.fromTo('.showcase-img-wrap',
-                { opacity: 0, x: -30 },
-                { opacity: 1, x: 0, duration: 0.8, ease: 'power3.out', delay: 0.1 }
-            );
-
-            gsap.fromTo('.detail-right > *',
-                { opacity: 0, y: 25 },
-                { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out', delay: 0.2 }
-            );
-
-            gsap.fromTo('.breadcrumb',
-                { opacity: 0, y: -10 },
-                { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
-            );
-        });
-    </script>
+    
+    <script src="../../../script.js?v=restore-elite-v4"></script>
 </body>
 
 </html>

@@ -31,7 +31,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../style.css?v=24">
+    <link rel="stylesheet" href="../../style.css?v=restore-elite-v4">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -212,6 +212,8 @@
             }
         }
     </style>
+
+
 <!-- Theme Initialization Script (Prevent FOUC) -->
     <script>
         (function() {
@@ -493,26 +495,34 @@
             };
 
             const renderHeader = () => html`
-                <header className="global-header">
-                    <div className="header-logo">
-                        <a href="../../index.html">
-                            <img src="../../Logo/logo.png" alt="Teemous Digital Logo" className="header-logo-img" />
-                        </a>
-                    </div>
-                    <nav className="header-nav hidden md:block">
-                        <ul className="nav-links flex gap-8">
-                            <li><a href="../../index.html">${t[lang].home}</a></li>
-                            <li><a href="../index.html">${t[lang].services}</a></li>
-                            <li><a href="../../portfolio/index.html">${t[lang].portfolio}</a></li>
-                            <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank">${t[lang].contact}</a></li>
-                            
-                            
-                
-                
-                <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
-            </ul>
-                    </nav>
-                </header>
+                <header class="global-header">
+            <div class="header-logo">
+                <a href="../../index.html">
+                    <img src="../../Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span style="display:none;">TD</span>
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="header-nav">
+                <ul class="nav-links">
+                    <li><a href="../../index.html" class="active" data-en="Home" data-vi="Trang Chủ">Home</a></li>
+                    <li><a href="../../services/index.html" data-en="SERVICES & SHOP"
+                            data-vi="Dịch vụ &amp; Cửa hàng">SERVICES & SHOP</a></li>
+                    <li><a href="../../portfolio/index.html" data-en="Portfolio Hub" data-vi="Hồ sơ Năng lực">Portfolio
+                            Hub</a></li>
+                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
+                            data-vi="Liên Hệ">Contact Us</a></li>
+                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
+                </ul>
+            </nav>
+        </header>
             `;
 
             const renderHero = () => html`
@@ -652,6 +662,8 @@
 
 
 
+
+
 <!-- Fixed UI Controls -->
     <div class="ui-controls">
         <!-- Light/Dark Mode Toggle -->
@@ -785,7 +797,7 @@
                             <span id="dashboard-balance" class="stat-value" style="font-size: 1.1rem; font-weight: 800; color: var(--neon-pink);">0 VND</span>
                         </div>
                         <div class="stat-item" style="display: flex; flex-direction: column; align-items: center;">
-                            <span class="stat-label" data-en="Role" data-vi="Chức danh" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Role</span>
+                            <span class="stat-label" data-en="Rank" data-vi="Rank/Hạng" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Rank</span>
                             <span id="dashboard-role" class="stat-value" style="font-size: 1.1rem; font-weight: 800; color: var(--neon-blue);">Elite</span>
                         </div>
                     </div>
@@ -876,7 +888,8 @@
     </div>
 
     
-    <script src="../../script.js?v=24"></script>
+    
+    <script src="../../script.js?v=restore-elite-v4"></script>
 </body>
 
 </html>

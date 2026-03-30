@@ -412,14 +412,14 @@ function initThemeToggle() {
     // --- localStorage persistence: apply saved theme on page load ---
     const savedTheme = localStorage.getItem('td-theme');
     if (savedTheme === 'dark') {
-        document.body.classList.remove('light-mode');
+        document.documentElement.classList.remove('light-mode');
     } else {
-        document.body.classList.add('light-mode'); // default light
+        document.documentElement.classList.add('light-mode'); // default light
     }
 
     themeBtn.addEventListener('click', () => {
-        document.body.classList.toggle('light-mode');
-        const isLight = document.body.classList.contains('light-mode');
+        document.documentElement.classList.toggle('light-mode');
+        const isLight = document.documentElement.classList.contains('light-mode');
         localStorage.setItem('td-theme', isLight ? 'light' : 'dark');
 
         if (typeof gsap !== 'undefined') {
@@ -436,7 +436,7 @@ function updateThemeButtonText() {
     const modeIcon = document.querySelector('.mode-icon');
     if (!modeIcon) return;
 
-    const isLight = document.body.classList.contains('light-mode');
+    const isLight = document.documentElement.classList.contains('light-mode');
 
     // FOOLPROOF ASSET PATH: Use the script's own src location to find the root
     let rootPath = '';
