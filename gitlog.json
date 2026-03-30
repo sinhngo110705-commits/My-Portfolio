@@ -1,0 +1,15 @@
+3cec1a0 feat: user rank system, mini-profile popup, sepay auth fix
+01da7b9 fix: smarter regex for sepay webhook content parsing
+70345a3 feat: implement automated top-up with SePay and VietQR
+23cf1a0 fix: route API requests in worker entry point to fix network error
+5b5ee67 fix: restore worker-style configuration to fix github build
+0be5c70 fix: skip tailwind build in cloudflare pages as styles are precompiled
+b16e078 fix: revert tailwind build output to prevent identical file error
+bb4781b fix: unify build output and correct directory mapping for Cloudflare
+37c45a1 fix: update pages_build_output_dir to actual directory name
+377db32 feat: complete user dashboard and account system integrations
+6b297e0 feat: enable particle connections and improve grid visibility in light mode
+f1079e4 UI: Revert default AI engine to Local (LM Studio/ngrok) for Teemous AI
+a12bc29 Fix: Handle OPTIONS preflight and improve backend diagnostics for chatbot
+0439a61 UI: Simplify chatbot - remove provider selector and unify branding as Teemous AI
+8536e86 FIX: Use Universal Prompt (prepending) to resolve Gemini 400 Unknown Name systemInstruction error
