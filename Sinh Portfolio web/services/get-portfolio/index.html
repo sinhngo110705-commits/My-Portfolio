@@ -57,21 +57,14 @@
         }
     </script>
 
-    <!-- React & HTM (No-build JSX alternative) -->
+    <!-- React & HTM -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
 
     <style>
-        html {
-            font-size: 80%;
-        }
-
-        body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            transition: background-color 0.5s ease, color 0.5s ease;
-        }
+        html { font-size: 80%; }
+        body { background-color: var(--bg-base); color: var(--text-main); transition: background-color 0.5s ease, color 0.5s ease; }
 
         .glass-panel-funnel {
             background: rgba(255, 255, 255, 0.03);
@@ -97,31 +90,15 @@
             100% { opacity: 1; transform: translateY(0); max-height: 1000px; overflow: visible; }
         }
 
-        .animate-push-down {
-            animation: push-down 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+        .animate-push-down { animation: push-down 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-        }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 0.25rem; background: rgba(33, 150, 243, 0.2); border-radius: 0.125rem; }
+        input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: #2196F3; cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(33, 150, 243, 0.5); }
 
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 0.25rem;
-            background: rgba(33, 150, 243, 0.2);
-            border-radius: 0.125rem;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            height: 18px;
-            width: 18px;
-            border-radius: 50%;
-            background: #2196F3;
-            cursor: pointer;
-            -webkit-appearance: none;
-            margin-top: -7px;
+        @media (max-width: 640px) {
+            html { zoom: 1 !important; }
+            .plan-card { padding: 1.5rem !important; }
         }
     </style>
 
@@ -129,9 +106,7 @@
         (function() {
             try {
                 const savedTheme = localStorage.getItem('td-theme');
-                if (savedTheme === 'light') {
-                    document.documentElement.classList.add('light-mode');
-                }
+                if (savedTheme === 'light') document.documentElement.classList.add('light-mode');
             } catch (e) {}
         })();
     </script>
@@ -192,7 +167,7 @@
         const App = () => {
             const [selectedOption, setSelectedOption] = useState('basic');
             const [basicSubOption, setBasicSubOption] = useState(null);
-            const [curationPrice, setCurationPrice] = useState(29000);
+            const [curationPrice, setCurationPrice] = useState(249000); 
             const [profilePush, setProfilePush] = useState(false);
             const [voucher, setVoucher] = useState('');
             const [voucherDiscount, setVoucherDiscount] = useState(0);
@@ -215,6 +190,51 @@
                 return () => { clearInterval(interval); window.removeEventListener('storage', handleStorage); };
             }, [lang, theme]);
 
+            useEffect(() => {
+                const canvas = document.getElementById('bg-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let width = (canvas.width = window.innerWidth);
+                let height = (canvas.height = window.innerHeight);
+                let particles = [];
+                let mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2 };
+                let animationFrameId;
+
+                const handleMouseMove = (e) => { mouse.targetX = e.clientX; mouse.targetY = e.clientY; };
+                window.addEventListener('mousemove', handleMouseMove);
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * width; this.y = Math.random() * height;
+                        this.baseX = this.x; this.baseY = this.y;
+                        this.size = Math.random() * 2; this.density = (Math.random() * 20) + 1;
+                        this.color = ['rgba(156,39,176,0.3)', 'rgba(33,150,243,0.3)'][Math.floor(Math.random()*2)];
+                    }
+                    update() {
+                        let dx = mouse.x - width / 2; let dy = mouse.y - height / 2;
+                        this.x = this.baseX - (dx * 0.05 * (20/this.density));
+                        this.y = this.baseY - (dy * 0.05 * (20/this.density));
+                    }
+                    draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
+                }
+
+                const init = () => {
+                    particles = [];
+                    for (let i = 0; i < 150; i++) particles.push(new Particle());
+                };
+                init();
+
+                const animate = () => {
+                    ctx.clearRect(0,0,width,height);
+                    mouse.x += (mouse.targetX - mouse.x) * 0.1;
+                    mouse.y += (mouse.targetY - mouse.y) * 0.1;
+                    particles.forEach(p => { p.update(); p.draw(); });
+                    animationFrameId = requestAnimationFrame(animate);
+                };
+                animate();
+                return () => { cancelAnimationFrame(animationFrameId); window.removeEventListener('mousemove', handleMouseMove); };
+            }, []);
+
             const formatPrice = (num) => {
                 if (typeof num === 'string') return num;
                 return lang === 'en' ? `$${(num/25000).toFixed(0)}` : new Intl.NumberFormat('vi-VN').format(num) + ' VNĐ';
@@ -228,83 +248,81 @@
                 return Math.max(0, subtotal - voucherDiscount);
             };
 
-            const total = calculateTotal();
-
-            const handleVoucher = (e) => {
-                const val = e.target.value.toUpperCase();
-                setVoucher(val);
-                if (['SINHDEV', 'SINHVO'].includes(val)) setVoucherDiscount(49000);
-                else setVoucherDiscount(0);
-            };
-
             return html`
-                <div className="min-h-screen pb-48 font-montserrat bg-[var(--bg-base)] text-[var(--text-main)]">
-                    <header class="p-6 flex justify-between items-center border-b border-white/5">
-                        <a href="../../index.html"><img src="../../Logo/logo.png" class="h-8" /></a>
-                        <nav class="hidden md:flex gap-8 uppercase text-xs font-black tracking-widest">
+                <div className="min-h-screen pb-48 font-montserrat relative overflow-hidden">
+                    <canvas id="bg-canvas" className="fixed inset-0 z-[-1] opacity-60"></canvas>
+                    
+                    <header class="p-6 flex justify-between items-center sticky top-0 z-[1000] bg-black/5 backdrop-blur-xl border-b border-white/5">
+                        <a href="../../index.html"><img src="../../Logo/logo.png" class="h-10" /></a>
+                        <nav class="hidden md:flex gap-10 font-black uppercase text-xs tracking-widest italic">
                             <a href="../../index.html">Home</a>
                             <a href="../../services/index.html" class="text-neon-blue">Services</a>
                             <a href="../../portfolio/index.html">Portfolio</a>
                         </nav>
+                        <button class="nav-login-btn border-2 border-neon-blue/20 rounded-full px-6 py-2 uppercase text-xs font-black">Login</button>
                     </header>
 
-                    <main class="container mx-auto px-6 pt-24 pb-12 max-w-5xl">
-                        <h1 class="text-5xl md:text-7xl font-black uppercase text-center mb-12">
-                            ${t[lang].title} <br/> <span class="text-neon-blue">${t[lang].subtitle_hub}</span>
-                        </h1>
+                    <main class="container mx-auto px-6 pt-32 max-w-6xl">
+                        <div class="text-center mb-24">
+                            <h1 class="text-6xl md:text-8xl font-black uppercase mb-6 leading-tight">
+                                ${t[lang].title} <br /> <span class="bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent italic">${t[lang].subtitle_hub}</span>
+                            </h1>
+                            <p class="text-xl opacity-60 max-w-2xl mx-auto">${t[lang].hero_desc}</p>
+                        </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-                            <div class=${`p-8 glass-panel-funnel border-2 cursor-pointer transition-all ${selectedOption === 'basic' ? 'border-neon-blue' : 'border-transparent'}`} onClick=${()=>setSelectedOption('basic')}>
-                                <h3 class="text-2xl font-black mb-4 uppercase italic gold-gradient-text">${t[lang].basic}</h3>
-                                <p class="text-4xl font-black text-neon-blue mb-4">49,000đ</p>
-                                <p class="text-sm opacity-70">${t[lang].basic_desc}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-20">
+                            <div class=${`p-12 glass-panel-funnel relative cursor-pointer border-2 transition-all ${selectedOption === 'basic' ? 'border-neon-blue bg-neon-blue/10' : 'border-white/5'}`} onClick=${()=>setSelectedOption('basic')}>
+                                <span class="absolute top-4 right-4 bg-red-600 text-white font-black text-[10px] px-3 py-1 rounded-full">-75% OFF</span>
+                                <h3 class="text-3xl font-black mb-6 uppercase italic">${t[lang].basic}</h3>
+                                <div class="flex items-center gap-4 mb-8">
+                                    <span class="text-xl opacity-30 line-through italic">199,000 VNĐ</span>
+                                    <span class="text-5xl font-black text-neon-blue">49,000 VNĐ</span>
+                                </div>
+                                <p class="text-base leading-relaxed opacity-70">${t[lang].basic_desc}</p>
                             </div>
-                            <div class=${`p-8 glass-panel-funnel border-2 cursor-pointer transition-all ${selectedOption === 'premium' ? 'border-neon-purple' : 'border-transparent'}`} onClick=${()=>setSelectedOption('premium')}>
-                                <h3 class="text-2xl font-black mb-4 uppercase italic">${t[lang].premium}</h3>
-                                <p class="text-4xl font-black text-neon-purple mb-4">Deal</p>
-                                <p class="text-sm opacity-70">${t[lang].premium_desc}</p>
+                            <div class=${`p-12 glass-panel-funnel cursor-pointer border-2 transition-all ${selectedOption === 'premium' ? 'border-neon-purple bg-neon-purple/10' : 'border-white/5'}`} onClick=${()=>setSelectedOption('premium')}>
+                                <h3 class="text-3xl font-black mb-6 uppercase italic">${t[lang].premium}</h3>
+                                <div class="text-5xl font-black mb-8 italic">DEAL</div>
+                                <p class="text-base leading-relaxed opacity-70">${t[lang].premium_desc}</p>
                             </div>
                         </div>
 
                         ${selectedOption === 'basic' && html`
-                            <div class="animate-push-down">
-                                <h2 class="text-center orange-gradient-text font-black uppercase tracking-widest mb-8 text-xs">${t[lang].custom_config}</h2>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div class=${`p-6 glass-panel-funnel border-2 cursor-pointer ${basicSubOption === 'curation' ? 'border-neon-blue' : 'border-transparent'}`} onClick=${()=>setBasicSubOption('curation')}>
-                                        <h4 class="font-black mb-2">${t[lang].option_curation}</h4>
-                                        <p class="text-xs opacity-60 mb-4" dangerouslySetInnerHTML=${{__html: t[lang].option_curation_desc}} />
-                                        <input type="range" min="29000" max="249000" step="1000" value=${curationPrice} onChange=${(e)=>setCurationPrice(parseInt(e.target.value))} class="w-full" />
-                                        <p class="text-center mt-4 font-black">${formatPrice(curationPrice)}</p>
+                            <div class="animate-push-down space-y-12">
+                                <h2 class="text-center text-neon-blue font-black uppercase tracking-[0.5em] text-[10px]">${t[lang].custom_config}</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                    <div class=${`p-8 glass-panel-funnel border-2 cursor-pointer ${basicSubOption === 'curation' ? 'border-neon-blue bg-neon-blue/10' : 'border-white/5'}`} onClick=${()=>setBasicSubOption('curation')}>
+                                        <h4 class="text-xl font-black italic mb-4">${t[lang].option_curation}</h4>
+                                        <p class="text-sm opacity-60 mb-8" dangerouslySetInnerHTML=${{__html: t[lang].option_curation_desc}} />
+                                        <input type="range" min="29000" max="249000" step="1000" value=${curationPrice} onChange=${(e)=>setCurationPrice(parseInt(e.target.value))} class="w-full mb-4" />
+                                        <p class="text-center text-neon-blue font-black">${formatPrice(curationPrice)}</p>
                                     </div>
-                                    <div class=${`p-6 glass-panel-funnel border-2 cursor-pointer ${basicSubOption === 'carry' ? 'border-neon-blue' : 'border-transparent'}`} onClick=${()=>setBasicSubOption('carry')}>
-                                        <h4 class="font-black mb-2">${t[lang].option_carry}</h4>
-                                        <p class="text-xs opacity-60 mb-4">${t[lang].option_carry_desc}</p>
-                                        <div class="text-center p-3 border border-dashed border-white/20 rounded-lg text-xs">+ ${formatPrice(CARRY_PRICE)}</div>
+                                    <div class=${`p-8 glass-panel-funnel border-2 cursor-pointer ${basicSubOption === 'carry' ? 'border-neon-blue bg-neon-blue/10' : 'border-white/5'}`} onClick=${()=>setBasicSubOption('carry')}>
+                                        <h4 class="text-xl font-black italic mb-4">${t[lang].option_carry}</h4>
+                                        <p class="text-sm opacity-60 mb-8">${t[lang].option_carry_desc}</p>
+                                        <div class="p-4 border border-dashed border-white/20 rounded-xl text-center text-xs opacity-50">+ ${formatPrice(CARRY_PRICE)}</div>
                                     </div>
                                 </div>
                             </div>
                         `}
 
-                        <div class="mt-16 p-8 glass-panel-funnel border border-neon-blue/20">
-                           <div class="flex items-center gap-6">
-                                <input type="checkbox" checked=${profilePush} onChange=${(e)=>setProfilePush(e.target.checked)} class="w-6 h-6" />
-                                <div>
-                                    <h3 class="font-black uppercase">${t[lang].add_top}</h3>
-                                    <p class="text-sm opacity-60">${t[lang].add_desc}</p>
-                                </div>
-                           </div>
+                        <div class="mt-24 p-12 glass-panel-funnel border-neon-blue/20 mb-20 flex items-center gap-10">
+                            <input type="checkbox" checked=${profilePush} onChange=${(e)=>setProfilePush(e.target.checked)} class="w-10 h-10 accent-neon-pink" />
+                            <div><h3 class="text-2xl font-black uppercase mb-2">${t[lang].add_top}</h3><p class="opacity-60 leading-relaxed">${t[lang].add_desc}</p></div>
                         </div>
                     </main>
 
-                    <div class="fixed bottom-0 left-0 right-0 p-6 bg-black/80 backdrop-blur-xl border-t border-white/10 z-[100]">
-                        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                    <footer class="py-20 text-center opacity-30 text-xs font-black uppercase tracking-widest">&copy; 2026 Teemous Digital. All Rights Reserved.</footer>
+
+                    <div class="fixed bottom-0 left-0 right-0 p-8 z-[2000] bg-black/60 backdrop-blur-3xl border-t border-white/10">
+                        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
                             <div>
-                                <span class="text-[10px] uppercase opacity-50 block">${t[lang].total_cost}</span>
-                                <span class="text-3xl font-black text-neon-blue">${formatPrice(total)}</span>
+                                <span class="text-[10px] uppercase font-black opacity-40 mb-1 block">${t[lang].total_cost}</span>
+                                <span class="text-4xl font-black text-neon-blue">${formatPrice(calculateTotal())}</span>
                             </div>
-                            <div class="flex gap-4">
-                                <input type="text" placeholder=${t[lang].voucher} value=${voucher} onChange=${handleVoucher} class="bg-white/5 border border-white/10 px-4 py-2 rounded-lg text-sm w-32 uppercase font-black" />
-                                <a href="https://www.facebook.com/quang.sinh.5492" target="_blank" class="bg-white text-black px-8 py-3 rounded-lg font-black uppercase text-sm hover:bg-neon-blue hover:text-white transition-all">
+                            <div class="flex gap-6">
+                                <input type="text" placeholder=${t[lang].voucher} value=${voucher} onChange=${(e)=>setVoucher(e.target.value.toUpperCase())} class="bg-white/5 border border-white/10 px-8 py-4 rounded-xl uppercase font-black text-xs w-48 focus:border-neon-blue text-white" />
+                                <a href="https://www.facebook.com/quang.sinh.5492" target="_blank" class="bg-white text-black px-12 py-4 rounded-xl font-black uppercase italic tracking-widest hover:bg-neon-blue hover:text-white transition-all transform hover:scale-105 active:scale-95 shadow-2xl">
                                     ${t[lang].send}
                                 </a>
                             </div>
@@ -317,8 +335,6 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(React.createElement(App));
     </script>
-
-    <!-- Chatbot & Auth Modals (Persistent UI) -->
     <script src="../../script.js?v=restore-elite-v4"></script>
 </body>
 </html>
