@@ -1661,3 +1661,87 @@ function initMiniProfile() {
         }
     } catch(e) {}
 }
+
+// === AOV SHOP PURCHASE LOGIC ===
+window.buyAovAccount = async function(accountId, price, details) {
+    const userJson = localStorage.getItem('teemous_user');
+    const lang = localStorage.getItem('td-lang') || 'en';
+
+    if (!userJson) {
+        const msg = lang === 'vi' ? 'Vui lòng đăng nhập để thực hiện giao dịch!' : 'Please login to perform this transaction!';
+        alert(msg);
+        // Trigger login modal
+        const loginBtn = document.getElementById('nav-login-btn');
+        if (loginBtn) loginBtn.click();
+        return;
+    }
+
+    const user = JSON.parse(userJson);
+    const balance = user.balance || 0;
+
+    if (balance < price) {
+        const msg = lang === 'vi' ? 'Tài khoản không đủ tiền. Vui lòng nạp thêm!' : 'Insufficient funds. Please top up!';
+        alert(msg);
+        
+        // Open Dashboard directly to Funding tab if possible
+        if (window.openDashboard) {
+            window.openDashboard().then(() => {
+                const fundingTab = document.querySelector('.dash-tab[data-tab="transactions"]');
+                if (fundingTab) fundingTab.click();
+            });
+        }
+        return;
+    }
+
+    // Confirm purchase
+    const confirmMsg = lang === 'vi' 
+        ? `Xác nhận mua tài khoản ${accountId} với giá ${price.toLocaleString()} VND?` 
+        : `Confirm purchase of ${accountId} for ${price.toLocaleString()} VND?`;
+    
+    if (!confirm(confirmMsg)) return;
+
+    // Simulate API call and Balance Deduction
+    try {
+        // Deduct balance
+        user.balance = balance - price;
+        
+        // Add to Mock Orders
+        const newOrder = {
+            product_name: accountId,
+            price_at_purchase: price,
+            status: 'completed',
+            details: details,
+            date: new Date().toISOString()
+        };
+        
+        // Save to local storage
+        localStorage.setItem('teemous_user', JSON.stringify(user));
+
+        // Show Success with Account Details
+        const successTitle = lang === 'vi' ? 'GIAO DỊCH THÀNH CÔNG!' : 'PURCHASE SUCCESSFUL!';
+        const successBody = lang === 'vi' 
+            ? `Chúc mừng! Bạn đã sở hữu tài khoản ${accountId}.\n\nThông tin đăng nhập:\n👉 ${details}\n\n(Lưu ý: Bạn có thể xem lại thông tin này trong phần Đơn hàng ở Profile).` 
+            : `Congratulations! You now own ${accountId}.\n\nLogin Credentials:\n👉 ${details}\n\n(Note: You can review this in the Orders section of your Profile).`;
+        
+        alert(`${successTitle}\n\n${successBody}`);
+
+        // Update UI
+        const balDisplay = document.getElementById('dashboard-balance');
+        if (balDisplay) balDisplay.innerText = `${user.balance.toLocaleString()} VND`;
+
+        // Refresh mini profile if exists
+        if (window.initMiniProfile) window.initMiniProfile();
+
+    } catch (e) {
+        alert(lang === 'vi' ? 'Lỗi giao dịch: ' + e.message : 'Transaction Error: ' + e.message);
+    }
+};
+
+// Safety Fallback for initDashboard
+if (typeof window.openDashboard === 'undefined') {
+    window.openDashboard = async () => {
+        // Fallback or Trigger existing one
+        const overlay = document.getElementById('dashboard-modal-overlay');
+        if (overlay) overlay.classList.add('active');
+    };
+}
