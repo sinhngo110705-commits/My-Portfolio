@@ -51,6 +51,7 @@ export default {
       if (url.pathname === "/api/user/update-profile") return await updateProfileHandler(apiContext);
       if (url.pathname === "/api/user/upload-avatar") return await uploadAvatarHandler(apiContext);
       if (url.pathname === "/api/user/v-avatar") return await vAvatarHandler(apiContext);
+      if (url.pathname === "/api/payment/webhook") return await handleSePayWebhook(request, env);
     }
 
     // 2. Fallback to static assets
@@ -192,4 +193,45 @@ async function standardResponse(response, provider) {
   return new Response(JSON.stringify({ content: resultText }), {
     headers: { "Content-Type": "application/json" }
   });
+}
+
+async function handleSePayWebhook(request, env) {
+  if (request.method !== "POST") return new Response("Method not allowed", { status: 405 });
+
+  const authHeader = request.headers.get("Authorization");
+  const expectedToken = env.SEPAY_TOKEN; // Cần set trên Cloudflare Dashboard
+  if (expectedToken && authHeader !== `Bearer ${expectedToken}`) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+  }
+
+  try {
+    const body = await request.json();
+    const { code, transferAmount, referenceCode, content } = body;
+
+    // Tìm User ID từ mã chuyển khoản (VD: NAP 123)
+    const match = (code || content || "").match(/NAP\s?(\d+)/i);
+    if (!match) return new Response(JSON.stringify({ success: true, message: "No payment code detected" }));
+
+    const userId = parseInt(match[1]);
+    const amount = parseInt(transferAmount);
+
+    if (isNaN(amount) || amount <= 0) return new Response("Invalid amount", { status: 400 });
+
+    // Kiểm tra User tồn tại
+    const user = await env.teemous_db.prepare("SELECT id FROM users WHERE id = ?").bind(userId).first();
+    if (!user) return new Response(JSON.stringify({ success: true, message: "User ID not found in database" }));
+
+    // Cập nhật số dư và ghi lịch sử (Chạy tuần tự trong Worker đơn giản)
+    await env.teemous_db.prepare("UPDATE users SET balance = balance + ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
+      .bind(amount, userId).run();
+    
+    await env.teemous_db.prepare(
+      "INSERT INTO transactions (user_id, amount, type, status, payment_method, ref_id, description) VALUES (?, ?, 'topup', 'success', 'mbbank', ?, ?)"
+    ).bind(userId, amount, referenceCode || `SP-${Date.now()}`, `SePay Auto: ${content}`).run();
+
+    return new Response(JSON.stringify({ success: true }), { status: 200, headers: { "Content-Type": "application/json" } });
+
+  } catch (e) {
+    return new Response(JSON.stringify({ error: "Webhook Error", details: e.message }), { status: 500 });
+  }
 }

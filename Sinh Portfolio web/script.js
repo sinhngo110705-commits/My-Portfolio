@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initChatbot();
     initAuthModal();
     initDashboard();
+    initTopUpModal();
 });
 
 function initScrollProgress() {
@@ -1434,3 +1435,106 @@ function closeDashboard() {
 }
 
 
+
+/**
+ * Top Up Modal Logic
+ */
+function initTopUpModal() {
+    const openBtn = document.getElementById('open-topup-btn');
+    const overlay = document.getElementById('topup-modal-overlay');
+    const closeBtn = document.getElementById('close-topup-modal');
+    const genBtn = document.getElementById('gen-qr-btn');
+    const amtBtns = document.querySelectorAll('.amt-btn');
+    const customAmtInput = document.getElementById('custom-amount');
+    const qrArea = document.getElementById('qr-display-area');
+    const qrImg = document.getElementById('vietqr-img');
+    const qrAmtText = document.getElementById('qr-amt-text');
+    const qrNoteText = document.getElementById('qr-note-text');
+
+    if (!openBtn || !overlay) return;
+
+    let selectedAmount = 200000;
+
+    openBtn.addEventListener('click', () => {
+        overlay.classList.add('active');
+        if (typeof gsap !== 'undefined') {
+            gsap.fromTo("#topup-modal", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 });
+        }
+    });
+
+    closeBtn.addEventListener('click', () => {
+        overlay.classList.remove('active');
+        qrArea.style.display = 'none';
+    });
+
+    amtBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            amtBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedAmount = parseInt(btn.dataset.value);
+            if(customAmtInput) customAmtInput.value = '';
+        });
+    });
+
+    if (customAmtInput) {
+        customAmtInput.addEventListener('input', () => {
+            amtBtns.forEach(b => b.classList.remove('active'));
+            selectedAmount = parseInt(customAmtInput.value) || 0;
+        });
+    }
+
+    genBtn.addEventListener('click', () => {
+        const userJson = localStorage.getItem('teemous_user');
+        if (!userJson) return alert('Please login again');
+        const user = JSON.parse(userJson);
+
+        if (selectedAmount < 10000) return alert(currentLang === 'vi' ? 'Số tiền tối thiểu là 10.000đ' : 'Minimum amount is 10,000 VND');
+
+        // MB Bank Config (from your screenshot)
+        const bankID = "MB";
+        const accountNo = "0110705301174";
+        const accountName = "NGO QUANG SINH";
+        const memo = `NAP ${user.id}`;
+        
+        // Use VietQR API to generate Image URL
+        const qrUrl = `https://img.vietqr.io/image/${bankID}-${accountNo}-compact2.png?amount=${selectedAmount}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(accountName)}`;
+        
+        qrImg.src = qrUrl;
+        qrAmtText.innerText = `${selectedAmount.toLocaleString()} VND`;
+        qrNoteText.innerText = memo;
+        
+        qrArea.style.display = 'block';
+        if (typeof gsap !== 'undefined') {
+            gsap.fromTo(qrArea, { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.4 });
+        }
+
+        // Auto-refresh dashboard balance every 5 seconds while modal is open
+        const pollInterval = setInterval(() => {
+            if (!overlay.classList.contains('active')) return clearInterval(pollInterval);
+            refreshBalance();
+        }, 5000);
+    });
+}
+
+async function refreshBalance() {
+    const token = localStorage.getItem('teemous_jwt');
+    if (!token) return;
+    try {
+        const res = await fetch('/api/user/profile', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const oldBalance = document.getElementById('dashboard-balance').innerText;
+            const newBalance = `${data.user.balance.toLocaleString()} VND`;
+            
+            if (oldBalance !== newBalance) {
+                document.getElementById('dashboard-balance').innerText = newBalance;
+                // Update local storage
+                localStorage.setItem('teemous_user', JSON.stringify(data.user));
+                // Optional: show a small toast or sound
+                console.log("Balance updated!");
+            }
+        }
+    } catch (e) {}
+}

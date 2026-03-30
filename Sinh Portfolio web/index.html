@@ -346,6 +346,9 @@
 
                 <!-- Transactions Tab -->
                 <div id="tab-transactions" class="dash-section">
+                    <div class="topup-action-container" style="margin-bottom: 1.5rem; text-align: right;">
+                        <button id="open-topup-btn" class="topup-btn neon-border" style="padding: 0.5rem 1rem; font-size: 0.9rem; background: rgba(255, 30, 150, 0.1); color: var(--neon-pink);">+ Top Up Money</button>
+                    </div>
                     <div class="history-list">
                         <table class="dash-table">
                             <thead>
@@ -366,6 +369,42 @@
     </div>
 
 
+
+    <!-- Top Up Modal Overlay (Separated for focus) -->
+    <div id="topup-modal-overlay" class="auth-modal-overlay" style="z-index: 10001;">
+        <div id="topup-modal" class="auth-modal-container glass-card topup-modal">
+            <button id="close-topup-modal" class="close-modal-btn">✕</button>
+            <div class="modal-header">
+                <h2 class="neon-gradient-text" data-en="Top Up Funds" data-vi="Nạp tiền vào ví">Top Up Funds</h2>
+                <p class="modal-subtitle" data-en="Instant balance update via VietQR" data-vi="Cập nhật số dư tức thì qua VietQR">Instant balance update via VietQR</p>
+            </div>
+            
+            <div class="topup-steps">
+                <div class="amount-selector">
+                    <label data-en="Select Amount (VND)" data-vi="Chọn số tiền (VND)">Select Amount (VND)</label>
+                    <div class="amount-grid">
+                        <button class="amt-btn" data-value="20000">20k</button>
+                        <button class="amt-btn" data-value="50000">50k</button>
+                        <button class="amt-btn" data-value="100000">100k</button>
+                        <button class="amt-btn active" data-value="200000">200k</button>
+                    </div>
+                </div>
+
+                <div id="qr-display-area" class="qr-display-area glass-card" style="display:none; margin-top: 1.5rem; padding: 1.5rem; text-align: center;">
+                    <div class="qr-container" style="background: white; padding: 1rem; border-radius: 12px; display: inline-block; margin-bottom: 1rem;">
+                        <img id="vietqr-img" src="" alt="VietQR Pay" style="width: 240px; height: auto;">
+                    </div>
+                    <div class="payment-details">
+                        <p class="detail-row" style="margin: 0.5rem 0;"><span data-en="Amount:" data-vi="Số tiền:">Amount:</span> <strong id="qr-amt-text">0</strong></p>
+                        <p class="detail-row" style="margin: 0.5rem 0;"><span data-en="Note:" data-vi="Nội dung:">Note:</span> <strong id="qr-note-text" style="color: var(--neon-pink);">NAP</strong></p>
+                        <p class="warning-text" style="font-size: 0.8rem; color: #ff8a80; margin-top: 1rem;" data-en="Use correct note for auto-process." data-vi="Dùng đúng nội dung để nạp tự động.">Use correct note for auto-process.</p>
+                    </div>
+                </div>
+
+                <button id="gen-qr-btn" class="auth-submit-btn neon-border" style="margin-top: 1.5rem;" data-en="Generate Payment QR" data-vi="Tạo mã thanh toán QR">Generate Payment QR</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Use CDN GSAP as fallback or main while local might conflict with simple static hosting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>

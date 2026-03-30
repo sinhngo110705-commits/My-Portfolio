@@ -3986,4 +3986,107 @@ select option {
     background: rgba(233, 30, 99, 0.2);
     color: #ff8a80;
 }
+
+/* Top Up System Styling */
+.topup-btn {
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 700;
+}
+
+.topup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(255, 30, 150, 0.3);
+    background: rgba(255, 30, 150, 0.2);
+}
+
+.topup-modal {
+    max-width: 450px !important;
+}
+
+.amount-selector label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.amount-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.amt-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    padding: 0.6rem 0.2rem;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.amt-btn:hover {
+    border-color: var(--neon-blue);
+    background: rgba(33, 150, 243, 0.1);
+}
+
+.amt-btn.active {
+    background: var(--neon-blue);
+    color: white;
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 10px rgba(33, 150, 243, 0.4);
+}
+
+#custom-amount {
+    width: 100%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    font-family: inherit;
+    font-weight: 600;
+}
+
+#custom-amount:focus {
+    outline: none;
+    border-color: var(--neon-pink);
+    background: rgba(255, 30, 150, 0.05);
+}
+
+.qr-display-area {
+    animation: slideUpFade 0.4s ease-out forwards;
+}
+
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.qr-container {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.qr-container:hover {
+    transform: scale(1.02);
+}
+
+.payment-details .detail-row {
+    font-size: 0.95rem;
+}
+
+.payment-details strong {
+    font-size: 1.1rem;
+    font-weight: 800;
+}
 
