@@ -85,9 +85,22 @@
             box-shadow: 0 0 10px rgba(255, 160, 0, 0.4);
         }
     </style>
+<!-- Theme Initialization Script (Prevent FOUC) -->
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('td-theme');
+                if (savedTheme === 'light') {
+                    document.documentElement.classList.add('light-mode');
+                } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                    document.documentElement.classList.add('light-mode');
+                }
+            } catch (e) {}
+        })();
+    </script>
 </head>
 
-<body class="light-mode">
+<body>
     <canvas id="bg-canvas"></canvas>
 
     <main class="container">
@@ -114,7 +127,11 @@
                             data-vi="Hồ sơ Năng lực">Portfolio Hub</a></li>
                     <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
                             data-vi="Liên Hệ">Contact Us</a></li>
-                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký">Login | Sign Up</button></li>
+                    
+                
+                
+                
+                <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
             </ul>
             </nav>
         </header>
@@ -377,19 +394,27 @@
         </div>
     </footer>
 
-    <div class="ui-controls">
-        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
-            <span class="mode-icon">☀️ Day</span>
-        </button>
-        <button id="lang-toggle" class="lang-toggle neon-border">
-            Bạn là người Việt?
-        </button>
-    </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     
-<!-- Chatbot AI Local -->
+
+
+
+
+<!-- Fixed UI Controls -->
+    <div class="ui-controls">
+        <!-- Light/Dark Mode Toggle -->
+        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
+            <span class="mode-icon">🌙</span>
+        </button>
+
+        <!-- Global Translation Sticky Label -->
+        <button id="lang-toggle" class="lang-toggle neon-border">
+            EN
+        </button>
+    </div>
+
+    <!-- Chatbot AI Local -->
     <div id="chatbot-container">
         <button id="chatbot-toggle" class="neon-border" title="Chat with AI">
             <span class="chat-icon">💬</span>

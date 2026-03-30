@@ -1511,6 +1511,16 @@ footer {
     animation: neon-pulse-btn 2s infinite alternate;
 }
 
+#nav-login-btn:not(.ready) {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#nav-login-btn.ready {
+    opacity: 1;
+    visibility: visible;
+}
+
 .neon-border:hover {
     border-color: var(--neon-pink);
     box-shadow: 0 0 25px rgba(233, 30, 99, 0.8), 0 0 10px rgba(33, 150, 243, 0.5);

@@ -53,9 +53,22 @@
     <!-- Updated Font to Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
 
+<!-- Theme Initialization Script (Prevent FOUC) -->
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('td-theme');
+                if (savedTheme === 'light') {
+                    document.documentElement.classList.add('light-mode');
+                } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                    document.documentElement.classList.add('light-mode');
+                }
+            } catch (e) {}
+        })();
+    </script>
 </head>
 
-<body class="light-mode"> <!-- Default to light mode -->
+<body> <!-- Default to light mode -->
     <canvas id="bg-canvas"></canvas>
 
     <main class="container">
@@ -84,7 +97,11 @@
                             data-vi="Hồ sơ Năng lực">Portfolio Hub</a></li>
                     <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
                             data-vi="Liên Hệ">Contact Us</a></li>
-                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký">Login | Sign Up</button></li>
+                    
+                
+                
+                
+                <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
             </ul>
             </nav>
         </header>
@@ -306,20 +323,27 @@
         <p>&copy; 2026 Teemous Digital. All Rights Reserved.</p>
     </footer>
 
-    <!-- Fixed UI Controls -->
-    <div class="ui-controls">
-        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
-            <span class="mode-icon">☀️ Day</span>
-        </button>
-        <button id="lang-toggle" class="lang-toggle neon-border">
-            Bạn là người Việt?
-        </button>
-    </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     
-<!-- Chatbot AI Local -->
+
+
+
+
+<!-- Fixed UI Controls -->
+    <div class="ui-controls">
+        <!-- Light/Dark Mode Toggle -->
+        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
+            <span class="mode-icon">🌙</span>
+        </button>
+
+        <!-- Global Translation Sticky Label -->
+        <button id="lang-toggle" class="lang-toggle neon-border">
+            EN
+        </button>
+    </div>
+
+    <!-- Chatbot AI Local -->
     <div id="chatbot-container">
         <button id="chatbot-toggle" class="neon-border" title="Chat with AI">
             <span class="chat-icon">💬</span>

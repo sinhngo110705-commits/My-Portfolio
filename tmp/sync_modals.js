@@ -9,10 +9,14 @@ const loginBtnMatch = rootHtml.match(/<li><button\s+id="nav-login-btn"[^>]+>.*?<
 const loginBtnMarkup = loginBtnMatch ? loginBtnMatch[0] : '';
 if (!loginBtnMarkup) throw new Error("Could not find nav-login-btn in root index.html");
 
-// Extract the modals: chatbot to topup-modal-overlay
-// We'll regex it safely by extracting from id="chatbot-container" to <!-- Use CDN GSAP
-const startStr = '<!-- Chatbot AI Local -->';
-if (!rootHtml.includes(startStr)) throw new Error("Could not find chatbot start");
+// Extract the Theme Initialization Script
+const themeScriptMatch = rootHtml.match(/<!-- Theme Initialization Script \(Prevent FOUC\) -->[\s\S]*?<\/script>/);
+const themeScriptMarkup = themeScriptMatch ? themeScriptMatch[0] : '';
+if (!themeScriptMarkup) console.warn("Could not find Theme Initialization Script in root index.html");
+
+// Extract the modals: From ui-controls to topup-modal-overlay
+const startStr = '<!-- Fixed UI Controls -->';
+if (!rootHtml.includes(startStr)) throw new Error("Could not find ui-controls start");
 let indexStart = rootHtml.indexOf(startStr);
 
 const endStr = '<!-- Use CDN GSAP'; // or before script tags
@@ -61,24 +65,20 @@ for (const filePath of allHtmlFiles) {
     // Inject login btn, at end of <ul class="nav-links">
     content = content.replace(/(<\/ul>\s*<\/nav>)/, `    ${loginBtnMarkup}\n            $1`);
 
-    // Remove old modals
-    // We will clean anything from <!-- Chatbot AI Local --> to the end of <div id="chatbot-container"> ...
-    // Wait, the easiest way is to remove existing known blocks.
+    // Remove old modals & controls
     const blocksToRemove = [
-        /<div\s+id="chatbot-container"[\s\S]*?(?=<(?:footer|script|div\s+id="auth-modal-overlay"|!--))/g,
-        /<!-- Chatbot AI Local -->[\s\S]*?(?=<footer|<script|<!-- Fixed UI)/g,
-        /<div\s+id="auth-modal-overlay"[\s\S]*?(?=<footer|<script|<\/body)/g,
-        /<!-- Auth Modal Overlay -->[\s\S]*?(?=<footer|<script|<\/body)/g,
-        /<div\s+id="topup-modal-overlay"[\s\S]*?(?=<footer|<script|<\/body)/g,
-        /<!-- User Dashboard Modal Overlay -->[\s\S]*?(?=<footer|<script|<\/body)/g,
+        /<!-- Fixed UI Controls -->[\s\S]*?(?=<script|<\/body)/g,
+        /<div\s+class="ui-controls"[\s\S]*?(?=<script|<\/body)/g,
+        /<div\s+id="chatbot-container"[\s\S]*?(?=<script|<\/body)/g,
+        /<!-- Chatbot AI Local -->[\s\S]*?(?=<script|<\/body)/g,
+        /<div\s+id="auth-modal-overlay"[\s\S]*?(?=<script|<\/body)/g,
+        /<!-- Auth Modal Overlay -->[\s\S]*?(?=<script|<\/body)/g,
+        /<div\s+id="topup-modal-overlay"[\s\S]*?(?=<script|<\/body)/g,
+        /<!-- User Dashboard Modal Overlay -->[\s\S]*?(?=<script|<\/body)/g,
     ];
 
     blocksToRemove.forEach(regex => {
-        let prev;
-        do {
-            prev = content;
-            content = content.replace(regex, '');
-        } while (content !== prev);
+        content = content.replace(regex, '');
     });
 
     // Inject modalsMarkup right before the scripts or </body>
@@ -88,6 +88,17 @@ for (const filePath of allHtmlFiles) {
     } else {
         content = content.replace('</body>', `\n${modalsMarkup}\n</body>`);
     }
+
+    // Sync Theme Script in <head>
+    if (themeScriptMarkup) {
+        // Remove old theme script if exists
+        content = content.replace(/<!-- Theme Initialization Script \(Prevent FOUC\) -->[\s\S]*?<\/script>/g, '');
+        // Inject into <head> (before closing </head>)
+        content = content.replace('</head>', `${themeScriptMarkup}\n</head>`);
+    }
+
+    // Ensure <body> doesn't have light-mode hardcoded
+    content = content.replace(/<body class="light-mode">/g, '<body>');
 
     fs.writeFileSync(filePath, content, 'utf8');
 }

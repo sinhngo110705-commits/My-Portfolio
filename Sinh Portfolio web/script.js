@@ -375,6 +375,19 @@ function updateAllTranslations() {
     // 1. Text elements
     const translatableElements = document.querySelectorAll('[data-en][data-vi]');
     translatableElements.forEach(el => {
+        // SPECIAL CASE: Login Button (Skip if logged in)
+        if (el.id === 'nav-login-btn' && el.classList.contains('logged-in')) {
+            const userJson = localStorage.getItem('teemous_user');
+            if (userJson) {
+                try {
+                    const user = JSON.parse(userJson);
+                    const prefix = currentLang === 'vi' ? 'Chào' : 'Hi';
+                    el.innerHTML = `${prefix}, ${user.username}`;
+                } catch(e) {}
+            }
+            return;
+        }
+
         // Only update innerHTML if it's not an input/textarea
         if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
             el.innerHTML = el.getAttribute(`data-${currentLang}`);
@@ -1020,8 +1033,10 @@ function initAuthModal() {
     if (token && userJson) {
         try {
             const user = JSON.parse(userJson);
-            navLoginBtn.innerHTML = `Hi, ${user.username}`;
+            const prefix = currentLang === 'vi' ? 'Chào' : 'Hi';
+            navLoginBtn.innerHTML = `${prefix}, ${user.username}`;
             navLoginBtn.classList.add('logged-in');
+            navLoginBtn.classList.add('ready'); // Prevent flash
             
             navLoginBtn.onclick = (e) => {
                 e.preventDefault();
@@ -1033,6 +1048,10 @@ function initAuthModal() {
             return;
         } catch(e) {}
     }
+
+    // If reached here, ensure button shows "Login | Sign Up" in correct lang
+    navLoginBtn.innerHTML = navLoginBtn.getAttribute(`data-${currentLang}`);
+    navLoginBtn.classList.add('ready'); // Prevent flash
 
     function openModal() {
         authOverlay.classList.add('active');

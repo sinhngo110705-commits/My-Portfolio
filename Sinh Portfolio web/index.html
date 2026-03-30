@@ -70,9 +70,23 @@
     <link rel="stylesheet" href="style.css?v=restore-elite-v3">
     <!-- Updated Font to Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Theme Initialization Script (Prevent FOUC) -->
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('td-theme');
+                if (savedTheme === 'light') {
+                    document.documentElement.classList.add('light-mode');
+                } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                    document.documentElement.classList.add('light-mode');
+                }
+            } catch (e) {}
+        })();
+    </script>
 </head>
 
-<body class="light-mode"> <!-- Default to light mode -->
+<body>
     <canvas id="bg-canvas"></canvas>
 
     <main class="container">
@@ -101,7 +115,7 @@
                             Hub</a></li>
                     <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
                             data-vi="Liên Hệ">Contact Us</a></li>
-                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký">Login | Sign Up</button></li>
+                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
                 </ul>
             </nav>
         </header>
@@ -187,7 +201,7 @@
     <div class="ui-controls">
         <!-- Light/Dark Mode Toggle -->
         <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
-            <span class="mode-icon"></span>
+            <span class="mode-icon">🌙</span>
         </button>
 
         <!-- Global Translation Sticky Label -->
