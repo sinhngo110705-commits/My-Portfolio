@@ -1107,48 +1107,64 @@ function initAuthModal() {
         }
     }
 
-    // Handle Login Submit
-    const authForm = document.getElementById('auth-form');
-    authForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const isLogin = tabLogin.classList.contains('active');
-        if(!isLogin) return; 
+    // Handle Login Click
+    const submitBtnLogin = document.getElementById('auth-submit-login');
+    if (submitBtnLogin) {
+        submitBtnLogin.addEventListener('click', async () => {
+            const isLogin = tabLogin.classList.contains('active');
+            if(!isLogin) return; 
 
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        const lang = (typeof currentLang !== 'undefined') ? currentLang : 'en';
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const lang = (typeof currentLang !== 'undefined') ? currentLang : 'en';
 
-        if (!email || !password) {
-            authShowAlert(lang === 'vi' ? 'Vui lòng điền đủ thông tin!' : 'Please fill all fields.');
-            return;
-        }
-
-        const submitBtn = loginSection.querySelector('.auth-submit-btn');
-        const origText = submitBtn.innerText;
-        submitBtn.innerText = 'Routing...';
-        submitBtn.disabled = true;
-
-        try {
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await res.json();
-            if (res.ok) {
-                localStorage.setItem('teemous_jwt', data.token);
-                localStorage.setItem('teemous_user', JSON.stringify(data.user));
-                authShowAlert(lang === 'vi' ? 'Đăng nhập thành công!' : 'Login successful!', 'success');
-                setTimeout(() => window.location.reload(), 1000);
-            } else {
-                authShowAlert(data.error || 'Authentication failed');
+            if (!email || !password) {
+                authShowAlert(lang === 'vi' ? 'Vui lòng điền đủ thông tin!' : 'Please fill all fields.');
+                return;
             }
-        } catch (err) {
-            authShowAlert('Network error. Please try again.');
-        } finally {
-            submitBtn.innerText = origText;
-            submitBtn.disabled = false;
+
+            const origText = submitBtnLogin.innerText;
+            submitBtnLogin.innerText = 'Routing...';
+            submitBtnLogin.disabled = true;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('teemous_jwt', data.token);
+                    localStorage.setItem('teemous_user', JSON.stringify(data.user));
+                    authShowAlert(lang === 'vi' ? 'Đăng nhập thành công!' : 'Login successful!', 'success');
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    authShowAlert(data.error || 'Authentication failed');
+                }
+            } catch (err) {
+                authShowAlert('Network error. Please try again.');
+            } finally {
+                submitBtnLogin.innerText = origText;
+                submitBtnLogin.disabled = false;
+            }
+        });
+    }
+
+    // Allow Enter key to submit login
+    loginSection.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (submitBtnLogin) submitBtnLogin.click();
+        }
+    });
+
+    // Also handle Enter for signup for completeness
+    signupSection.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (submitBtnSignup) submitBtnSignup.click();
         }
     });
 
