@@ -1,3 +1,10 @@
+import { onRequest as registerHandler } from '../functions/api/auth/register.js';
+import { onRequest as loginHandler } from '../functions/api/auth/login.js';
+import { onRequest as profileHandler } from '../functions/api/user/profile.js';
+import { onRequest as updateProfileHandler } from '../functions/api/user/update-profile.js';
+import { onRequest as uploadAvatarHandler } from '../functions/api/user/upload-avatar.js';
+import { onRequest as vAvatarHandler } from '../functions/api/user/v-avatar.js';
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -32,6 +39,18 @@ export default {
       } catch (error) {
         return new Response(JSON.stringify({ error: error.message }), { status: 500 });
       }
+    }
+
+    // 3. Handle Account/User API routes
+    if (url.pathname.startsWith("/api/")) {
+      const apiContext = { request, env, waitUntil: (p) => ctx.waitUntil(p) };
+      
+      if (url.pathname === "/api/auth/register") return await registerHandler(apiContext);
+      if (url.pathname === "/api/auth/login") return await loginHandler(apiContext);
+      if (url.pathname === "/api/user/profile") return await profileHandler(apiContext);
+      if (url.pathname === "/api/user/update-profile") return await updateProfileHandler(apiContext);
+      if (url.pathname === "/api/user/upload-avatar") return await uploadAvatarHandler(apiContext);
+      if (url.pathname === "/api/user/v-avatar") return await vAvatarHandler(apiContext);
     }
 
     // 2. Fallback to static assets
