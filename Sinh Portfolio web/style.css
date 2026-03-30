@@ -37,8 +37,8 @@ html {
 .light-mode {
     --bg-base: #f5f5f5;
     --bg-alt: #ffffff;
-    --text-main: #1a1a1a;
-    --text-muted: #4a4a4a;
+    --text-main: #000000;
+    --text-muted: #4b5563; /* Darker gray for better accessibility */
 
     --neon-pink: #ff4081;
     --neon-purple: #d500f9;
@@ -133,11 +133,11 @@ body {
 }
 
 .light-mode .section-title {
-    color: #111827;
+    color: #000000;
 }
 
 .dark-mode .section-title,
-body:not(.light-mode) .section-title {
+html:not(.light-mode) .section-title {
     color: #F9FAFB;
 }
 
@@ -273,7 +273,7 @@ body:not(.light-mode) .section-title {
 }
 
 .dark-mode .flat-title,
-body:not(.light-mode) .flat-title {
+html:not(.light-mode) .flat-title {
     color: #F9FAFB;
 }
 
@@ -331,7 +331,7 @@ body:not(.light-mode) .flat-title {
 }
 
 .dark-mode .flat-subtitle,
-body:not(.light-mode) .flat-subtitle {
+html:not(.light-mode) .flat-subtitle {
     color: #9CA3AF;
     /* text-gray-400 */
 }
@@ -587,11 +587,11 @@ body:not(.light-mode) .flat-subtitle {
 }
 
 .light-mode .glitch {
-    color: #111827;
+    color: #000000;
 }
 
 .dark-mode .glitch,
-body:not(.light-mode) .glitch {
+html:not(.light-mode) .glitch {
     color: #F9FAFB;
 }
 
@@ -2403,6 +2403,13 @@ footer {
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
     border-radius: 1.25rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: var(--font-body);
+}
+
+.light-mode .glass-panel-premium {
+    background: rgba(255, 255, 255, 0.7);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
 }
 
 .glass-panel-premium:hover {
@@ -2482,9 +2489,37 @@ select option {
     color: #000000 !important;
 }
 
-/* ==========================================================================
-   Tailwind-Equivalent Utilities (For No-Build Production Fix)
-   ========================================================================== */
+/* Authentication Modal Typography & Contrast Fix */
+.auth-modal-container {
+    font-family: var(--font-body);
+}
+
+.auth-title {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.auth-input-group input {
+    font-family: var(--font-body);
+    font-weight: 500;
+}
+
+.light-mode .auth-modal-container {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    color: #000000 !important;
+}
+
+.light-mode .auth-subtitle {
+    color: #4b5563 !important;
+}
+
+.light-mode .auth-input-group input {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    color: #000000 !important;
+}
 
 /* Layout & Flexbox */
 .flex {
