@@ -1,0 +1,895 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Your Portfolio | Teemous Digital</title>
+    <link rel="icon" href="../../Logo/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="../../Logo/favicon.png">
+    <link rel="canonical" href="https://teemousdigital.id.vn/services/get-portfolio/">
+    <meta name="description" content="Initialize your personal portfolio and join the Teemous Digital creative ecosystem.">
+
+    <!-- Site Name for Search Results -->
+    <meta name="application-name" content="Teemous Digital">
+    <meta name="apple-mobile-web-app-title" content="Teemous Digital">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://teemousdigital.id.vn/services/get-portfolio/">
+    <meta property="og:site_name" content="Teemous Digital">
+    <meta property="og:title" content="Get Started | Teemous Digital">
+    <meta property="og:description" content="Initialize your personal portfolio on Teemous Digital.">
+    <meta property="og:image" content="https://teemousdigital.id.vn/Logo/logo.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://teemousdigital.id.vn/services/get-portfolio/">
+    <meta property="twitter:title" content="Get Started | Teemous Digital">
+    <meta property="twitter:description" content="Join Teemous Digital Creative Ecosystem today.">
+    <meta property="twitter:image" content="https://teemousdigital.id.vn/Logo/logo.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css?v=restore-elite-v4">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-pink': '#E91E63',
+                        'neon-purple': '#9C27B0',
+                        'neon-blue': '#2196F3',
+                        'neon-gold': '#FFD700',
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'gradient-brand': 'linear-gradient(135deg, #E91E63, #9C27B0, #2196F3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- React & HTM (No-build JSX alternative) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
+
+    <style>
+        html {
+            /* zoom: 0.8; */
+            font-size: 80%;
+        }
+
+        @supports not (zoom: 1) {
+            html {
+                /* transform: scale(0.8); */
+                /* width: 125%; */
+            }
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Glass Panel Funnel Override */
+        .glass-panel-funnel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.25rem;
+        }
+
+        .light-mode .glass-panel-funnel {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Radio */
+        .plan-radio:checked+.plan-card {
+            border-color: var(--neon-blue);
+            background: rgba(33, 150, 243, 0.1);
+            box-shadow: 0 0 30px rgba(33, 150, 243, 0.2);
+        }
+
+        .plan-radio:checked+.plan-card.premium {
+            border-color: var(--neon-purple);
+            background: rgba(156, 39, 176, 0.1);
+            box-shadow: 0 0 30px rgba(156, 39, 176, 0.2);
+        }
+
+        @keyframes push-down {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+                max-height: 0;
+                margin-bottom: 0;
+                overflow: hidden;
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 1000px;
+                margin-bottom: 4rem;
+                overflow: visible;
+            }
+        }
+
+        .animate-push-down {
+            animation: push-down 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 0.25rem;
+            cursor: pointer;
+            background: rgba(33, 150, 243, 0.2);
+            border-radius: 0.125rem;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: #2196F3;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+        }
+
+        input[type=range]:focus::-webkit-slider-runnable-track {
+            background: rgba(33, 150, 243, 0.3);
+        }
+
+        .dark input[type=range]::-webkit-slider-runnable-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ΓöÇΓöÇ Mobile Checkout Bar Fixes ΓöÇΓöÇ */
+        @media (max-width: 640px) {
+            /* Remove global zoom on mobile so page fits properly */
+            html {
+                zoom: 1 !important;
+            }
+            @supports not (zoom: 1) {
+                html {
+                    transform: none !important;
+                    width: 100% !important;
+                }
+            }
+
+            /* Compact checkout bar */
+            .checkout-bar-inner {
+                padding: 0.6rem 1rem !important;
+                gap: 0.75rem !important;
+            }
+
+            /* Smaller total cost text on mobile */
+            .checkout-total-text {
+                font-size: 1.25rem !important;
+            }
+
+            /* Gift code input: full width but compact */
+            .checkout-voucher-wrap {
+                width: 100% !important;
+            }
+
+            /* CTA button: full width, compact height */
+            .checkout-cta {
+                width: 100% !important;
+                padding-top: 0.6rem !important;
+                padding-bottom: 0.6rem !important;
+                font-size: 9px !important;
+            }
+
+            /* Plan cards on mobile: less padding */
+            .plan-card {
+                padding: 1.5rem !important;
+            }
+        }
+    </style>
+
+
+<!-- Theme Initialization Script (Prevent FOUC) -->
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('td-theme');
+                if (savedTheme === 'light') {
+                    document.documentElement.classList.add('light-mode');
+                } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                    document.documentElement.classList.add('light-mode');
+                }
+            } catch (e) {}
+        })();
+    </script>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script>
+        const html = htm.bind(React.createElement);
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [selectedOption, setSelectedOption] = useState('basic');
+            const [basicSubOption, setBasicSubOption] = useState(null); // 'curation' or 'carry'
+            const [curationPrice, setCurationPrice] = useState(29000);
+            const [profilePush, setProfilePush] = useState(false);
+            const [voucher, setVoucher] = useState('');
+            const [isVoucherApplied, setIsVoucherApplied] = useState(false);
+            const [voucherDiscount, setVoucherDiscount] = useState(0);
+            const [lang, setLang] = useState(localStorage.getItem('td-lang') || 'en');
+            const [theme, setTheme] = useState(localStorage.getItem('td-theme') || 'dark');
+
+            const BASIC_PRICE = 49000;
+            const PUSH_PRICE = 30000;
+            const CARRY_PRICE = 299000;
+
+            useEffect(() => {
+                document.body.classList.toggle('light-mode', theme === 'light');
+                document.documentElement.classList.toggle('light-mode', theme === 'light');
+                localStorage.setItem('td-theme', theme);
+            }, [theme]);
+
+            useEffect(() => {
+                localStorage.setItem('td-lang', lang);
+                if (window.translatePage) window.translatePage(lang);
+            }, [lang]);
+
+            // Sync with global script.js toggles
+            useEffect(() => {
+                const handleStorage = () => {
+                    const newTheme = localStorage.getItem('td-theme');
+                    const newLang = localStorage.getItem('td-lang');
+                    if (newTheme && newTheme !== theme) setTheme(newTheme);
+                    if (newLang && newLang !== lang) setLang(newLang);
+                };
+                window.addEventListener('storage', handleStorage);
+                const interval = setInterval(handleStorage, 1000);
+                return () => {
+                    window.removeEventListener('storage', handleStorage);
+                    clearInterval(interval);
+                };
+            }, [theme, lang]);
+
+            // Background Particles with Mouse Tracking
+            useEffect(() => {
+                const canvas = document.getElementById('bg-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let width = (canvas.width = window.innerWidth);
+                let height = (canvas.height = window.innerHeight);
+                let particles = [];
+                let mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2 };
+                let animationFrameId;
+
+                const handleMouseMove = (e) => {
+                    mouse.targetX = e.clientX;
+                    mouse.targetY = e.clientY;
+                };
+                window.addEventListener('mousemove', handleMouseMove);
+
+                const resize = () => {
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+                    init();
+                };
+                window.addEventListener('resize', resize);
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * width;
+                        this.y = Math.random() * height;
+                        this.baseX = this.x;
+                        this.baseY = this.y;
+                        this.size = Math.random() * 2;
+                        this.density = (Math.random() * 20) + 1;
+                        const colors = ['rgba(156, 39, 176, 0.4)', 'rgba(33, 150, 243, 0.4)'];
+                        this.color = colors[Math.floor(Math.random() * colors.length)];
+                    }
+                    update() {
+                        if (mouse.x !== null) {
+                            let dx = mouse.x - width / 2;
+                            let dy = mouse.y - height / 2;
+                            let targetX = this.baseX - (dx * 0.05 * (30 / this.density));
+                            let targetY = this.baseY - (dy * 0.05 * (30 / this.density));
+                            this.x += (targetX - this.x) * 0.05;
+                            this.y += (targetY - this.y) * 0.05;
+                        }
+                    }
+                    draw() {
+                        ctx.fillStyle = this.color;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                const init = () => {
+                    particles = [];
+                    const numParticles = (width * height) / 8000;
+                    for (let i = 0; i < numParticles; i++) particles.push(new Particle());
+                };
+                init();
+
+                const drawGrid = () => {
+                    if (mouse.x == null) return;
+                    const dx = (mouse.x - width / 2) * 0.02;
+                    const dy = (mouse.y - height / 2) * 0.02;
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+                    ctx.lineWidth = 1;
+                    const gridSize = 50;
+                    const offsetX = (dx % gridSize) - gridSize;
+                    const offsetY = (dy % gridSize) - gridSize;
+                    ctx.beginPath();
+                    for (let x = offsetX; x < width + gridSize; x += gridSize) {
+                        ctx.moveTo(x, 0); ctx.lineTo(x, height);
+                    }
+                    for (let y = offsetY; y < height + gridSize; y += gridSize) {
+                        ctx.moveTo(0, y); ctx.lineTo(width, y);
+                    }
+                    ctx.stroke();
+                };
+
+                const connectParticles = () => {
+                    for (let a = 0; a < particles.length; a++) {
+                        for (let b = a; b < particles.length; b++) {
+                            let dx = particles[a].x - particles[b].x;
+                            let dy = particles[a].y - particles[b].y;
+                            let distance = dx * dx + dy * dy;
+                            if (distance < 15000) {
+                                let opacity = 1 - (distance / 15000);
+                                ctx.strokeStyle = `rgba(156, 39, 176, ${opacity * 0.2})`;
+                                ctx.lineWidth = 1;
+                                ctx.beginPath();
+                                ctx.moveTo(particles[a].x, particles[a].y);
+                                ctx.lineTo(particles[b].x, particles[b].y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                };
+
+                const animate = () => {
+                    ctx.clearRect(0, 0, width, height);
+                    if (mouse.targetX !== null) {
+                        mouse.x += (mouse.targetX - mouse.x) * 0.1;
+                        mouse.y += (mouse.targetY - mouse.y) * 0.1;
+                    }
+                    drawGrid();
+                    for (let i = 0; i < particles.length; i++) {
+                        particles[i].update();
+                        particles[i].draw();
+                    }
+                    connectParticles();
+                    animationFrameId = requestAnimationFrame(animate);
+                };
+                animate();
+
+                return () => {
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    window.removeEventListener('resize', resize);
+                    cancelAnimationFrame(animationFrameId);
+                };
+            }, []);
+
+            const t = {
+                vi: {
+                    title: "Khß╗ƒi tß║ío Portfolio &",
+                    subtitle_hub: "Tham gia Teemous Hub",
+                    hero_desc: "X├óy dß╗▒ng ─æß╗ïnh danh sß╗æ chuy├¬n nghiß╗çp. Bß║»t ─æß║ºu h├ánh tr├¼nh cß╗ºa bß║ín tß║íi Teemous Digital.",
+                    basic: "Khß╗ƒi tß║ío c╞í bß║ún",
+                    premium: "KHß╗₧I Tß║áO N├éNG CAO",
+                    basic_desc: "─É╞░ß╗úc thiß║┐t kß║┐ layout chuß║⌐n chß╗ënh, ─æ╞░a profile l├¬n danh s├ích STANDARD hoß║╖c PROFESSIONAL cß╗ºa Teemous Hub (T├╣y n─âng lß╗▒c).",
+                    premium_desc: "Build giao diß╗çn custom ri├¬ng, phß╗⌐c tß║íp h╞ín. Trß╗Å t├¬n miß╗ün c├í nh├ón ─æß╗Öc bß║ún (VD: nguyenvana.com hoß║╖c .id.vn).",
+                    path_default: "─É╞░ß╗¥ng dß║½n mß║╖c ─æß╗ïnh:",
+                    deal: "Tß╗▒ deal - Li├¬n hß╗ç b├ío gi├í",
+                    add_top: "Th├¬m v├áo Top Featured",
+                    add_desc: "Profile cß╗ºa bß║ín sß║╜ ─æ╞░ß╗úc ghim tr├¬n khu vß╗▒c nß╗òi bß║¡t nhß║Ñt cß╗ºa Hub trong 30 ng├áy, t─âng 300% l╞░ß╗út click tß╗½ nhß╗»ng ng╞░ß╗¥i ─æang t├¼m kiß║┐m nh├ón sß╗▒.",
+                    ui_preview: "Teemous Hub UI Preview",
+                    total_cost: "Tß╗òng chi ph├¡",
+                    voucher: "M├â ╞»U ─É├âI",
+                    send: "Gß╗¼I TH├öNG TIN / CHAT QUA FACEBOOK",
+                    home: "Trang Chß╗º",
+                    services: "Dß╗èCH Vß╗ñ V├Ç Cß╗¼A H├ÇNG",
+                    portfolio: "Hß╗ô s╞í N─âng lß╗▒c Hub",
+                    contact: "Li├¬n Hß╗ç",
+                    plus: "+",
+                    option_curation: "Portfolio Curation",
+                    option_curation_desc: "Tinh chß╗ënh th├┤ng tin, sß╗æ h├│a cß╗Ñ thß╗â, tß╗æi ╞░u nß╗Öi dung chuy├¬n nghiß╗çp.<br/><i class='text-sm opacity-70'>L╞░u ├╜: Sß║╜ ho├án lß║íi ph├¡ (t├╣y %) nß║┐u l╞░ß╗úng th├┤ng tin bß║ín cung cß║Ñp qu├í ├¡t sß╗æ liß╗çu cß╗Ñ thß╗â ─æß╗â tß╗æi ╞░u.</i>",
+                    option_carry: "The Carry Pack",
+                    option_carry_desc: "T╞░ vß║Ñn & thß╗▒c hiß╗çn trß╗ìn g├│i tß╗½ A-Z. Bß║ín chß╗ë cß║ºn nhß║¡n Portfolio.",
+                    only_one: "* Chß╗ë ─æ╞░ß╗úc chß╗ìn 1 trong 2 options",
+                    custom_config: "Cß║ñU H├îNH TUß╗▓ CHß╗êNH",
+                },
+                en: {
+                    title: "Initialize Portfolio &",
+                    subtitle_hub: "Join Teemous Hub",
+                    hero_desc: "Build your professional digital portfolio. Start your journey at Teemous Digital.",
+                    basic: "Basic Initialization",
+                    premium: "Advanced Initialization",
+                    basic_desc: "Designed with standard layout, listed in STANDARD or PROFESSIONAL on Teemous Hub (based on capacity).",
+                    premium_desc: "Build custom interfaces, more complex. Point to a unique personal domain (e.g., nguyenvana.com or .id.vn).",
+                    path_default: "Default path:",
+                    deal: "Self-deal - Contact for quote",
+                    add_top: "Add to Top Featured",
+                    add_desc: "Your profile will be pinned in the Hub's most prominent area for 30 days, increasing clicks by 300%.",
+                    ui_preview: "Teemous Hub UI Preview",
+                    total_cost: "Total Cost",
+                    voucher: "GIFT CODE",
+                    send: "SEND INFO / CHAT VIA FACEBOOK",
+                    home: "Home",
+                    services: "SERVICES & SHOP",
+                    portfolio: "Portfolio Hub",
+                    contact: "Contact Us",
+                    plus: "+",
+                    option_curation: "Portfolio Curation",
+                    option_curation_desc: "Fine-tune info, digitize details, professional content optimization.<br/><i class='text-sm opacity-70'>Note: Part of the fee will be refunded if provided info is too sparse for effective optimization.</i>",
+                    option_carry: "The Carry Pack",
+                    option_carry_desc: "Complete A-Z consulting & execution. Just receive your Portfolio.",
+                    only_one: "* Choose only one of two options",
+                    custom_config: "CUSTOM CONFIGURATION",
+                }
+            };
+
+            const formatPrice = (num) => {
+                if (typeof num === 'string') return num;
+                if (lang === 'en') {
+                    const usd = (num / 25000).toFixed(0);
+                    return `$${usd}`;
+                }
+                return new Intl.NumberFormat('vi-VN').format(num) + ' VN─É';
+            };
+
+            const calculateTotal = () => {
+                if (selectedOption === 'premium') return 'Deal';
+                let subtotal = BASIC_PRICE + (profilePush ? PUSH_PRICE : 0);
+                if (basicSubOption === 'curation') subtotal += curationPrice;
+                if (basicSubOption === 'carry') subtotal += CARRY_PRICE;
+                return Math.max(0, subtotal - voucherDiscount);
+            };
+
+            const total = calculateTotal();
+
+            const handleVoucher = (e) => {
+                const val = (typeof e === 'string' ? e : e.target.value).toUpperCase();
+                setVoucher(val);
+                if (['SINHDEV', 'SINHVO', 'KSDN', 'KSDNSTUDIO'].includes(val)) {
+                    setVoucherDiscount(49000);
+                    setIsVoucherApplied(true);
+                } else {
+                    setVoucherDiscount(0);
+                    setIsVoucherApplied(false);
+                }
+            };
+
+            const copyVoucher = () => {
+                navigator.clipboard.writeText('SINHDEV');
+                handleVoucher('SINHDEV');
+            };
+
+            const renderHeader = () => html`
+                <header class="global-header">
+            <div class="header-logo">
+                <a href="../../index.html">
+                    <img src="../../Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span style="display:none;">TD</span>
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="header-nav">
+                <ul class="nav-links">
+                    <li><a href="../../index.html" data-en="Home" data-vi="Trang Chß╗º">Home</a></li>
+                    <li><a href="../../services/index.html" class="active" data-en="SERVICES & SHOP"
+                            data-vi="Dß╗ïch vß╗Ñ &amp; Cß╗¡a h├áng">SERVICES & SHOP</a></li>
+                    <li><a href="../../portfolio/index.html" data-en="Portfolio Hub" data-vi="Hß╗ô s╞í N─âng lß╗▒c">Portfolio
+                            Hub</a></li>
+                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
+                            data-vi="Li├¬n Hß╗ç">Contact Us</a></li>
+                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="─É─âng Nhß║¡p | ─É─âng K├╜"></button></li>
+                </ul>
+            </nav>
+        </header>
+            `;
+
+            const renderHero = () => html`
+                <header className="container mx-auto pt-36 pb-16 px-6 text-center animate-slide-up flex flex-col items-center gap-8">
+                    <div className="group cursor-default">
+                        <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase mb-4 leading-[1.1] transform transition-all duration-700 group-hover:tracking-wider animate-fly-in max-w-[1000px] mx-auto">
+                            ${t[lang].title} <br />
+                            <span className="text-neon-blue">${t[lang].subtitle_hub}</span>
+                        </h1>
+                        <div className="w-24 h-1 bg-gradient-to-r from-neon-blue to-neon-purple mx-auto mb-6 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                        <p className="flat-subtitle text-lg max-w-2xl mx-auto leading-relaxed text-[var(--text-muted)]">
+                            ${t[lang].hero_desc}
+                        </p>
+                    </div>
+                </header>
+            `;
+
+            const renderPlans = () => html`
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                    <label className="relative cursor-pointer group">
+                        <input type="radio" name="plan" className="hidden plan-radio" checked=${selectedOption === 'basic'} onChange=${() => setSelectedOption('basic')} />
+                        <div className=${`plan-card glass-panel-funnel p-10 h-full border-2 transition-all duration-300 relative rounded-3xl ${selectedOption === 'basic' ? 'border-neon-blue bg-neon-blue/[0.12] dark:bg-neon-blue/[0.15] shadow-[0_0_50px_rgba(33,150,243,0.5)] scale-[1.02]' : 'border-white/5 bg-white/60 dark:bg-black/40 shadow-sm hover:border-neon-blue/20 hover:bg-white/80 dark:hover:bg-black/60'}`}>
+                            <div className="flex items-center gap-4 mb-2">
+                                <h3 className="text-2xl font-black uppercase italic text-[var(--text-main)]">${t[lang].basic}</h3>
+                                <span className="bg-red-600 text-white text-[12px] font-black px-3 py-1.5 rounded-full animate-pulse shadow-[0_0_20px_rgba(220,38,38,0.7)]">
+                                    -75% OFF
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-4 mb-4 flex-wrap">
+                                <span className="text-2xl font-black text-neutral-500 line-through italic opacity-50">199,000 VN─É</span>
+                                <span className="text-4xl font-black text-neon-blue">49,000 VN─É</span>
+                            </div>
+                            <p className="text-[var(--text-muted)] text-sm mb-8 leading-relaxed">${t[lang].basic_desc}</p>
+                            <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mt-8">
+                                ${t[lang].path_default} <br />
+                                <span className="text-neon-blue">teemousdigital.id.vn/portfolio/your-name</span>
+                            </div>
+                        </div>
+                    </label>
+                    <label className="relative cursor-pointer group">
+                        <input type="radio" name="plan" className="hidden plan-radio" checked=${selectedOption === 'premium'} onChange=${() => { setSelectedOption('premium'); setBasicSubOption(null); }} />
+                        <div className=${`relative w-full h-full p-10 rounded-3xl border-2 transition-all duration-500 flex flex-col ${selectedOption === 'premium' ? 'border-neon-purple bg-neon-purple/[0.12] dark:bg-neon-purple/[0.15] shadow-[0_0_50px_rgba(156,39,176,0.5)] scale-[1.02]' : 'border-white/5 bg-white/60 dark:bg-black/40 shadow-sm hover:border-neon-purple/30 hover:bg-white/80 dark:hover:bg-black/60'}`}>
+                            <h3 className="text-2xl font-black text-[var(--text-main)] uppercase italic mb-1">${t[lang].premium}</h3>
+                            <div className="text-3xl font-black text-neon-purple mb-4">300k - 1,000k+</div>
+                            <p className="text-[var(--text-muted)] text-sm mb-8 leading-relaxed">${t[lang].premium_desc}</p>
+                            <div className="text-[10px] font-bold text-neon-purple uppercase tracking-widest mt-auto">${t[lang].deal}</div>
+                        </div>
+                    </label>
+                </div>
+            `;
+
+            const renderSubOptions = () => html`
+                <div className="animate-push-down">
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="h-px bg-white/10 flex-1"></div>
+                        <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-neon-blue">${t[lang].custom_config}</h2>
+                        <div className="h-px bg-white/10 flex-1"></div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className=${`glass-panel-funnel p-8 rounded-3xl border-2 cursor-pointer transition-all duration-500 ${basicSubOption === 'curation' ? 'border-neon-blue bg-neon-blue/10 shadow-[0_0_30px_rgba(33,150,243,0.3)]' : 'border-white/5 bg-black/20 hover:border-white/20'}`} onClick=${() => setBasicSubOption('curation')}>
+                            <h3 className="text-2xl font-black uppercase italic">${t[lang].option_curation}</h3>
+                            <p className="text-base text-[var(--text-muted)] mb-8 mt-4 leading-relaxed" dangerouslySetInnerHTML=${{ __html: t[lang].option_curation_desc }} />
+                            <input type="range" min="29000" max="249000" step="1000" value=${curationPrice} onChange=${(e) => setCurationPrice(parseInt(e.target.value))} className="w-full" onClick=${(e) => e.stopPropagation()} />
+                            <p className="text-center text-neon-blue font-black mt-4">${formatPrice(curationPrice)}</p>
+                        </div>
+                        <div className=${`glass-panel-funnel p-8 rounded-3xl border-2 cursor-pointer transition-all duration-500 ${basicSubOption === 'carry' ? 'border-neon-blue bg-neon-blue/10 shadow-[0_0_30px_rgba(33,150,243,0.3)]' : 'border-white/5 bg-black/20 hover:border-white/20'}`} onClick=${() => setBasicSubOption('carry')}>
+                            <h3 className="text-2xl font-black uppercase italic">${t[lang].option_carry}</h3>
+                            <p className="text-base text-[var(--text-muted)] mb-8 mt-4 leading-relaxed" dangerouslySetInnerHTML=${{ __html: t[lang].option_carry_desc }} />
+                            <div className="text-[10px] font-black uppercase text-center py-4 border border-dashed border-white/10 rounded-xl bg-white/5">+ ${formatPrice(CARRY_PRICE)}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const renderPush = () => html`
+                <div className="glass-panel-premium p-8 mb-16 border-neon-blue/20">
+                    <div className="flex flex-col lg:flex-row gap-8 items-center">
+                        <div className="flex-1">
+                            <div className="flex items-center gap-4 mb-4">
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked=${profilePush} onChange=${(e) => setProfilePush(e.target.checked)} className="sr-only peer" />
+                                    <div className="w-14 h-7 bg-slate-200 dark:bg-zinc-800 rounded-full peer peer-checked:bg-gradient-to-r peer-checked:from-neon-purple peer-checked:to-neon-blue after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-full"></div>
+                                </label>
+                                <h3 className="text-2xl font-black uppercase text-[var(--text-main)]">${t[lang].add_top}</h3>
+                            </div>
+                            <p className="text-[var(--text-muted)] text-sm leading-relaxed">${t[lang].add_desc}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const renderCheckout = () => html`
+                <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-50">
+                    <div className="glass-panel-premium p-5 flex flex-col md:flex-row items-center justify-between gap-6 bg-black/70 backdrop-blur-3xl shadow-2xl border-white/20">
+                        <div className="flex items-center gap-6">
+                            <div>
+                                <div className="text-[8px] font-black uppercase tracking-widest text-neutral-500">${t[lang].total_cost}</div>
+                                <div className="text-2xl md:text-3xl font-black text-[var(--text-main)]">${formatPrice(total)}</div>
+                            </div>
+                            <input type="text" placeholder=${t[lang].voucher} value=${voucher} onChange=${handleVoucher} className="bg-black/30 border border-white/10 rounded-xl px-4 py-2 uppercase font-black text-xs w-32 focus:outline-none focus:border-neon-purple" />
+                        </div>
+                        <a href="https://www.facebook.com/quang.sinh.5492" target="_blank" className="bg-white text-black px-10 py-4 rounded-xl font-black uppercase tracking-widest hover:bg-neon-blue hover:text-white transition-all transform hover:scale-105 active:scale-95 shadow-xl">
+                            ${t[lang].send}
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            const renderFooter = () => html`
+                <footer className="py-20 text-center">
+                    <p className="font-heading font-semibold text-sm">&copy; 2026 Teemous Digital. All Rights Reserved.</p>
+                </footer>
+            `;
+
+            return html`
+                <div className="min-h-screen pb-48 relative font-montserrat overflow-hidden">
+                    <canvas id="bg-canvas" className="fixed inset-0 z-[-1] pointer-events-none opacity-50"></canvas>
+                    ${renderHeader()}
+                    ${renderHero()}
+                    <main className="container mx-auto px-6 max-w-6xl">
+                        ${renderPlans()}
+                        ${selectedOption === 'basic' && renderSubOptions()}
+                        ${renderPush()}
+                        ${renderCheckout()}
+                    </main>
+                    ${renderFooter()}
+                </div>
+            `;
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(App));
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+
+
+
+
+
+<!-- Fixed UI Controls -->
+    <div class="ui-controls">
+        <!-- Light/Dark Mode Toggle -->
+        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
+            <span class="mode-icon">≡ƒîÖ</span>
+        </button>
+
+        <!-- Global Translation Sticky Label -->
+        <button id="lang-toggle" class="lang-toggle neon-border">
+            EN
+        </button>
+    </div>
+
+    <!-- Chatbot AI Local -->
+    <div id="chatbot-container">
+        <button id="chatbot-toggle" class="neon-border" title="Chat with AI">
+            <span class="chat-icon">≡ƒÆ¼</span>
+        </button>
+        <div id="chatbot-window">
+            <div class="chatbot-header glass-card">
+                <div class="header-main">
+                    <h3 data-en="Teemous AI Assistant <span class='beta-badge'>BETA</span>" 
+                        data-vi="Trß╗ú l├╜ ß║úo Teemous <span class='beta-badge'>BETA</span>">
+                        Teemous AI Assistant <span class="beta-badge">BETA</span>
+                    </h3>
+                </div>
+                <button id="chatbot-close">Γ£ò</button>
+            </div>
+                <div id="chatbot-messages" class="glass-card">
+                    <div class="message ai-message"
+                        data-en="Hello! I'm Teemous AI. How can I help you today?"
+                        data-vi="Xin ch├áo! T├┤i l├á trß╗ú l├╜ ß║úo Teemous. T├┤i c├│ thß╗â gi├║p g├¼ cho bß║ín h├┤m nay?">
+                        Hello! I'm Teemous AI. How can I help you today?
+                    </div>
+                </div>
+            <div class="chatbot-input-area glass-card">
+                <input type="text" id="chatbot-input" placeholder="Type a message..."
+                    data-en-placeholder="Type a message..." data-vi-placeholder="Nhß║¡p tin nhß║»n...">
+                <button id="chatbot-send">Γ₧ñ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal Overlay -->
+    <div id="auth-modal-overlay" class="auth-modal-overlay">
+        <div id="auth-modal" class="auth-modal-container glass-card">
+            <button id="close-auth-modal" class="close-modal-btn">Γ£ò</button>
+            
+            <div class="auth-tab-nav">
+                <button id="tab-login" class="active" data-en="Login" data-vi="─É─âng Nhß║¡p">Login</button>
+                <div class="auth-divider"></div>
+                <button id="tab-signup" data-en="Sign Up" data-vi="─É─âng K├╜">Sign Up</button>
+            </div>
+
+            <div id="auth-alert" class="auth-alert" style="display: none;"></div>
+
+            <form id="auth-form" class="auth-form">
+                <!-- Login Section -->
+                <div id="login-section" class="auth-form-section active">
+                    <h2 class="auth-title" data-en="Welcome Back" data-vi="Mß╗½ng Trß╗ƒ Lß║íi">Welcome Back</h2>
+                    <p class="auth-subtitle" data-en="Access your Teemous Digital dashboard" data-vi="Truy cß║¡p bß║úng ─æiß╗üu khiß╗ân c├í nh├ón">Access your Teemous Digital dashboard</p>
+                    <div class="auth-input-group">
+                        <input type="email" id="login-email" placeholder="Email" data-en-placeholder="Email" data-vi-placeholder="Email">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="password" id="login-password" placeholder="Password" data-en-placeholder="Password" data-vi-placeholder="Mß║¡t Khß║⌐u">
+                    </div>
+                    <button type="button" id="auth-submit-login" class="auth-submit-btn neon-border" data-en="Login" data-vi="─É─âng Nhß║¡p">Login</button>
+                </div>
+
+                <!-- Signup Section -->
+                <div id="signup-section" class="auth-form-section" style="display: none;">
+                    <h2 class="auth-title" data-en="Create Account" data-vi="Tß║ío Mß╗¢i">Create Account</h2>
+                    <p class="auth-subtitle" data-en="Join with us" data-vi="Gia nhß║¡p hß╗ç thß╗æng cao cß║Ñp">Join with us</p>
+                    <div class="auth-input-group">
+                        <input type="text" id="signup-name" placeholder="Username" data-en-placeholder="Username" data-vi-placeholder="T├¬n Ng╞░ß╗¥i D├╣ng">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="email" id="signup-email" placeholder="Email" data-en-placeholder="Email" data-vi-placeholder="Email">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="password" id="signup-password" placeholder="Password" data-en-placeholder="Password" data-vi-placeholder="Mß║¡t Khß║⌐u">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="password" id="signup-confirm" placeholder="Confirm Password" data-en-placeholder="Confirm Password" data-vi-placeholder="Nhß║¡p Lß║íi Mß║¡t Khß║⌐u">
+                    </div>
+                    <button type="button" id="auth-submit-signup" class="auth-submit-btn neon-border" data-en="Initialize" data-vi="Khß╗ƒi Tß║ío">Initialize</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Dashboard Modal Overlay -->
+    <div id="dashboard-modal-overlay" class="auth-modal-overlay">
+        <div id="dashboard-modal" class="auth-modal-container glass-card dashboard-modal">
+            <button id="close-dashboard-modal" class="close-modal-btn">Γ£ò</button>
+            <div class="dashboard-header">
+                <h2 class="neon-gradient-text" data-en="Personal Dashboard" data-vi="Bß║úng ─æiß╗üu khiß╗ân">Personal Dashboard</h2>
+            </div>
+            
+            <!-- Dashboard Tabs -->
+            <div class="dashboard-tabs">
+                <button class="dash-tab active" data-tab="profile" data-en="Profile" data-vi="C├í nh├ón">Profile</button>
+                <button class="dash-tab" data-tab="orders" data-en="Orders" data-vi="─É╞ín h├áng">Orders</button>
+                <button class="dash-tab" data-tab="transactions" data-en="Funding" data-vi="Giao dß╗ïch">Funding</button>
+            </div>
+
+            <div class="dashboard-content-scrollable">
+                <!-- Profile Tab -->
+                <div id="tab-profile" class="dash-section active">
+                    <div class="user-profile-summary">
+                        <div class="avatar-edit-container">
+                            <img id="dashboard-avatar" src="" alt="Avatar" class="dashboard-avatar-img">
+                            <label for="avatar-input" class="avatar-edit-btn" title="Change Avatar">
+                                <span>≡ƒô╖</span>
+                            </label>
+                            <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="user-info-text">
+                            <div class="username-edit-group">
+                                <input type="text" id="dashboard-username-input" class="username-input" value="">
+                                <button id="save-profile-btn" class="save-icon-btn" title="Save">≡ƒÆ╛</button>
+                            </div>
+                            <p id="dashboard-email" class="email-display"></p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-stats glass-card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem; margin-bottom: 2rem;">
+                        <div class="stat-item" style="display: flex; flex-direction: column; align-items: center;">
+                            <span class="stat-label" data-en="Balance" data-vi="Sß╗æ d╞░" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Balance</span>
+                            <span id="dashboard-balance" class="stat-value" style="font-size: 1.1rem; font-weight: 800; color: var(--neon-pink);">0 VND</span>
+                        </div>
+                        <div class="stat-item" style="display: flex; flex-direction: column; align-items: center;">
+                            <span class="stat-label" data-en="Rank" data-vi="Rank/Hß║íng" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Rank</span>
+                            <span id="dashboard-role" class="stat-value" style="font-size: 1.1rem; font-weight: 800; color: var(--neon-blue);">Elite</span>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-actions">
+                        <button id="logout-btn" class="logout-btn neon-border" data-en="Log Out" data-vi="─É─âng Xuß║Ñt">Log Out</button>
+                    </div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div id="tab-orders" class="dash-section">
+                    <div class="history-list">
+                        <table class="dash-table">
+                            <thead>
+                                <tr>
+                                    <th data-en="Product" data-vi="Sß║ún phß║⌐m">Product</th>
+                                    <th data-en="Price" data-vi="Gi├í">Price</th>
+                                    <th data-en="Status" data-vi="Trß║íng th├íi">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-list-body">
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Transactions Tab -->
+                <div id="tab-transactions" class="dash-section">
+                    <div class="topup-action-container" style="margin-bottom: 1.5rem; text-align: right; padding: 10px;">
+                        <button id="open-topup-btn" class="topup-btn neon-border" style="padding: 0.5rem 1rem; font-size: 0.9rem; background: rgba(255, 30, 150, 0.1); color: var(--neon-pink); margin: 5px;">+ Top Up Money</button>
+                    </div>
+                    <div class="history-list">
+                        <table class="dash-table">
+                            <thead>
+                                <tr>
+                                    <th data-en="Amount" data-vi="Sß╗æ tiß╗ün">Amount</th>
+                                    <th data-en="Type" data-vi="Loß║íi">Type</th>
+                                    <th data-en="Status" data-vi="Kß║┐t quß║ú">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactions-list-body">
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Top Up Modal Overlay (Separated for focus) -->
+    <div id="topup-modal-overlay" class="auth-modal-overlay" style="z-index: 10001;">
+        <div id="topup-modal" class="auth-modal-container glass-card topup-modal">
+            <button id="close-topup-modal" class="close-modal-btn">Γ£ò</button>
+            <div class="modal-header">
+                <h2 class="neon-gradient-text" data-en="Top Up Funds" data-vi="Nß║íp tiß╗ün v├áo v├¡">Top Up Funds</h2>
+                <p class="modal-subtitle" data-en="Instant balance update via VietQR" data-vi="Cß║¡p nhß║¡t sß╗æ d╞░ tß╗⌐c th├¼ qua VietQR">Instant balance update via VietQR</p>
+            </div>
+            
+            <div class="topup-steps">
+                <div class="amount-selector">
+                    <label data-en="Select Amount (VND)" data-vi="Chß╗ìn sß╗æ tiß╗ün (VND)">Select Amount (VND)</label>
+                    <div class="amount-grid">
+                        <button class="amt-btn" data-value="20000">20k</button>
+                        <button class="amt-btn" data-value="50000">50k</button>
+                        <button class="amt-btn" data-value="100000">100k</button>
+                        <button class="amt-btn active" data-value="200000">200k</button>
+                    </div>
+                </div>
+
+                <div id="qr-display-area" class="qr-display-area glass-card" style="display:none; margin-top: 1.5rem; padding: 1.5rem; text-align: center;">
+                    <div class="qr-container" style="background: white; padding: 1rem; border-radius: 12px; display: inline-block; margin-bottom: 1rem;">
+                        <img id="vietqr-img" src="" alt="VietQR Pay" style="width: 240px; height: auto;">
+                    </div>
+                    <div class="payment-details">
+                        <p class="detail-row" style="margin: 0.5rem 0;"><span data-en="Amount:" data-vi="Sß╗æ tiß╗ün:">Amount:</span> <strong id="qr-amt-text">0</strong></p>
+                        <p class="detail-row" style="margin: 0.5rem 0;"><span data-en="Note:" data-vi="Nß╗Öi dung:">Note:</span> <strong id="qr-note-text" style="color: var(--neon-pink);">NAP</strong></p>
+                        <p class="warning-text" style="font-size: 0.8rem; color: #ff8a80; margin-top: 1rem;" data-en="Use correct note for auto-process." data-vi="D├╣ng ─æ├║ng nß╗Öi dung ─æß╗â nß║íp tß╗▒ ─æß╗Öng.">Use correct note for auto-process.</p>
+                    </div>
+                </div>
+
+                <button id="gen-qr-btn" class="auth-submit-btn neon-border" style="margin-top: 1.5rem;" data-en="Generate Payment QR" data-vi="Tß║ío m├ú thanh to├ín QR">Generate Payment QR</button>
+            </div>
+        </div>
+    </div>
+
+    
+    
+    <script src="../../script.js?v=restore-elite-v4"></script>
+</body>
+
+</html>

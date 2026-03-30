@@ -31,7 +31,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../style.css?v=restore-elite-v4">
+    <link rel="stylesheet" href="../../style.css?v=restore-elite-v5">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -57,49 +57,28 @@
         }
     </script>
 
-    <!-- React & HTM -->
+    <!-- React & HTM (No-build JSX alternative) -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
 
     <style>
         html { font-size: 80%; }
-        body { background-color: var(--bg-base); color: var(--text-main); transition: background-color 0.5s ease, color 0.5s ease; }
-
-        .glass-panel-funnel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.25rem;
-        }
-
-        .light-mode .glass-panel-funnel {
-            background: rgba(0, 0, 0, 0.03);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .plan-radio:checked+.plan-card {
-            border-color: var(--neon-blue);
-            background: rgba(33, 150, 243, 0.1);
-            box-shadow: 0 0 30px rgba(33, 150, 243, 0.2);
-        }
-
-        @keyframes push-down {
-            0% { opacity: 0; transform: translateY(-30px); max-height: 0; overflow: hidden; }
-            100% { opacity: 1; transform: translateY(0); max-height: 1000px; overflow: visible; }
-        }
-
+        body { background-color: var(--bg-base); color: var(--text-main); transition: background-color 0.5s ease, color 0.5s ease; min-height: 100vh; position: relative; }
+        .glass-panel-funnel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1.25rem; }
+        .light-mode .glass-panel-funnel { background: rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.1); }
+        .plan-radio:checked+.plan-card { border-color: var(--neon-blue); background: rgba(33, 150, 243, 0.1); box-shadow: 0 0 30px rgba(33, 150, 243, 0.2); }
+        .plan-radio:checked+.plan-card.premium { border-color: var(--neon-purple); background: rgba(156, 39, 176, 0.1); box-shadow: 0 0 30px rgba(156, 39, 176, 0.2); }
+        @keyframes push-down { 0% { opacity: 0; transform: translateY(-30px); max-height: 0; overflow: hidden; } 100% { opacity: 1; transform: translateY(0); max-height: 1000px; overflow: visible; } }
         .animate-push-down { animation: push-down 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 0.25rem; background: rgba(33, 150, 243, 0.2); border-radius: 0.125rem; }
         input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: #2196F3; cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(33, 150, 243, 0.5); }
-
-        @media (max-width: 640px) {
-            html { zoom: 1 !important; }
-            .plan-card { padding: 1.5rem !important; }
-        }
+        @media (max-width: 640px) { html { zoom: 1 !important; } .plan-card { padding: 1.5rem !important; } }
+        
+        /* Global Header Specific Overrides for Get Portfolio */
+        .global-header { position: sticky; top: 0; z-index: 1000; background: rgba(0,0,0,0.05); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .light-mode .global-header { background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(0,0,0,0.05); }
     </style>
 
     <script>
@@ -112,7 +91,32 @@
     </script>
 </head>
 
-<body>
+<body class="font-montserrat">
+    <canvas id="bg-canvas" class="fixed inset-0 z-[-1] pointer-events-none opacity-50"></canvas>
+
+    <header class="global-header">
+        <div class="header-logo">
+            <a href="../../index.html">
+                <img src="../../Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span style="display:none;">TD</span>
+            </a>
+        </div>
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="header-nav">
+            <ul class="nav-links">
+                <li><a href="../../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
+                <li><a href="../../services/index.html" class="active" data-en="SERVICES & SHOP" data-vi="Dịch vụ &amp; Cửa hàng">SERVICES & SHOP</a></li>
+                <li><a href="../../portfolio/index.html" data-en="Portfolio Hub" data-vi="Hồ sơ Năng lực">Portfolio Hub</a></li>
+                <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us" data-vi="Liên Hệ">Contact Us</a></li>
+                <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
+            </ul>
+        </nav>
+    </header>
+
     <div id="root"></div>
 
     <script>
@@ -137,7 +141,7 @@
                 send: "GỬI THÔNG TIN / CHAT QUA FACEBOOK",
                 custom_config: "CẤU HÌNH TUỲ CHỈNH",
                 option_curation: "Portfolio Curation",
-                option_curation_desc: "Tinh chỉnh thông tin, số hóa cụ thể, tối ưu nội dung chuyên nghiệp.<br/><i class='text-sm opacity-70'>Lưu ý: Sẽ hoàn lại phí if provided info is too sparse.</i>",
+                option_curation_desc: "Tinh chỉnh thông tin, số hóa cụ thể, tối ưu nội dung chuyên nghiệp.<br/><i class='text-sm opacity-70'>Lưu ý: Sẽ hoàn lại phí nếu lượng thông tin bạn cung cấp quá ít.</i>",
                 option_carry: "The Carry Pack",
                 option_carry_desc: "Tư vấn & thực hiện trọn gói từ A-Z. Bạn chỉ cần nhận Portfolio.",
             },
@@ -147,18 +151,18 @@
                 hero_desc: "Build your professional digital portfolio. Start your journey at Teemous Digital.",
                 basic: "Basic Initialization",
                 premium: "Advanced Initialization",
-                basic_desc: "Designed with standard layout, listed in STANDARD or PROFESSIONAL on Teemous Hub.",
-                premium_desc: "Build custom interfaces, more complex. Point to a unique personal domain.",
+                basic_desc: "Designed with standard layout, listed in STANDARD or PROFESSIONAL on Teemous Hub (based on capacity).",
+                premium_desc: "Build custom interfaces, more complex. Point to a unique personal domain (e.g., nguyenvana.com or .id.vn).",
                 path_default: "Default path:",
                 deal: "Self-deal - Contact for quote",
                 add_top: "Add to Top Featured",
-                add_desc: "Your profile will be pinned in the Hub's most prominent area for 30 days.",
+                add_desc: "Your profile will be pinned in the Hub's most prominent area for 30 days, increasing clicks by 300%.",
                 total_cost: "Total Cost",
                 voucher: "GIFT CODE",
                 send: "SEND INFO / CHAT VIA FACEBOOK",
                 custom_config: "CUSTOM CONFIGURATION",
                 option_curation: "Portfolio Curation",
-                option_curation_desc: "Fine-tune info, digitize details, professional content optimization.",
+                option_curation_desc: "Fine-tune info, digitize details, professional content optimization.<br/><i class='text-sm opacity-70'>Note: Fee refunded if provided info is too sparse.</i>",
                 option_carry: "The Carry Pack",
                 option_carry_desc: "Complete A-Z consulting & execution. Just receive your Portfolio.",
             }
@@ -167,7 +171,7 @@
         const App = () => {
             const [selectedOption, setSelectedOption] = useState('basic');
             const [basicSubOption, setBasicSubOption] = useState(null);
-            const [curationPrice, setCurationPrice] = useState(249000); 
+            const [curationPrice, setCurationPrice] = useState(49000);
             const [profilePush, setProfilePush] = useState(false);
             const [voucher, setVoucher] = useState('');
             const [voucherDiscount, setVoucherDiscount] = useState(0);
@@ -208,27 +212,33 @@
                         this.x = Math.random() * width; this.y = Math.random() * height;
                         this.baseX = this.x; this.baseY = this.y;
                         this.size = Math.random() * 2; this.density = (Math.random() * 20) + 1;
-                        this.color = ['rgba(156,39,176,0.3)', 'rgba(33,150,243,0.3)'][Math.floor(Math.random()*2)];
+                        this.color = ['rgba(156, 39, 176, 0.4)', 'rgba(33, 150, 243, 0.4)'][Math.floor(Math.random()*2)];
                     }
                     update() {
-                        let dx = mouse.x - width / 2; let dy = mouse.y - height / 2;
-                        this.x = this.baseX - (dx * 0.05 * (20/this.density));
-                        this.y = this.baseY - (dy * 0.05 * (20/this.density));
+                        let dx = mouse.x - width/2; let dy = mouse.y - height/2;
+                        this.x = this.baseX - (dx * 0.05 * (30/this.density)); this.y = this.baseY - (dy * 0.05 * (30/this.density));
                     }
                     draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
                 }
 
-                const init = () => {
-                    particles = [];
-                    for (let i = 0; i < 150; i++) particles.push(new Particle());
-                };
+                const connect = () => {
+                    for (let a = 0; a < particles.length; a++) {
+                        for (let b = a; b < particles.length; b++) {
+                            let dx = particles[a].x - particles[b].x; let dy = particles[a].y - particles[b].y;
+                            let dist = dx*dx + dy*dy;
+                            if (dist < 15000) { ctx.strokeStyle = `rgba(156,39,176,${1-(dist/15000)*0.1})`; ctx.beginPath(); ctx.moveTo(particles[a].x, particles[a].y); ctx.lineTo(particles[b].x, particles[b].y); ctx.stroke(); }
+                        }
+                    }
+                }
+
+                const init = () => { particles = []; for (let i = 0; i < (width*height)/9000; i++) particles.push(new Particle()); };
                 init();
 
                 const animate = () => {
                     ctx.clearRect(0,0,width,height);
-                    mouse.x += (mouse.targetX - mouse.x) * 0.1;
-                    mouse.y += (mouse.targetY - mouse.y) * 0.1;
+                    mouse.x += (mouse.targetX - mouse.x) * 10.1; mouse.x = mouse.targetX; mouse.y = mouse.targetY; // Instant track for debug
                     particles.forEach(p => { p.update(); p.draw(); });
+                    connect();
                     animationFrameId = requestAnimationFrame(animate);
                 };
                 animate();
@@ -249,92 +259,152 @@
             };
 
             return html`
-                <div className="min-h-screen pb-48 font-montserrat relative overflow-hidden">
-                    <canvas id="bg-canvas" className="fixed inset-0 z-[-1] opacity-60"></canvas>
-                    
-                    <header class="p-6 flex justify-between items-center sticky top-0 z-[1000] bg-black/5 backdrop-blur-xl border-b border-white/5">
-                        <a href="../../index.html"><img src="../../Logo/logo.png" class="h-10" /></a>
-                        <nav class="hidden md:flex gap-10 font-black uppercase text-xs tracking-widest italic">
-                            <a href="../../index.html">Home</a>
-                            <a href="../../services/index.html" class="text-neon-blue">Services</a>
-                            <a href="../../portfolio/index.html">Portfolio</a>
-                        </nav>
-                        <button class="nav-login-btn border-2 border-neon-blue/20 rounded-full px-6 py-2 uppercase text-xs font-black">Login</button>
-                    </header>
+                <main className="container mx-auto px-6 pt-32 pb-48 max-w-6xl">
+                    <div className="text-center mb-24 animate-slide-up">
+                        <h1 className="text-6xl md:text-8xl font-black uppercase mb-6 leading-tight">
+                            ${t[lang].title} <br /> <span className="bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent italic">${t[lang].subtitle_hub}</span>
+                        </h1>
+                        <p className="text-xl opacity-60 max-w-2xl mx-auto">${t[lang].hero_desc}</p>
+                    </div>
 
-                    <main class="container mx-auto px-6 pt-32 max-w-6xl">
-                        <div class="text-center mb-24">
-                            <h1 class="text-6xl md:text-8xl font-black uppercase mb-6 leading-tight">
-                                ${t[lang].title} <br /> <span class="bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent italic">${t[lang].subtitle_hub}</span>
-                            </h1>
-                            <p class="text-xl opacity-60 max-w-2xl mx-auto">${t[lang].hero_desc}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-20">
+                        <div className=${`p-12 glass-panel-funnel cursor-pointer border-2 transition-all relative ${selectedOption === 'basic' ? 'border-neon-blue bg-neon-blue/10 scale-[1.02] shadow-2xl' : 'border-white/5 opacity-50'}`} onClick=${()=>setSelectedOption('basic')}>
+                            <span className="absolute top-4 right-4 bg-red-600 text-white font-black text-xs px-3 py-1 rounded-full animate-pulse shadow-2xl">-75% OFF</span>
+                            <h3 className="text-3xl font-black mb-6 uppercase italic">${t[lang].basic}</h3>
+                            <div className="flex items-center gap-4 mb-8">
+                                <span className="text-2xl opacity-30 line-through">199,000 VNĐ</span>
+                                <span className="text-5xl font-black text-neon-blue">49,000 VNĐ</span>
+                            </div>
+                            <p className="text-base opacity-70 mb-4">${t[lang].basic_desc}</p>
+                            <div className="text-[10px] font-black uppercase tracking-widest opacity-40">
+                                ${t[lang].path_default} teemous.id.vn/yourname
+                            </div>
                         </div>
+                        <div className=${`p-12 glass-panel-funnel cursor-pointer border-2 transition-all relative ${selectedOption === 'premium' ? 'border-neon-purple bg-neon-purple/10 scale-[1.02] shadow-2xl' : 'border-white/5 opacity-50'}`} onClick=${()=>setSelectedOption('premium')}>
+                            <h3 className="text-3xl font-black mb-6 uppercase italic">${t[lang].premium}</h3>
+                            <div className="text-5xl font-black mb-8 italic text-neon-purple">DEAL</div>
+                            <p className="text-base opacity-70">${t[lang].premium_desc}</p>
+                        </div>
+                    </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-20">
-                            <div class=${`p-12 glass-panel-funnel relative cursor-pointer border-2 transition-all ${selectedOption === 'basic' ? 'border-neon-blue bg-neon-blue/10' : 'border-white/5'}`} onClick=${()=>setSelectedOption('basic')}>
-                                <span class="absolute top-4 right-4 bg-red-600 text-white font-black text-[10px] px-3 py-1 rounded-full">-75% OFF</span>
-                                <h3 class="text-3xl font-black mb-6 uppercase italic">${t[lang].basic}</h3>
-                                <div class="flex items-center gap-4 mb-8">
-                                    <span class="text-xl opacity-30 line-through italic">199,000 VNĐ</span>
-                                    <span class="text-5xl font-black text-neon-blue">49,000 VNĐ</span>
+                    ${selectedOption === 'basic' && html`
+                        <div className="animate-push-down space-y-12">
+                            <div className="flex items-center gap-4 mb-8">
+                                <div className="h-px bg-white/10 flex-1"></div>
+                                <h2 className="text-neon-blue font-black uppercase tracking-[0.5em] text-[10px]">${t[lang].custom_config}</h2>
+                                <div className="h-px bg-white/10 flex-1"></div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className=${`p-8 glass-panel-funnel border-2 cursor-pointer transition-all ${basicSubOption === 'curation' ? 'border-neon-blue bg-neon-blue/10 shadow-[0_0_30px_rgba(33,150,243,0.3)]' : 'border-white/5 bg-black/20 hover:border-white/20'}`} onClick=${()=>setBasicSubOption('curation')}>
+                                    <h4 className="text-2xl font-black italic mb-4">${t[lang].option_curation}</h4>
+                                    <p className="text-sm opacity-60 mb-8" dangerouslySetInnerHTML=${{__html: t[lang].option_curation_desc}} />
+                                    <input type="range" min="30000" max="249000" step="1000" value=${curationPrice} onChange=${(e)=>setCurationPrice(parseInt(e.target.value))} className="w-full mb-4" onClick=${(e)=>e.stopPropagation()} />
+                                    <p className="text-center text-neon-blue font-black text-xl">${formatPrice(curationPrice)}</p>
                                 </div>
-                                <p class="text-base leading-relaxed opacity-70">${t[lang].basic_desc}</p>
-                            </div>
-                            <div class=${`p-12 glass-panel-funnel cursor-pointer border-2 transition-all ${selectedOption === 'premium' ? 'border-neon-purple bg-neon-purple/10' : 'border-white/5'}`} onClick=${()=>setSelectedOption('premium')}>
-                                <h3 class="text-3xl font-black mb-6 uppercase italic">${t[lang].premium}</h3>
-                                <div class="text-5xl font-black mb-8 italic">DEAL</div>
-                                <p class="text-base leading-relaxed opacity-70">${t[lang].premium_desc}</p>
-                            </div>
-                        </div>
-
-                        ${selectedOption === 'basic' && html`
-                            <div class="animate-push-down space-y-12">
-                                <h2 class="text-center text-neon-blue font-black uppercase tracking-[0.5em] text-[10px]">${t[lang].custom_config}</h2>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                    <div class=${`p-8 glass-panel-funnel border-2 cursor-pointer ${basicSubOption === 'curation' ? 'border-neon-blue bg-neon-blue/10' : 'border-white/5'}`} onClick=${()=>setBasicSubOption('curation')}>
-                                        <h4 class="text-xl font-black italic mb-4">${t[lang].option_curation}</h4>
-                                        <p class="text-sm opacity-60 mb-8" dangerouslySetInnerHTML=${{__html: t[lang].option_curation_desc}} />
-                                        <input type="range" min="29000" max="249000" step="1000" value=${curationPrice} onChange=${(e)=>setCurationPrice(parseInt(e.target.value))} class="w-full mb-4" />
-                                        <p class="text-center text-neon-blue font-black">${formatPrice(curationPrice)}</p>
-                                    </div>
-                                    <div class=${`p-8 glass-panel-funnel border-2 cursor-pointer ${basicSubOption === 'carry' ? 'border-neon-blue bg-neon-blue/10' : 'border-white/5'}`} onClick=${()=>setBasicSubOption('carry')}>
-                                        <h4 class="text-xl font-black italic mb-4">${t[lang].option_carry}</h4>
-                                        <p class="text-sm opacity-60 mb-8">${t[lang].option_carry_desc}</p>
-                                        <div class="p-4 border border-dashed border-white/20 rounded-xl text-center text-xs opacity-50">+ ${formatPrice(CARRY_PRICE)}</div>
-                                    </div>
+                                <div className=${`p-8 glass-panel-funnel border-2 cursor-pointer transition-all ${basicSubOption === 'carry' ? 'border-neon-blue bg-neon-blue/10 shadow-[0_0_30px_rgba(33,150,243,0.3)]' : 'border-white/5 bg-black/20 hover:border-white/20'}`} onClick=${()=>setBasicSubOption('carry')}>
+                                    <h4 className="text-2xl font-black italic mb-4">${t[lang].option_carry}</h4>
+                                    <p className="text-sm opacity-60 mb-8">${t[lang].option_carry_desc}</p>
+                                    <div className="p-4 border border-dashed border-white/20 rounded-xl text-center text-xs opacity-50">+ ${formatPrice(CARRY_PRICE)}</div>
                                 </div>
                             </div>
-                        `}
-
-                        <div class="mt-24 p-12 glass-panel-funnel border-neon-blue/20 mb-20 flex items-center gap-10">
-                            <input type="checkbox" checked=${profilePush} onChange=${(e)=>setProfilePush(e.target.checked)} class="w-10 h-10 accent-neon-pink" />
-                            <div><h3 class="text-2xl font-black uppercase mb-2">${t[lang].add_top}</h3><p class="opacity-60 leading-relaxed">${t[lang].add_desc}</p></div>
                         </div>
-                    </main>
+                    `}
 
-                    <footer class="py-20 text-center opacity-30 text-xs font-black uppercase tracking-widest">&copy; 2026 Teemous Digital. All Rights Reserved.</footer>
+                    <div className="mt-24 p-12 glass-panel-funnel border-neon-blue/20 mb-20 flex items-center gap-10">
+                        <label className="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked=${profilePush} onChange=${(e)=>setProfilePush(e.target.checked)} className="sr-only peer" />
+                            <div className="w-14 h-7 bg-zinc-800 rounded-full peer peer-checked:bg-gradient-to-r peer-checked:from-neon-purple peer-checked:to-neon-blue after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-full"></div>
+                        </label>
+                        <div>
+                            <h3 className="text-2xl font-black uppercase mb-1">${t[lang].add_top}</h3>
+                            <p className="opacity-50 text-sm italic tracking-wide">${t[lang].add_desc}</p>
+                        </div>
+                    </div>
 
-                    <div class="fixed bottom-0 left-0 right-0 p-8 z-[2000] bg-black/60 backdrop-blur-3xl border-t border-white/10">
-                        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-                            <div>
-                                <span class="text-[10px] uppercase font-black opacity-40 mb-1 block">${t[lang].total_cost}</span>
-                                <span class="text-4xl font-black text-neon-blue">${formatPrice(calculateTotal())}</span>
+                    <footer className="py-20 text-center opacity-30 text-[10px] font-black uppercase tracking-[0.5em]">&copy; 2026 Teemous Digital. All Rights Reserved.</footer>
+
+                    <div className="fixed bottom-0 left-0 right-0 p-8 z-[2000] bg-black/60 backdrop-blur-3xl border-t border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+                        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+                            <div className="text-center md:text-left">
+                                <span className="text-[10px] uppercase font-black opacity-40 mb-1 block tracking-widest">${t[lang].total_cost}</span>
+                                <span className="text-4xl font-black text-neon-blue drop-shadow-[0_0_15px_rgba(33,150,243,0.5)]">${formatPrice(calculateTotal())}</span>
                             </div>
-                            <div class="flex gap-6">
-                                <input type="text" placeholder=${t[lang].voucher} value=${voucher} onChange=${(e)=>setVoucher(e.target.value.toUpperCase())} class="bg-white/5 border border-white/10 px-8 py-4 rounded-xl uppercase font-black text-xs w-48 focus:border-neon-blue text-white" />
-                                <a href="https://www.facebook.com/quang.sinh.5492" target="_blank" class="bg-white text-black px-12 py-4 rounded-xl font-black uppercase italic tracking-widest hover:bg-neon-blue hover:text-white transition-all transform hover:scale-105 active:scale-95 shadow-2xl">
+                            <div className="flex gap-6 w-full md:w-auto">
+                                <input type="text" placeholder=${t[lang].voucher} value=${voucher} onChange=${(e)=>setVoucher(e.target.value.toUpperCase())} className="bg-white/5 border border-white/10 px-8 py-4 rounded-xl uppercase font-black text-xs w-full md:w-48 focus:border-neon-blue" />
+                                <a href="https://www.facebook.com/quang.sinh.5492" target="_blank" className="bg-white text-black px-12 py-4 rounded-xl font-black uppercase italic tracking-widest hover:bg-neon-blue hover:text-white transition-all transform hover:scale-105 active:scale-95 shadow-2xl whitespace-nowrap">
                                     ${t[lang].send}
                                 </a>
                             </div>
                         </div>
                     </div>
-                </div>
+                </main>
             `;
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(React.createElement(App));
     </script>
-    <script src="../../script.js?v=restore-elite-v4"></script>
+
+    <!-- TRULY RESTORED PREMIUM WIDGETS (STATIC DOM FOR SCRIPT.JS) -->
+    <div class="ui-controls">
+        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme"><span class="mode-icon">🌙</span></button>
+        <button id="lang-toggle" class="lang-toggle neon-border">EN</button>
+    </div>
+
+    <div id="chatbot-container">
+        <button id="chatbot-toggle" class="neon-border" title="Chat with AI"><span class="chat-icon">💬</span></button>
+        <div id="chatbot-window">
+            <div class="chatbot-header glass-card"><div class="header-main"><h3>Teemous AI Assistant <span class="beta-badge">BETA</span></h3></div><button id="chatbot-close">✕</button></div>
+            <div id="chatbot-messages" class="glass-card"><div class="message ai-message">Hello! I'm Teemous AI. How can I help you today?</div></div>
+            <div class="chatbot-input-area glass-card"><input type="text" id="chatbot-input" placeholder="Type a message..."><button id="chatbot-send">➤</button></div>
+        </div>
+    </div>
+
+    <div id="auth-modal-overlay" class="auth-modal-overlay">
+        <div id="auth-modal" class="auth-modal-container glass-card">
+            <button id="close-auth-modal" class="close-modal-btn">✕</button>
+            <div class="auth-tab-nav"><button id="tab-login" class="active">Login</button><div class="auth-divider"></div><button id="tab-signup">Sign Up</button></div>
+            <div id="auth-alert" class="auth-alert" style="display: none;"></div>
+            <form id="auth-form" class="auth-form">
+                <div id="login-section" class="auth-form-section active">
+                    <h2 class="auth-title">Welcome Back</h2><p class="auth-subtitle">Access your Teemous Digital dashboard</p>
+                    <div class="auth-input-group"><input type="email" id="login-email" placeholder="Email"></div>
+                    <div class="auth-input-group"><input type="password" id="login-password" placeholder="Password"></div>
+                    <button type="button" id="auth-submit-login" class="auth-submit-btn neon-border">Login</button>
+                </div>
+                <div id="signup-section" class="auth-form-section" style="display: none;">
+                    <h2 class="auth-title">Create Account</h2><p class="auth-subtitle">Join with us</p>
+                    <div class="auth-input-group"><input type="text" id="signup-name" placeholder="Username"></div>
+                    <div class="auth-input-group"><input type="email" id="signup-email" placeholder="Email"></div>
+                    <div class="auth-input-group"><input type="password" id="signup-password" placeholder="Password"></div>
+                    <div class="auth-input-group"><input type="password" id="signup-confirm" placeholder="Confirm Password"></div>
+                    <button type="button" id="auth-submit-signup" class="auth-submit-btn neon-border">Initialize</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="dashboard-modal-overlay" class="auth-modal-overlay">
+        <div id="dashboard-modal" class="auth-modal-container glass-card dashboard-modal">
+            <button id="close-dashboard-modal" class="close-modal-btn">✕</button>
+            <div class="dashboard-header"><h2 class="neon-gradient-text" data-en="Personal Dashboard" data-vi="Bảng điều khiển">Personal Dashboard</h2></div>
+            <div class="dashboard-tabs">
+                <button class="dash-tab active" data-tab="profile" data-en="Profile" data-vi="Cá nhân">Profile</button>
+                <button class="dash-tab" data-tab="orders" data-en="Orders" data-vi="Đơn hàng">Orders</button>
+                <button class="dash-tab" data-tab="transactions" data-en="Funding" data-vi="Giao dịch">Funding</button>
+            </div>
+            <div class="dashboard-content-scrollable">
+                <div id="tab-profile" class="dash-section active">
+                    <div class="user-profile-summary">
+                        <div class="avatar-edit-container"><img id="dashboard-avatar" src="" alt="Avatar" class="dashboard-avatar-img"></div>
+                        <div class="user-info-text"><p id="dashboard-username" class="username-display"></p><p id="dashboard-email" class="email-display"></p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="../../script.js?v=restore-elite-v6"></script>
 </body>
 </html>
