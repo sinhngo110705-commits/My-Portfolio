@@ -1642,7 +1642,7 @@ function initMiniProfile() {
                 <span class="mp-lbl">Balance:</span>
                 <span class="mp-val">${(user.balance || 0).toLocaleString()} VND</span>
             </div>
-            <button class="mp-btn neon-border" onclick="openDashboard()">Dashboard</button>
+            <button class="mp-btn neon-border" onclick="window.location.href='/user'">Dashboard</button>
         `;
 
         const navBtn = document.getElementById('nav-login-btn');

@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Teemous Digital</title>
+    <link rel="icon" href="../Logo/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="../Logo/favicon.png">
+    <link rel="canonical" href="https://teemousdigital.id.vn/user/">
+    <meta name="description" content="Manage your Teemous Digital account, balance, orders and settings.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="stylesheet" href="../style.css?v=user-v1">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
+
+    <!-- FOUC Prevention -->
+    <script>
+        (function() {
+            try {
+                const t = localStorage.getItem('td-theme');
+                if (t === 'light') document.documentElement.classList.add('light-mode');
+                else if (!t && window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.classList.add('light-mode');
+            } catch(e) {}
+        })();
+    </script>
+
+    <style>
+        /* ── User Page Layout ── */
+        .user-page-wrapper {
+            display: flex;
+            min-height: calc(100vh - 70px);
+            gap: 0;
+            padding-top: 80px;
+        }
+
+        /* Sidebar */
+        .user-sidebar {
+            width: 220px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            padding: 1.5rem 1rem;
+            border-right: 1px solid rgba(255,255,255,0.07);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .sidebar-user-mini {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 1.25rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sidebar-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 16px rgba(33,150,243,0.4);
+        }
+
+        .sidebar-username {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--text-main);
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+
+        .sidebar-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            font-family: var(--font-body);
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+        }
+        .sidebar-nav-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+            transform: translateX(3px);
+        }
+        .sidebar-nav-btn.active {
+            background: rgba(33,150,243,0.12);
+            color: var(--neon-blue);
+            border-left: 2px solid var(--neon-blue);
+        }
+        .sidebar-nav-btn.admin-btn {
+            color: var(--neon-pink);
+        }
+        .sidebar-nav-btn.admin-btn.active {
+            background: rgba(255,30,150,0.12);
+            border-left-color: var(--neon-pink);
+        }
+        .sidebar-logout-btn {
+            margin-top: auto;
+            color: #ff5252;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 1rem;
+        }
+        .sidebar-logout-btn:hover {
+            background: rgba(255,82,82,0.08);
+            color: #ff5252;
+        }
+
+        /* Main Content */
+        .user-main {
+            flex: 1;
+            padding: 2rem 2.5rem;
+            overflow-y: auto;
+            max-width: 900px;
+        }
+
+        /* Hero Card */
+        .user-hero-card {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 1.75rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        .user-hero-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(33,150,243,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .user-hero-avatar-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+        .user-hero-avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 24px rgba(33,150,243,0.5);
+        }
+        .user-avatar-edit-lbl {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 28px;
+            height: 28px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+            border: 2px solid var(--bg-primary, #0a0a0a);
+            transition: all 0.2s;
+        }
+        .user-avatar-edit-lbl:hover { transform: scale(1.1); }
+
+        .user-hero-info { flex: 1; }
+        .user-hero-name-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.35rem;
+        }
+        .user-hero-name {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--text-main);
+            font-family: var(--font-heading);
+        }
+        .user-hero-email {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+        .user-name-edit-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .user-name-input {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 0.4rem 0.75rem;
+            color: var(--text-main);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            width: 200px;
+            outline: none;
+        }
+        .user-name-input:focus { border-color: var(--neon-blue); }
+        .user-save-btn {
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: rgba(33,150,243,0.15);
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+            font-family: var(--font-body);
+            transition: all 0.2s;
+        }
+        .user-save-btn:hover { background: rgba(33,150,243,0.25); }
+
+        /* Stats Strip */
+        .user-stats-strip {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 1.25rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+            transition: all 0.2s;
+        }
+        .stat-card:hover {
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+        .stat-card-icon { font-size: 1.5rem; }
+        .stat-card-val {
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: var(--text-main);
+        }
+        .stat-card-val.pink { color: var(--neon-pink); }
+        .stat-card-val.blue { color: var(--neon-blue); }
+        .stat-card-val.gold { color: #f39c12; }
+        .stat-card-lbl {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        /* Section header */
+        .up-section-title {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Tab sections */
+        .user-tab-section { display: none; }
+        .user-tab-section.active { display: block; }
+
+        /* Top-up button */
+        .topup-strip {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+        }
+        .topup-strip-btn {
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: rgba(255,30,150,0.1);
+            color: var(--neon-pink);
+            border: 1px solid var(--neon-pink);
+            font-family: var(--font-body);
+            transition: all 0.2s;
+        }
+        .topup-strip-btn:hover { background: rgba(255,30,150,0.2); }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+        .empty-state-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+        .empty-state p { font-size: 0.88rem; }
+
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+            background-size: 400% 100%;
+            animation: skeleton-shimmer 1.5s infinite;
+            border-radius: 6px;
+        }
+        @keyframes skeleton-shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; }}
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .user-page-wrapper { flex-direction: column; padding-top: 70px; }
+            .user-sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 0.75rem;
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.07);
+                gap: 0.25rem;
+            }
+            .sidebar-user-mini { display: none; }
+            .sidebar-nav-btn { width: auto; flex: 1; justify-content: center; font-size: 0.78rem; padding: 0.5rem 0.5rem; }
+            .sidebar-logout-btn { border-top: none; padding-top: 0.5rem; margin-top: 0; }
+            .user-main { padding: 1.25rem 1rem; }
+            .user-hero-card { flex-direction: column; text-align: center; }
+            .user-hero-name-row { justify-content: center; }
+            .user-name-edit-row { justify-content: center; }
+            .user-stats-strip { grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+        }
+
+        @media (max-width: 480px) {
+            .user-stats-strip { grid-template-columns: 1fr 1fr; }
+            .user-hero-name { font-size: 1.2rem; }
+        }
+
+        /* Light mode */
+        .light-mode .user-sidebar { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.08); }
+        .light-mode .user-hero-card { background: rgba(255,255,255,0.7); border-color: rgba(0,0,0,0.08); }
+        .light-mode .stat-card { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.08); }
+        .light-mode .user-name-input { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.12); color: #111; }
+        .light-mode .sidebar-nav-btn:hover { background: rgba(0,0,0,0.04); }
+        .light-mode .sidebar-nav-btn.active { background: rgba(33,150,243,0.08); }
+    </style>
+</head>
+
+<body>
+<canvas id="bg-canvas"></canvas>
+
+<main class="container">
+    <!-- Header -->
+    <header class="global-header">
+        <div class="header-logo">
+            <a href="../index.html">
+                <img src="../Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span style="display:none;">TD</span>
+            </a>
+        </div>
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="header-nav">
+            <ul class="nav-links">
+                <li><a href="../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
+                <li><a href="../services/index.html" data-en="SERVICES & SHOP" data-vi="Dịch vụ & Cửa hàng">SERVICES & SHOP</a></li>
+                <li><a href="../portfolio/index.html" data-en="Portfolio Hub" data-vi="Hồ sơ Năng lực">Portfolio Hub</a></li>
+                <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us" data-vi="Liên Hệ">Contact Us</a></li>
+                <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- User Page Body -->
+    <div class="user-page-wrapper">
+
+        <!-- ── Sidebar ── -->
+        <aside class="user-sidebar">
+            <div class="sidebar-user-mini">
+                <img id="up-sidebar-avatar" class="sidebar-avatar" src="https://api.dicebear.com/8.x/identicon/svg?seed=user" alt="Avatar">
+                <span id="up-sidebar-name" class="sidebar-username">Loading...</span>
+                <span id="up-sidebar-rank" class="rank-badge rank-standard">Standard</span>
+            </div>
+
+            <button class="sidebar-nav-btn active" data-section="overview" onclick="switchSection('overview')">
+                👤 <span data-en="Overview" data-vi="Tổng quan">Overview</span>
+            </button>
+            <button class="sidebar-nav-btn" data-section="orders" onclick="switchSection('orders')">
+                📦 <span data-en="Orders" data-vi="Đơn hàng">Orders</span>
+            </button>
+            <button class="sidebar-nav-btn" data-section="funding" onclick="switchSection('funding')">
+                💳 <span data-en="Funding" data-vi="Nạp tiền">Funding</span>
+            </button>
+            <button id="up-admin-sidebar-btn" class="sidebar-nav-btn admin-btn" data-section="admin" onclick="switchSection('admin')" style="display:none;">
+                ⚙️ <span>Admin Console</span>
+            </button>
+
+            <button class="sidebar-nav-btn sidebar-logout-btn" onclick="doLogout()">
+                🚪 <span data-en="Log Out" data-vi="Đăng Xuất">Log Out</span>
+            </button>
+        </aside>
+
+        <!-- ── Main Content ── -->
+        <div class="user-main">
+
+            <!-- ═══ OVERVIEW SECTION ═══ -->
+            <div id="up-section-overview" class="user-tab-section active">
+
+                <!-- Hero Card -->
+                <div class="user-hero-card glass-card">
+                    <div class="user-hero-avatar-wrap">
+                        <img id="up-hero-avatar" class="user-hero-avatar"
+                            src="https://api.dicebear.com/8.x/identicon/svg?seed=user" alt="Avatar">
+                        <label for="up-avatar-input" class="user-avatar-edit-lbl" title="Change avatar">📷</label>
+                        <input type="file" id="up-avatar-input" accept="image/*" style="display:none;">
+                    </div>
+                    <div class="user-hero-info">
+                        <div class="user-hero-name-row">
+                            <span id="up-hero-name" class="user-hero-name">Loading...</span>
+                            <span id="up-hero-rank" class="rank-badge rank-standard">Standard</span>
+                        </div>
+                        <p id="up-hero-email" class="user-hero-email">—</p>
+                        <div class="user-name-edit-row">
+                            <input type="text" id="up-name-input" class="user-name-input" placeholder="New username">
+                            <button class="user-save-btn" onclick="saveUsername()">💾 Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Strip -->
+                <div class="user-stats-strip">
+                    <div class="stat-card">
+                        <span class="stat-card-icon">💰</span>
+                        <span id="up-stat-balance" class="stat-card-val pink">0 VND</span>
+                        <span class="stat-card-lbl" data-en="Balance" data-vi="Số dư">Balance</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-card-icon">📦</span>
+                        <span id="up-stat-orders" class="stat-card-val blue">0</span>
+                        <span class="stat-card-lbl" data-en="Orders" data-vi="Đơn hàng">Orders</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-card-icon">🗓️</span>
+                        <span id="up-stat-joined" class="stat-card-val gold">—</span>
+                        <span class="stat-card-lbl" data-en="Joined" data-vi="Ngày vào">Joined</span>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <p class="up-section-title" data-en="Quick Actions" data-vi="Thao tác nhanh">Quick Actions</p>
+                <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+                    <button class="topup-strip-btn" onclick="switchSection('funding')">+ Top Up Balance</button>
+                    <button class="topup-strip-btn" style="color:var(--neon-blue); border-color:var(--neon-blue); background:rgba(33,150,243,0.1);" onclick="switchSection('orders')">📦 My Orders</button>
+                    <a href="../services/aovshop/index.html" class="topup-strip-btn" style="color:var(--neon-blue); border-color:var(--neon-blue); background:rgba(33,150,243,0.1); text-decoration:none;">🛒 Shop</a>
+                </div>
+            </div>
+
+            <!-- ═══ ORDERS SECTION ═══ -->
+            <div id="up-section-orders" class="user-tab-section">
+                <p class="up-section-title" data-en="My Orders" data-vi="Đơn hàng của tôi">My Orders</p>
+                <div id="up-orders-content">
+                    <div class="admin-table-wrapper">
+                        <table class="dash-table">
+                            <thead>
+                                <tr>
+                                    <th data-en="Product" data-vi="Sản phẩm">Product</th>
+                                    <th data-en="Price" data-vi="Giá">Price</th>
+                                    <th data-en="Status" data-vi="Trạng thái">Status</th>
+                                    <th data-en="Date" data-vi="Ngày">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="up-orders-tbody">
+                                <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);">⏳ Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ FUNDING SECTION ═══ -->
+            <div id="up-section-funding" class="user-tab-section">
+                <p class="up-section-title" data-en="Funding & Transactions" data-vi="Nạp tiền & Giao dịch">Funding & Transactions</p>
+
+                <div class="topup-strip">
+                    <button class="topup-strip-btn" id="up-open-topup-btn">+ Top Up Money</button>
+                </div>
+
+                <div class="admin-table-wrapper">
+                    <table class="dash-table">
+                        <thead>
+                            <tr>
+                                <th data-en="Amount" data-vi="Số tiền">Amount</th>
+                                <th data-en="Type" data-vi="Loại">Type</th>
+                                <th data-en="Status" data-vi="Kết quả">Status</th>
+                                <th data-en="Date" data-vi="Ngày">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="up-tx-tbody">
+                            <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--text-muted);">⏳ Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ═══ ADMIN SECTION ═══ -->
+            <div id="up-section-admin" class="user-tab-section">
+                <div class="admin-panel-section">
+                    <div class="admin-panel-header">
+                        <h3 class="neon-gradient-text">⚙️ Admin Console</h3>
+                        <p class="admin-panel-subtitle">Manage users, balance & permissions</p>
+                    </div>
+                    <div class="admin-toolbar">
+                        <input type="text" id="admin-search-input" class="admin-search" placeholder="Search by name or email...">
+                        <button id="admin-refresh-btn" class="admin-action-btn neon-border">🔄 Refresh</button>
+                    </div>
+                    <div class="admin-table-wrapper">
+                        <table class="dash-table admin-user-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th><th>Username</th><th>Email</th>
+                                    <th>Balance (VND)</th><th>Role</th><th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-tbody">
+                                <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="admin-edit-panel" class="admin-edit-panel glass-card" style="display:none;">
+                        <h4 id="admin-edit-title">Edit User</h4>
+                        <div class="admin-edit-grid">
+                            <div class="admin-edit-group">
+                                <label>New Balance (VND)</label>
+                                <input type="number" id="admin-edit-balance" min="0" placeholder="e.g. 500000">
+                                <button id="admin-save-balance-btn" class="admin-action-btn neon-border">💾 Save Balance</button>
+                            </div>
+                            <div class="admin-edit-group">
+                                <label>Role</label>
+                                <select id="admin-edit-role" class="admin-role-select">
+                                    <option value="user">user</option>
+                                    <option value="admin">admin</option>
+                                </select>
+                                <button id="admin-save-role-btn" class="admin-action-btn neon-border">💾 Save Role</button>
+                            </div>
+                        </div>
+                        <button id="admin-edit-close-btn" class="admin-close-edit-btn">✕ Close</button>
+                    </div>
+                    <p class="admin-security-note">🔒 All actions are verified server-side via database — not your browser.</p>
+                </div>
+            </div>
+
+        </div><!-- /.user-main -->
+    </div><!-- /.user-page-wrapper -->
+
+</main>
+
+<!-- Footer -->
+<footer>
+    <p>© 2026 Teemous Digital. All Rights Reserved.</p>
+    <div class="footer-socials">
+        <a href="#" class="social-icon" title="Teemous Digital on Facebook">Fb</a>
+        <a href="#" class="social-icon" title="Teemous Digital on Instagram">In</a>
+        <a href="#" class="social-icon" title="Teemous Digital on Behance">Be</a>
+    </div>
+</footer>
+
+<!-- Fixed UI Controls -->
+<div class="ui-controls">
+    <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
+        <span class="mode-icon">🌙</span>
+    </button>
+    <button id="lang-toggle" class="lang-toggle neon-border">EN</button>
+</div>
+
+<!-- Chatbot -->
+<div id="chatbot-container">
+    <button id="chatbot-toggle" class="neon-border" title="Chat with AI">
+        <span class="chat-icon">💬</span>
+    </button>
+    <div id="chatbot-window">
+        <div class="chatbot-header glass-card">
+            <div class="header-main">
+                <h3 data-en="Teemous AI Assistant <span class='beta-badge'>BETA</span>"
+                    data-vi="Trợ lý ảo Teemous <span class='beta-badge'>BETA</span>">
+                    Teemous AI Assistant <span class="beta-badge">BETA</span>
+                </h3>
+            </div>
+            <button id="chatbot-close">✕</button>
+        </div>
+        <div id="chatbot-messages" class="glass-card">
+            <div class="message ai-message"
+                data-en="Hello! I'm Teemous AI. How can I help you today?"
+                data-vi="Xin chào! Tôi là trợ lý ảo Teemous. Tôi có thể giúp gì cho bạn hôm nay?">
+                Hello! I'm Teemous AI. How can I help you today?
+            </div>
+        </div>
+        <div class="chatbot-input-area glass-card">
+            <input type="text" id="chatbot-input" placeholder="Type a message..."
+                data-en-placeholder="Type a message..." data-vi-placeholder="Nhập tin nhắn...">
+            <button id="chatbot-send">➤</button>
+        </div>
+    </div>
+</div>
+
+<!-- Auth Modal (needed for nav login btn) -->
+<div id="auth-modal-overlay" class="auth-modal-overlay">
+    <div id="auth-modal" class="auth-modal-container glass-card">
+        <button id="close-auth-modal" class="close-modal-btn">✕</button>
+        <div class="auth-tab-nav">
+            <button id="tab-login" class="active" data-en="Login" data-vi="Đăng Nhập">Login</button>
+            <div class="auth-divider"></div>
+            <button id="tab-signup" data-en="Sign Up" data-vi="Đăng Ký">Sign Up</button>
+        </div>
+        <div id="auth-alert" class="auth-alert" style="display:none;"></div>
+        <form id="auth-form" class="auth-form">
+            <div id="login-section" class="auth-form-section active">
+                <h2 class="auth-title" data-en="Welcome Back" data-vi="Mừng Trở Lại">Welcome Back</h2>
+                <p class="auth-subtitle" data-en="Access your Teemous Digital dashboard" data-vi="Truy cập bảng điều khiển cá nhân">Access your Teemous Digital dashboard</p>
+                <div class="auth-input-group"><input type="email" id="login-email" placeholder="Email" data-en-placeholder="Email" data-vi-placeholder="Email"></div>
+                <div class="auth-input-group"><input type="password" id="login-password" placeholder="Password" data-en-placeholder="Password" data-vi-placeholder="Mật Khẩu"></div>
+                <button type="button" id="auth-submit-login" class="auth-submit-btn neon-border" data-en="Login" data-vi="Đăng Nhập">Login</button>
+            </div>
+            <div id="signup-section" class="auth-form-section" style="display:none;">
+                <h2 class="auth-title" data-en="Create Account" data-vi="Tạo Mới">Create Account</h2>
+                <p class="auth-subtitle" data-en="Join with us" data-vi="Gia nhập hệ thống cao cấp">Join with us</p>
+                <div class="auth-input-group"><input type="text" id="signup-name" placeholder="Username" data-en-placeholder="Username" data-vi-placeholder="Tên Người Dùng"></div>
+                <div class="auth-input-group"><input type="email" id="signup-email" placeholder="Email" data-en-placeholder="Email" data-vi-placeholder="Email"></div>
+                <div class="auth-input-group"><input type="password" id="signup-password" placeholder="Password" data-en-placeholder="Password" data-vi-placeholder="Mật Khẩu"></div>
+                <div class="auth-input-group"><input type="password" id="signup-confirm" placeholder="Confirm Password" data-en-placeholder="Confirm Password" data-vi-placeholder="Nhập Lại Mật Khẩu"></div>
+                <button type="button" id="auth-submit-signup" class="auth-submit-btn neon-border" data-en="Initialize" data-vi="Khởi Tạo">Initialize</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Top Up Modal -->
+<div id="topup-modal-overlay" class="auth-modal-overlay" style="z-index:10001;">
+    <div id="topup-modal" class="auth-modal-container glass-card topup-modal">
+        <button id="close-topup-modal" class="close-modal-btn">✕</button>
+        <div class="modal-header">
+            <h2 class="neon-gradient-text" data-en="Top Up Funds" data-vi="Nạp tiền vào ví">Top Up Funds</h2>
+            <p class="modal-subtitle" data-en="Instant balance update via VietQR" data-vi="Cập nhật số dư tức thì qua VietQR">Instant balance update via VietQR</p>
+        </div>
+        <div class="topup-steps">
+            <div class="amount-selector">
+                <label data-en="Select Amount (VND)" data-vi="Chọn số tiền (VND)">Select Amount (VND)</label>
+                <div class="amount-grid">
+                    <button class="amt-btn" data-value="20000">20k</button>
+                    <button class="amt-btn" data-value="50000">50k</button>
+                    <button class="amt-btn" data-value="100000">100k</button>
+                    <button class="amt-btn active" data-value="200000">200k</button>
+                </div>
+            </div>
+            <div id="qr-display-area" class="qr-display-area glass-card" style="display:none;margin-top:1.5rem;padding:1.5rem;text-align:center;">
+                <div class="qr-container" style="background:white;padding:1rem;border-radius:12px;display:inline-block;margin-bottom:1rem;">
+                    <img id="vietqr-img" src="" alt="VietQR Pay" style="width:240px;height:auto;">
+                </div>
+                <div class="payment-details">
+                    <p class="detail-row"><span data-en="Amount:" data-vi="Số tiền:">Amount:</span> <strong id="qr-amt-text">0</strong></p>
+                    <p class="detail-row"><span data-en="Note:" data-vi="Nội dung:">Note:</span> <strong id="qr-note-text" style="color:var(--neon-pink);">NAP</strong></p>
+                    <p class="warning-text" style="font-size:0.8rem;color:#ff8a80;margin-top:1rem;" data-en="Use correct note for auto-process." data-vi="Dùng đúng nội dung để nạp tự động.">Use correct note for auto-process.</p>
+                </div>
+            </div>
+            <button id="gen-qr-btn" class="auth-submit-btn neon-border" style="margin-top:1.5rem;" data-en="Generate Payment QR" data-vi="Tạo mã thanh toán QR">Generate Payment QR</button>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard modal stub (for compatibility with script.js) -->
+<div id="dashboard-modal-overlay" class="auth-modal-overlay" style="display:none!important;"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="../script.js?v=user-v1"></script>
+<script>
+
+// ── Section Switcher ──────────────────────────────────────────
+function switchSection(name) {
+    document.querySelectorAll('.user-tab-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.sidebar-nav-btn').forEach(b => b.classList.remove('active'));
+
+    const section = document.getElementById('up-section-' + name);
+    if (section) section.classList.add('active');
+
+    const btn = document.querySelector('[data-section="' + name + '"]');
+    if (btn) btn.classList.add('active');
+
+    // Lazy-init admin panel on first open
+    if (name === 'admin' && !window._adminInitialized) {
+        window._adminInitialized = true;
+        initAdminPanel();
+    }
+}
+
+// ── Logout ───────────────────────────────────────────────────
+function doLogout() {
+    localStorage.removeItem('teemous_user');
+    localStorage.removeItem('teemous_jwt');
+    window.location.href = '/';
+}
+
+// ── Save Username ────────────────────────────────────────────
+async function saveUsername() {
+    const newName = document.getElementById('up-name-input').value.trim();
+    if (!newName) return;
+    const token = localStorage.getItem('teemous_jwt');
+    if (!token) return;
+    try {
+        const res = await fetch('/api/user/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ username: newName })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            const user = JSON.parse(localStorage.getItem('teemous_user') || '{}');
+            user.username = newName;
+            localStorage.setItem('teemous_user', JSON.stringify(user));
+            document.getElementById('up-hero-name').textContent = newName;
+            document.getElementById('up-sidebar-name').textContent = newName;
+            alert('✅ Username updated!');
+        } else {
+            alert('❌ ' + (data.error || 'Update failed'));
+        }
+    } catch(e) {
+        alert('❌ Network error: ' + e.message);
+    }
+}
+
+// ── User Page Init ────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+    const jwt = localStorage.getItem('teemous_jwt');
+    const userJson = localStorage.getItem('teemous_user');
+
+    // Redirect guard
+    if (!jwt || !userJson) {
+        window.location.href = '/?login=1';
+        return;
+    }
+
+    const user = JSON.parse(userJson);
+    const avatarUrl = user.avatar_url || `https://api.dicebear.com/8.x/identicon/svg?seed=${user.username}`;
+    const rank = getUserRank(user);
+    const rankClass = 'rank-' + rank.toLowerCase();
+
+    // Populate sidebar
+    document.getElementById('up-sidebar-avatar').src = avatarUrl;
+    document.getElementById('up-sidebar-name').textContent = user.username;
+    const sideRank = document.getElementById('up-sidebar-rank');
+    sideRank.textContent = rank;
+    sideRank.className = 'rank-badge ' + rankClass;
+
+    // Populate hero
+    document.getElementById('up-hero-avatar').src = avatarUrl;
+    document.getElementById('up-hero-name').textContent = user.username;
+    document.getElementById('up-hero-email').textContent = user.email || '';
+    document.getElementById('up-name-input').value = user.username;
+    const heroRank = document.getElementById('up-hero-rank');
+    heroRank.textContent = rank;
+    heroRank.className = 'rank-badge ' + rankClass;
+
+    // Admin tab
+    if (user.role === 'admin') {
+        document.getElementById('up-admin-sidebar-btn').style.display = '';
+    }
+
+    // Top Up button
+    const topupBtn = document.getElementById('up-open-topup-btn');
+    if (topupBtn) {
+        topupBtn.addEventListener('click', () => {
+            const overlay = document.getElementById('topup-modal-overlay');
+            if (overlay) {
+                overlay.classList.add('active');
+                overlay.style.display = 'flex';
+            }
+        });
+    }
+
+    // Avatar upload
+    const avatarInput = document.getElementById('up-avatar-input');
+    if (avatarInput) {
+        avatarInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('avatar', file);
+            try {
+                const res = await fetch('/api/user/upload-avatar', {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + jwt },
+                    body: formData
+                });
+                const data = await res.json();
+                if (res.ok && data.avatar_url) {
+                    document.getElementById('up-hero-avatar').src = data.avatar_url;
+                    document.getElementById('up-sidebar-avatar').src = data.avatar_url;
+                    const u = JSON.parse(localStorage.getItem('teemous_user') || '{}');
+                    u.avatar_url = data.avatar_url;
+                    localStorage.setItem('teemous_user', JSON.stringify(u));
+                    alert('✅ Avatar updated!');
+                }
+            } catch(e) {}
+        });
+    }
+
+    // Fetch fresh data
+    try {
+        const res = await fetch('/api/user/profile', {
+            headers: { 'Authorization': 'Bearer ' + jwt }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const freshUser = data.user;
+            localStorage.setItem('teemous_user', JSON.stringify(freshUser));
+
+            // Update stats
+            document.getElementById('up-stat-balance').textContent = (freshUser.balance || 0).toLocaleString() + ' VND';
+            document.getElementById('up-stat-orders').textContent = (data.orders || []).length;
+            if (freshUser.created_at) {
+                const d = new Date(freshUser.created_at);
+                document.getElementById('up-stat-joined').textContent = d.toLocaleDateString('vi-VN', { month: 'short', year: 'numeric' });
+            }
+
+            // Re-check admin role from server response (security)
+            if (freshUser.role === 'admin') {
+                document.getElementById('up-admin-sidebar-btn').style.display = '';
+            }
+
+            // Render orders
+            const ordersTbody = document.getElementById('up-orders-tbody');
+            const orders = data.orders || [];
+            if (orders.length === 0) {
+                ordersTbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:2.5rem;color:var(--text-muted);">
+                    <div class="empty-state-icon">📦</div><p>No orders yet. <a href="/services/aovshop" style="color:var(--neon-blue);">Browse shop →</a></p>
+                </td></tr>`;
+            } else {
+                ordersTbody.innerHTML = orders.map(o => `
+                    <tr>
+                        <td><strong>${o.product_name || '—'}</strong></td>
+                        <td>${(o.price_at_purchase || 0).toLocaleString()} VND</td>
+                        <td><span class="rank-badge rank-${o.status === 'completed' ? 'impressive' : 'standard'}">${o.status}</span></td>
+                        <td style="color:var(--text-muted);font-size:0.78rem;">${o.created_at ? new Date(o.created_at).toLocaleDateString('vi-VN') : '—'}</td>
+                    </tr>`).join('');
+            }
+
+            // Render transactions
+            const txTbody = document.getElementById('up-tx-tbody');
+            const txs = data.transactions || [];
+            if (txs.length === 0) {
+                txTbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:2.5rem;color:var(--text-muted);">
+                    <div class="empty-state-icon">💳</div><p>No transactions yet.</p>
+                </td></tr>`;
+            } else {
+                txTbody.innerHTML = txs.map(t => `
+                    <tr>
+                        <td style="color:${t.type === 'topup' ? 'var(--neon-blue)' : 'var(--neon-pink)'}; font-weight:700;">
+                            ${t.type === 'topup' ? '+' : '-'}${(t.amount || 0).toLocaleString()} VND
+                        </td>
+                        <td>${t.type}</td>
+                        <td><span class="rank-badge rank-${t.status === 'success' ? 'impressive' : 'standard'}">${t.status}</span></td>
+                        <td style="color:var(--text-muted);font-size:0.78rem;">${t.created_at ? new Date(t.created_at).toLocaleDateString('vi-VN') : '—'}</td>
+                    </tr>`).join('');
+            }
+        }
+    } catch(e) {
+        console.log('Profile fetch error:', e);
+    }
+});
+</script>
+</body>
+</html>
