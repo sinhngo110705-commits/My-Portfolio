@@ -74,3 +74,4 @@
 }
 2026-04-04T09:44:58.152Z - Calling LM Studio at http://127.0.0.1:1234/v1/chat/completions using model: qwen2.5-coder-7b-instruct
 2026-04-04T09:45:46.169Z - Response status: 200
+2026-04-04T09:54:54.060Z - Calling LM Studio at http://127.0.0.1:1234/v1/chat/completions using model: mistralai/ministral-3-14b-reasoning

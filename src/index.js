@@ -4,6 +4,7 @@ import { onRequest as profileHandler } from '../functions/api/user/profile.js';
 import { onRequest as updateProfileHandler } from '../functions/api/user/update-profile.js';
 import { onRequest as uploadAvatarHandler } from '../functions/api/user/upload-avatar.js';
 import { onRequest as vAvatarHandler } from '../functions/api/user/v-avatar.js';
+import { onRequest as adminManageHandler } from '../functions/api/admin/manage.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -52,6 +53,8 @@ export default {
       if (url.pathname === "/api/user/upload-avatar") return await uploadAvatarHandler(apiContext);
       if (url.pathname === "/api/user/v-avatar") return await vAvatarHandler(apiContext);
       if (url.pathname === "/api/payment/webhook") return await handleSePayWebhook(request, env);
+      if (url.pathname === "/api/admin/manage") return await adminManageHandler(apiContext);
+
     }
 
     // 2. Fallback to static assets
