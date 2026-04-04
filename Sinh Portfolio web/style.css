@@ -4281,4 +4281,272 @@ select option {
     0% { filter: drop-shadow(0 0 4px var(--neon-blue)); }
     100% { filter: drop-shadow(0 0 8px var(--neon-pink)); }
 }
+
+/* ================================================================
+   ADMIN PANEL STYLES
+   Only visible to admin role — controlled by JS
+   ================================================================ */
+
+/* Tab highlight for admin */
+.admin-only-tab {
+    background: linear-gradient(135deg, rgba(255, 30, 150, 0.15), rgba(156, 39, 176, 0.15)) !important;
+    border-color: var(--neon-pink) !important;
+    color: var(--neon-pink) !important;
+    font-weight: 700;
+}
+.admin-only-tab:hover {
+    background: rgba(255, 30, 150, 0.25) !important;
+}
+
+.admin-panel-section {
+    padding: 0.5rem 0;
+}
+
+.admin-panel-header {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 30, 150, 0.2);
+    padding-bottom: 0.75rem;
+}
+
+.admin-panel-header h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin: 0 0 0.25rem;
+}
+
+.admin-panel-subtitle {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Toolbar: search + refresh */
+.admin-toolbar {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.admin-search {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.admin-search:focus {
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 12px rgba(255, 30, 150, 0.2);
+}
+.light-mode .admin-search {
+    background: rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.12);
+    color: #111;
+}
+
+.admin-action-btn {
+    padding: 0.45rem 1rem;
+    font-size: 0.82rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    background: rgba(255, 30, 150, 0.1);
+    color: var(--neon-pink);
+    transition: all 0.2s ease;
+}
+.admin-action-btn:hover:not(:disabled) {
+    background: rgba(255, 30, 150, 0.2);
+    transform: translateY(-1px);
+}
+.admin-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* User table wrapper (scrollable) */
+.admin-table-wrapper {
+    overflow-x: auto;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.admin-user-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+.admin-user-table th {
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.admin-user-table td {
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+}
+.admin-user-row:hover td {
+    background: rgba(255, 30, 150, 0.05);
+}
+
+.admin-id-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.05);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+}
+
+.admin-email-cell {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-balance-val {
+    color: var(--neon-blue);
+    font-weight: 700;
+}
+
+.admin-edit-btn {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--neon-blue);
+    font-weight: 600;
+    font-family: var(--font-body);
+    transition: all 0.2s ease;
+}
+.admin-edit-btn:hover {
+    background: rgba(33, 150, 243, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Edit Panel */
+.admin-edit-panel {
+    margin-top: 1rem;
+    padding: 1.25rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 30, 150, 0.25);
+    background: rgba(255, 30, 150, 0.04);
+    position: relative;
+}
+.admin-edit-panel h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--neon-pink);
+    margin: 0 0 1rem;
+}
+
+.admin-edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+@media (max-width: 500px) {
+    .admin-edit-grid { grid-template-columns: 1fr; }
+}
+
+.admin-edit-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.admin-edit-group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.admin-edit-group input[type="number"] {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.admin-edit-group input[type="number"]:focus {
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 10px rgba(255,30,150,0.2);
+}
+.light-mode .admin-edit-group input[type="number"] {
+    background: rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.12);
+    color: #111;
+}
+
+.admin-role-select {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+.admin-role-select:focus {
+    border-color: var(--neon-purple);
+}
+.light-mode .admin-role-select {
+    background: #fff;
+    border-color: rgba(0,0,0,0.12);
+    color: #111;
+}
+
+.admin-close-edit-btn {
+    margin-top: 1rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: all 0.2s;
+}
+.admin-close-edit-btn:hover {
+    border-color: rgba(255,255,255,0.2);
+    color: var(--text-main);
+}
+
+/* Security note at the bottom */
+.admin-security-note {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 1rem;
+    padding: 0.5rem 0.75rem;
+    border-left: 2px solid var(--neon-green, #4caf50);
+    background: rgba(76, 175, 80, 0.05);
+    border-radius: 0 6px 6px 0;
+}
 

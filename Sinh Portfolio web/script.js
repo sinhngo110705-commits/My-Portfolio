@@ -1410,6 +1410,16 @@ async function openDashboard() {
             // Update Local Storage
             localStorage.setItem('teemous_user', JSON.stringify(data.user));
             
+            // Reveal Admin tab ONLY if role = 'admin' (double-checked from server)
+            const adminTab = document.getElementById('admin-dash-tab');
+            if (adminTab) {
+                if (data.user.role === 'admin') {
+                    adminTab.style.display = '';
+                } else {
+                    adminTab.style.display = 'none';
+                }
+            }
+
             // Refresh UI fields
             document.getElementById('dashboard-username-input').value = data.user.username;
             document.getElementById('dashboard-balance').innerText = `${data.user.balance.toLocaleString()} VND`;
@@ -1745,3 +1755,209 @@ if (typeof window.openDashboard === 'undefined') {
         if (overlay) overlay.classList.add('active');
     };
 }
+
+/**
+ * ================================================================
+ * ADMIN PANEL LOGIC
+ * Security: Widget only shows if role='admin' (server-verified).
+ * Every API call re-checks role in DB — localStorage spoofing won't work.
+ * ================================================================
+ */
+function initAdminPanel() {
+    const tbody       = document.getElementById('admin-users-tbody');
+    const searchInput = document.getElementById('admin-search-input');
+    const refreshBtn  = document.getElementById('admin-refresh-btn');
+    const editPanel   = document.getElementById('admin-edit-panel');
+    const editTitle   = document.getElementById('admin-edit-title');
+    const editBalance = document.getElementById('admin-edit-balance');
+    const editRole    = document.getElementById('admin-edit-role');
+    const saveBalBtn  = document.getElementById('admin-save-balance-btn');
+    const saveRoleBtn = document.getElementById('admin-save-role-btn');
+    const closeEditBtn= document.getElementById('admin-edit-close-btn');
+
+    if (!tbody) return;
+
+    let allUsers = [];
+    let selectedUserId = null;
+
+    // Helper: get token
+    const getToken = () => localStorage.getItem('teemous_jwt');
+
+    // ── Load users from Admin API ───────────────────────────────────────────
+    async function loadUsers() {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">⏳ Loading...</td></tr>`;
+        try {
+            const res = await fetch('/api/admin/manage?action=users', {
+                headers: { 'Authorization': `Bearer ${getToken()}` }
+            });
+            if (res.status === 403) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:#ff5252;">🚫 Access Denied. Not an admin.</td></tr>`;
+                return;
+            }
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'API Error');
+            allUsers = data.users || [];
+            renderTable(allUsers);
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:#ff5252;">❌ Error: ${e.message}</td></tr>`;
+        }
+    }
+
+    // ── Render Table ───────────────────────────────────────────────────────
+    function renderTable(users) {
+        if (!users || users.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">No users found.</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = users.map(u => `
+            <tr class="admin-user-row" data-userid="${u.id}">
+                <td><span class="admin-id-badge">#${u.id}</span></td>
+                <td><strong>${u.username}</strong></td>
+                <td class="admin-email-cell">${u.email}</td>
+                <td><span class="admin-balance-val">${(u.balance || 0).toLocaleString()}</span></td>
+                <td><span class="rank-badge rank-${u.role === 'admin' ? 'elite' : 'standard'}">${u.role}</span></td>
+                <td>
+                    <button class="admin-edit-btn neon-border" onclick="adminOpenEdit(${u.id}, '${u.username}', ${u.balance}, '${u.role}')">✏️ Edit</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // ── Search filter ──────────────────────────────────────────────────────
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            const q = searchInput.value.toLowerCase();
+            const filtered = allUsers.filter(u =>
+                u.username.toLowerCase().includes(q) ||
+                u.email.toLowerCase().includes(q)
+            );
+            renderTable(filtered);
+        });
+    }
+
+    // ── Refresh button ─────────────────────────────────────────────────────
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => loadUsers());
+    }
+
+    // ── Close edit panel ───────────────────────────────────────────────────
+    if (closeEditBtn) {
+        closeEditBtn.addEventListener('click', () => {
+            editPanel.style.display = 'none';
+            selectedUserId = null;
+        });
+    }
+
+    // ── Save Balance ───────────────────────────────────────────────────────
+    if (saveBalBtn) {
+        saveBalBtn.addEventListener('click', async () => {
+            if (!selectedUserId) return;
+            const amount = parseInt(editBalance.value);
+            if (isNaN(amount) || amount < 0) {
+                alert('Invalid amount. Must be a non-negative number.');
+                return;
+            }
+            saveBalBtn.disabled = true;
+            saveBalBtn.innerText = '⏳ Saving...';
+            try {
+                const res = await fetch('/api/admin/manage', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'update_balance', userId: selectedUserId, amount })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    // Update local allUsers cache
+                    const u = allUsers.find(x => x.id === selectedUserId);
+                    if (u) u.balance = amount;
+                    renderTable(allUsers);
+                    editPanel.style.display = 'none';
+                    alert(`✅ ${data.message}`);
+                } else {
+                    alert(`❌ Error: ${data.error}`);
+                }
+            } catch (e) {
+                alert(`❌ Network error: ${e.message}`);
+            } finally {
+                saveBalBtn.disabled = false;
+                saveBalBtn.innerText = '💾 Save Balance';
+            }
+        });
+    }
+
+    // ── Save Role ──────────────────────────────────────────────────────────
+    if (saveRoleBtn) {
+        saveRoleBtn.addEventListener('click', async () => {
+            if (!selectedUserId) return;
+            const role = editRole.value;
+            if (!['user', 'admin'].includes(role)) return;
+
+            const confirmed = confirm(
+                role === 'admin'
+                    ? `⚠️ Grant ADMIN privileges to this user? This gives full database access.`
+                    : `Downgrade this user to 'user' role?`
+            );
+            if (!confirmed) return;
+
+            saveRoleBtn.disabled = true;
+            saveRoleBtn.innerText = '⏳ Saving...';
+            try {
+                const res = await fetch('/api/admin/manage', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'update_role', userId: selectedUserId, role })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    const u = allUsers.find(x => x.id === selectedUserId);
+                    if (u) u.role = role;
+                    renderTable(allUsers);
+                    editPanel.style.display = 'none';
+                    alert(`✅ ${data.message}`);
+                } else {
+                    alert(`❌ Error: ${data.error}`);
+                }
+            } catch (e) {
+                alert(`❌ Network error: ${e.message}`);
+            } finally {
+                saveRoleBtn.disabled = false;
+                saveRoleBtn.innerText = '💾 Save Role';
+            }
+        });
+    }
+
+    // Load immediately when panel first initialized
+    loadUsers();
+
+    // Expose openEdit globally so inline onclick calls work
+    window.adminOpenEdit = function(userId, username, balance, role) {
+        selectedUserId = userId;
+        editTitle.innerText = `Editing: ${username} (ID #${userId})`;
+        editBalance.value = balance || 0;
+        editRole.value = role || 'user';
+        editPanel.style.display = 'block';
+        if (typeof gsap !== 'undefined') {
+            gsap.fromTo(editPanel, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3 });
+        }
+    };
+}
+
+// Wire admin tab click to initialize admin panel (lazy load)
+document.addEventListener('DOMContentLoaded', () => {
+    const adminTab = document.getElementById('admin-dash-tab');
+    if (adminTab) {
+        let adminPanelInitialized = false;
+        adminTab.addEventListener('click', () => {
+            if (!adminPanelInitialized) {
+                adminPanelInitialized = true;
+                initAdminPanel();
+            }
+        });
+    }
+});

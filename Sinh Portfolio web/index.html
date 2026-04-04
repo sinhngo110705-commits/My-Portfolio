@@ -302,6 +302,8 @@
                 <button class="dash-tab active" data-tab="profile" data-en="Profile" data-vi="Cá nhân">Profile</button>
                 <button class="dash-tab" data-tab="orders" data-en="Orders" data-vi="Đơn hàng">Orders</button>
                 <button class="dash-tab" data-tab="transactions" data-en="Funding" data-vi="Giao dịch">Funding</button>
+                <!-- Admin tab: hidden by default, shown only for admin role via JS -->
+                <button class="dash-tab admin-only-tab" data-tab="admin" id="admin-dash-tab" style="display:none;">⚙️ Admin</button>
             </div>
 
             <div class="dashboard-content-scrollable">
@@ -379,6 +381,64 @@
                     </div>
                 </div>
             </div>
+
+                <!-- Admin Tab -->
+                <div id="tab-admin" class="dash-section admin-panel-section">
+                    <div class="admin-panel-header">
+                        <h3 class="neon-gradient-text">⚙️ Admin Console</h3>
+                        <p class="admin-panel-subtitle">Manage users, balance &amp; permissions</p>
+                    </div>
+
+                    <!-- Search & Refresh -->
+                    <div class="admin-toolbar">
+                        <input type="text" id="admin-search-input" class="admin-search" placeholder="Search by name or email...">
+                        <button id="admin-refresh-btn" class="admin-action-btn neon-border">🔄 Refresh</button>
+                    </div>
+
+                    <!-- User Table -->
+                    <div class="admin-table-wrapper">
+                        <table class="dash-table admin-user-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Balance (VND)</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-tbody">
+                                <tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">Loading users...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Edit Panel -->
+                    <div id="admin-edit-panel" class="admin-edit-panel glass-card" style="display:none;">
+                        <h4 id="admin-edit-title">Edit User</h4>
+                        <div class="admin-edit-grid">
+                            <div class="admin-edit-group">
+                                <label>New Balance (VND)</label>
+                                <input type="number" id="admin-edit-balance" min="0" placeholder="e.g. 500000">
+                                <button id="admin-save-balance-btn" class="admin-action-btn neon-border">💾 Save Balance</button>
+                            </div>
+                            <div class="admin-edit-group">
+                                <label>Role</label>
+                                <select id="admin-edit-role" class="admin-role-select">
+                                    <option value="user">user</option>
+                                    <option value="admin">admin</option>
+                                </select>
+                                <button id="admin-save-role-btn" class="admin-action-btn neon-border">💾 Save Role</button>
+                            </div>
+                        </div>
+                        <button id="admin-edit-close-btn" class="admin-close-edit-btn">✕ Close</button>
+                    </div>
+
+                    <p class="admin-security-note">🔒 All actions are verified server-side. Your admin status is confirmed via database — not your browser.</p>
+                </div>
+
+        </div>
         </div>
     </div>
 
