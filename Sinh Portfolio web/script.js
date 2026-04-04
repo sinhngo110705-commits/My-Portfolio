@@ -1368,9 +1368,9 @@ function initDashboard() {
 }
 
 async function openDashboard() {
-    const overlay = document.getElementById('dashboard-modal-overlay');
-    const token = localStorage.getItem('teemous_jwt');
-    if (!overlay || !token) return;
+    // Navigate to dedicated user page instead of modal
+    window.location.href = '/user';
+    return;
 
     // Show modal with stale data first for speed
     const user = JSON.parse(localStorage.getItem('teemous_user') || '{}');
