@@ -1,4 +1,4 @@
-import { verifyJWT } from '../utils.js';
+import { verifyJWT } from '../../utils.js';
 
 /**
  * Admin Management API
