@@ -693,7 +693,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-<script src="../script.js?v=user-v1"></script>
+<script src="../script.js?v=user-v2"></script>
 <script>
 
 // ── Section Switcher ──────────────────────────────────────────
@@ -786,26 +786,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('up-admin-sidebar-btn').style.display = '';
     }
 
-    // Top Up button
-    const topupBtn = document.getElementById('up-open-topup-btn');
-    if (topupBtn) {
-        topupBtn.addEventListener('click', () => {
-            const overlay = document.getElementById('topup-modal-overlay');
-            if (overlay) {
-                overlay.classList.add('active');
-                overlay.style.display = 'flex';
-            }
-        });
-    }
+    // Top Up button - Handled by initTopUpModal globally in script.js
+    // No manual listener needed here anymore.
 
     // Avatar upload
     const avatarInput = document.getElementById('up-avatar-input');
+    const avatarImg = document.getElementById('up-hero-avatar');
+    const sidebarAvatar = document.getElementById('up-sidebar-avatar');
+
     if (avatarInput) {
         avatarInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
+
+            // Simple loading state
+            avatarImg.style.opacity = '0.5';
+            sidebarAvatar.style.opacity = '0.5';
+
             const formData = new FormData();
-            formData.append('avatar', file);
+            formData.append('file', file); // Use 'file' as expected by backend
+
             try {
                 const res = await fetch('/api/user/upload-avatar', {
                     method: 'POST',
@@ -814,14 +814,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
                 const data = await res.json();
                 if (res.ok && data.avatar_url) {
-                    document.getElementById('up-hero-avatar').src = data.avatar_url;
-                    document.getElementById('up-sidebar-avatar').src = data.avatar_url;
+                    // Success! Refresh images
+                    const newUrl = data.avatar_url + '&t=' + Date.now(); // Cache busting
+                    avatarImg.src = newUrl;
+                    sidebarAvatar.src = newUrl;
+                    
                     const u = JSON.parse(localStorage.getItem('teemous_user') || '{}');
                     u.avatar_url = data.avatar_url;
                     localStorage.setItem('teemous_user', JSON.stringify(u));
-                    alert('✅ Avatar updated!');
+                    alert('✅ ' + (currentLang === 'vi' ? 'Cập nhật ảnh đại diện thành công!' : 'Avatar updated successfully!'));
+                } else {
+                    alert('❌ ' + (data.error || (currentLang === 'vi' ? 'Lỗi tải lên' : 'Upload failed')));
                 }
-            } catch(e) {}
+            } catch(err) {
+                alert('❌ ' + (currentLang === 'vi' ? 'Lỗi mạng: ' : 'Network error: ') + err.message);
+            } finally {
+                avatarImg.style.opacity = '1';
+                sidebarAvatar.style.opacity = '1';
+            }
         });
     }
 

@@ -1507,6 +1507,7 @@ function closeDashboard() {
  */
 function initTopUpModal() {
     const openBtn = document.getElementById('open-topup-btn');
+    const profileOpenBtn = document.getElementById('up-open-topup-btn');
     const overlay = document.getElementById('topup-modal-overlay');
     const closeBtn = document.getElementById('close-topup-modal');
     const genBtn = document.getElementById('gen-qr-btn');
@@ -1517,16 +1518,20 @@ function initTopUpModal() {
     const qrAmtText = document.getElementById('qr-amt-text');
     const qrNoteText = document.getElementById('qr-note-text');
 
-    if (!openBtn || !overlay) return;
+    if (!overlay) return;
 
     let selectedAmount = 200000;
 
-    openBtn.addEventListener('click', () => {
+    const handleOpen = () => {
         overlay.classList.add('active');
+        overlay.style.display = 'flex'; // Ensure flex for centering
         if (typeof gsap !== 'undefined') {
             gsap.fromTo("#topup-modal", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 });
         }
-    });
+    };
+
+    if (openBtn) openBtn.addEventListener('click', handleOpen);
+    if (profileOpenBtn) profileOpenBtn.addEventListener('click', handleOpen);
 
     closeBtn.addEventListener('click', () => {
         overlay.classList.remove('active');
