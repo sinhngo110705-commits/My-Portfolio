@@ -68,7 +68,20 @@
         .glass-panel-funnel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1.25rem; }
         .light-mode .glass-panel-funnel { background: rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.1); }
         .plan-radio:checked+.plan-card { border-color: var(--neon-blue); background: rgba(33, 150, 243, 0.1); box-shadow: 0 0 30px rgba(33, 150, 243, 0.2); }
-        .plan-radio:checked+.plan-card.premium { border-color: var(--neon-purple); background: rgba(156, 39, 176, 0.1); box-shadow: 0 0 30px rgba(156, 39, 176, 0.2); }
+        
+        /* Premium Card Animations */
+        @keyframes spin-aura { 100% { transform: rotate(360deg); } }
+        .premium-card-wrapper { position: relative; padding: 2px; border-radius: 1.3rem; overflow: hidden; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .premium-card-wrapper:hover, .premium-card-wrapper.selected { transform: scale(1.02); box-shadow: 0 0 40px rgba(156, 39, 176, 0.4); }
+        .premium-card-wrapper::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent 40%, var(--neon-purple) 80%, transparent 100%);
+            animation: spin-aura 3s linear infinite; opacity: 0; transition: opacity 0.4s ease;
+        }
+        .premium-card-wrapper.selected::before, .premium-card-wrapper:hover::before { opacity: 1; }
+        .premium-card-inner { background: rgba(10, 10, 10, 0.95); border-radius: 1.25rem; height: 100%; position: relative; z-index: 1; backdrop-filter: blur(10px); }
+        .light-mode .premium-card-inner { background: rgba(250, 250, 250, 0.95); }
+        
         @keyframes push-down { 0% { opacity: 0; transform: translateY(-30px); max-height: 0; overflow: hidden; } 100% { opacity: 1; transform: translateY(0); max-height: 1000px; overflow: visible; } }
         .animate-push-down { animation: push-down 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
@@ -92,7 +105,7 @@
 </head>
 
 <body class="font-montserrat">
-    <canvas id="bg-canvas" class="fixed inset-0 z-[-1] pointer-events-none opacity-50"></canvas>
+    <canvas id="bg-canvas" class="fixed inset-0 z-[-1] pointer-events-none"></canvas>
 
     <header class="global-header">
         <div class="header-logo">
@@ -131,19 +144,21 @@
                 basic: "Khởi tạo cơ bản",
                 premium: "KHỞI TẠO NÂNG CAO",
                 basic_desc: "Được thiết kế layout chuẩn chỉnh, đưa profile lên danh sách STANDARD hoặc PROFESSIONAL của Teemous Hub (Tùy năng lực).",
-                premium_desc: "Build giao diện custom riêng, phức tạp hơn. Trỏ tên miền cá nhân độc bản (VD: nguyenvana.com hoặc .id.vn).",
+                premium_desc: "Chuyên biệt hóa giao diện, thêm tính năng 3D. Trỏ tên miền cá nhân độc bản (VD: nguyenvana.com hoặc .id.vn).",
                 path_default: "Đường dẫn mặc định:",
                 deal: "Tự deal - Liên hệ báo giá",
                 add_top: "Thêm vào Top Featured",
                 add_desc: "Profile của bạn sẽ được ghim trên khu vực nổi bật nhất của Hub trong 30 ngày, tăng 300% lượt click từ những người đang tìm kiếm nhân sự.",
                 total_cost: "Tổng chi phí",
                 voucher: "MÃ ƯU ĐÃI",
+                voucher_ok: "✅ Đã áp dụng (-49k)",
                 send: "GỬI THÔNG TIN / CHAT QUA FACEBOOK",
                 custom_config: "CẤU HÌNH TUỲ CHỈNH",
                 option_curation: "Portfolio Curation",
                 option_curation_desc: "Tinh chỉnh thông tin, số hóa cụ thể, tối ưu nội dung chuyên nghiệp.<br/><i class='text-sm opacity-70'>Lưu ý: Sẽ hoàn lại phí nếu lượng thông tin bạn cung cấp quá ít.</i>",
                 option_carry: "The Carry Pack",
                 option_carry_desc: "Tư vấn & thực hiện trọn gói từ A-Z. Bạn chỉ cần nhận Portfolio.",
+                reset: "HỦY LỰA CHỌN ❌"
             },
             en: {
                 title: "Initialize Portfolio &",
@@ -152,29 +167,30 @@
                 basic: "Basic Initialization",
                 premium: "Advanced Initialization",
                 basic_desc: "Designed with standard layout, listed in STANDARD or PROFESSIONAL on Teemous Hub (based on capacity).",
-                premium_desc: "Build custom interfaces, more complex. Point to a unique personal domain (e.g., nguyenvana.com or .id.vn).",
+                premium_desc: "Bespoke custom interfaces, 3D elements. Point to a unique personal domain (e.g., nguyenvana.com or .id.vn).",
                 path_default: "Default path:",
                 deal: "Self-deal - Contact for quote",
                 add_top: "Add to Top Featured",
                 add_desc: "Your profile will be pinned in the Hub's most prominent area for 30 days, increasing clicks by 300%.",
                 total_cost: "Total Cost",
                 voucher: "GIFT CODE",
+                voucher_ok: "✅ APPLIED (-49k)",
                 send: "SEND INFO / CHAT VIA FACEBOOK",
                 custom_config: "CUSTOM CONFIGURATION",
                 option_curation: "Portfolio Curation",
                 option_curation_desc: "Fine-tune info, digitize details, professional content optimization.<br/><i class='text-sm opacity-70'>Note: Fee refunded if provided info is too sparse.</i>",
                 option_carry: "The Carry Pack",
                 option_carry_desc: "Complete A-Z consulting & execution. Just receive your Portfolio.",
+                reset: "RESET SELECTION ❌"
             }
         };
 
         const App = () => {
-            const [selectedOption, setSelectedOption] = useState('basic');
+            const [selectedOption, setSelectedOption] = useState(null);
             const [basicSubOption, setBasicSubOption] = useState(null);
             const [curationPrice, setCurationPrice] = useState(49000);
             const [profilePush, setProfilePush] = useState(false);
             const [voucher, setVoucher] = useState('');
-            const [voucherDiscount, setVoucherDiscount] = useState(0);
             const [lang, setLang] = useState(localStorage.getItem('td-lang') || 'en');
             const [theme, setTheme] = useState(localStorage.getItem('td-theme') || 'dark');
 
@@ -189,9 +205,21 @@
                     if (nl && nl !== lang) setLang(nl);
                     if (nt && nt !== theme) setTheme(nt);
                 };
-                window.addEventListener('storage', handleStorage);
-                const interval = setInterval(handleStorage, 1000);
-                return () => { clearInterval(interval); window.removeEventListener('storage', handleStorage); };
+                
+                // Rapid polling ensures reacting to global layout fast
+                const interval = setInterval(handleStorage, 100);
+                
+                // Also hook directly to buttons to be extremely responsive
+                const langBtn = document.getElementById('lang-toggle');
+                const themeBtn = document.getElementById('theme-toggle');
+                if (langBtn) langBtn.addEventListener('click', () => setTimeout(handleStorage, 50));
+                if (themeBtn) themeBtn.addEventListener('click', () => setTimeout(handleStorage, 50));
+
+                return () => { 
+                    clearInterval(interval); 
+                    if(langBtn) langBtn.removeEventListener('click', handleStorage);
+                    if(themeBtn) themeBtn.removeEventListener('click', handleStorage);
+                };
             }, [lang, theme]);
 
             useEffect(() => {
@@ -212,7 +240,7 @@
                         this.x = Math.random() * width; this.y = Math.random() * height;
                         this.baseX = this.x; this.baseY = this.y;
                         this.size = Math.random() * 2; this.density = (Math.random() * 20) + 1;
-                        this.color = ['rgba(156, 39, 176, 0.4)', 'rgba(33, 150, 243, 0.4)'][Math.floor(Math.random()*2)];
+                        this.color = ['rgba(156, 39, 176, 0.6)', 'rgba(33, 150, 243, 0.6)'][Math.floor(Math.random()*2)];
                     }
                     update() {
                         let dx = mouse.x - width/2; let dy = mouse.y - height/2;
@@ -236,7 +264,7 @@
 
                 const animate = () => {
                     ctx.clearRect(0,0,width,height);
-                    mouse.x += (mouse.targetX - mouse.x) * 10.1; mouse.x = mouse.targetX; mouse.y = mouse.targetY; // Instant track for debug
+                    mouse.x += (mouse.targetX - mouse.x) * 0.1; mouse.y += (mouse.targetY - mouse.y) * 0.1; 
                     particles.forEach(p => { p.update(); p.draw(); });
                     connect();
                     animationFrameId = requestAnimationFrame(animate);
@@ -252,23 +280,42 @@
 
             const calculateTotal = () => {
                 if (selectedOption === 'premium') return 'Deal';
+                if (!selectedOption) return 0;
                 let subtotal = BASIC_PRICE + (profilePush ? PUSH_PRICE : 0);
                 if (basicSubOption === 'curation') subtotal += curationPrice;
                 if (basicSubOption === 'carry') subtotal += CARRY_PRICE;
-                return Math.max(0, subtotal - voucherDiscount);
+                const finalDisc = (voucher === 'TEEMOUS49K') ? 49000 : 0;
+                return Math.max(0, subtotal - finalDisc);
+            };
+
+            const handleReset = () => {
+                setSelectedOption(null);
+                setBasicSubOption(null);
+                setProfilePush(false);
             };
 
             return html`
                 <main className="container mx-auto px-6 pt-32 pb-48 max-w-6xl">
-                    <div className="text-center mb-24 animate-slide-up">
-                        <h1 className="text-6xl md:text-8xl font-black uppercase mb-6 leading-tight">
+                    <div className="text-center mb-20 animate-slide-up">
+                        <h1 className="glitch neon-gradient-text text-5xl md:text-7xl lg:text-8xl font-black uppercase mb-6 leading-tight">
                             ${t[lang].title} <br /> <span className="bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent italic">${t[lang].subtitle_hub}</span>
                         </h1>
                         <p className="text-xl opacity-60 max-w-2xl mx-auto">${t[lang].hero_desc}</p>
                     </div>
 
+                    ${selectedOption && html`
+                        <div className="flex justify-center mb-8">
+                            <button onClick=${handleReset} className="text-xs font-black uppercase tracking-widest px-4 py-2 bg-red-600/10 text-red-500 hover:bg-red-600/20 border border-red-500/20 rounded-lg transition-all">
+                                ${t[lang].reset}
+                            </button>
+                        </div>
+                    `}ue to-neon-purple bg-clip-text text-transparent italic">${t[lang].subtitle_hub}</span>
+                        </h1>
+                        <p className="text-xl opacity-60 max-w-2xl mx-auto">${t[lang].hero_desc}</p>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-20">
-                        <div className=${`p-12 glass-panel-funnel cursor-pointer border-2 transition-all relative ${selectedOption === 'basic' ? 'border-neon-blue bg-neon-blue/10 scale-[1.02] shadow-2xl' : 'border-white/5 opacity-50'}`} onClick=${()=>setSelectedOption('basic')}>
+                        <div className=${`p-12 glass-panel-funnel cursor-pointer border-2 transition-all relative ${selectedOption === 'basic' ? 'border-neon-blue bg-neon-blue/10 scale-[1.02] shadow-[0_0_40px_rgba(33,150,243,0.3)]' : 'border-white/5 opacity-50 hover:opacity-100 hover:border-neon-blue/50'}`} onClick=${()=>setSelectedOption('basic')}>
                             <span className="absolute top-4 right-4 bg-red-600 text-white font-black text-xs px-3 py-1 rounded-full animate-pulse shadow-2xl">-75% OFF</span>
                             <h3 className="text-3xl font-black mb-6 uppercase italic">${t[lang].basic}</h3>
                             <div className="flex items-center gap-4 mb-8">
@@ -280,10 +327,13 @@
                                 ${t[lang].path_default} teemous.id.vn/yourname
                             </div>
                         </div>
-                        <div className=${`p-12 glass-panel-funnel cursor-pointer border-2 transition-all relative ${selectedOption === 'premium' ? 'border-neon-purple bg-neon-purple/10 scale-[1.02] shadow-2xl' : 'border-white/5 opacity-50'}`} onClick=${()=>setSelectedOption('premium')}>
-                            <h3 className="text-3xl font-black mb-6 uppercase italic">${t[lang].premium}</h3>
-                            <div className="text-5xl font-black mb-8 italic text-neon-purple">DEAL</div>
-                            <p className="text-base opacity-70">${t[lang].premium_desc}</p>
+                        
+                        <div className=${`premium-card-wrapper ${selectedOption === 'premium' ? 'selected' : ''}`} onClick=${()=>setSelectedOption('premium')}>
+                            <div className="premium-card-inner p-12">
+                                <h3 className="text-3xl font-black mb-6 uppercase italic">${t[lang].premium}</h3>
+                                <div className="text-5xl font-black mb-8 italic text-transparent bg-clip-text bg-gradient-to-r from-neon-purple to-neon-pink drop-shadow-[0_0_10px_rgba(156,39,176,0.5)]">DEAL</div>
+                                <p className="text-base opacity-70">${t[lang].premium_desc}</p>
+                            </div>
                         </div>
                     </div>
 
@@ -310,7 +360,7 @@
                         </div>
                     `}
 
-                    <div className="mt-24 p-12 glass-panel-funnel border-neon-blue/20 mb-20 flex items-center gap-10">
+                    <div className=${`mt-24 p-12 glass-panel-funnel border-neon-blue/20 mb-20 flex items-center gap-10 transition-opacity ${!selectedOption ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" checked=${profilePush} onChange=${(e)=>setProfilePush(e.target.checked)} className="sr-only peer" />
                             <div className="w-14 h-7 bg-zinc-800 rounded-full peer peer-checked:bg-gradient-to-r peer-checked:from-neon-purple peer-checked:to-neon-blue after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-full"></div>
@@ -325,15 +375,20 @@
 
                     <div className="fixed bottom-0 left-0 right-0 p-8 z-[2000] bg-black/60 backdrop-blur-3xl border-t border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
                         <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-                            <div className="text-center md:text-left">
+                            <div className="text-center md:text-left relative">
                                 <span className="text-[10px] uppercase font-black opacity-40 mb-1 block tracking-widest">${t[lang].total_cost}</span>
                                 <span className="text-4xl font-black text-neon-blue drop-shadow-[0_0_15px_rgba(33,150,243,0.5)]">${formatPrice(calculateTotal())}</span>
                             </div>
-                            <div className="flex gap-6 w-full md:w-auto">
-                                <input type="text" placeholder=${t[lang].voucher} value=${voucher} onChange=${(e)=>setVoucher(e.target.value.toUpperCase())} className="bg-white/5 border border-white/10 px-8 py-4 rounded-xl uppercase font-black text-xs w-full md:w-48 focus:border-neon-blue" />
-                                <a href="https://www.facebook.com/quang.sinh.5492" target="_blank" className="bg-white text-black px-12 py-4 rounded-xl font-black uppercase italic tracking-widest hover:bg-neon-blue hover:text-white transition-all transform hover:scale-105 active:scale-95 shadow-2xl whitespace-nowrap">
-                                    ${t[lang].send}
-                                </a>
+                            <div className="flex flex-col gap-2 w-full md:w-auto">
+                                <div className="flex gap-4">
+                                    <input type="text" placeholder=${t[lang].voucher} value=${voucher} onChange=${(e)=>setVoucher(e.target.value.toUpperCase())} className="bg-white/5 border border-white/10 px-8 py-4 rounded-xl uppercase font-black text-xs w-full md:w-48 focus:border-neon-blue" />
+                                    <a href="https://www.facebook.com/quang.sinh.5492" target="_blank" className="bg-white text-black px-12 py-4 rounded-xl font-black uppercase italic tracking-widest hover:bg-neon-blue hover:text-white transition-all transform hover:scale-105 active:scale-95 shadow-2xl whitespace-nowrap">
+                                        ${t[lang].send}
+                                    </a>
+                                </div>
+                                ${voucher === 'TEEMOUS49K' && html`
+                                    <div className="text-[10px] font-bold text-green-400 text-right animate-pulse tracking-wide">${t[lang].voucher_ok}</div>
+                                `}
                             </div>
                         </div>
                     </div>
