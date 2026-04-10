@@ -362,6 +362,7 @@ function initLanguageToggle() {
         currentLang = currentLang === 'en' ? 'vi' : 'en';
         localStorage.setItem('td-lang', currentLang);
         updateAllTranslations();
+        window.dispatchEvent(new CustomEvent('td-state-change', { detail: { type: 'lang', value: currentLang } }));
     });
 }
 
@@ -375,6 +376,8 @@ function updateAllTranslations() {
     // 1. Text elements
     const translatableElements = document.querySelectorAll('[data-en][data-vi]');
     translatableElements.forEach(el => {
+        if (el.closest('#root')) return; // DO NOT FIGHT WITH REACT
+
         // SPECIAL CASE: Login Button (Skip if logged in)
         if (el.id === 'nav-login-btn' && el.classList.contains('logged-in')) {
             const userJson = localStorage.getItem('teemous_user');
@@ -397,6 +400,7 @@ function updateAllTranslations() {
     // 2. Placeholders mapping (default ones, fly-in placeholders handled by the text tags above)
     const placeholderElements = document.querySelectorAll('[data-en-placeholder][data-vi-placeholder]');
     placeholderElements.forEach(el => {
+        if (el.closest('#root')) return; // DO NOT FIGHT WITH REACT
         el.setAttribute('placeholder', el.getAttribute(`data-${currentLang}-placeholder`));
     });
 
@@ -426,6 +430,7 @@ function initThemeToggle() {
             gsap.fromTo(themeBtn, { scale: 0.8 }, { scale: 1, duration: 0.3, ease: 'back.out(1.7)' });
         }
         updateThemeButtonText();
+        window.dispatchEvent(new CustomEvent('td-state-change', { detail: { type: 'theme', value: isLight ? 'light' : 'dark' } }));
     });
 
     // Initial setup

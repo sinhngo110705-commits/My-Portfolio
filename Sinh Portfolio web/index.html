@@ -70,10 +70,10 @@
     <link rel="stylesheet" href="style.css?v=restore-elite-v4">
     <!-- Updated Font to Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
-    
+
     <!-- Theme Initialization Script (Prevent FOUC) -->
     <script>
-        (function() {
+        (function () {
             try {
                 const savedTheme = localStorage.getItem('td-theme');
                 if (savedTheme === 'light') {
@@ -81,7 +81,7 @@
                 } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches) {
                     document.documentElement.classList.add('light-mode');
                 }
-            } catch (e) {}
+            } catch (e) { }
         })();
     </script>
 </head>
@@ -115,7 +115,8 @@
                             Hub</a></li>
                     <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
                             data-vi="Liên Hệ">Contact Us</a></li>
-                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
+                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up"
+                            data-vi="Đăng Nhập | Đăng Ký"></button></li>
                 </ul>
             </nav>
         </header>
@@ -218,20 +219,19 @@
         <div id="chatbot-window">
             <div class="chatbot-header glass-card">
                 <div class="header-main">
-                    <h3 data-en="Teemous AI Assistant <span class='beta-badge'>BETA</span>" 
+                    <h3 data-en="Teemous AI Assistant <span class='beta-badge'>BETA</span>"
                         data-vi="Trợ lý ảo Teemous <span class='beta-badge'>BETA</span>">
                         Teemous AI Assistant <span class="beta-badge">BETA</span>
                     </h3>
                 </div>
                 <button id="chatbot-close">✕</button>
             </div>
-                <div id="chatbot-messages" class="glass-card">
-                    <div class="message ai-message"
-                        data-en="Hello! I'm Teemous AI. How can I help you today?"
-                        data-vi="Xin chào! Tôi là trợ lý ảo Teemous. Tôi có thể giúp gì cho bạn hôm nay?">
-                        Hello! I'm Teemous AI. How can I help you today?
-                    </div>
+            <div id="chatbot-messages" class="glass-card">
+                <div class="message ai-message" data-en="Hello! I'm Teemous AI. How can I help you today?"
+                    data-vi="Xin chào! Tôi là trợ lý ảo Teemous. Tôi có thể giúp gì cho bạn hôm nay?">
+                    Hello! I'm Teemous AI. How can I help you today?
                 </div>
+            </div>
             <div class="chatbot-input-area glass-card">
                 <input type="text" id="chatbot-input" placeholder="Type a message..."
                     data-en-placeholder="Type a message..." data-vi-placeholder="Nhập tin nhắn...">
@@ -244,7 +244,7 @@
     <div id="auth-modal-overlay" class="auth-modal-overlay">
         <div id="auth-modal" class="auth-modal-container glass-card">
             <button id="close-auth-modal" class="close-modal-btn">✕</button>
-            
+
             <div class="auth-tab-nav">
                 <button id="tab-login" class="active" data-en="Login" data-vi="Đăng Nhập">Login</button>
                 <div class="auth-divider"></div>
@@ -257,14 +257,18 @@
                 <!-- Login Section -->
                 <div id="login-section" class="auth-form-section active">
                     <h2 class="auth-title" data-en="Welcome Back" data-vi="Mừng Trở Lại">Welcome Back</h2>
-                    <p class="auth-subtitle" data-en="Access your Teemous Digital dashboard" data-vi="Truy cập bảng điều khiển cá nhân">Access your Teemous Digital dashboard</p>
+                    <p class="auth-subtitle" data-en="Access your Teemous Digital dashboard"
+                        data-vi="Truy cập bảng điều khiển cá nhân">Access your Teemous Digital dashboard</p>
                     <div class="auth-input-group">
-                        <input type="email" id="login-email" placeholder="Email" data-en-placeholder="Email" data-vi-placeholder="Email">
+                        <input type="email" id="login-email" placeholder="Email" data-en-placeholder="Email"
+                            data-vi-placeholder="Email">
                     </div>
                     <div class="auth-input-group">
-                        <input type="password" id="login-password" placeholder="Password" data-en-placeholder="Password" data-vi-placeholder="Mật Khẩu">
+                        <input type="password" id="login-password" placeholder="Password" data-en-placeholder="Password"
+                            data-vi-placeholder="Mật Khẩu">
                     </div>
-                    <button type="button" id="auth-submit-login" class="auth-submit-btn neon-border" data-en="Login" data-vi="Đăng Nhập">Login</button>
+                    <button type="button" id="auth-submit-login" class="auth-submit-btn neon-border" data-en="Login"
+                        data-vi="Đăng Nhập">Login</button>
                 </div>
 
                 <!-- Signup Section -->
@@ -272,18 +276,23 @@
                     <h2 class="auth-title" data-en="Create Account" data-vi="Tạo Mới">Create Account</h2>
                     <p class="auth-subtitle" data-en="Join with us" data-vi="Gia nhập hệ thống cao cấp">Join with us</p>
                     <div class="auth-input-group">
-                        <input type="text" id="signup-name" placeholder="Username" data-en-placeholder="Username" data-vi-placeholder="Tên Người Dùng">
+                        <input type="text" id="signup-name" placeholder="Username" data-en-placeholder="Username"
+                            data-vi-placeholder="Tên Người Dùng">
                     </div>
                     <div class="auth-input-group">
-                        <input type="email" id="signup-email" placeholder="Email" data-en-placeholder="Email" data-vi-placeholder="Email">
+                        <input type="email" id="signup-email" placeholder="Email" data-en-placeholder="Email"
+                            data-vi-placeholder="Email">
                     </div>
                     <div class="auth-input-group">
-                        <input type="password" id="signup-password" placeholder="Password" data-en-placeholder="Password" data-vi-placeholder="Mật Khẩu">
+                        <input type="password" id="signup-password" placeholder="Password"
+                            data-en-placeholder="Password" data-vi-placeholder="Mật Khẩu">
                     </div>
                     <div class="auth-input-group">
-                        <input type="password" id="signup-confirm" placeholder="Confirm Password" data-en-placeholder="Confirm Password" data-vi-placeholder="Nhập Lại Mật Khẩu">
+                        <input type="password" id="signup-confirm" placeholder="Confirm Password"
+                            data-en-placeholder="Confirm Password" data-vi-placeholder="Nhập Lại Mật Khẩu">
                     </div>
-                    <button type="button" id="auth-submit-signup" class="auth-submit-btn neon-border" data-en="Initialize" data-vi="Khởi Tạo">Initialize</button>
+                    <button type="button" id="auth-submit-signup" class="auth-submit-btn neon-border"
+                        data-en="Initialize" data-vi="Khởi Tạo">Initialize</button>
                 </div>
             </form>
         </div>
@@ -294,16 +303,18 @@
         <div id="dashboard-modal" class="auth-modal-container glass-card dashboard-modal">
             <button id="close-dashboard-modal" class="close-modal-btn">✕</button>
             <div class="dashboard-header">
-                <h2 class="neon-gradient-text" data-en="Personal Dashboard" data-vi="Bảng điều khiển">Personal Dashboard</h2>
+                <h2 class="neon-gradient-text" data-en="Personal Dashboard" data-vi="Bảng điều khiển">Personal Dashboard
+                </h2>
             </div>
-            
+
             <!-- Dashboard Tabs -->
             <div class="dashboard-tabs">
                 <button class="dash-tab active" data-tab="profile" data-en="Profile" data-vi="Cá nhân">Profile</button>
                 <button class="dash-tab" data-tab="orders" data-en="Orders" data-vi="Đơn hàng">Orders</button>
                 <button class="dash-tab" data-tab="transactions" data-en="Funding" data-vi="Giao dịch">Funding</button>
                 <!-- Admin tab: hidden by default, shown only for admin role via JS -->
-                <button class="dash-tab admin-only-tab" data-tab="admin" id="admin-dash-tab" style="display:none;">⚙️ Admin</button>
+                <button class="dash-tab admin-only-tab" data-tab="admin" id="admin-dash-tab" style="display:none;">⚙️
+                    Admin</button>
             </div>
 
             <div class="dashboard-content-scrollable">
@@ -326,19 +337,25 @@
                         </div>
                     </div>
 
-                    <div class="dashboard-stats glass-card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem; margin-bottom: 2rem;">
+                    <div class="dashboard-stats glass-card"
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem; margin-bottom: 2rem;">
                         <div class="stat-item" style="display: flex; flex-direction: column; align-items: center;">
-                            <span class="stat-label" data-en="Balance" data-vi="Số dư" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Balance</span>
-                            <span id="dashboard-balance" class="stat-value" style="font-size: 1.1rem; font-weight: 800; color: var(--neon-pink);">0 VND</span>
+                            <span class="stat-label" data-en="Balance" data-vi="Số dư"
+                                style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Balance</span>
+                            <span id="dashboard-balance" class="stat-value"
+                                style="font-size: 1.1rem; font-weight: 800; color: var(--neon-pink);">0 VND</span>
                         </div>
                         <div class="stat-item" style="display: flex; flex-direction: column; align-items: center;">
-                            <span class="stat-label" data-en="Rank" data-vi="Rank/Hạng" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Rank</span>
-                            <span id="dashboard-role" class="stat-value" style="font-size: 1.1rem; font-weight: 800; color: var(--neon-blue);">Elite</span>
+                            <span class="stat-label" data-en="Rank" data-vi="Rank/Hạng"
+                                style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Rank</span>
+                            <span id="dashboard-role" class="stat-value"
+                                style="font-size: 1.1rem; font-weight: 800; color: var(--neon-blue);">Elite</span>
                         </div>
                     </div>
 
                     <div class="dashboard-actions">
-                        <button id="logout-btn" class="logout-btn neon-border" data-en="Log Out" data-vi="Đăng Xuất">Log Out</button>
+                        <button id="logout-btn" class="logout-btn neon-border" data-en="Log Out" data-vi="Đăng Xuất">Log
+                            Out</button>
                     </div>
                 </div>
 
@@ -362,8 +379,11 @@
 
                 <!-- Transactions Tab -->
                 <div id="tab-transactions" class="dash-section">
-                    <div class="topup-action-container" style="margin-bottom: 1.5rem; text-align: right; padding: 10px;">
-                        <button id="open-topup-btn" class="topup-btn neon-border" style="padding: 0.5rem 1rem; font-size: 0.9rem; background: rgba(255, 30, 150, 0.1); color: var(--neon-pink); margin: 5px;">+ Top Up Money</button>
+                    <div class="topup-action-container"
+                        style="margin-bottom: 1.5rem; text-align: right; padding: 10px;">
+                        <button id="open-topup-btn" class="topup-btn neon-border"
+                            style="padding: 0.5rem 1rem; font-size: 0.9rem; background: rgba(255, 30, 150, 0.1); color: var(--neon-pink); margin: 5px;">+
+                            Top Up Money</button>
                     </div>
                     <div class="history-list">
                         <table class="dash-table">
@@ -382,64 +402,70 @@
                 </div>
             </div>
 
-                <!-- Admin Tab -->
-                <div id="tab-admin" class="dash-section admin-panel-section">
-                    <div class="admin-panel-header">
-                        <h3 class="neon-gradient-text">⚙️ Admin Console</h3>
-                        <p class="admin-panel-subtitle">Manage users, balance &amp; permissions</p>
-                    </div>
-
-                    <!-- Search & Refresh -->
-                    <div class="admin-toolbar">
-                        <input type="text" id="admin-search-input" class="admin-search" placeholder="Search by name or email...">
-                        <button id="admin-refresh-btn" class="admin-action-btn neon-border">🔄 Refresh</button>
-                    </div>
-
-                    <!-- User Table -->
-                    <div class="admin-table-wrapper">
-                        <table class="dash-table admin-user-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Balance (VND)</th>
-                                    <th>Role</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-users-tbody">
-                                <tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">Loading users...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Edit Panel -->
-                    <div id="admin-edit-panel" class="admin-edit-panel glass-card" style="display:none;">
-                        <h4 id="admin-edit-title">Edit User</h4>
-                        <div class="admin-edit-grid">
-                            <div class="admin-edit-group">
-                                <label>New Balance (VND)</label>
-                                <input type="number" id="admin-edit-balance" min="0" placeholder="e.g. 500000">
-                                <button id="admin-save-balance-btn" class="admin-action-btn neon-border">💾 Save Balance</button>
-                            </div>
-                            <div class="admin-edit-group">
-                                <label>Role</label>
-                                <select id="admin-edit-role" class="admin-role-select">
-                                    <option value="user">user</option>
-                                    <option value="admin">admin</option>
-                                </select>
-                                <button id="admin-save-role-btn" class="admin-action-btn neon-border">💾 Save Role</button>
-                            </div>
-                        </div>
-                        <button id="admin-edit-close-btn" class="admin-close-edit-btn">✕ Close</button>
-                    </div>
-
-                    <p class="admin-security-note">🔒 All actions are verified server-side. Your admin status is confirmed via database — not your browser.</p>
+            <!-- Admin Tab -->
+            <div id="tab-admin" class="dash-section admin-panel-section">
+                <div class="admin-panel-header">
+                    <h3 class="neon-gradient-text">⚙️ Admin Console</h3>
+                    <p class="admin-panel-subtitle">Manage users, balance &amp; permissions</p>
                 </div>
 
+                <!-- Search & Refresh -->
+                <div class="admin-toolbar">
+                    <input type="text" id="admin-search-input" class="admin-search"
+                        placeholder="Search by name or email...">
+                    <button id="admin-refresh-btn" class="admin-action-btn neon-border">🔄 Refresh</button>
+                </div>
+
+                <!-- User Table -->
+                <div class="admin-table-wrapper">
+                    <table class="dash-table admin-user-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Balance (VND)</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-users-tbody">
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">
+                                    Loading users...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Edit Panel -->
+                <div id="admin-edit-panel" class="admin-edit-panel glass-card" style="display:none;">
+                    <h4 id="admin-edit-title">Edit User</h4>
+                    <div class="admin-edit-grid">
+                        <div class="admin-edit-group">
+                            <label>New Balance (VND)</label>
+                            <input type="number" id="admin-edit-balance" min="0" placeholder="e.g. 500000">
+                            <button id="admin-save-balance-btn" class="admin-action-btn neon-border">💾 Save
+                                Balance</button>
+                        </div>
+                        <div class="admin-edit-group">
+                            <label>Role</label>
+                            <select id="admin-edit-role" class="admin-role-select">
+                                <option value="user">user</option>
+                                <option value="admin">admin</option>
+                            </select>
+                            <button id="admin-save-role-btn" class="admin-action-btn neon-border">💾 Save Role</button>
+                        </div>
+                    </div>
+                    <button id="admin-edit-close-btn" class="admin-close-edit-btn">✕ Close</button>
+                </div>
+
+                <p class="admin-security-note">🔒 All actions are verified server-side. Your admin status is confirmed
+                    via database — not your browser.</p>
+            </div>
+
         </div>
-        </div>
+    </div>
     </div>
 
 
@@ -450,9 +476,10 @@
             <button id="close-topup-modal" class="close-modal-btn">✕</button>
             <div class="modal-header">
                 <h2 class="neon-gradient-text" data-en="Top Up Funds" data-vi="Nạp tiền vào ví">Top Up Funds</h2>
-                <p class="modal-subtitle" data-en="Instant balance update via VietQR" data-vi="Cập nhật số dư tức thì qua VietQR">Instant balance update via VietQR</p>
+                <p class="modal-subtitle" data-en="Instant balance update via VietQR"
+                    data-vi="Cập nhật số dư tức thì qua VietQR">Instant balance update via VietQR</p>
             </div>
-            
+
             <div class="topup-steps">
                 <div class="amount-selector">
                     <label data-en="Select Amount (VND)" data-vi="Chọn số tiền (VND)">Select Amount (VND)</label>
@@ -464,18 +491,26 @@
                     </div>
                 </div>
 
-                <div id="qr-display-area" class="qr-display-area glass-card" style="display:none; margin-top: 1.5rem; padding: 1.5rem; text-align: center;">
-                    <div class="qr-container" style="background: white; padding: 1rem; border-radius: 12px; display: inline-block; margin-bottom: 1rem;">
+                <div id="qr-display-area" class="qr-display-area glass-card"
+                    style="display:none; margin-top: 1.5rem; padding: 1.5rem; text-align: center;">
+                    <div class="qr-container"
+                        style="background: white; padding: 1rem; border-radius: 12px; display: inline-block; margin-bottom: 1rem;">
                         <img id="vietqr-img" src="" alt="VietQR Pay" style="width: 240px; height: auto;">
                     </div>
                     <div class="payment-details">
-                        <p class="detail-row" style="margin: 0.5rem 0;"><span data-en="Amount:" data-vi="Số tiền:">Amount:</span> <strong id="qr-amt-text">0</strong></p>
-                        <p class="detail-row" style="margin: 0.5rem 0;"><span data-en="Note:" data-vi="Nội dung:">Note:</span> <strong id="qr-note-text" style="color: var(--neon-pink);">NAP</strong></p>
-                        <p class="warning-text" style="font-size: 0.8rem; color: #ff8a80; margin-top: 1rem;" data-en="Use correct note for auto-process." data-vi="Dùng đúng nội dung để nạp tự động.">Use correct note for auto-process.</p>
+                        <p class="detail-row" style="margin: 0.5rem 0;"><span data-en="Amount:"
+                                data-vi="Số tiền:">Amount:</span> <strong id="qr-amt-text">0</strong></p>
+                        <p class="detail-row" style="margin: 0.5rem 0;"><span data-en="Note:"
+                                data-vi="Nội dung:">Note:</span> <strong id="qr-note-text"
+                                style="color: var(--neon-pink);">NAP</strong></p>
+                        <p class="warning-text" style="font-size: 0.8rem; color: #ff8a80; margin-top: 1rem;"
+                            data-en="Use correct note for auto-process." data-vi="Dùng đúng nội dung để nạp tự động.">
+                            Use correct note for auto-process.</p>
                     </div>
                 </div>
 
-                <button id="gen-qr-btn" class="auth-submit-btn neon-border" style="margin-top: 1.5rem;" data-en="Generate Payment QR" data-vi="Tạo mã thanh toán QR">Generate Payment QR</button>
+                <button id="gen-qr-btn" class="auth-submit-btn neon-border" style="margin-top: 1.5rem;"
+                    data-en="Generate Payment QR" data-vi="Tạo mã thanh toán QR">Generate Payment QR</button>
             </div>
         </div>
     </div>
