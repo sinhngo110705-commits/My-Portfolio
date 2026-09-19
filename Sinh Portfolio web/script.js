@@ -276,7 +276,7 @@ function initBackgroundAnimation() {
         const dx = (mouse.x - width / 2) * 0.02;
         const dy = (mouse.y - height / 2) * 0.02;
 
-        ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.02)';
+        ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.035)';
         ctx.lineWidth = 1;
 
         const gridSize = 50;
@@ -304,7 +304,7 @@ function initBackgroundAnimation() {
             mouse.y += (mouse.targetY - mouse.y) * 0.1;
         }
 
-        const isLight = document.body.classList.contains('light-mode');
+        const isLight = document.documentElement.classList.contains('light-mode') || document.body.classList.contains('light-mode');
         
         drawGrid(isLight);
 
@@ -572,18 +572,41 @@ function initMobileMenu() {
 
     if (!menuToggle || !headerNav) return;
 
-    menuToggle.addEventListener('click', () => {
-        menuToggle.classList.toggle('active');
-        headerNav.classList.toggle('active');
+    // Remove any leftover backdrop overlay from DOM
+    const oldBackdrop = document.querySelector('.mobile-menu-backdrop');
+    if (oldBackdrop) oldBackdrop.remove();
+
+    const closeMenu = () => {
+        menuToggle.classList.remove('active');
+        headerNav.classList.remove('active');
+    };
+
+    const toggleMenu = (e) => {
+        e.stopPropagation();
+        const isOpen = headerNav.classList.toggle('active');
+        menuToggle.classList.toggle('active', isOpen);
+    };
+
+    menuToggle.addEventListener('click', toggleMenu);
+
+    // Close when clicking anywhere outside the floating dropdown menu
+    document.addEventListener('click', (e) => {
+        if (headerNav.classList.contains('active')) {
+            if (!headerNav.contains(e.target) && !menuToggle.contains(e.target)) {
+                closeMenu();
+            }
+        }
     });
 
-    // Close menu when clicking a link
-    const navLinks = document.querySelectorAll('.nav-links a');
+    // Close menu when clicking a link or button inside
+    const navLinks = document.querySelectorAll('.nav-links a, .nav-links button');
     navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            menuToggle.classList.remove('active');
-            headerNav.classList.remove('active');
-        });
+        link.addEventListener('click', closeMenu);
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
     });
 }
 
@@ -777,15 +800,32 @@ function initChatbot() {
 
     if (!container || !toggle || !windowEl) return;
 
+    const getLocalAiKey = async () => {
+        let key = localStorage.getItem('teemous_ai_key') || localStorage.getItem('teemous_9router_key');
+        if (key) return key;
+        try {
+            const resp = await fetch('/api/config');
+            if (resp.ok) {
+                const cfg = await resp.json();
+                if (cfg && cfg.router_key) {
+                    localStorage.setItem('teemous_ai_key', cfg.router_key);
+                    return cfg.router_key;
+                }
+            }
+        } catch (e) { }
+        return '';
+    };
+
     let availableModels = [];
     const probeModels = async () => {
-        const bases = ['http://127.0.0.1:1234', 'http://localhost:1234'];
+        const localKey = await getLocalAiKey();
+        const bases = ['http://127.0.0.1:20128', 'http://localhost:20128', 'http://127.0.0.1:1234', 'http://localhost:1234'];
         const paths = ['/api/v1/models', '/v1/models'];
         for (const base of bases) {
             for (const path of paths) {
                 try {
                     const resp = await fetch(`${base}${path}`, {
-                        headers: { 'Accept': 'application/json' }
+                        headers: { 'Accept': 'application/json', ...(localKey ? { 'Authorization': `Bearer ${localKey}` } : {}) }
                     });
                     if (resp.ok) {
                         const data = await resp.json();
@@ -905,22 +945,15 @@ function initChatbot() {
 
             if (provider === 'local') {
                 const publicTunnelBase = 'https://puppylike-macroclimatically-bev.ngrok-free.dev';
-                const baseUrls = [publicTunnelBase, 'http://127.0.0.1:1234', 'http://localhost:1234'];
-                const ngrokHeaders = { 'ngrok-skip-browser-warning': 'true', 'Content-Type': 'application/json' };
+                const baseUrls = ['http://127.0.0.1:20128', 'http://localhost:20128', 'http://127.0.0.1:1234', 'http://localhost:1234'];
+                const localKey = await getLocalAiKey();
+                const ngrokHeaders = {
+                    'ngrok-skip-browser-warning': 'true',
+                    'Content-Type': 'application/json',
+                    ...(localKey ? { 'Authorization': `Bearer ${localKey}` } : {})
+                };
 
-                let model;
-                if (typeof availableModels === 'undefined' || availableModels.length === 0) {
-                    model = "qwen/qwen3-vl-8b";
-                } else {
-                    const chatModels = availableModels.filter(m => !m.toLowerCase().includes('embed'));
-                    const pool = chatModels.length > 0 ? chatModels : availableModels;
-                    model = pool.find(m => m.toLowerCase().includes('qwen3-vl')) ||
-                            pool.find(m => m.toLowerCase().includes('qwen')) ||
-                            pool.find(m => m.toLowerCase().includes('12b')) ||
-                            pool.find(m => m.toLowerCase().includes('gemma-3')) ||
-                            pool.find(m => m.toLowerCase().includes('gemma')) ||
-                            pool[0];
-                }
+                const model = "custom-agents-for-chatbot";
 
                 console.group(`Teemous AI Chat: ${userText.substring(0, 30)}...`);
                 console.log(`Provider: ${provider} | Model: ${model}`);
@@ -946,7 +979,7 @@ function initChatbot() {
                         console.time('Generation Time');
                         const resp = await fetch(activeBase + '/v1/chat/completions', {
                             method: 'POST', signal: ctrl.signal, headers: ngrokHeaders,
-                            body: JSON.stringify({ model, messages: messagesToSend, temperature: 0.6, max_tokens: 250 })
+                            body: JSON.stringify({ model, stream: false, messages: messagesToSend, temperature: 0.6, max_tokens: 350 })
                         });
                         clearTimeout(tid);
                         console.timeEnd('Generation Time');
@@ -1243,9 +1276,6 @@ function initAuthModal() {
 /**
  * Dashboard Logic
  */
-/**
- * Dashboard Logic
- */
 function initDashboard() {
     const dashboardOverlay = document.getElementById('dashboard-modal-overlay');
     const closeBtn = document.getElementById('close-dashboard-modal');
@@ -1373,9 +1403,18 @@ function initDashboard() {
 }
 
 async function openDashboard() {
-    // Navigate to dedicated user page instead of modal
-    window.location.href = '/user';
-    return;
+    // Navigate to dedicated user page if on another page, or fallback to modal
+    if (!document.getElementById("dashboard-modal-overlay")) {
+        window.location.href = "/user";
+        return;
+    }
+    window.openDashboard = openDashboard;
+    const overlay = document.getElementById("dashboard-modal-overlay");
+    const token = localStorage.getItem("teemous_jwt");
+    if (!overlay || !token) {
+        window.location.href = "/user";
+        return;
+    }
 
     // Show modal with stale data first for speed
     const user = JSON.parse(localStorage.getItem('teemous_user') || '{}');
@@ -1384,7 +1423,7 @@ async function openDashboard() {
         document.getElementById('dashboard-email').innerText = user.email || '';
         document.getElementById('dashboard-balance').innerText = `${user.balance || 0} VND`;
         
-        const rankSpan = document.getElementById('dashboard-rank');
+        const rankSpan = document.getElementById('dashboard-rank') || document.getElementById('dashboard-role');
         if (rankSpan) {
             const rank = getUserRank(user);
             rankSpan.innerText = rank;
@@ -1429,7 +1468,7 @@ async function openDashboard() {
             document.getElementById('dashboard-username-input').value = data.user.username;
             document.getElementById('dashboard-balance').innerText = `${data.user.balance.toLocaleString()} VND`;
             
-            const rankSpan = document.getElementById('dashboard-rank');
+            const rankSpan = document.getElementById('dashboard-rank') || document.getElementById('dashboard-role');
             if (rankSpan) {
                 const rank = getUserRank(data.user);
                 rankSpan.innerText = rank;
@@ -1757,6 +1796,23 @@ window.buyAovAccount = async function(accountId, price, details) {
     }
 };
 
+// Instant Navigation Prefetcher (Prefetches pages on link hover for instant, flicker-free navigation)
+(function initInstantPrefetch() {
+    const prefetched = new Set();
+    document.addEventListener('mouseover', (e) => {
+        const link = e.target.closest('a[href]');
+        if (!link || link.target === '_blank') return;
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('javascript:') || href.startsWith('mailto:')) return;
+        const fullUrl = new URL(href, window.location.href).href;
+        if (prefetched.has(fullUrl)) return;
+        prefetched.add(fullUrl);
+        const linkEl = document.createElement('link');
+        linkEl.rel = 'prefetch';
+        linkEl.href = fullUrl;
+        document.head.appendChild(linkEl);
+    }, { passive: true });
+})();
 // Safety Fallback for initDashboard
 if (typeof window.openDashboard === 'undefined') {
     window.openDashboard = async () => {

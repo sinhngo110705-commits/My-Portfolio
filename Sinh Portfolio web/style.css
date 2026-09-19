@@ -38,8 +38,7 @@ html {
     --bg-base: #f5f5f5;
     --bg-alt: #ffffff;
     --text-main: #000000;
-    --text-muted: #4b5563;
-    /* Darker gray for better accessibility */
+    --text-muted: #4b5563; /* Darker gray for better accessibility */
 
     --neon-pink: #ff4081;
     --neon-purple: #d500f9;
@@ -99,24 +98,6 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-}
-
-.section-title {
-    font-family: var(--font-heading);
-    font-weight: 900;
-    /* Extra Bold */
-    font-size: 2.5rem;
-    text-transform: uppercase;
-    margin-bottom: 3rem;
-    text-align: center;
-    color: #111827;
-    /* Solid Black/Dark Gray */
-    letter-spacing: -0.025em;
-    /* tracking-tight */
-    position: relative;
-    display: inline-block;
-    align-self: center;
-    text-shadow: none;
 }
 
 .section-title {
@@ -1485,12 +1466,11 @@ footer {
 -------------------------------------- */
 .ui-controls {
     position: fixed;
-    bottom: 6.75rem;
-    /* Offset to sit above the chatbot (2rem base + 3.5rem chat + 1.25rem gap) */
+    bottom: 6.75rem; /* Offset to sit above the chatbot (2rem base + 3.5rem chat + 1.25rem gap) */
     right: 2rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; 
     gap: 1.25rem;
     z-index: 10000;
 }
@@ -1545,8 +1525,7 @@ footer {
 
 #theme-toggle:hover {
     border-color: var(--neon-blue) !important;
-    background: rgba(33, 150, 243, 0.1) !important;
-    /* Soft tint instead of solid purple */
+    background: rgba(33, 150, 243, 0.1) !important; /* Soft tint instead of solid purple */
     box-shadow: 0 0 15px rgba(33, 150, 243, 0.3) !important;
 }
 
@@ -1557,8 +1536,7 @@ footer {
 }
 
 /* Ensure background is neutral glass as per Image 2 when not hovered */
-#theme-toggle,
-#lang-toggle {
+#theme-toggle, #lang-toggle {
     background: var(--glass-bg) !important;
 }
 
@@ -1592,8 +1570,7 @@ footer {
 /* "Bạn là người Việt?" & Theme Toggle Sophisticated Animation */
 .lang-toggle,
 .theme-toggle {
-    /* overflow: hidden; */
-    /* Removed to allow glow to be visible */
+    /* overflow: hidden; */ /* Removed to allow glow to be visible */
     position: relative;
     transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease, background 0.4s ease, opacity 0.4s ease;
     opacity: 0.85;
@@ -1608,7 +1585,6 @@ footer {
     opacity: 1;
     z-index: 11;
 }
-
 /* Cleaned up redundant hover blocks */
 
 /* -------------------------------------
@@ -3176,33 +3152,102 @@ select option {
         box-shadow: 0 0 10px rgba(33, 150, 243, 0.7) !important;
     }
 
+    /* Compact Top-Right Floating Popover Menu (No Fullscreen, No Blur Screen) */
     .header-nav {
         position: fixed !important;
-        top: 0 !important;
-        right: -100% !important;
-        width: 100% !important;
-        height: 100vh !important;
-        background: rgba(5, 5, 5, 0.98) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
+        top: 4.2rem !important;
+        right: 1.2rem !important;
+        left: auto !important;
+        width: 220px !important;
+        max-width: calc(100vw - 2.4rem) !important;
+        height: auto !important;
+        background: rgba(16, 16, 26, 0.96) !important;
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 18px !important;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 15px rgba(33, 150, 243, 0.15) !important;
+        padding: 0.75rem 0.5rem !important;
+        z-index: 10000 !important;
         display: flex !important;
         flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        opacity: 0 !important;
+        transform: translateY(-8px) scale(0.96) !important;
+        pointer-events: none !important;
+        transform-origin: top right !important;
+        transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .light-mode .header-nav {
+        background: rgba(255, 255, 255, 0.97) !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15), 0 0 15px rgba(233, 30, 99, 0.08) !important;
     }
 
     .header-nav.active {
-        right: 0 !important;
+        opacity: 1 !important;
+        transform: translateY(0) scale(1) !important;
+        pointer-events: auto !important;
+        right: 1.2rem !important;
     }
 
     .nav-links {
+        display: flex !important;
         flex-direction: column !important;
-        gap: 2.5rem !important;
+        gap: 0.25rem !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        list-style: none !important;
+    }
+
+    .nav-links li {
+        width: 100% !important;
     }
 
     .nav-links a {
-        font-size: 1.8rem !important;
+        font-size: 0.95rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px !important;
+        padding: 0.6rem 0.85rem !important;
+        border-radius: 10px !important;
+        text-align: left !important;
+        display: block !important;
+        width: 100% !important;
+        max-width: none !important;
+        color: var(--text-main) !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+        background: rgba(233, 30, 99, 0.12) !important;
+        color: var(--neon-pink) !important;
+    }
+
+    .nav-links a::after {
+        display: none !important; /* Hide underline in dropdown menu */
+    }
+
+    .light-mode .nav-links a {
+        color: #1f2937 !important;
+    }
+
+    .light-mode .nav-links a:hover,
+    .light-mode .nav-links a.active {
+        background: rgba(233, 30, 99, 0.08) !important;
+        color: var(--neon-pink) !important;
+    }
+
+    .nav-login-btn {
+        width: 100% !important;
+        margin-top: 0.35rem !important;
+        padding: 0.55rem 0.85rem !important;
+        font-size: 0.85rem !important;
+        text-align: center !important;
+        border-radius: 10px !important;
     }
 }
 
@@ -3283,8 +3328,7 @@ select option {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    z-index: 10001;
-    /* Layer on top if needed, though they stack in DOM */
+    z-index: 10001; /* Layer on top if needed, though they stack in DOM */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3318,25 +3362,22 @@ select option {
 #chatbot-window {
     position: absolute;
     bottom: 0;
-    right: 5rem;
-    /* Shifting LEFT to clear the Hub Buttons (3.5rem + gap) */
+    right: 5rem; /* Shifting LEFT to clear the Hub Buttons (3.5rem + gap) */
     width: 22rem;
-    height: 32rem;
-    /* Slightly taller for 'Liquid' feel */
+    height: 32rem; /* Slightly taller for 'Liquid' feel */
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     opacity: 0;
-
+    
     /* Apple Liquid Glass Effect */
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.03); 
     backdrop-filter: blur(40px) saturate(180%) contrast(90%);
     -webkit-backdrop-filter: blur(40px) saturate(180%) contrast(90%);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 1.875rem;
-    /* Smoother, rounder Apple-style corners */
+    border-radius: 1.875rem; /* Smoother, rounder Apple-style corners */
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.02);
-
+    
     transform: translateX(10px) translateY(10px) scale(0.9);
     pointer-events: none;
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -3414,9 +3455,8 @@ select option {
     font-size: 0.9rem;
     line-height: 1.4;
     word-wrap: break-word;
-    word-break: break-word;
-    /* Safer for URLs */
-    overflow-wrap: anywhere;
+    word-break: break-word; /* Safer for URLs */
+    overflow-wrap: anywhere; 
     white-space: pre-wrap;
     animation: messageIn 0.3s ease-out forwards;
 }
@@ -3584,8 +3624,7 @@ select option {
     padding: 2.5rem;
     position: relative;
     border-radius: 24px;
-    background: rgba(15, 15, 25, 0.85);
-    /* Slightly darker for contrast */
+    background: rgba(15, 15, 25, 0.85); /* Slightly darker for contrast */
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -3681,8 +3720,7 @@ select option {
     border-radius: 10px;
     color: var(--text-main);
     font-size: 1rem;
-    text-align: center;
-    /* Centered input text as requested */
+    text-align: center; /* Centered input text as requested */
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
@@ -3888,9 +3926,7 @@ select option {
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
 
 /* Dashboard Enhancement Styles */
@@ -3950,15 +3986,8 @@ select option {
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Username Edit Style */
@@ -4039,8 +4068,7 @@ select option {
     text-transform: uppercase;
 }
 
-.status-completed,
-.status-success {
+.status-completed, .status-success {
     background: rgba(76, 175, 80, 0.2);
     color: #81c784;
 }
@@ -4136,15 +4164,8 @@ select option {
 }
 
 @keyframes slideUpFade {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .qr-container {
@@ -4279,7 +4300,7 @@ select option {
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
 .rank-standard {
@@ -4308,12 +4329,68 @@ select option {
 }
 
 @keyframes elite-glow {
-    0% {
-        filter: drop-shadow(0 0 4px var(--neon-blue));
+    0% { filter: drop-shadow(0 0 4px var(--neon-blue)); }
+    100% { filter: drop-shadow(0 0 8px var(--neon-pink)); }
+}
+
+
+/* ===================================================
+   MOBILE UX ENHANCEMENTS: BACKDROP, MODAL SCROLL, CHAT
+=================================================== */
+
+
+
+/* Modal Safety Scroll (Prevents content cut off on small phone screens) */
+.auth-modal-container {
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.auth-modal-container::-webkit-scrollbar {
+    width: 5px;
+}
+
+.auth-modal-container::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 10px;
+}
+
+/* Mobile Responsive Chat & Floating Controls */
+@media (max-width: 480px) {
+    #chatbot-window {
+        width: calc(100vw - 2rem) !important;
+        max-width: 360px !important;
+        right: 1rem !important;
+        bottom: 5.25rem !important;
+        height: min(28rem, 72vh) !important;
+        border-radius: 20px !important;
     }
 
-    100% {
-        filter: drop-shadow(0 0 8px var(--neon-pink));
+    .ui-controls {
+        bottom: 5.75rem !important;
+        right: 1.25rem !important;
+        gap: 0.75rem !important;
+    }
+
+    #chatbot-container {
+        bottom: 1.5rem !important;
+        right: 1.25rem !important;
+    }
+
+    .theme-toggle, .lang-toggle {
+        width: 2.75rem !important;
+        height: 2.75rem !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 0.85rem !important;
+    }
+
+    #chatbot-toggle {
+        width: 3.25rem !important;
+        height: 3.25rem !important;
     }
 }
 

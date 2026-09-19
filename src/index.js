@@ -15,8 +15,8 @@ export default {
       return new Response(null, {
         headers: {
           "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type",
+          "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
         }
       });
     }
@@ -203,7 +203,7 @@ async function handleSePayWebhook(request, env) {
 
   const authHeader = request.headers.get("Authorization");
   const expectedToken = env.SEPAY_TOKEN; // Cần set trên Cloudflare Dashboard
-  if (expectedToken && (!authHeader || !authHeader.includes(expectedToken))) {
+  if (!expectedToken || !authHeader || !authHeader.includes(expectedToken)) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
@@ -231,13 +231,13 @@ async function handleSePayWebhook(request, env) {
     const user = await env.teemous_db.prepare("SELECT id FROM users WHERE id = ?").bind(userId).first();
     if (!user) return new Response(JSON.stringify({ success: true, message: "User ID not found in database" }));
 
-    // Cập nhật số dư và ghi lịch sử (Chạy tuần tự trong Worker đơn giản)
-    await env.teemous_db.prepare("UPDATE users SET balance = balance + ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
-      .bind(amount, userId).run();
-    
-    await env.teemous_db.prepare(
-      "INSERT INTO transactions (user_id, amount, type, status, payment_method, ref_id, description) VALUES (?, ?, 'topup', 'success', 'mbbank', ?, ?)"
-    ).bind(userId, amount, referenceCode || `SP-${Date.now()}`, `SePay Auto: ${content}`).run();
+    // Cập nhật số dư và ghi lịch sử qua Atomic Batch (đảm bảo tính toàn vẹn)
+    await env.teemous_db.batch([
+      env.teemous_db.prepare("UPDATE users SET balance = balance + ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
+        .bind(amount, userId),
+      env.teemous_db.prepare("INSERT INTO transactions (user_id, amount, type, status, payment_method, ref_id, description) VALUES (?, ?, 'topup', 'success', 'mbbank', ?, ?)")
+        .bind(userId, amount, referenceCode || `SP-${Date.now()}`, `SePay Auto: ${content}`)
+    ]);
 
     return new Response(JSON.stringify({ success: true }), { status: 200, headers: { "Content-Type": "application/json" } });
 

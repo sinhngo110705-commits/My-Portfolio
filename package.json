@@ -13,7 +13,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "echo \"Skipping build as styles are already precompiled\""
+    "build": "echo \"Skipping build as styles are already precompiled\"",
+    "dev": "node server.js",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
