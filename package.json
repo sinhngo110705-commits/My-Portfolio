@@ -3,7 +3,7 @@
     "@tailwindcss/cli": "^4.2.2"
   },
   "name": "my-portfolio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Portfolio is portfolio",
   "main": "index.js",
   "devDependencies": {
