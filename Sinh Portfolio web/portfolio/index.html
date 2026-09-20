@@ -50,7 +50,8 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css?v=popover-v1">
+    <link rel="stylesheet" href="../style.css?v=perf-v15">
+    <link rel="stylesheet" href="hub-showcase.css?v=perf-v15">
 
     <!-- Tailwind CSS for Grid -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -175,9 +176,9 @@
     </style>
 
 
-<!-- Theme Initialization Script (Prevent FOUC) -->
+<!-- Theme & Language Pre-hydration (Prevent FOUC & language flash) -->
     <script>
-        (function() {
+        (function () {
             try {
                 const savedTheme = localStorage.getItem('td-theme');
                 if (savedTheme === 'light') {
@@ -185,7 +186,10 @@
                 } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches) {
                     document.documentElement.classList.add('light-mode');
                 }
-            } catch (e) {}
+                const savedLang = localStorage.getItem('td-lang') || 'vi';
+                document.documentElement.lang = savedLang;
+                document.documentElement.setAttribute('data-lang', savedLang);
+            } catch (e) { }
         })();
     </script>
 </head>
@@ -220,222 +224,21 @@
                             data-vi="Liên Hệ">Contact Us</a></li>
                     <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
                 </ul>
-            </nav>
+            <div class="mobile-nav-widgets">
+                <div class="mobile-widget-row">
+                    <button type="button" class="mobile-widget-btn theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
+                        <span class="mode-icon">🌙</span>
+                        <span class="theme-label">Tối</span>
+                    </button>
+                    <button type="button" class="mobile-widget-btn lang-toggle" title="Toggle Language" aria-label="Toggle Language">
+                        <span class="lang-flag">🇻🇳</span> <span class="lang-text">VI</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
         </header>
 
-    <main class="container mx-auto px-6">
-        <!-- Hub Hero -->
-        <section id="hero"
-            class="section hero-section flex flex-col items-center justify-center min-h-screen text-center">
-            <div class="hero-content">
-                <h1 class="flat-title fly-in mb-4">PORTFOLIO HUB</h1>
-                <p class="hero-subtitle flat-subtitle" data-en="Discover Gen Z Talents & Creative Ecosystems"
-                    data-vi="Khám phá Tài năng Gen Z & Hệ sinh thái Sáng tạo">Discover Gen Z Talents & Creative
-                    Ecosystems
-                </p>
-            </div>
-        </section>
-
-        <!-- Filters -->
-        <section id="filters" class="mb-16">
-            <div class="glass-panel-premium p-6 flex flex-col md:flex-row gap-8 items-center justify-center">
-                <div class="flex flex-col gap-2 w-full md:w-64">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-neutral-500 pl-2"
-                        data-en="Browse by Tier" data-vi="Lọc theo Cấp Độ">Browse by Tier</label>
-                    <select id="filter-tier"
-                        class="glass-select w-full bg-transparent border-white/10 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-neon-blue transition-all">
-                        <option value="all" data-en="All Tiers" data-vi="Tất cả Cấp độ">All Tiers</option>
-                        <option value="elite" data-en="ELITE" data-vi="TINH HOA">ELITE</option>
-                        <option value="professional" data-en="PROFESSIONAL" data-vi="CHUYÊN NGHIỆP">PROFESSIONAL
-                        </option>
-                        <option value="impressive" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</option>
-                        <option value="standard" data-en="STANDARD" data-vi="TIÊU CHUẨN">STANDARD</option>
-                    </select>
-                </div>
-
-                <div class="flex flex-col gap-2 w-full md:w-64">
-                    <label class="text-[10px] font-black uppercase tracking-widest text-neutral-500 pl-2"
-                        data-en="Browse by Field" data-vi="Lọc theo Ngành Nghề">Browse by Field</label>
-                    <select id="filter-field"
-                        class="glass-select w-full bg-transparent border-white/10 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-neon-blue transition-all">
-                        <option value="all" data-en="All Fields" data-vi="Tất cả Ngành">All Fields</option>
-                        <option value="digital-marketing" data-en="Digital Marketing" data-vi="Digital Marketing">
-                            Digital Marketing</option>
-                        <option value="it" data-en="IT & Software" data-vi="Công nghệ & Phần mềm">IT & Software</option>
-                        <option value="business" data-en="Business & Management" data-vi="Kinh doanh & Quản lý">Business
-                            & Management</option>
-                        <option value="creative" data-en="Graphic Design & Creative" data-vi="Thiết kế & Sáng tạo">
-                            Graphic Design & Creative</option>
-                        <option value="other" data-en="Other" data-vi="Khác">Other</option>
-                    </select>
-                </div>
-            </div>
-        </section>
-
-        <!-- Dynamic Content -->
-        <section id="portfolio-tiers" class="space-y-24 pb-32">
-
-            <!-- Elite Tier — w-28 (112px), no Available slot -->
-            <div class="tier-section" data-tier="elite">
-                <h2 class="section-title mb-12" data-en="ELITE" data-vi="TINH HOA">ELITE</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-6">
-                    <a href="tranthithuyduong/index.html"
-                        class="portfolio-card flex flex-col items-center text-center group" data-field="it">
-                        <div class="relative mb-4">
-                            <div class="avatar-glow-elite"></div>
-                            <div
-                                class="w-28 h-28 rounded-full border-2 border-elite-power p-1 avatar-ring-bg shadow-xl transition-all">
-                                <img src="../Avatar/tttduong.jpg" alt="Nguyễn Thị Thùy Dương"
-                                    class="w-full h-full rounded-full object-cover">
-                            </div>
-                        </div>
-                        <div class="verified-badge-container">
-                            <span class="font-black text-xs uppercase tracking-widest text-[var(--text-main)] transition-colors">Nguyễn Thị Thùy Dương</span>
-                            <img src="../Logo/tickxanh.png" class="verified-badge" alt="Verified">
-                            <div class="verified-tooltip" data-en="Verified secure Portfolio, authenticity confirmed." data-vi="Hồ sơ năng lực an toàn, đã được xác minh có thực.">Hồ sơ năng lực an toàn, đã được xác minh có thực.</div>
-                        </div>
-                        <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter industry-tag" data-en="IT & Software" data-vi="Công nghệ & Phần mềm">IT & Software</span>
-                        <span class="text-[10px] font-bold text-neutral-400">2005</span>
-                    </a>
-
-                </div>
-            </div>
-
-            <!-- Professional Tier — w-[100px] (100px) -->
-            <div class="tier-section" data-tier="professional">
-                <h2 class="section-title mb-12" data-en="PROFESSIONAL" data-vi="CHUYÊN NGHIỆP">PROFESSIONAL</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-6">
-
-
-
-                    <a href="ngoquangsinh/index.html"
-                        class="portfolio-card flex flex-col items-center text-center group"
-                        data-field="digital-marketing">
-                        <div class="relative mb-4">
-                            <div class="owner-speech-bubble">🔑</div>
-                            <div
-                                class="w-[6.25rem] h-[6.25rem] rounded-full border-2 border-[#F97316] p-1 avatar-ring-bg shadow-xl transition-all group-hover:scale-110">
-                                <img src="../Avatar/IMG_5907_compressed.jpg" alt="Ngô Quang Sinh" loading="eager"
-                                    class="w-full h-full rounded-full object-cover">
-                            </div>
-                        </div>
-                        <div class="verified-badge-container">
-                            <span class="font-black text-xs uppercase tracking-widest text-[var(--text-main)] transition-colors" style="white-space: nowrap;">Ngô Quang Sinh</span>
-                            <img src="../Logo/tickxanh.png" class="verified-badge" alt="Verified">
-                            <div class="verified-tooltip" data-en="Verified secure Portfolio, authenticity confirmed." data-vi="Hồ sơ năng lực an toàn, đã được xác minh có thực.">Hồ sơ năng lực an toàn, đã được xác minh có thực.</div>
-                        </div>
-                        <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter industry-tag" data-en="Digital Marketing" data-vi="Digital Marketing">Digital Marketing</span>
-                        <span class="text-[10px] font-bold text-neutral-400">2005</span>
-                    </a>
-
-                    <a href="lethaitrung/index.html"
-                        class="portfolio-card flex flex-col items-center text-center group" data-field="it">
-                        <div class="relative mb-4">
-                            <div
-                                class="w-[6.25rem] h-[6.25rem] rounded-full border-2 border-[#F97316] p-1 avatar-ring-bg shadow-xl transition-all group-hover:scale-110">
-                                <img src="../Avatar/lethaitrung2003.jpg" alt="Lê Thái Trung"
-                                    class="w-full h-full rounded-full object-cover">
-                            </div>
-                        </div>
-                        <div class="verified-badge-container">
-                            <span class="font-black text-xs uppercase tracking-widest text-[var(--text-main)] transition-colors" style="white-space: nowrap;">Lê Thái Trung</span>
-                        </div>
-                        <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter industry-tag" data-en="Software Engineering" data-vi="Công nghệ Phần mềm">Software Engineering</span>
-                        <span class="text-[10px] font-bold text-neutral-400">2003</span>
-                    </a>
-
-                    <!-- Available slot -->
-                    <div
-                        class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-70 transition-all cursor-not-allowed">
-                        <div class="w-[6.25rem] h-[6.25rem] rounded-full border-2 border-[#F97316]/50 p-1 mb-4">
-                            <div class="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-neutral-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <span class="font-black text-xs uppercase tracking-widest text-neutral-500">Available</span>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Impressive Tier — w-[88px] (88px) -->
-            <div class="tier-section" data-tier="impressive">
-                <h2 class="section-title mb-12" data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">IMPRESSIVE</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-6">
-
-                    <a href="builuubaohan/index.html"
-                        class="portfolio-card flex flex-col items-center text-center group" data-field="business">
-                        <div class="relative mb-4">
-                            <div
-                                class="w-[5.5rem] h-[5.5rem] rounded-full border-2 border-tier-imp p-1 avatar-ring-bg shadow-xl transition-all group-hover:border-white">
-                                <img src="../Avatar/baohan2007.jpg" alt="Bùi Lưu Bảo Hân" loading="eager"
-                                    class="w-full h-full rounded-full object-cover">
-                            </div>
-                        </div>
-                        <div class="verified-badge-container">
-                            <span class="font-black text-xs uppercase tracking-widest text-[var(--text-main)] transition-colors">Bùi Lưu Bảo Hân</span>
-                        </div>
-                        <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter industry-tag" data-en="Business & Management" data-vi="Kinh doanh & Quản lý">Business & Management</span>
-                        <span class="text-[10px] font-bold text-neutral-400">2007</span>
-                    </a>
-
-                    <!-- Available slot -->
-                    <div
-                        class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-70 transition-all cursor-not-allowed">
-                        <div class="w-[5.5rem] h-[5.5rem] rounded-full border-2 border-[#22C55E]/50 p-1 mb-4">
-                            <div class="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-neutral-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <span class="font-black text-xs uppercase tracking-widest text-neutral-500">Available</span>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Standard Tier — w-20 (80px) -->
-            <div class="tier-section" data-tier="standard">
-                <h2 class="section-title mb-12" data-en="STANDARD" data-vi="TIÊU CHUẨN">STANDARD</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-6">
-                    <a href="vuongquangtuan/index.html"
-                        class="portfolio-card flex flex-col items-center text-center group" data-field="digital-marketing">
-                        <div class="relative mb-4">
-                            <div
-                                class="w-20 h-20 rounded-full border-2 border-tier-std p-1 avatar-ring-bg group-hover:border-white transition-colors">
-                                <img src="../Avatar/quangtuan2005.jpg" alt="Vương Quang Tuấn" loading="eager"
-                                    class="w-full h-full rounded-full object-cover">
-                            </div>
-                        </div>
-                        <div class="verified-badge-container">
-                            <span class="font-black text-xs uppercase tracking-widest text-[var(--text-main)] transition-colors">Vương Quang Tuấn</span>
-                        </div>
-                        <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter industry-tag" data-en="Digital Marketing" data-vi="Digital Marketing">Digital Marketing</span>
-                        <span class="text-[10px] font-bold text-neutral-400">2005</span>
-                    </a>
-
-                    <!-- Available slot -->
-                    <div
-                        class="portfolio-card flex flex-col items-center text-center group opacity-40 grayscale hover:grayscale-0 hover:opacity-70 transition-all cursor-not-allowed">
-                        <div class="w-20 h-20 rounded-full border-2 border-[#90A4AE]/50 p-1">
-                            <div class="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-neutral-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <span class="font-black text-xs uppercase tracking-widest text-neutral-500">Available</span>
-                    </div>
-                </div>
-            </div>
-
-        </section>
-
-
-    </main>
+    <main id="hub-showcase-mount" class="w-full relative z-10"></main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -454,9 +257,7 @@
         </button>
 
         <!-- Global Translation Sticky Label -->
-        <button id="lang-toggle" class="lang-toggle neon-border">
-            EN
-        </button>
+        <button id="lang-toggle" class="lang-toggle neon-border">VI</button>
     </div>
 
     <!-- Chatbot AI Local -->
@@ -671,7 +472,8 @@
 
     
     
-    <script src="../script.js?v=popover-v1"></script>
+    <script src="hub-showcase.js?v=perf-v15"></script>
+    <script src="../script.js?v=perf-v15"></script>
 </body>
 
 </html>

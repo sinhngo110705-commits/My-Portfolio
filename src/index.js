@@ -5,6 +5,7 @@ import { onRequest as updateProfileHandler } from '../functions/api/user/update-
 import { onRequest as uploadAvatarHandler } from '../functions/api/user/upload-avatar.js';
 import { onRequest as vAvatarHandler } from '../functions/api/user/v-avatar.js';
 import { onRequest as adminManageHandler } from '../functions/api/admin/manage.js';
+import { onRequest as smmHandler } from '../functions/api/smm.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -54,6 +55,7 @@ export default {
       if (url.pathname === "/api/user/v-avatar") return await vAvatarHandler(apiContext);
       if (url.pathname === "/api/payment/webhook") return await handleSePayWebhook(request, env);
       if (url.pathname === "/api/admin/manage") return await adminManageHandler(apiContext);
+      if (url.pathname.startsWith("/api/smm")) return await smmHandler({ request, env });
 
     }
 

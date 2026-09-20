@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Systems Terminal | Teemous Digital Lab</title>
+    <link rel="icon" href="../../Logo/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="../../Logo/favicon.png">
+    <link rel="canonical" href="https://teemousdigital.id.vn/services/social/">
+    <meta name="description"
+        content="High-fidelity social engagement, follower acceleration, and audience infrastructure across Meta & TikTok platforms.">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css?v=perf-v11">
+
+    <style>
+        .social-terminal-wrap {
+            max-width: 68rem;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .terminal-shell {
+            position: relative;
+            background: rgba(10, 10, 14, 0.75);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 2.5rem;
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 240, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .light-mode .terminal-shell {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+        }
+
+        .terminal-corner {
+            position: absolute;
+            font-family: var(--font-tech);
+            font-size: 0.9rem;
+            color: var(--cyan-laser);
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .tc-tl { top: 12px; left: 14px; }
+        .tc-tr { top: 12px; right: 14px; }
+        .tc-bl { bottom: 12px; left: 14px; }
+        .tc-br { bottom: 12px; right: 14px; }
+
+        .terminal-beam-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan-laser), transparent);
+            box-shadow: 0 0 15px var(--cyan-laser);
+            animation: beamPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes beamPulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; filter: drop-shadow(0 0 8px var(--cyan-laser)); }
+        }
+
+        .terminal-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+        }
+
+        .terminal-tag {
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--cyan-laser);
+        }
+
+        .terminal-meta-indicators {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            font-family: var(--font-tech);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .service-card-matrix {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .service-card-matrix {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 500px) {
+            .service-card-matrix {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .matrix-pill {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: left;
+            position: relative;
+        }
+
+        .matrix-pill:hover,
+        .matrix-pill.selected {
+            border-color: var(--cyan-laser);
+            background: rgba(0, 240, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .matrix-pill-plat {
+            font-family: var(--font-tech);
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--cyan-laser);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.35rem;
+        }
+
+        .matrix-pill-title {
+            font-family: var(--font-heading);
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .matrix-pill-rate {
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .control-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 850px) {
+            .control-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .summary-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed rgba(0, 240, 255, 0.3);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .light-mode .summary-card {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 141, 166, 0.3);
+        }
+    
+        /* High-Contrast Light & Dark Telemetry Status Bar Styling */
+        .editorial-meta-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-family: var(--font-tech);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 0.85rem 1.4rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .meta-label {
+            color: var(--cyan-laser);
+            font-weight: 700;
+            margin-right: 0.35rem;
+        }
+        .light-mode .editorial-meta-bar {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #cbd5e1;
+            color: #334155;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+        }
+        .light-mode .meta-label {
+            color: #0284c7;
+            font-weight: 700;
+        }
+        .light-mode .editorial-hero-title {
+            color: #0f172a;
+        }
+        .light-mode .editorial-hero-sub {
+            -webkit-text-stroke: 1.5px #0f172a;
+            color: transparent;
+        }
+        .light-mode .editorial-manifesto-text {
+            color: #334155;
+        }
+        .light-mode .terminal-shell {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+        }
+        .light-mode .terminal-corner {
+            color: #0284c7;
+            opacity: 0.8;
+        }
+        .light-mode .terminal-header-row {
+            border-bottom-color: #e2e8f0;
+        }
+        .light-mode .terminal-tag {
+            color: #0f172a;
+            font-weight: 800;
+        }
+        .light-mode .terminal-meta-indicators {
+            color: #64748b;
+        }
+        .light-mode .matrix-section-title {
+            color: #475569 !important;
+        }
+        .light-mode .matrix-pill {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        }
+        .light-mode .matrix-pill:hover,
+        .light-mode .matrix-pill.selected {
+            background: #f0f9ff;
+            border-color: #0284c7;
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.15);
+        }
+        .light-mode .matrix-pill-plat {
+            color: #0284c7;
+            font-weight: 700;
+        }
+        .light-mode .matrix-pill-title {
+            color: #0f172a;
+            font-weight: 800;
+        }
+        .light-mode .matrix-pill-rate {
+            color: #475569;
+            font-weight: 700;
+        }
+        .light-mode .smm-platform-tabs {
+            border-bottom-color: #e2e8f0;
+        }
+        .light-mode .smm-tab-btn {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            font-weight: 700;
+        }
+        .light-mode .smm-tab-btn.active,
+        .light-mode .smm-tab-btn:hover {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+        }
+        .light-mode .smm-cat-pill {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+        }
+        .light-mode .smm-cat-pill:hover,
+        .light-mode .smm-cat-pill.active {
+            background: #f0f9ff;
+            border-color: #0284c7;
+            color: #0284c7;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+        }
+        .light-mode .smm-field-label {
+            color: #0f172a;
+            font-weight: 800;
+        }
+        .light-mode .smm-field-label span:last-child {
+            color: #0284c7 !important;
+            font-weight: 700;
+        }
+        .light-mode .smm-select,
+        .light-mode .smm-input {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            color: #0f172a;
+            font-weight: 600;
+        }
+        .light-mode .smm-select:focus,
+        .light-mode .smm-input:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+        .light-mode .smm-chip {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            font-weight: 600;
+        }
+        .light-mode .smm-chip:hover {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+        }
+        .light-mode .smm-server-note-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+        }
+        .light-mode .smm-note-title {
+            color: #0284c7;
+            font-weight: 700;
+        }
+        .light-mode .smm-note-content {
+            color: #334155;
+        }
+        .light-mode .summary-card {
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+        .light-mode .smm-price-val {
+            color: #0284c7;
+        }
+        .light-mode .smm-unit-badge {
+            background: #eff6ff;
+            border: 1px solid #93c5fd;
+            color: #0284c7;
+            font-weight: 700;
+        }
+        .light-mode .summary-card p {
+            color: #64748b !important;
+        }
+        .light-mode .smm-wallet-bar {
+            border-color: #e2e8f0;
+        }
+        .light-mode .smm-wallet-bar span {
+            color: #475569 !important;
+        }
+        .light-mode .smm-wallet-val {
+            color: #0f172a !important;
+        }
+        .light-mode .smm-topup-link {
+            color: #0284c7;
+            font-weight: 700;
+        }
+        .light-mode #smm-submit-auto {
+            background: #0284c7 !important;
+            color: #ffffff !important;
+            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.35) !important;
+        }
+        .light-mode #smm-submit-auto:hover {
+            background: #0369a1 !important;
+        }
+        .light-mode .smm-action-btn {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+            font-weight: 700;
+        }
+        .light-mode .smm-action-btn:hover {
+            background: #0369a1;
+            color: #ffffff;
+        }
+        .light-mode .smm-track-area {
+            border-top-color: #e2e8f0;
+        }
+        .light-mode .smm-track-area span {
+            color: #475569 !important;
+            font-weight: 700;
+        }
+</style>
+
+    <!-- Theme Initialization Script -->
+    <script>
+        (function () {
+            try {
+                const savedTheme = localStorage.getItem('td-theme');
+                if (savedTheme === 'light') {
+                    document.documentElement.classList.add('light-mode');
+                } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                    document.documentElement.classList.add('light-mode');
+                }
+            } catch (e) { }
+        })();
+    </script>
+</head>
+
+<body>
+    <canvas id="bg-canvas"></canvas>
+
+    <main class="container">
+        <!-- Global Navigation Header -->
+        <header class="global-header">
+            <div class="header-logo">
+                <a href="../../index.html">
+                    <img src="../../Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <span style="display:none;">TD</span>
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="header-nav">
+                <ul class="nav-links">
+                    <li><a href="../../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
+                    <li><a href="../index.html" class="active" data-en="SERVICES &amp; SYSTEMS"
+                            data-vi="Dịch vụ &amp; Hệ thống">SERVICES &amp; SYSTEMS</a></li>
+                    <li><a href="../../portfolio/index.html" data-en="Portfolio Hub" data-vi="Hồ sơ Năng lực">Portfolio Hub</a></li>
+                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us" data-vi="Liên Hệ">Contact Us</a></li>
+                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
+                </ul>
+            <div class="mobile-nav-widgets">
+                <div class="mobile-widget-row">
+                    <button type="button" class="mobile-widget-btn theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
+                        <span class="mode-icon">🌙</span>
+                        <span class="theme-label">Tối</span>
+                    </button>
+                    <button type="button" class="mobile-widget-btn lang-toggle" title="Toggle Language" aria-label="Toggle Language">
+                        <span class="lang-flag">🇻🇳</span> <span class="lang-text">VI</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        </header>
+
+        <!-- Dedicated Terminal Section -->
+        <section id="social-hero" class="editorial-hero" style="min-height: auto; padding: 8.5rem 0 2.5rem;">
+            <div class="hero-ambient-glow" style="top: 30%;"></div>
+            
+            <div class="editorial-meta-bar">
+                <div data-en="<span class='meta-label'>SYS //</span>SOCIAL SYSTEMS TERMINAL" data-vi="<span class='meta-label'>HỆ THỐNG //</span>MÁY CHỦ DỊCH VỤ MXH">
+                    <span class="meta-label">SYS //</span>SOCIAL SYSTEMS TERMINAL
+                </div>
+                <div data-en="<span class='meta-label'>LOC //</span>DA NANG &bull; 16&deg;04'N 108&deg;13'E" data-vi="<span class='meta-label'>VỊ TRÍ //</span>ĐÀ NẴNG &bull; 16&deg;04'B 108&deg;13'Đ">
+                    <span class="meta-label">LOC //</span>DA NANG &bull; 16&deg;04'N 108&deg;13'E
+                </div>
+                <div>
+                    <span class="meta-label">TIME //</span><span id="live-danang-clock" class="telemetry-val">--:--:-- ICT</span>
+                </div>
+                <div class="meta-status">
+                    <span class="meta-dot"></span>
+                    <span data-en="ACTIVE NODE &bull; 100% SECURE" data-vi="MÁY CHỦ SẴN SÀNG &bull; BẢO MẬT 100%">ACTIVE NODE &bull; 100% SECURE</span>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2.5rem; text-align: left;">
+                <h1 class="editorial-hero-title" style="margin-bottom: 1rem;">
+                    <span class="mask-wrap"><span class="title-line">SOCIAL ACCELERATION</span></span>
+                    <span class="mask-wrap"><span class="title-line editorial-hero-sub">OPERATING TERMINAL</span></span>
+                </h1>
+                <p class="editorial-manifesto-text"
+                   data-en="High-velocity engagement acceleration across Meta &amp; TikTok ecosystems. Enterprise routing, automated UID parsing, and real-time order execution."
+                   data-vi="Hệ thống buff tương tác và tăng trưởng tài khoản mạng xã hội tốc độ cao trên nền tảng Meta &amp; TikTok. Tự động chuyển đổi UID, bảo mật tài khoản 100% và khớp lệnh tự động.">
+                    Hệ thống buff tương tác và tăng trưởng tài khoản mạng xã hội tốc độ cao trên nền tảng Meta &amp; TikTok. Tự động chuyển đổi UID, bảo mật tài khoản 100% và khớp lệnh tự động.
+                </p>
+            </div>
+
+            <!-- Terminal Shell -->
+            <div class="social-terminal-wrap">
+                <div class="terminal-shell">
+                    <div class="terminal-beam-line"></div>
+                    <span class="terminal-corner tc-tl">+</span>
+                    <span class="terminal-corner tc-tr">+</span>
+                    <span class="terminal-corner tc-bl">+</span>
+                    <span class="terminal-corner tc-br">+</span>
+
+                    <div class="terminal-header-row">
+                        <div class="terminal-tag">DỊCH VỤ TĂNG TƯƠNG TÁC MẠNG XÃ HỘI</div>
+                        <div class="terminal-meta-indicators">
+                            <span>BẢO MẬT: <strong>AN TOÀN 100%</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Matrix Pills (Recommended Services - Prioritizing Vietnam First) -->
+                    <div style="margin-bottom: 0.75rem;">
+                        <div class="matrix-section-title" style="font-family: var(--font-tech); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">
+                            ⭐ GỢI Ý DỊCH VỤ NÊN DÙNG (ƯU TIÊN VIỆT NAM)
+                        </div>
+                    </div>
+                    <div class="service-card-matrix">
+                        <!-- Recommendation 1: Sub Viet Nam (Primary) -->
+                        <div class="matrix-pill selected" data-sid="317844" data-plat="facebook" data-cat="follow_profile" data-rate="48.5" data-min="500" data-max="150000">
+                            <div class="matrix-pill-plat">⭐ Facebook &bull; Sub Việt Nam</div>
+                            <div class="matrix-pill-title">Follow Facebook (Sub Việt Nam, Hạn Chế Tụt)</div>
+                            <div class="matrix-pill-rate">48,5 ₫ / 1 (48.500 ₫ / 1.000)</div>
+                        </div>
+                        <!-- Recommendation 2: Like Viet Nam -->
+                        <div class="matrix-pill" data-sid="3566" data-plat="facebook" data-cat="like_post" data-rate="16.4" data-min="50" data-max="10000">
+                            <div class="matrix-pill-plat">⭐ Facebook &bull; Like Việt Nam</div>
+                            <div class="matrix-pill-title">Like Bài Viết Facebook (Server Việt, Tốc Độ Nhanh)</div>
+                            <div class="matrix-pill-rate">16,4 ₫ / 1 (16.400 ₫ / 1.000)</div>
+                        </div>
+                        <!-- Recommendation 3: Sub Tay / Quoc Te -->
+                        <div class="matrix-pill" data-sid="317835" data-plat="facebook" data-cat="follow_profile" data-rate="18.8" data-min="200" data-max="1000000">
+                            <div class="matrix-pill-plat">Facebook &bull; Sub Quốc Tế (Tây)</div>
+                            <div class="matrix-pill-title">Follow Facebook (Sub Tây, Tốc Độ Cao, BH 7 Ngày)</div>
+                            <div class="matrix-pill-rate">18,8 ₫ / 1 (18.800 ₫ / 1.000)</div>
+                        </div>
+                        <!-- Recommendation 4: TikTok Follow -->
+                        <div class="matrix-pill" data-sid="3113" data-plat="tiktok" data-cat="follow_profile" data-rate="71.9" data-min="100" data-max="1000">
+                            <div class="matrix-pill-plat">TikTok &bull; Follow Kênh</div>
+                            <div class="matrix-pill-title">Follow Kênh TikTok (Tăng Tương Tác Kênh Nhanh)</div>
+                            <div class="matrix-pill-rate">71,9 ₫ / 1 (71.900 ₫ / 1.000)</div>
+                        </div>
+                    </div>
+
+                    <!-- Main Interactive SMM Terminal -->
+                    <div id="smm-terminal" style="margin-top: 0; padding: 0; background: transparent; border: none;">
+                        <!-- Level 1: Platform Switcher -->
+                        <div class="smm-platform-tabs" style="margin-bottom: 1.25rem;">
+                            <button type="button" class="smm-tab-btn active" data-platform="facebook">Facebook</button>
+                            <button type="button" class="smm-tab-btn" data-platform="instagram">Instagram</button>
+                            <button type="button" class="smm-tab-btn" data-platform="tiktok">TikTok</button>
+                            <button type="button" class="smm-tab-btn" data-platform="threads">Threads</button>
+                            <button type="button" class="smm-tab-btn" data-platform="other">Tất Cả Nền Tảng</button>
+                        </div>
+
+                        <!-- Level 2: Specific Service Category Matrix -->
+                        <div style="margin-bottom: 0.5rem;">
+                            <div style="font-family: var(--font-tech); font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.6rem;">
+                                [ PHÂN KHÚC DỊCH VỤ CỤ THỂ ]
+                            </div>
+                            <div id="smm-category-grid" class="smm-category-grid"></div>
+                        </div>
+
+                        <div class="control-grid">
+                            <!-- Left Controls -->
+                            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                                <!-- Service Select -->
+                                <div class="smm-field-group">
+                                    <label class="smm-field-label">
+                                        <span>Gói Dịch Vụ Cụ Thể</span>
+                                        <span id="smm-rate-label" style="color: var(--cyan-laser);">Đơn giá: 48,5 VNĐ / 1 (48.500 VNĐ / 1.000)</span>
+                                    </label>
+                                    <select id="smm-service-select" class="smm-select"></select>
+                                    <!-- Live Server Guidelines Note from Original Shop -->
+                                    <div id="smm-note-container" class="smm-server-note-box" style="display: none;">
+                                        <div class="smm-note-title">
+                                            <span>📋 GHI CHÚ MÁY CHỦ (THÔNG SỐ &amp; BẢO HÀNH)</span>
+                                        </div>
+                                        <div id="smm-service-desc" class="smm-note-content"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Link & UID -->
+                                <div class="smm-field-group">
+                                    <label class="smm-field-label">
+                                        <span>Link Trang Cá Nhân / Bài Viết / Video</span>
+                                        <span style="color: var(--text-muted); font-size: 0.72rem;">Hỗ trợ link hoặc UID số</span>
+                                    </label>
+                                    <div class="smm-input-with-action">
+                                        <input type="text" id="smm-link-input" class="smm-input" placeholder="Dán link Facebook, Instagram hoặc TikTok tại đây...">
+                                        <button type="button" id="smm-uid-btn" class="smm-action-btn">⚡ Quét UID</button>
+                                    </div>
+                                    <div id="smm-uid-result" style="font-size: 0.78rem; font-family: var(--font-tech); margin-top: 2px;"></div>
+                                </div>
+
+                                <!-- Quantity (Enforces Shop Min / Max in Quantity Units) -->
+                                <div class="smm-field-group">
+                                    <label class="smm-field-label">
+                                        <span>Số Lượng Cần Chạy</span>
+                                        <span id="smm-minmax-label" style="color: var(--cyan-laser);">Số lượng: 500 &bull; 150.000</span>
+                                    </label>
+                                    <input type="number" id="smm-qty-input" class="smm-input" value="1000" min="50" step="50">
+                                    <div id="smm-qty-warning" style="font-size: 0.78rem; font-family: var(--font-tech); color: #ff8a80; margin-top: 4px; display: none;"></div>
+                                    <div class="smm-qty-chips">
+                                        <button type="button" class="smm-chip" data-qty="100">+100</button>
+                                        <button type="button" class="smm-chip" data-qty="500">+500</button>
+                                        <button type="button" class="smm-chip" data-qty="1000">+1,000</button>
+                                        <button type="button" class="smm-chip" data-qty="2000">+2,000</button>
+                                        <button type="button" class="smm-chip" data-qty="5000">+5,000</button>
+                                        <button type="button" class="smm-chip" data-qty="10000">+10,000</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Summary & Actions -->
+                            <div>
+                                <div class="summary-card">
+                                    <div>
+                                        <div style="font-family: var(--font-tech); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">
+                                            TỔNG CHI PHÍ ƯỚC TÍNH
+                                        </div>
+                                        <div id="smm-total-price" class="smm-price-val" style="font-size: 2.4rem; line-height: 1; margin-bottom: 0.75rem;">
+                                            18.800 VNĐ
+                                        </div>
+                                        <div class="smm-unit-badges" style="margin-bottom: 1.25rem;">
+                                            <span id="smm-rate-unit-badge" class="smm-unit-badge">48,5 ₫ / 1</span>
+                                            <span id="smm-rate-1k-badge" class="smm-unit-badge">48.500 ₫ / 1.000</span>
+                                        </div>
+                                        <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.25rem;">
+                                            Chế độ bảo hành áp dụng theo từng server cụ thể (thời gian bảo hành ghi rõ trên tên gói).
+                                        </p>
+                                    </div>
+
+                                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                        <div class="smm-wallet-bar">
+                                            <span style="color: var(--text-muted); font-size: 0.75rem;">Ví của bạn: <strong id="smm-user-balance" class="smm-wallet-val">0 VNĐ</strong></span>
+                                            <a href="javascript:void(0)" id="smm-topup-btn" class="smm-topup-link">+ NẠP TIỀN VIETQR</a>
+                                        </div>
+                                        <button type="button" id="smm-submit-auto" class="editorial-btn-solid" style="width: 100%; justify-content: center; font-size: 0.9rem; padding: 1.1rem; font-weight: 900; background: var(--cyan-laser); color: #000; box-shadow: 0 10px 30px rgba(0, 240, 255, 0.35);">
+                                            ⚡ XÁC NHẬN &amp; TẠO ĐƠN NGAY (TRỪ VÍ) &rarr;
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order Tracking -->
+                        <div class="smm-track-area" style="margin-top: 2rem; padding-top: 1.5rem;">
+                            <span style="font-family: var(--font-tech); font-size: 0.78rem; letter-spacing: 1.5px; color: var(--text-muted); text-transform: uppercase;">
+                                🔍 TRA CỨU TIẾN ĐỘ ĐƠN HÀNG (ORDER STATUS)
+                            </span>
+                            <div class="smm-input-with-action" style="max-width: 32rem; margin-top: 0.5rem;">
+                                <input type="text" id="smm-track-input" class="smm-input" placeholder="Nhập mã đơn hàng (Order ID, VD: 1234)...">
+                                <button type="button" id="smm-track-btn" class="smm-action-btn" style="padding: 0 1.25rem;">Tra Cứu</button>
+                            </div>
+                            <div id="smm-track-result" style="margin-top: 0.5rem;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Studio Footer -->
+        <footer class="editorial-footer">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-title">TEEMOUS DIGITAL LAB</div>
+                    <p class="footer-desc">Digital identity research, autonomous systems, and turnkey creative infrastructure.</p>
+                    <div class="footer-location">[ DA NANG &bull; VIETNAM ]</div>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-col-title">NAVIGATION</div>
+                    <ul class="footer-links">
+                        <li><a href="../../index.html">Lab Index</a></li>
+                        <li><a href="../../portfolio/index.html">Portfolio Hub</a></li>
+                        <li><a href="../index.html">Services &amp; Systems</a></li>
+                        <li><a href="../get-portfolio/index.html">Commission Space</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-col-title">CONNECT</div>
+                    <ul class="footer-links">
+                        <li><a href="mailto:teemous.contact@gmail.com">Email: teemous.contact@gmail.com</a></li>
+                        <li><a href="https://zalo.me/0797747297" target="_blank" rel="noopener">Zalo: 0797747297 &rarr;</a></li>
+                        <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" rel="noopener">Facebook: Quang Sinh &rarr;</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-copy">&copy; 2026 TEEMOUS DIGITAL LAB. ALL RIGHTS RESERVED.</div>
+                <div class="footer-secure">[ ENCRYPTED EDGE &bull; CLOUDFLARE SECURE ]</div>
+            </div>
+        </footer>
+    </main>
+
+
+    <!-- Fixed UI Controls (Theme Toggle & Lang Toggle) -->
+    <div class="ui-controls">
+        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
+            <span class="mode-icon">🌙</span>
+        </button>
+        <button id="lang-toggle" class="lang-toggle neon-border">VI</button>
+    </div>
+
+    <!-- Chatbot AI Local -->
+    <div id="chatbot-container">
+        <button id="chatbot-toggle" class="neon-border" title="Chat with AI">
+            <span class="chat-icon">💬</span>
+        </button>
+        <div id="chatbot-window">
+            <div class="chatbot-header glass-card">
+                <div class="header-main">
+                    <h3 data-en="Teemous AI Assistant <span class='beta-badge'>BETA</span>"
+                        data-vi="Trợ lý ảo Teemous <span class='beta-badge'>BETA</span>">
+                        Teemous AI Assistant <span class="beta-badge">BETA</span>
+                    </h3>
+                </div>
+                <button id="chatbot-close">✕</button>
+            </div>
+            <div id="chatbot-messages" class="glass-card">
+                <div class="message ai-message" data-en="Hello! I'm Teemous AI. How can I help you today?"
+                    data-vi="Xin chào! Tôi là trợ lý ảo Teemous. Tôi có thể giúp gì cho bạn hôm nay?">
+                    Hello! I'm Teemous AI. How can I help you today?
+                </div>
+            </div>
+            <div class="chatbot-quick-chips">
+                <button type="button" class="quick-chip" data-prompt="Bảng giá dịch vụ mạng xã hội thế nào?" data-en="Pricing" data-vi="Báo giá">Pricing</button>
+                <button type="button" class="quick-chip" data-prompt="Làm sao để lấy UID trang cá nhân Facebook?" data-en="Get UID" data-vi="Quét UID">Quét UID</button>
+                <button type="button" class="quick-chip" data-prompt="Chính sách bảo hành đơn hàng ra sao?" data-en="Warranty" data-vi="Bảo hành">Bảo hành</button>
+                <button type="button" class="quick-chip" data-prompt="Tôi muốn liên hệ trực tiếp với admin Quang Sinh" data-en="Contact Admin" data-vi="Liên hệ Admin">Contact Admin</button>
+            </div>
+            <div class="chatbot-input-area glass-card">
+                <input type="text" id="chatbot-input" placeholder="Type a message..."
+                    data-en-placeholder="Type a message..." data-vi-placeholder="Nhập tin nhắn...">
+                <button id="chatbot-send">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal Overlay -->
+    <div id="auth-modal-overlay" class="auth-modal-overlay">
+        <div id="auth-modal" class="auth-modal-container glass-card">
+            <button id="close-auth-modal" class="close-modal-btn">✕</button>
+            
+            <div class="auth-tab-nav">
+                <button id="tab-login" class="active" data-en="Login" data-vi="Đăng Nhập">Login</button>
+                <div class="auth-divider"></div>
+                <button id="tab-signup" data-en="Sign Up" data-vi="Đăng Ký">Sign Up</button>
+            </div>
+
+            <div id="auth-alert" class="auth-alert" style="display: none;"></div>
+
+            <form id="auth-form" class="auth-form">
+                <!-- Login Section -->
+                <div id="login-section" class="auth-form-section active">
+                    <h2 class="auth-title" data-en="Welcome Back" data-vi="Mừng Trở Lại">Welcome Back</h2>
+                    <p class="auth-subtitle" data-en="Access your Teemous Digital dashboard" data-vi="Truy cập bảng điều khiển cá nhân">Access your Teemous Digital dashboard</p>
+                    <div class="auth-input-group">
+                        <input type="email" id="login-email" placeholder="Email" data-en-placeholder="Email" data-vi-placeholder="Email">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="password" id="login-password" placeholder="Password" data-en-placeholder="Password" data-vi-placeholder="Mật Khẩu">
+                    </div>
+                    <button type="button" id="auth-submit-login" class="auth-submit-btn neon-border" data-en="Login" data-vi="Đăng Nhập">Login</button>
+                </div>
+
+                <!-- Signup Section -->
+                <div id="signup-section" class="auth-form-section" style="display: none;">
+                    <h2 class="auth-title" data-en="Create Account" data-vi="Tạo Mới">Create Account</h2>
+                    <p class="auth-subtitle" data-en="Join with us" data-vi="Gia nhập hệ thống cao cấp">Join with us</p>
+                    <div class="auth-input-group">
+                        <input type="text" id="signup-name" placeholder="Username" data-en-placeholder="Username" data-vi-placeholder="Tên Người Dùng">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="email" id="signup-email" placeholder="Email" data-en-placeholder="Email" data-vi-placeholder="Email">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="password" id="signup-password" placeholder="Password" data-en-placeholder="Password" data-vi-placeholder="Mật Khẩu">
+                    </div>
+                    <div class="auth-input-group">
+                        <input type="password" id="signup-confirm" placeholder="Confirm Password" data-en-placeholder="Confirm Password" data-vi-placeholder="Nhập Lại Mật Khẩu">
+                    </div>
+                    <button type="button" id="auth-submit-signup" class="auth-submit-btn neon-border" data-en="Initialize" data-vi="Khởi Tạo">Initialize</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Dashboard Modal Overlay -->
+    <div id="dashboard-modal-overlay" class="auth-modal-overlay">
+        <div id="dashboard-modal" class="auth-modal-container glass-card dashboard-modal">
+            <button id="close-dashboard-modal" class="close-modal-btn">✕</button>
+            <div class="dashboard-header">
+                <h2 class="neon-gradient-text" data-en="Personal Dashboard" data-vi="Bảng điều khiển">Personal Dashboard</h2>
+            </div>
+            <div class="dashboard-tabs">
+                <button class="dash-tab active" data-tab="profile" data-en="Profile" data-vi="Cá nhân">Profile</button>
+                <button class="dash-tab" data-tab="orders" data-en="Orders" data-vi="Đơn hàng">Orders</button>
+                <button class="dash-tab" data-tab="transactions" data-en="Funding" data-vi="Giao dịch">Funding</button>
+            </div>
+            <div class="dashboard-body">
+                <div id="tab-profile" class="dash-section active">
+                    <div class="profile-info-grid">
+                        <div class="profile-card-main glass-card">
+                            <div class="profile-avatar-wrap">
+                                <img id="dash-avatar" src="../../Avatar/IMG_5907_compressed.jpg" alt="Avatar">
+                            </div>
+                            <h3 id="dash-username">User</h3>
+                            <p id="dash-email" class="text-muted">user@example.com</p>
+                            <span id="dash-role" class="user-role-badge">user</span>
+                            <div class="balance-card">
+                                <span data-en="Available Balance" data-vi="Số dư khả dụng">Available Balance</span>
+                                <h4 id="dash-balance">0 VND</h4>
+                            </div>
+                            <button id="dash-logout-btn" class="logout-btn neon-border" data-en="Logout" data-vi="Đăng xuất">Logout</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab-orders" class="dash-section">
+                    <div class="history-list">
+                        <table class="dash-table">
+                            <thead>
+                                <tr>
+                                    <th data-en="Product" data-vi="Sản phẩm">Product</th>
+                                    <th data-en="Price" data-vi="Giá">Price</th>
+                                    <th data-en="Status" data-vi="Trạng thái">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-list-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="tab-transactions" class="dash-section">
+                    <div class="topup-action-container" style="margin-bottom: 1.5rem; text-align: right; padding: 10px;">
+                        <button id="open-topup-btn" class="topup-btn neon-border" style="padding: 0.5rem 1rem; font-size: 0.9rem; background: rgba(0, 240, 255, 0.1); color: var(--cyan-laser); margin: 5px;">+ Top Up Money</button>
+                    </div>
+                    <div class="history-list">
+                        <table class="dash-table">
+                            <thead>
+                                <tr>
+                                    <th data-en="Amount" data-vi="Số tiền">Amount</th>
+                                    <th data-en="Type" data-vi="Loại">Type</th>
+                                    <th data-en="Status" data-vi="Kết quả">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactions-list-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Up Modal Overlay -->
+    <div id="topup-modal-overlay" class="auth-modal-overlay" style="z-index: 10001;">
+        <div id="topup-modal" class="auth-modal-container glass-card topup-modal">
+            <button id="close-topup-modal" class="close-modal-btn">✕</button>
+            <div class="modal-header">
+                <h2 class="neon-gradient-text" data-en="Top Up Funds" data-vi="Nạp tiền vào ví">Top Up Funds</h2>
+                <p class="modal-subtitle" data-en="Instant balance update via VietQR" data-vi="Cập nhật số dư tức thì qua VietQR">Instant balance update via VietQR</p>
+            </div>
+            <div class="topup-steps">
+                <div class="amount-selector">
+                    <label data-en="Select Amount (VND)" data-vi="Chọn số tiền (VND)">Select Amount (VND)</label>
+                    <div class="amount-grid">
+                        <button class="amt-btn" data-value="20000">20k</button>
+                        <button class="amt-btn" data-value="50000">50k</button>
+                        <button class="amt-btn" data-value="100000">100k</button>
+                        <button class="amt-btn active" data-value="200000">200k</button>
+                    </div>
+                </div>
+                <div id="qr-display-area" class="qr-display-area glass-card" style="display:none; margin-top: 1.5rem; padding: 1.5rem; text-align: center;">
+                    <div class="qr-container" style="background: white; padding: 1rem; border-radius: 12px; display: inline-block; margin-bottom: 1rem;">
+                        <img id="vietqr-img" src="" alt="VietQR Pay" style="width: 240px; height: auto;">
+                    </div>
+                    <div class="payment-details">
+                        <p class="detail-row" style="margin: 0.5rem 0;"><span data-en="Amount:" data-vi="Số tiền:">Amount:</span> <strong id="qr-amt-text">0</strong></p>
+                        <p class="detail-row" style="margin: 0.5rem 0;"><span data-en="Note:" data-vi="Nội dung:">Note:</span> <strong id="qr-note-text" style="color: var(--cyan-laser);">NAP</strong></p>
+                        <p class="warning-text" style="font-size: 0.8rem; color: #ff8a80; margin-top: 1rem;" data-en="Use correct note for auto-process." data-vi="Dùng đúng nội dung để nạp tự động.">Use correct note for auto-process.</p>
+                    </div>
+                </div>
+                <button id="gen-qr-btn" class="auth-submit-btn neon-border" style="margin-top: 1.5rem;" data-en="Generate Payment QR" data-vi="Tạo mã thanh toán QR">Generate Payment QR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Use CDN GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="../../script.js?v=perf-v11"></script>
+
+    <!-- Matrix Quick Pill Click Listener -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pills = document.querySelectorAll('.matrix-pill');
+            const select = document.getElementById('smm-service-select');
+            
+            pills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    pills.forEach(p => p.classList.remove('selected'));
+                    pill.classList.add('selected');
+                    
+                    const sid = pill.getAttribute('data-sid');
+                    const plat = pill.getAttribute('data-plat');
+                    
+                    // Activate platform tab
+                    const tab = document.querySelector(`.smm-tab-btn[data-platform="${plat}"]`);
+                    if (tab) tab.click();
+                    
+                    setTimeout(() => {
+                        if (select) {
+                            select.value = sid;
+                            select.dispatchEvent(new Event('change'));
+                        }
+                    }, 50);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

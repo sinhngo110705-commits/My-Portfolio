@@ -1,21 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const runSafe = (fn, name) => {
+        try {
+            if (typeof fn === 'function') fn();
+        } catch (err) {
+            console.warn(`[Teemous Lab] Warning in ${name}:`, err);
+        }
+    };
+
     if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-        gsap.registerPlugin(ScrollTrigger);
+        try { gsap.registerPlugin(ScrollTrigger); } catch(e) {}
     }
 
-    initBackgroundAnimation();
-    initScrollAnimations();
-    initLanguageToggle();
-    initThemeToggle();
-    initHoverEffects();
-    initPortfolioFilters();
-    initMobileMenu();
-    initGalleryToggle();
-    initScrollProgress();
-    initChatbot();
-    initAuthModal();
-    initDashboard();
-    initTopUpModal();
+    runSafe(initBackgroundAnimation, 'BackgroundAnimation');
+    runSafe(initLiveTelemetry, 'LiveTelemetry');
+    runSafe(initCardSpotlights, 'CardSpotlights');
+    runSafe(ensureMobileWidgets, 'EnsureMobileWidgets');
+    runSafe(initLanguageToggle, 'LanguageToggle');
+    runSafe(initThemeToggle, 'ThemeToggle');
+    runSafe(initSmmTerminal, 'SmmTerminal');
+    runSafe(initChatbot, 'Chatbot');
+    runSafe(initAuthModal, 'AuthModal');
+    runSafe(initDashboard, 'Dashboard');
+    runSafe(initTopUpModal, 'TopUpModal');
+    runSafe(initMobileMenu, 'MobileMenu');
+    runSafe(initScrollProgress, 'ScrollProgress');
+    runSafe(initScrollAnimations, 'ScrollAnimations');
+    runSafe(initHoverEffects, 'HoverEffects');
+    runSafe(initPortfolioFilters, 'PortfolioFilters');
+    runSafe(initGalleryToggle, 'GalleryToggle');
 });
 
 function initScrollProgress() {
@@ -26,15 +38,23 @@ function initScrollProgress() {
     container.appendChild(bar);
     document.body.appendChild(container);
 
+    let ticking = false;
     window.addEventListener('scroll', () => {
-        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        bar.style.width = scrolled + "%";
-    });
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+                bar.style.width = scrolled + "%";
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
 }
 
 function initScrollAnimations() {
+    if (typeof gsap === 'undefined') return;
     // Hero Entrance
     const avatar = document.querySelector('.avatar-container');
     if (avatar) {
@@ -76,6 +96,165 @@ function initScrollAnimations() {
         );
     }
 
+    // ==========================================
+    // MENG TO CINEMATIC MOTION SYSTEM (Awwwards / Studio-Grade)
+    // ==========================================
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (!prefersReducedMotion && typeof gsap !== 'undefined') {
+        gsap.defaults({ ease: 'power3.out', duration: 0.85 });
+
+        // 1. Hero Entrance: Masked Line Reveal & Laser Sweep
+        const titleLines = document.querySelectorAll('.title-line');
+        const metaBar = document.querySelector('.editorial-meta-bar');
+        const manifesto = document.querySelector('.editorial-manifesto-text');
+        const ctas = document.querySelectorAll('.editorial-cta-row a, .commission-gate a');
+        const hairlines = document.querySelectorAll('.hairline');
+
+        if (titleLines.length > 0) {
+            const heroTl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+
+            if (metaBar) {
+                heroTl.fromTo(metaBar, { y: -18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' });
+            }
+            heroTl.fromTo(titleLines, 
+                { yPercent: 115 }, 
+                { yPercent: 0, duration: 1.2, stagger: 0.14, ease: 'power4.out' }, 
+                "-=0.5"
+            );
+            if (manifesto) {
+                heroTl.fromTo(manifesto, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out' }, "-=0.7");
+            }
+            if (ctas.length > 0) {
+                heroTl.fromTo(ctas, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.08, ease: 'power3.out' }, "-=0.6");
+            }
+            if (hairlines.length > 0) {
+                heroTl.fromTo(hairlines[0], { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: 1.2, ease: 'power3.inOut' }, "-=0.5");
+            }
+
+            // Hero Drift removed for 120fps buttery smooth scrolling
+        }
+
+        // 2. Meng To Magnetic Button Physics (Pointer Reactive Inertia)
+        if (!window.matchMedia('(pointer: coarse)').matches) {
+            ctas.forEach(btn => {
+                const xTo = gsap.quickTo(btn, 'x', { duration: 0.4, ease: 'power3.out' });
+                const yTo = gsap.quickTo(btn, 'y', { duration: 0.4, ease: 'power3.out' });
+                let rect = null;
+
+                btn.addEventListener('pointerenter', () => {
+                    rect = btn.getBoundingClientRect();
+                });
+
+                btn.addEventListener('pointermove', (e) => {
+                    if (!rect) rect = btn.getBoundingClientRect();
+                    const strength = 0.28;
+                    const x = (e.clientX - rect.left - rect.width / 2) * strength;
+                    const y = (e.clientY - rect.top - rect.height / 2) * strength;
+                    xTo(x);
+                    yTo(y);
+                }, { passive: true });
+
+                btn.addEventListener('pointerleave', () => {
+                    rect = null;
+                    xTo(0);
+                    yTo(0);
+                });
+            });
+        }
+
+        // 3. Lookbook Section: Meng To Architectural Staggered Reveal
+        const lookbookSection = document.getElementById('lookbook');
+        const lookbookCards = document.querySelectorAll('.lookbook-card');
+        if (lookbookSection && lookbookCards.length > 0 && typeof ScrollTrigger !== 'undefined') {
+            const lookbookTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '#lookbook',
+                    start: 'top 82%',
+                    once: true
+                }
+            });
+
+            lookbookTl.fromTo('#lookbook .editorial-section-header',
+                { y: 18, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.5,
+                    ease: 'power2.out'
+                }
+            );
+
+            lookbookTl.fromTo(lookbookCards,
+                { y: 20, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.55,
+                    stagger: 0.06,
+                    ease: 'power2.out',
+                    clearProps: 'transform,opacity,willChange'
+                },
+                "-=0.25"
+            );
+        }
+
+        // 4. Systems Section: Staggered Architectural Spectrum Reveal
+        const systemsSection = document.getElementById('systems');
+        const spectrumCols = document.querySelectorAll('.spectrum-col');
+        if (systemsSection && spectrumCols.length > 0 && typeof ScrollTrigger !== 'undefined') {
+            const systemsTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '#systems',
+                    start: 'top 82%',
+                    once: true
+                }
+            });
+
+            systemsTl.fromTo('#systems .editorial-section-header',
+                { y: 24, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.7,
+                    ease: 'power3.out'
+                }
+            );
+
+            systemsTl.fromTo(spectrumCols,
+                { y: 28, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    stagger: 0.08,
+                    ease: 'power3.out',
+                    clearProps: 'transform,opacity,willChange'
+                },
+                "-=0.35"
+            );
+        }
+
+        // 5. Commission Section Reveal
+        const commissionSection = document.getElementById('commission');
+        if (commissionSection && typeof ScrollTrigger !== 'undefined') {
+            gsap.fromTo(commissionSection,
+                { y: 24, opacity: 0 },
+                {
+                    scrollTrigger: {
+                        trigger: '#commission',
+                        start: 'top 86%',
+                        once: true
+                    },
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                    clearProps: 'transform,opacity,willChange'
+                }
+            );
+        }
+    }
     // About Section
     const aboutFrame = document.querySelector('#about .section-frame');
     if (aboutFrame) {
@@ -87,7 +266,8 @@ function initScrollAnimations() {
             duration: 1,
             y: 50,
             opacity: 0,
-            ease: 'power3.out'
+            ease: 'power3.out',
+            clearProps: 'transform,willChange'
         });
     }
 
@@ -109,7 +289,8 @@ function initScrollAnimations() {
                 y: 0,
                 opacity: 1,
                 stagger: 0.15,
-                ease: 'power3.out'
+                ease: 'power3.out',
+                clearProps: 'transform,willChange'
             }
         );
     }
@@ -139,7 +320,8 @@ function initScrollAnimations() {
             y: 30,
             opacity: 0,
             stagger: 0.2,
-            ease: 'power3.out'
+            ease: 'power3.out',
+            clearProps: 'transform,willChange'
         });
     }
 
@@ -158,7 +340,8 @@ function initScrollAnimations() {
                 y: 40,
                 duration: 0.8,
                 stagger: 0.1,
-                ease: 'power3.out'
+                ease: 'power3.out',
+                clearProps: 'transform,willChange'
             });
         }
     }
@@ -194,27 +377,47 @@ function initScrollAnimations() {
     }, 3000);
 }
 
-// High framerate mouse-tracking background animation (Data / Cyberpunk Grid shift)
+// High-performance hardware-accelerated background animation (Data / Cyberpunk Grid shift)
 function initBackgroundAnimation() {
     const canvas = document.getElementById('bg-canvas');
-    if (!canvas) return; // Silent safety exit if no canvas exists
-    const ctx = canvas.getContext('2d');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
-    let width, height;
-    let particles = [];
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
 
-    // Mouse tracking
+    let width = 0, height = 0;
+    let particles = [];
     let mouse = { x: null, y: null, targetX: null, targetY: null };
+    let isVisible = !document.hidden;
+    let isScrolling = false;
+    let scrollTimeout = null;
+    let animId = null;
+    let lastTime = 0;
+    const targetFpsInterval = 1000 / 60;
+
+    const isCoarse = window.matchMedia('(pointer: coarse)').matches;
+    const isLowPower = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || isCoarse;
 
     window.addEventListener('mousemove', (e) => {
-        mouse.targetX = e.x;
-        mouse.targetY = e.y;
+        mouse.targetX = e.clientX;
+        mouse.targetY = e.clientY;
         if (mouse.x === null) {
-            mouse.x = e.x;
-            mouse.y = e.y;
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
         }
-    });
+    }, { passive: true });
+
+    // Pause canvas completely during active user scroll to give 100% frame budget to smooth scrolling
+    window.addEventListener('scroll', () => {
+        isScrolling = true;
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            isScrolling = false;
+        }, 80);
+    }, { passive: true });
 
     function resize() {
         width = window.innerWidth;
@@ -224,154 +427,212 @@ function initBackgroundAnimation() {
         initParticles();
     }
 
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize, { passive: true });
 
     class Particle {
         constructor() {
             this.x = Math.random() * width;
             this.y = Math.random() * height;
-            this.size = Math.random() * 2;
+            this.size = Math.random() * 1.6 + 0.8;
             this.baseX = this.x;
             this.baseY = this.y;
+            this.vx = (Math.random() - 0.5) * 0.3;
+            this.vy = (Math.random() - 0.5) * 0.3;
             this.density = (Math.random() * 20) + 1;
-            const colors = ['rgba(156, 39, 176, 0.4)', 'rgba(33, 150, 243, 0.4)'];
-            this.color = colors[Math.floor(Math.random() * colors.length)];
-        }
-
-        draw() {
-            ctx.fillStyle = this.color;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.closePath();
-            ctx.fill();
+            this.colorType = Math.random() > 0.5 ? 1 : 0;
         }
 
         update() {
-            if (mouse.x != null) {
-                // Parallax effect based on mouse distance to center
-                let dx = mouse.x - width / 2;
-                let dy = mouse.y - height / 2;
+            this.baseX += this.vx;
+            this.baseY += this.vy;
 
-                // Shift particles smoothly
-                let targetX = this.baseX - (dx * 0.05 * (30 / this.density));
-                let targetY = this.baseY - (dy * 0.05 * (30 / this.density));
+            if (this.baseX < 0) this.baseX = width;
+            if (this.baseX > width) this.baseX = 0;
+            if (this.baseY < 0) this.baseY = height;
+            if (this.baseY > height) this.baseY = 0;
+
+            if (mouse.x != null) {
+                const dx = mouse.x - width / 2;
+                const dy = mouse.y - height / 2;
+                const factor = (30 / this.density) * 0.04;
+                const targetX = this.baseX - (dx * factor);
+                const targetY = this.baseY - (dy * factor);
 
                 this.x += (targetX - this.x) * 0.05;
                 this.y += (targetY - this.y) * 0.05;
+            } else {
+                this.x = this.baseX;
+                this.y = this.baseY;
             }
         }
     }
 
     function initParticles() {
         particles = [];
-        const numParticles = (width * height) / 8000; // Density
+        const baseDensity = isLowPower ? 40000 : 26000;
+        const maxParticles = isLowPower ? 14 : 26;
+        const numParticles = Math.min(maxParticles, Math.max(10, Math.floor((width * height) / baseDensity)));
         for (let i = 0; i < numParticles; i++) {
             particles.push(new Particle());
         }
     }
 
-    function drawGrid(isLight) {
-        if (!mouse.x) return;
-
-        const dx = (mouse.x - width / 2) * 0.02;
-        const dy = (mouse.y - height / 2) * 0.02;
-
-        ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.035)';
-        ctx.lineWidth = 1;
-
-        const gridSize = 50;
-        const offsetX = (dx % gridSize) - gridSize;
-        const offsetY = (dy % gridSize) - gridSize;
-
+    function drawParticlesAndConnections(isLight) {
+        const maxDistSq = 12000;
         ctx.beginPath();
-        for (let x = offsetX; x < width + gridSize; x += gridSize) {
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, height);
-        }
-        for (let y = offsetY; y < height + gridSize; y += gridSize) {
-            ctx.moveTo(0, y);
-            ctx.lineTo(width, y);
-        }
-        ctx.stroke();
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, width, height);
-
-        // Smooth mouse following
-        if (mouse.targetX !== null) {
-            mouse.x += (mouse.targetX - mouse.x) * 0.1;
-            mouse.y += (mouse.targetY - mouse.y) * 0.1;
-        }
-
-        const isLight = document.documentElement.classList.contains('light-mode') || document.body.classList.contains('light-mode');
-        
-        drawGrid(isLight);
-
-        for (let i = 0; i < particles.length; i++) {
-            particles[i].update();
-            particles[i].draw();
-        }
-
-        // Draw connections for close particles in both modes
-        connectParticles(isLight);
-
-        requestAnimationFrame(animate);
-    }
-
-    function connectParticles(isLight) {
         for (let a = 0; a < particles.length; a++) {
-            for (let b = a; b < particles.length; b++) {
-                let dx = particles[a].x - particles[b].x;
-                let dy = particles[a].y - particles[b].y;
-                let distance = dx * dx + dy * dy;
+            const pa = particles[a];
+            for (let b = a + 1; b < particles.length; b++) {
+                const pb = particles[b];
+                const dx = pa.x - pb.x;
+                const dy = pa.y - pb.y;
+                const distance = dx * dx + dy * dy;
 
-                if (distance < 12000) {
-                    let opacity = 1 - (distance / 12000);
-                    // Use neon-purple color (156, 39, 176) with balanced intensity for both modes
-                    const lineOpacity = isLight ? opacity * 0.15 : opacity * 0.2;
-                    ctx.strokeStyle = `rgba(156, 39, 176, ${lineOpacity})`;
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(particles[a].x, particles[a].y);
-                    ctx.lineTo(particles[b].x, particles[b].y);
-                    ctx.stroke();
+                if (distance < maxDistSq) {
+                    ctx.moveTo(pa.x, pa.y);
+                    ctx.lineTo(pb.x, pb.y);
                 }
             }
         }
+        ctx.strokeStyle = isLight ? 'rgba(156, 39, 176, 0.14)' : 'rgba(156, 39, 176, 0.18)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Batch purple particles
+        ctx.fillStyle = 'rgba(156, 39, 176, 0.5)';
+        ctx.beginPath();
+        for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            if (p.colorType === 0) {
+                ctx.moveTo(p.x + p.size, p.y);
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            }
+        }
+        ctx.fill();
+
+        // Batch blue particles
+        ctx.fillStyle = 'rgba(33, 150, 243, 0.5)';
+        ctx.beginPath();
+        for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            if (p.colorType === 1) {
+                ctx.moveTo(p.x + p.size, p.y);
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            }
+        }
+        ctx.fill();
     }
 
+    function animate(now) {
+        if (!isVisible) return;
+
+        animId = requestAnimationFrame(animate);
+
+        // While scrolling, freeze canvas to eliminate all GPU competition
+        if (isScrolling) return;
+
+        const delta = now - lastTime;
+        if (delta < targetFpsInterval - 2) return;
+        lastTime = now - (delta % targetFpsInterval);
+
+        ctx.clearRect(0, 0, width, height);
+
+        if (mouse.targetX !== null) {
+            mouse.x += (mouse.targetX - mouse.x) * 0.08;
+            mouse.y += (mouse.targetY - mouse.y) * 0.08;
+        }
+
+        const isLight = document.documentElement.classList.contains('light-mode') || document.body.classList.contains('light-mode');
+
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+        }
+
+        drawParticlesAndConnections(isLight);
+    }
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            isVisible = false;
+            if (animId) cancelAnimationFrame(animId);
+        } else {
+            isVisible = true;
+            lastTime = performance.now();
+            animId = requestAnimationFrame(animate);
+        }
+    });
+
     resize();
-    animate();
+    lastTime = performance.now();
+    animId = requestAnimationFrame(animate);
 }
 
-// Multi-language Toggle Logic
-let currentLang = localStorage.getItem('td-lang') || 'en';
+// Multi-language Toggle Logic (Persistent state across entire ecosystem)
+let currentLang = localStorage.getItem('td-lang') || 'vi';
 if (!localStorage.getItem('td-lang')) {
     localStorage.setItem('td-lang', currentLang);
 }
 
+function ensureMobileWidgets() {
+    const headerNav = document.querySelector('.header-nav');
+    if (!headerNav) return;
+
+    if (!headerNav.querySelector('.mobile-nav-widgets')) {
+        const widgetsContainer = document.createElement('div');
+        widgetsContainer.className = 'mobile-nav-widgets';
+        widgetsContainer.innerHTML = `
+            <div class="mobile-widget-row">
+                <button type="button" class="mobile-widget-btn theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
+                    <span class="mode-icon">🌙</span>
+                    <span class="theme-label">Tối</span>
+                </button>
+                <button type="button" class="mobile-widget-btn lang-toggle" title="Toggle Language" aria-label="Toggle Language">
+                    <span class="lang-flag">🇻🇳</span> <span class="lang-text">VI</span>
+                </button>
+            </div>
+        `;
+        headerNav.appendChild(widgetsContainer);
+    }
+}
+
 function initLanguageToggle() {
-    // Apply initial translation based on localStorage on load
+    // Synchronize HTML element lang attribute immediately
+    document.documentElement.lang = currentLang;
+    document.documentElement.setAttribute('data-lang', currentLang);
     updateAllTranslations();
 
-    const langBtn = document.getElementById('lang-toggle');
-    if (!langBtn) return;
+    const langBtns = document.querySelectorAll('.lang-toggle');
+    langBtns.forEach(langBtn => {
+        if (langBtn._hasLangListener) return;
+        langBtn._hasLangListener = true;
 
-    langBtn.addEventListener('click', () => {
-        currentLang = currentLang === 'en' ? 'vi' : 'en';
-        localStorage.setItem('td-lang', currentLang);
-        updateAllTranslations();
-        window.dispatchEvent(new CustomEvent('td-state-change', { detail: { type: 'lang', value: currentLang } }));
+        langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentLang = currentLang === 'en' ? 'vi' : 'en';
+            localStorage.setItem('td-lang', currentLang);
+            document.documentElement.lang = currentLang;
+            document.documentElement.setAttribute('data-lang', currentLang);
+            updateAllTranslations();
+            if (typeof gsap !== 'undefined') {
+                gsap.fromTo(langBtn, { scale: 0.85 }, { scale: 1, duration: 0.25, ease: 'back.out(1.7)' });
+            }
+            window.dispatchEvent(new CustomEvent('td-state-change', { detail: { type: 'lang', value: currentLang } }));
+        });
     });
 }
 
 function updateAllTranslations() {
-    // 0. Update the Lang Toggle button text depending on current language
-    const langBtn = document.getElementById('lang-toggle');
-    if (langBtn) {
-        langBtn.innerText = currentLang === 'en' ? 'EN' : 'VI';
-    }
+    document.documentElement.lang = currentLang;
+    document.documentElement.setAttribute('data-lang', currentLang);
+
+        // 0. Clean, minimal Lang button: Displays solely "VI" or "EN"
+    const langBtns = document.querySelectorAll('.lang-toggle');
+    langBtns.forEach(langBtn => {
+        const code = currentLang === 'vi' ? 'VI' : 'EN';
+        langBtn.innerHTML = `<span style="font-weight:900; font-family:var(--font-heading); font-size:0.95rem; letter-spacing:0.5px;">${code}</span>`;
+        langBtn.setAttribute('title', currentLang === 'vi' ? 'Đang hiển thị Tiếng Việt (Bấm để chuyển sang English)' : 'Currently English (Click to switch to Tiếng Việt)');
+        langBtn.setAttribute('aria-label', currentLang === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt');
+    });
 
     // 1. Text elements
     const translatableElements = document.querySelectorAll('[data-en][data-vi]');
@@ -410,9 +671,6 @@ function updateAllTranslations() {
 
 // Light / Dark Mode Toggle Logic
 function initThemeToggle() {
-    const themeBtn = document.getElementById('theme-toggle');
-    if (!themeBtn) return;
-
     // --- localStorage persistence: apply saved theme on page load ---
     const savedTheme = localStorage.getItem('td-theme');
     if (savedTheme === 'dark') {
@@ -421,16 +679,23 @@ function initThemeToggle() {
         document.documentElement.classList.add('light-mode'); // default light
     }
 
-    themeBtn.addEventListener('click', () => {
-        document.documentElement.classList.toggle('light-mode');
-        const isLight = document.documentElement.classList.contains('light-mode');
-        localStorage.setItem('td-theme', isLight ? 'light' : 'dark');
+    const themeBtns = document.querySelectorAll('.theme-toggle');
+    themeBtns.forEach(themeBtn => {
+        if (themeBtn._hasThemeListener) return;
+        themeBtn._hasThemeListener = true;
 
-        if (typeof gsap !== 'undefined') {
-            gsap.fromTo(themeBtn, { scale: 0.8 }, { scale: 1, duration: 0.3, ease: 'back.out(1.7)' });
-        }
-        updateThemeButtonText();
-        window.dispatchEvent(new CustomEvent('td-state-change', { detail: { type: 'theme', value: isLight ? 'light' : 'dark' } }));
+        themeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.documentElement.classList.toggle('light-mode');
+            const isLight = document.documentElement.classList.contains('light-mode');
+            localStorage.setItem('td-theme', isLight ? 'light' : 'dark');
+
+            if (typeof gsap !== 'undefined') {
+                gsap.fromTo(themeBtn, { scale: 0.8 }, { scale: 1, duration: 0.3, ease: 'back.out(1.7)' });
+            }
+            updateThemeButtonText();
+            window.dispatchEvent(new CustomEvent('td-state-change', { detail: { type: 'theme', value: isLight ? 'light' : 'dark' } }));
+        });
     });
 
     // Initial setup
@@ -438,9 +703,6 @@ function initThemeToggle() {
 }
 
 function updateThemeButtonText() {
-    const modeIcon = document.querySelector('.mode-icon');
-    if (!modeIcon) return;
-
     const isLight = document.documentElement.classList.contains('light-mode');
 
     // FOOLPROOF ASSET PATH: Use the script's own src location to find the root
@@ -454,21 +716,42 @@ function updateThemeButtonText() {
     const dayIcon = `${rootPath}Logo/daymodeicon.png`;
     const nightIcon = `${rootPath}Logo/nightmodeicon.png`;
     const currentIcon = isLight ? dayIcon : nightIcon;
+    const fallbackEmoji = isLight ? '☀️' : '🌙';
 
-    modeIcon.innerHTML = `<img src="${currentIcon}" alt="Theme Icon" class="theme-icon-img" style="width: 24px; height: 24px; vertical-align: middle;">`;
+    const modeIcons = document.querySelectorAll('.mode-icon');
+    modeIcons.forEach(modeIcon => {
+        const isMobile = modeIcon.closest('.mobile-widget-btn');
+        const iconSize = isMobile ? '18px' : '24px';
+        modeIcon.innerHTML = `<img src="${currentIcon}" alt="Theme Icon" class="theme-icon-img" style="width: ${iconSize}; height: ${iconSize}; vertical-align: middle;" onerror="this.outerHTML='${fallbackEmoji}';">`;
+    });
+
+    const activeLang = (typeof currentLang !== 'undefined') ? currentLang : (localStorage.getItem('td-lang') || 'vi');
+    const themeLabels = document.querySelectorAll('.theme-label');
+    themeLabels.forEach(label => {
+        if (isLight) {
+            label.textContent = activeLang === 'vi' ? 'Sáng' : 'Light';
+        } else {
+            label.textContent = activeLang === 'vi' ? 'Tối' : 'Dark';
+        }
+    });
+
+    const themeBtns = document.querySelectorAll('.theme-toggle');
+    themeBtns.forEach(btn => {
+        btn.setAttribute('title', isLight ? (activeLang === 'vi' ? 'Chế độ Sáng (Bấm để chuyển Tối)' : 'Light Mode (Click for Dark)') : (activeLang === 'vi' ? 'Chế độ Tối (Bấm để chuyển Sáng)' : 'Dark Mode (Click for Light)'));
+        btn.setAttribute('aria-label', isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode');
+    });
 }
 
-// Hover Effects for interactive elements
+// Hover Effects for interactive buttons & links (leaving card/section hover purely to CSS transitions)
 function initHoverEffects() {
     if (typeof gsap === 'undefined') return;
 
-    // Example: Social buttons
-    gsap.utils.toArray('.social-btn, .nav-links a, .theme-toggle, .lang-toggle, .project-card, .card, .circular-avatar').forEach(el => {
+    gsap.utils.toArray('.social-btn, .nav-links a, .theme-toggle, .lang-toggle, .circular-avatar').forEach(el => {
         el.addEventListener('mouseenter', (e) => {
-            gsap.to(e.currentTarget, { scale: 1.05, duration: 0.2, ease: 'power1.inOut' });
+            gsap.to(e.currentTarget, { scale: 1.05, duration: 0.25, ease: 'power2.out' });
         });
         el.addEventListener('mouseleave', (e) => {
-            gsap.to(e.currentTarget, { scale: 1, duration: 0.2, ease: 'power1.inOut' });
+            gsap.to(e.currentTarget, { scale: 1, duration: 0.25, ease: 'power2.out', clearProps: 'transform' });
         });
     });
 }
@@ -520,7 +803,7 @@ function initPortfolioFilters() {
     const filterTier = document.getElementById('filter-tier');
     const filterField = document.getElementById('filter-field');
     const tierSections = document.querySelectorAll('.tier-section[data-tier]');
-    const avatars = document.querySelectorAll('.portfolio-card');
+    const avatars = document.querySelectorAll('.portfolio-card, .hub-profile-card');
 
     // If not on Hub page, exit
     if (!filterTier && !filterField) return;
@@ -538,7 +821,7 @@ function initPortfolioFilters() {
             if (tierMatch) {
                 section.style.display = '';
                 // Within visible tier: apply field filter
-                const sectionAvatars = section.querySelectorAll('.portfolio-card');
+                const sectionAvatars = section.querySelectorAll('.portfolio-card, .hub-profile-card');
                 let anyVisible = false;
                 sectionAvatars.forEach(avatar => {
                     const fieldMatch = (fieldVal === 'all') || (avatar.dataset.field === fieldVal);
@@ -571,6 +854,10 @@ function initMobileMenu() {
     const headerNav = document.querySelector('.header-nav');
 
     if (!menuToggle || !headerNav) return;
+
+    ensureMobileWidgets();
+    initLanguageToggle();
+    initThemeToggle();
 
     // Remove any leftover backdrop overlay from DOM
     const oldBackdrop = document.querySelector('.mobile-menu-backdrop');
@@ -867,6 +1154,17 @@ function initChatbot() {
     };
 
     sendBtn.addEventListener('click', handleSend);
+    // Chatbot Quick Chips Handler
+    windowEl.querySelectorAll('.quick-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const prompt = chip.getAttribute('data-prompt');
+            if (prompt && inputEl) {
+                inputEl.value = prompt;
+                handleSend();
+            }
+        });
+    });
+
     inputEl.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -898,7 +1196,7 @@ function initChatbot() {
 
     async function getAIResponse(userText) {
         if (isThinking) return;
-        const provider = 'local'; // Restored to Local AI (LM Studio/ngrok) as requested
+        const provider = 'local';
         let indicator;
         try {
             isThinking = true;
@@ -910,27 +1208,44 @@ function initChatbot() {
             const activeLang = (typeof currentLang !== 'undefined') ? currentLang : (localStorage.getItem('td-lang') || 'en');
 
             const systemPrompt = `
-# IDENTITY: Teemous AI (Youthful/Friendly Assistant to Sinh)
-- WEB: Hệ sinh thái Dịch vụ & Portfolio Hub của Quang Sinh (không chỉ là Shop).
-- VỀ SINH: Người sáng lập Teemous Digital, U30, nhiệt huyết.
-- XƯNG HÔ: Gọi "Sinh"/"Quang Sinh"/"cậu ấy". Xưng "mình", gọi khách là "bạn". Tránh "Ông/Ngài/Chuyên gia".
-- LANGUAGE: Tự động dùng ngôn ngữ theo khách (Tiếng Việt hoặc Tiếng Anh). 
-- PHONG CÁCH: Ngắn gọn (1-2 câu), thân thiện như bạn bè. 
-- XƯNG HÔ: Nếu tiếng Việt, xưng "mình", gọi khách là "bạn". Nếu tiếng Anh, dùng "I/Me" và "You".
+# IDENTITY & PERSONA (VAI TRÒ & PHONG CÁCH CỦA TEEMOUS AI)
+- Bạn là Teemous AI, trợ lý số thông minh chính thức của hệ sinh thái Teemous Digital Lab do Ngô Quang Sinh (sinh năm 2005) sáng lập.
+- Tính cách: Thân thiện, tôn trọng, lịch sự, am hiểu công nghệ, xưng "mình" và gọi "bạn" (hoặc "I" - "you" khi nói tiếng Anh).
+- Độ dài phản hồi: Ngắn gọn, súc tích, đi thẳng vào trọng tâm (khoảng 2 đến 4 câu).
+- Ngôn ngữ: Tự động phát hiện và trả lời theo đúng ngôn ngữ người dùng đang hỏi (${activeLang === "vi" ? "ưu tiên Tiếng Việt" : "ưu tiên English"}).
 
-# KNOWLEDGE BASE (DỊCH VỤ & GIÁ):
-1. KHỞI TẠO PORTFOLIO:
-- Basic: 199k -> 49k (-75%). Bố cục chuẩn, sub-domain teemousdigital.id.vn.
-- Advanced: 300k - 1M+. Custom UI, tên miền riêng (.com/.vn).
-2. DỊCH VỤ BỔ SUNG:
-- Curation: +29k-249k (Tinh chỉnh/Số hóa nội dung chuyên nghiệp).
-- The Carry Pack: +12$ (Tư vấn & thực thi trọn gói A-Z).
-- Add to Top: +1$/tháng (Ghim nổi bật trên Hub).
-3. ARENA OF VALOR ACCS:
-- #AOV-001: 999k (ATM). Murad Chí Tôn, Full SS hữu hạn. Rank Chiến Tướng.
-- #AOV-002: 678k (ATM). Yena Wave, Ryo SS. Rank Cao Thủ. (Có link FB bảo kê).
+# RAG KNOWLEDGE BASE (BẢN ĐỒ KIẾN THỨC TOÀN DIỆN VỀ TEEMOUS DIGITAL)
 
-# RULES: NO BOLDING (**), ALL CAPS for emphasis, nesting: (*) -> (-) -> (+). Trả lời ngắn!
+1. VỀ TEEMOUS DIGITAL LAB & FOUNDER QUANG SINH:
+- Phòng nghiên cứu sáng tạo số tại Đà Nẵng, Việt Nam.
+- Người sáng lập: Ngô Quang Sinh (Tech Lead & Founder), sinh viên Digital Marketing tại Đại học Duy Tân. Chuyên kiến trúc Web, tự động hóa AI Workflows, Google AppsScript và giải pháp tăng trưởng số.
+- Kênh liên hệ chính thức: Facebook (facebook.com/quang.sinh.5492), Zalo: 0797747297, Email: teemous.contact@gmail.com.
+
+2. DỊCH VỤ KHỞI TẠO PORTFOLIO CÁ NHÂN (GET PORTFOLIO):
+- Gói Khởi Tạo Cơ Bản (Basic Incubation): Giá gốc 49.000đ, hiện đang TÀI TRỢ 100% (SUẤT 0Đ) cho 20 người đăng ký sớm nhất (chương trình Pioneer Launch Grant). Quyền lợi: Website portfolio chuẩn responsive, tích hợp tải CV PDF, kết nối mạng xã hội, xác thực đưa lên Teemous Hub, mã nguồn tải nhanh chuẩn SEO.
+- Gói Khởi Tạo Nâng Cao (Bespoke VIP): Hiện ĐANG TẠM KHÓA ĐỂ REMAKE & NÂNG CẤP phiên bản mới (sắp ra mắt với tên miền riêng .com/.vn độc lập, trợ lý AI riêng và tích xanh chính thức). Khách hàng hiện nên đăng ký nhận suất 0đ Gói Cơ Bản.
+- Tùy chọn đẩy Top: Đẩy hồ sơ lên Top Featured trên Hub trong 30 ngày (+30.000đ).
+
+3. TEEMOUS PORTFOLIO HUB (DANH BẠ NĂNG LỰC GEN Z):
+- Quy chế xét bậc & điểm năng lực (Power Rating): Đánh giá công tâm dựa trên giá trị thực tế tạo ra cho cộng đồng & sản phẩm thực chiến trên bình diện chung (không gò bó theo từng chuyên ngành riêng biệt).
+  * S+ APEX (>= 95.0): Thủ lĩnh kiến tạo hệ sinh thái, dẫn dắt dự án lớn và tạo tác động cộng đồng đột phá.
+  * S PROFESSIONAL (90.0 - 94.9): Chuyên môn thực chiến xuất sắc, hoàn thiện sản phẩm độc lập chất lượng cao.
+  * A+ IMPRESSIVE (85.0 - 89.9): Nền tảng kỹ năng vững vàng, chủ động triển khai sản phẩm thực tế.
+  * A STANDARD (80.0 - 84.9): Thành thạo công cụ chuyên môn thiết yếu, tác phong nhanh nhẹn, cầu tiến.
+- Bảng xếp hạng thành viên:
+  * Trần Thị Thùy Dương (#01 - 96.0 điểm, Tier S+ Apex): SV Khoa học Máy tính VKU (GPA 3.61/4.0), cựu chuyên Tin Quốc Học Huế (9.3/10), giải ICPC Quốc gia, Top 6 SheCodes. Thuật toán, C++, Java, Full-Stack, Flutter.
+  * Lê Thái Trung (#02 - 90.5 điểm, Tier S Pro): SV Kỹ nghệ Phần mềm ĐH Duy Tân. Backend Developer, REST APIs, IntelliJ IDEA, Postman, Linux/Git.
+  * Ngô Quang Sinh (#03 - 88.0 điểm, Tier A+): Founder Teemous Digital, SV Digital Marketing ĐH Duy Tân. Kiến trúc Web, Tự động hóa AI Workflows, AppsScript, Quản trị hệ thống, Phát triển cộng đồng.: Founder Teemous Digital, SV Digital Marketing ĐH Duy Tân. Kiến trúc Web, Tự động hóa AI Workflows, AppsScript, Quản trị hệ thống, Phát triển cộng đồng.
+  * Lê Thái Trung (#03 - 85.5 điểm, Tier A+): SV Kỹ nghệ Phần mềm ĐH Duy Tân. Backend Developer, REST APIs, IntelliJ IDEA, Postman, Linux/Git.
+  * Bùi Lưu Bảo Hân (#04 - 84.0 điểm, Tier A): SV Kinh doanh Quốc tế ĐH Duy Tân. Quản trị Nhân sự (HR), Điều phối Cộng đồng, Notion, Google Sheets, Giao tiếp đối ngoại.
+  * Vương Quang Tuấn (#05 - 80.5 điểm, Tier A): SV Digital Marketing ĐH Duy Tân. Thiết kế đồ họa Canva, Dựng video ngắn CapCut, Sáng tạo nội dung Fanpage, Facebook Ads cơ bản.
+
+4. DỊCH VỤ TĂNG TRƯỞNG MẠNG XÃ HỘI (SMM TERMINAL):
+- Tăng tương tác, like, follow, view, comment tốc độ cao cho Facebook, Instagram, Threads, TikTok.
+- Tự động lấy UID từ link cá nhân/bài viết, bảo mật tài khoản 100% (không cần mật khẩu), nạp tiền tự động qua VietQR, tra cứu tiến độ bằng Order ID.
+
+5. CỬA HÀNG LIÊN QUÂN (AOV SHOP):
+- Hiện đang TẠM NGƯNG HOẠT ĐỘNG để bảo trì hệ thống và nâng cấp máy chủ bảo mật.
 `;
 
             const recentHistory = chatHistory.slice(-10);
@@ -943,8 +1258,8 @@ function initChatbot() {
             let success = false;
             let lastApiError = "";
 
-            if (provider === 'local') {
-                const publicTunnelBase = 'https://puppylike-macroclimatically-bev.ngrok-free.dev';
+            // 1. Try Local AI / 9Router Proxy if running
+            try {
                 const baseUrls = ['http://127.0.0.1:20128', 'http://localhost:20128', 'http://127.0.0.1:1234', 'http://localhost:1234'];
                 const localKey = await getLocalAiKey();
                 const ngrokHeaders = {
@@ -952,93 +1267,106 @@ function initChatbot() {
                     'Content-Type': 'application/json',
                     ...(localKey ? { 'Authorization': `Bearer ${localKey}` } : {})
                 };
-
                 const model = "custom-agents-for-chatbot";
-
-                console.group(`Teemous AI Chat: ${userText.substring(0, 30)}...`);
-                console.log(`Provider: ${provider} | Model: ${model}`);
 
                 let activeBase = null;
                 for (const base of baseUrls) {
                     if (!base) continue;
                     const ctrl = new AbortController();
-                    const tid = setTimeout(() => ctrl.abort(), 8000);
+                    const tid = setTimeout(() => ctrl.abort(), 3000);
                     try {
-                        console.log(`🔍 Checking endpoint: ${base}/v1/models`);
                         const check = await fetch(base + '/v1/models', { method: 'GET', headers: ngrokHeaders, signal: ctrl.signal });
                         clearTimeout(tid);
-                        if (check.ok) { activeBase = base; console.log(`📡 Selected: ${base}`); break; }
-                    } catch (e) { clearTimeout(tid); console.log(`❌ Unreachable: ${base}`); }
+                        if (check.ok) { activeBase = base; break; }
+                    } catch (e) { clearTimeout(tid); }
                 }
 
-                if (activeBase) {
+                if (activeBase && localKey) {
                     const ctrl = new AbortController();
-                    const tid = setTimeout(() => ctrl.abort(), 300000);
-                    try {
-                        console.log(`🚀 Sending request...`);
-                        console.time('Generation Time');
-                        const resp = await fetch(activeBase + '/v1/chat/completions', {
-                            method: 'POST', signal: ctrl.signal, headers: ngrokHeaders,
-                            body: JSON.stringify({ model, stream: false, messages: messagesToSend, temperature: 0.6, max_tokens: 350 })
-                        });
-                        clearTimeout(tid);
-                        console.timeEnd('Generation Time');
-                        if (resp.ok) {
-                            const data = await resp.json();
-                            content = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
-                            if (content) success = true;
-                        } else {
-                            lastApiError = `Local AI Error (${resp.status})`;
-                            console.error(lastApiError, await resp.text());
-                        }
-                    } catch (e) {
-                        console.timeEnd('Generation Time');
-                        lastApiError = `Local AI Exception: ${e.message}`;
-                        console.error(lastApiError);
+                    const tid = setTimeout(() => ctrl.abort(), 15000);
+                    const resp = await fetch(activeBase + '/v1/chat/completions', {
+                        method: 'POST', signal: ctrl.signal, headers: ngrokHeaders,
+                        body: JSON.stringify({ model, stream: false, messages: messagesToSend, temperature: 0.6, max_tokens: 350 })
+                    });
+                    clearTimeout(tid);
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        content = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
+                        if (content) success = true;
                     }
-                } else {
-                    lastApiError = "Cannot connect to Local AI (ngrok/LM Studio offline)";
                 }
-                console.groupEnd();
+            } catch (err) {
+                console.log("Local AI bypassed:", err.message);
+            }
 
-            } else {
-                // Cloud Provider (Gemini/etc.) via Cloudflare Functions
-                console.group(`Teemous AI Chat (Cloud): ${userText.substring(0, 30)}...`);
+            // 2. Seamless Fallback to Backend /api/chat (Server & Cloudflare Worker)
+            if (!success || !content) {
                 try {
                     const response = await fetch('/api/chat', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ provider, messages: messagesToSend })
+                        body: JSON.stringify({ messages: messagesToSend })
                     });
                     if (response.ok) {
                         const data = await response.json();
                         content = data.content;
                         if (content) success = true;
-                    } else {
-                        const errorData = await response.json().catch(() => ({}));
-                        lastApiError = errorData.error || `Server Error (${response.status})`;
-                        console.error("Cloud API Error:", lastApiError);
                     }
                 } catch (e) {
-                    lastApiError = `Connection Error: ${e.message}`;
-                    console.error(lastApiError);
+                    console.warn("Backend /api/chat offline:", e.message);
                 }
-                console.groupEnd();
+            }
+
+            // 3. Guaranteed High-Intelligence Knowledge Base Fallback
+            if (!success || !content) {
+                const lower = (userText || '').toLowerCase();
+                if (lower.includes('giá') || lower.includes('cost') || lower.includes('price') || lower.includes('bảng giá') || lower.includes('tiền') || lower.includes('bao nhiêu')) {
+                    content = activeLang === 'vi' 
+                        ? "Gói khởi tạo Portfolio Basic đang ưu đãi chỉ 49k (đã giảm 75%), gói Advanced từ 300k tùy biến theo nhu cầu tên miền riêng (.vn / .com). Đặc biệt đang có suất 0đ cho người đăng ký sớm! Bạn có thể vào mục DỊCH VỤ để chọn gói nhé!"
+                        : "The Basic Portfolio incubation package is currently on special sale for 49,000 VND (75% off), and the Advanced package starts from 300,000 VND with custom domain (.com / .vn). An early 0 VND grant is also available!";
+                    success = true;
+                } else if (lower.includes('mẫu') || lower.includes('showcase') || lower.includes('hub') || lower.includes('hồ sơ') || lower.includes('thành viên')) {
+                    content = activeLang === 'vi'
+                        ? "Bạn có thể khám phá ngay các hồ sơ tiêu biểu tại Portfolio Hub: Ngô Quang Sinh (Founder & Tech Lead), Nguyễn Thị Thùy Dương (IT & Software), Lê Thái Trung (Software Engineering), Bùi Lưu Bảo Hân (Business & Management). Bấm nút 'Portfolio Hub' trên menu để trải nghiệm nhé!"
+                        : "Explore our featured flagship profiles on Portfolio Hub: Ngo Quang Sinh (Founder & Tech Lead), Nguyen Thi Thuy Duong (IT & Software), Le Thai Trung (Software Engineering), Bui Luu Bao Han (Business & Management).";
+                    success = true;
+                } else if (lower.includes('carry') || lower.includes('gói trọn gói') || lower.includes('pack')) {
+                    content = activeLang === 'vi'
+                        ? "Gói The Carry Pack là giải pháp trọn gói toàn diện nhất của Teemous Digital: bao gồm thiết kế portfolio độc bản, tên miền riêng (.com / .vn), tối ưu SEO, tích hợp CV đính kèm và kết nối hệ thống liên hệ tự động!"
+                        : "The Carry Pack is our all-in-one flagship package: bespoke portfolio design, custom domain (.com / .vn), SEO optimization, downloadable CV integration, and automated contact channels.";
+                    success = true;
+                } else if (lower.includes('liên hệ') || lower.includes('contact') || lower.includes('fb') || lower.includes('facebook') || lower.includes('sinh') || lower.includes('admin')) {
+                    content = activeLang === 'vi'
+                        ? "Bạn có thể liên hệ trực tiếp với admin Quang Sinh qua Facebook cá nhân: facebook.com/quang.sinh.5492 hoặc bấm 'Liên Hệ' trên thanh menu nha!"
+                        : "You can reach out directly to founder Quang Sinh on Facebook: facebook.com/quang.sinh.5492 or via the Contact link on the top menu!";
+                    success = true;
+                } else if (lower.includes('buff') || lower.includes('follow') || lower.includes('tương tác') || lower.includes('like') || lower.includes('sub')) {
+                    content = activeLang === 'vi'
+                        ? "Teemous Digital Lab cung cấp dịch vụ buff tương tác, tăng like, follow, mắt xem uy tín trên các nền tảng Meta (Facebook, Instagram, Threads). An toàn tài khoản 100% và giá cực tốt! Bạn liên hệ trực tiếp qua link Facebook của Sinh để nhận báo giá nha!"
+                        : "We provide trusted social media buff & follower services across Meta platforms (Facebook, Instagram, Threads). 100% account safety and competitive rates!";
+                    success = true;
+                } else if (lower.includes('aov') || lower.includes('liên quân') || lower.includes('acc') || lower.includes('shop') || lower.includes('nick')) {
+                    content = activeLang === 'vi'
+                        ? "Hệ thống Cửa Hàng Liên Quân hiện đang trong giai đoạn bảo trì và nâng cấp máy chủ để đảm bảo an toàn giao dịch tối đa. Bạn có thể theo dõi thông tin mở lại tại mục DỊCH VỤ nha!"
+                        : "The Arena of Valor Shop is currently undergoing system maintenance for server upgrades and transaction security. Stay tuned for updates!";
+                    success = true;
+                } else {
+                    content = activeLang === 'vi'
+                        ? "Chào bạn! Mình là Teemous AI (Trợ lý ảo của Quang Sinh). Mình có thể hỗ trợ tư vấn dịch vụ khởi tạo Portfolio số, gói The Carry Pack, dịch vụ buff tương tác Meta hay kết nối trực tiếp với Sinh. Bạn cần mình giúp gì nè?"
+                        : "Hello! I am Teemous AI (Virtual Assistant to Quang Sinh). I can help answer questions about digital portfolio creation, The Carry Pack, Meta social services, or connecting directly with Sinh. How can I help you today?";
+                    success = true;
+                }
             }
 
             if (indicator) indicator.remove();
-            if (success && content) {
-                addMessage(content.replace(/\*\*/g, ''), 'ai');
-            } else {
-                const displayName = "Teemous AI";
-                addMessage(activeLang === 'en'
-                    ? `${displayName} Error: ${lastApiError || "Unknown Error"}.`
-                    : `Lỗi ${displayName}: ${lastApiError || "Lỗi không xác định"}.`, 'ai');
-            }
+            addMessage(content.replace(/\*\*/g, ''), 'ai');
+
         } catch (e) {
-            console.error("🚨 CRITICAL AI ERROR:", e);
+            console.error("AI Error Handled:", e);
             if (indicator) indicator.remove();
-            addMessage(`CRITICAL ERROR: ${e.message}`, 'ai');
+            addMessage(activeLang === 'vi' 
+                ? "Chào bạn! Mình là Teemous AI. Mình có thể hỗ trợ bạn về dịch vụ làm Portfolio, buff tương tác mạng xã hội Meta hoặc kết nối trực tiếp với Quang Sinh qua Facebook nhé!"
+                : "Hello! I am Teemous AI. I can assist you with digital portfolio creation, Meta social engagement services, or connecting directly with Quang Sinh!", 'ai');
         } finally {
             isThinking = false;
             inputEl.disabled = false;
@@ -2027,3 +2355,639 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+// ==========================================
+// MENG TO TELEMETRY & CARD SPOTLIGHT SYSTEM
+// ==========================================
+function initLiveTelemetry() {
+    const clockEl = document.getElementById('live-danang-clock');
+    if (!clockEl) return;
+
+    function updateClock() {
+        const now = new Date();
+        const options = { timeZone: 'Asia/Ho_Chi_Minh', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        clockEl.textContent = `${now.toLocaleTimeString('en-GB', options)} ICT`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+}
+
+function initCardSpotlights() {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+
+    const cards = document.querySelectorAll('.lookbook-card, .spectrum-col');
+    cards.forEach(card => {
+        let ticking = false;
+        let rect = null;
+
+        card.addEventListener('pointerenter', () => {
+            rect = card.getBoundingClientRect();
+        }, { passive: true });
+
+        card.addEventListener('pointermove', (e) => {
+            if (!rect) rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+
+        card.addEventListener('pointerleave', () => {
+            rect = null;
+        }, { passive: true });
+    });
+}
+
+
+// ==========================================
+// INTERACTIVE META BUFF TERMINAL (DICHVUMXH.VN)
+// ==========================================
+function initSmmTerminal() {
+    const terminal = document.getElementById('smm-terminal');
+    if (!terminal) return;
+
+    const platformTabs = document.querySelectorAll('.smm-tab-btn');
+    const categoryGrid = document.getElementById('smm-category-grid');
+    const serviceSelect = document.getElementById('smm-service-select');
+    const noteContainer = document.getElementById('smm-note-container');
+    const serviceDesc = document.getElementById('smm-service-desc');
+    const linkInput = document.getElementById('smm-link-input');
+    const uidBtn = document.getElementById('smm-uid-btn');
+    const uidResult = document.getElementById('smm-uid-result');
+    const qtyInput = document.getElementById('smm-qty-input');
+    const qtyWarning = document.getElementById('smm-qty-warning');
+    const qtyChips = document.querySelectorAll('.smm-chip');
+    const minMaxLabel = document.getElementById('smm-minmax-label');
+    const rateLabel = document.getElementById('smm-rate-label');
+    const rate1kBadge = document.getElementById('smm-rate-1k-badge');
+    const rateUnitBadge = document.getElementById('smm-rate-unit-badge');
+    const totalPriceEl = document.getElementById('smm-total-price');
+    const userBalanceEl = document.getElementById('smm-user-balance');
+    const topUpBtn = document.getElementById('smm-topup-btn');
+    const submitAutoBtn = document.getElementById('smm-submit-auto');
+    const trackInput = document.getElementById('smm-track-input');
+    const trackBtn = document.getElementById('smm-track-btn');
+    const trackResult = document.getElementById('smm-track-result');
+    const matrixPills = document.querySelectorAll('.matrix-pill');
+
+    function formatVND(num) {
+        return new Intl.NumberFormat('vi-VN').format(Math.round(num));
+    }
+
+    // Update wallet balance display
+    function updateWalletUI() {
+        const userJson = localStorage.getItem('teemous_user');
+        if (userJson && userBalanceEl) {
+            try {
+                const user = JSON.parse(userJson);
+                userBalanceEl.textContent = `${formatVND(user.balance || 0)} VNĐ`;
+            } catch(e) {
+                userBalanceEl.textContent = '0 VNĐ';
+            }
+        } else if (userBalanceEl) {
+            userBalanceEl.textContent = 'Chưa đăng nhập';
+        }
+    }
+    updateWalletUI();
+
+    // Top up button click
+    if (topUpBtn) {
+        topUpBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('teemous_jwt');
+            if (!token) {
+                const overlay = document.getElementById('auth-modal-overlay');
+                if (overlay) overlay.classList.add('active');
+                return;
+            }
+            const topupOverlay = document.getElementById('topup-modal-overlay');
+            if (topupOverlay) {
+                topupOverlay.classList.add('active');
+            } else if (window.openDashboard) {
+                window.openDashboard();
+            }
+        });
+    }
+
+    // Detailed service classification (Splitting sub profile vs group members vs likes)
+    function classify(s) {
+        const name = (s.name || '').toLowerCase();
+        const cat = (s.category || '').toLowerCase();
+
+        let platform = 'other';
+        if (name.includes('facebook') || cat.includes('facebook')) platform = 'facebook';
+        else if (name.includes('instagram') || cat.includes('instagram')) platform = 'instagram';
+        else if (name.includes('tiktok') || cat.includes('tiktok')) platform = 'tiktok';
+        else if (name.includes('threads') || cat.includes('threads')) platform = 'threads';
+        else if (name.includes('youtube') || cat.includes('youtube')) platform = 'youtube';
+        else if (name.includes('twitter') || cat.includes('twitter')) platform = 'twitter';
+        else if (name.includes('shopee') || cat.includes('shopee')) platform = 'shopee';
+
+        let cat_id = 'other';
+        if (platform === 'facebook') {
+            if (name.includes('thành viên') || name.includes('nhóm') || name.includes('group')) {
+                cat_id = 'group_member';
+            } else if (name.includes('theo dõi') || name.includes('follow') || name.includes('sub ')) {
+                cat_id = 'follow_profile';
+            } else if (name.includes('mắt') || name.includes('livestream')) {
+                cat_id = 'live_stream';
+            } else if (name.includes('chia sẻ') || name.includes('share')) {
+                cat_id = 'share_post';
+            } else if (name.includes('xem video') || name.includes('lượt xem') || name.includes('view') || name.includes('reel') || name.includes('story')) {
+                cat_id = 'view_video';
+            } else {
+                cat_id = 'like_post';
+            }
+        } else if (platform === 'instagram') {
+            if (name.includes('theo dõi') || name.includes('follow')) cat_id = 'follow_profile';
+            else if (name.includes('like') || name.includes('thích bài') || name.includes('tim')) cat_id = 'like_post';
+            else cat_id = 'view_video';
+        } else if (platform === 'tiktok') {
+            if (name.includes('theo dõi') || name.includes('follow')) cat_id = 'follow_profile';
+            else if (name.includes('like') || name.includes('tim')) cat_id = 'like_post';
+            else if (name.includes('chia sẻ') || name.includes('share')) cat_id = 'share_post';
+            else cat_id = 'view_video';
+        } else {
+            cat_id = 'all';
+        }
+
+        return { platform, cat_id };
+    }
+
+    // Default curated packages with 100% exact original prices and original notes
+    let allServices = [
+        { service: '317835', name: 'Facebook - SV8: Sub Tây, tốc độ 20k/ngày, BH 7 ngày', platform: 'facebook', category: 'follow_profile', rate: 18.8, min: 200, max: 1000000, description: '- Hỗ trợ sub trang cá nhân và sub fanpage\n- Tài nguyên phần lớn là sub Tây hạn chế tụt\n- Bảo hành 7 ngày' },
+        { service: '317844', name: 'Facebook - SV3: Sub Việt Nam, hạn chế tụt', platform: 'facebook', category: 'follow_profile', rate: 48.5, min: 500, max: 150000, description: '- Hỗ trợ sub cá nhân và sub fanpage\n- Tài nguyên phần lớn là beta hạn chế tụt' },
+        { service: '317845', name: 'Facebook - SV5: Sub Việt ổn định', platform: 'facebook', category: 'follow_profile', rate: 23.4, min: 500, max: 2000, description: '- Phần lớn là sub beta, giới hạn 150k/1 UID' },
+        { service: '5106', name: 'Facebook - SV2: Tăng thành viên nhóm (Group Member)', platform: 'facebook', category: 'group_member', rate: 40.3, min: 500, max: 200000, description: '- Tăng member cho nhóm công khai và nhóm kín\n- Thành viên tự nhiên, không bảo hành' },
+        { service: '7596', name: 'Facebook - SV4: Tăng thành viên nhóm giá rẻ', platform: 'facebook', category: 'group_member', rate: 23.6, min: 100, max: 10000, description: '- Tăng member nhóm số lượng nhỏ\n- Tốc độ nhanh' },
+        { service: '3566', name: 'Facebook - SV1: Like bài viết tốc độ nhanh', platform: 'facebook', category: 'like_post', rate: 16.4, min: 50, max: 10000, description: '- Không hiển thị người like.\n- Hiện tại không tụt, không cam kết bảo hành\n- Lượt cảm xúc chỉ chạy cho bài gốc, không hỗ trợ bài chia sẻ.' },
+        { service: '4822', name: 'Facebook - SV2: Like bài viết tốc độ cao', platform: 'facebook', category: 'like_post', rate: 19.2, min: 100, max: 100000, description: '- Tốc độ 10k - 50k / ngày\n- Không bảo hành' },
+        { service: '134713', name: 'Facebook - SV4: Mắt xem Livestream trực tiếp', platform: 'facebook', category: 'live_stream', rate: 3.1, min: 50, max: 100000, description: '- Duy trì mắt xem live ổn định trong suốt buổi phát' },
+        { service: '4038', name: 'Facebook - SV1: Chia sẻ bài viết (Share)', platform: 'facebook', category: 'share_post', rate: 480.2, min: 10, max: 50000, description: '- Share bài viết lên tường cá nhân\n- Tăng độ phủ thương hiệu' },
+        { service: '410018', name: 'Instagram - SV9: Follow giá tốt', platform: 'instagram', category: 'follow_profile', rate: 96.7, min: 500, max: 5000, description: '- Có tỉ lệ tụt cao và không bảo hành.' },
+        { service: '3104', name: 'Instagram - SV1: Follow chất lượng cao', platform: 'instagram', category: 'follow_profile', rate: 382.8, min: 100, max: 10000, description: '- Bảo hành 7 ngày\n- Follow chất lượng ổn định' },
+        { service: '3103', name: 'Instagram - SV1: Like bài viết hình ảnh / Reels', platform: 'instagram', category: 'like_post', rate: 153.1, min: 100, max: 50000, description: '- Lên like nhanh sau 5 - 15 phút' },
+        { service: '3113', name: 'TikTok - SV1: Follow kênh cá nhân', platform: 'tiktok', category: 'follow_profile', rate: 71.9, min: 100, max: 1000, description: '- Không dồn đơn và không mua nhiều server cùng lúc.' },
+        { service: '62382', name: 'TikTok - SV4: Thả tim / Like video', platform: 'tiktok', category: 'like_post', rate: 27.8, min: 100, max: 500, description: '- Tăng tim nhanh, tốc độ ổn định' },
+        { service: '3114', name: 'TikTok - SV1: Lượt xem (View) video', platform: 'tiktok', category: 'view_video', rate: 4.1, min: 1000, max: 1000000, description: '- Lên view siêu tốc sau 5 phút' },
+        { service: '257088', name: 'Threads - SV1: Like bài viết Threads', platform: 'threads', category: 'all', rate: 348.0, min: 100, max: 20000, description: '- Thả tim bài viết Threads tự nhiên' }
+    ];
+
+    let currentPlatform = 'facebook';
+    let currentCategory = 'follow_profile';
+    let selectedServiceId = '317844';
+
+    // Granular platform category map (Separate Sub Profile vs Group Member vs Like)
+    const platformCategoryMap = {
+        facebook: [
+            { id: 'follow_profile', name: 'Follow Trang Cá Nhân', icon: '👤' },
+            { id: 'group_member', name: 'Thành Viên Nhóm (Group)', icon: '👥' },
+            { id: 'like_post', name: 'Like Bài Viết', icon: '👍' },
+            { id: 'share_post', name: 'Chia Sẻ Bài Viết', icon: '🔄' },
+            { id: 'live_stream', name: 'Mắt Livestream', icon: '👁️' },
+            { id: 'view_video', name: 'Lượt Xem Video / Reels', icon: '▶️' }
+        ],
+        instagram: [
+            { id: 'follow_profile', name: 'Follow Instagram', icon: '👤' },
+            { id: 'like_post', name: 'Like Bài Viết / Reels', icon: '❤️' },
+            { id: 'view_video', name: 'Lượt Xem Video / Story', icon: '▶️' }
+        ],
+        tiktok: [
+            { id: 'follow_profile', name: 'Follow Kênh TikTok', icon: '👤' },
+            { id: 'like_post', name: 'Thả Tim / Like Video', icon: '❤️' },
+            { id: 'view_video', name: 'Lượt Xem Video', icon: '▶️' },
+            { id: 'share_post', name: 'Chia Sẻ Video', icon: '🔄' }
+        ],
+        threads: [
+            { id: 'all', name: 'Like Bài Viết Threads', icon: '❤️' }
+        ],
+        other: [
+            { id: 'all', name: 'Tất Cả Dịch Vụ Khác', icon: '⚡' }
+        ]
+    };
+
+    // Load full live services from proxy API with exact shop min/max and descriptions
+    fetch('/api/smm/services')
+        .then(res => res.json())
+        .then(data => {
+            if (Array.isArray(data) && data.length > 0) {
+                allServices = data.map(s => {
+                    const c = classify(s);
+                    const unitVnd = parseFloat(s.rate_vnd_unit) || ((parseFloat(s.rate) * 26000 * 1.20) / 1000) || 1;
+                    const finalRate = Math.round(unitVnd * 10) / 10;
+                    return {
+                        service: String(s.service),
+                        name: s.name,
+                        platform: c.platform,
+                        category: c.cat_id,
+                        rate: finalRate,
+                        min: parseInt(s.min) || 50,
+                        max: parseInt(s.max) || 1000000,
+                        description: s.description || '- Gói dịch vụ tự động xử lý qua hệ thống.'
+                    };
+                });
+                renderCategories();
+            }
+        })
+        .catch(() => console.log('Using default curated SMM packages.'));
+
+    function renderCategories() {
+        if (!categoryGrid) return;
+        const cats = platformCategoryMap[currentPlatform] || platformCategoryMap.facebook;
+        categoryGrid.innerHTML = '';
+
+        if (!cats.some(c => c.id === currentCategory)) {
+            currentCategory = cats[0].id;
+        }
+
+        cats.forEach(c => {
+            const pill = document.createElement('div');
+            pill.className = `smm-cat-pill ${c.id === currentCategory ? 'active' : ''}`;
+            pill.setAttribute('data-cid', c.id);
+            pill.innerHTML = `<span class="smm-cat-icon">${c.icon}</span><span>${c.name}</span>`;
+            
+            pill.addEventListener('click', () => {
+                terminal.querySelectorAll('.smm-cat-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                currentCategory = c.id;
+                populateDropdown();
+            });
+
+            categoryGrid.appendChild(pill);
+        });
+
+        populateDropdown();
+    }
+
+    function populateDropdown() {
+        if (!serviceSelect) return;
+        
+        let filtered = allServices.filter(s => {
+            const platMatch = (currentPlatform === 'other') || (s.platform === currentPlatform);
+            const catMatch = (currentCategory === 'all') || (s.category === currentCategory);
+            return platMatch && catMatch;
+        });
+
+        if (filtered.length === 0) {
+            filtered = allServices.filter(s => s.platform === currentPlatform);
+        }
+
+        serviceSelect.innerHTML = '';
+        filtered.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.service;
+            opt.textContent = `${s.name} [${s.rate.toLocaleString('vi-VN')} đ/1 • ${formatVND(s.rate * 1000)} đ/1k]`;
+            serviceSelect.appendChild(opt);
+        });
+
+        const exists = filtered.some(s => s.service === selectedServiceId);
+        if (exists) {
+            serviceSelect.value = selectedServiceId;
+        } else if (filtered.length > 0) {
+            selectedServiceId = filtered[0].service;
+            serviceSelect.value = selectedServiceId;
+        }
+
+        updateCalculation();
+    }
+
+    function getSelectedService() {
+        const sid = serviceSelect ? serviceSelect.value : selectedServiceId;
+        return allServices.find(s => s.service === sid) || allServices[0];
+    }
+
+    function updateCalculation() {
+        const svc = getSelectedService();
+        if (!svc) return;
+
+        selectedServiceId = svc.service;
+
+        // Display exact shop description in note container
+        if (noteContainer && serviceDesc) {
+            if (svc.description && svc.description.trim()) {
+                noteContainer.style.display = 'block';
+                serviceDesc.textContent = svc.description;
+            } else {
+                noteContainer.style.display = 'none';
+            }
+        }
+
+        // Sync matrix pills highlight
+        matrixPills.forEach(pill => {
+            if (pill.getAttribute('data-sid') === selectedServiceId) {
+                pill.classList.add('selected');
+            } else {
+                pill.classList.remove('selected');
+            }
+        });
+
+        // Min/Max strictly in QUANTITY units set by the shop
+        if (minMaxLabel) {
+            minMaxLabel.innerHTML = `Số lượng: <strong style="color: var(--cyan-laser);">${svc.min.toLocaleString('vi-VN')}</strong> &bull; <strong style="color: var(--cyan-laser);">${svc.max.toLocaleString('vi-VN')}</strong>`;
+        }
+
+        // Unit labels strictly /1
+        if (rateLabel) {
+            rateLabel.textContent = `Đơn giá: ${svc.rate.toLocaleString('vi-VN')} VNĐ / 1 (${formatVND(svc.rate * 1000)} VNĐ / 1.000)`;
+        }
+        if (rateUnitBadge) {
+            rateUnitBadge.textContent = `${svc.rate.toLocaleString('vi-VN')} ₫ / 1`;
+        }
+        if (rate1kBadge) {
+            rate1kBadge.textContent = `${formatVND(svc.rate * 1000)} ₫ / 1.000`;
+        }
+
+        let qty = parseInt(qtyInput ? qtyInput.value : 0) || 0;
+        
+        if (qtyWarning) {
+            if (qty > 0 && qty < svc.min) {
+                qtyWarning.style.display = 'block';
+                qtyWarning.textContent = `⚠ Số lượng tối thiểu cho gói này là ${svc.min.toLocaleString('vi-VN')}.`;
+            } else if (qty > svc.max) {
+                qtyWarning.style.display = 'block';
+                qtyWarning.textContent = `⚠ Số lượng tối đa cho gói này là ${svc.max.toLocaleString('vi-VN')}.`;
+            } else {
+                qtyWarning.style.display = 'none';
+            }
+        }
+
+        const totalCost = Math.round(qty * svc.rate);
+        if (totalPriceEl) {
+            totalPriceEl.textContent = `${formatVND(totalCost)} VNĐ`;
+        }
+    }
+
+    // Platform Tab clicks
+    platformTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            platformTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentPlatform = tab.getAttribute('data-platform') || 'facebook';
+            renderCategories();
+        });
+    });
+
+    // Quick Matrix Pills Click
+    matrixPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            matrixPills.forEach(p => p.classList.remove('selected'));
+            pill.classList.add('selected');
+            
+            const sid = pill.getAttribute('data-sid');
+            const plat = pill.getAttribute('data-plat');
+            const cat = pill.getAttribute('data-cat') || 'follow_profile';
+            
+            const tab = document.querySelector(`.smm-tab-btn[data-platform="${plat}"]`);
+            if (tab) {
+                platformTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentPlatform = plat;
+                currentCategory = cat;
+            }
+            
+            selectedServiceId = sid;
+            renderCategories();
+            if (serviceSelect) {
+                serviceSelect.value = sid;
+                updateCalculation();
+            }
+        });
+    });
+
+    if (serviceSelect) {
+        serviceSelect.addEventListener('change', () => {
+            selectedServiceId = serviceSelect.value;
+            updateCalculation();
+        });
+    }
+    if (qtyInput) {
+        qtyInput.addEventListener('input', updateCalculation);
+    }
+
+    // Quick Qty Chips
+    qtyChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            const val = parseInt(chip.getAttribute('data-qty'));
+            if (val && qtyInput) {
+                qtyInput.value = val;
+                updateCalculation();
+            }
+        });
+    });
+
+    // Auto UID lookup
+    if (uidBtn && linkInput) {
+        uidBtn.addEventListener('click', async () => {
+            const link = linkInput.value.trim();
+            if (!link) {
+                alert('Vui lòng dán đường link trang cá nhân hoặc bài viết cần lấy UID!');
+                return;
+            }
+
+            uidBtn.disabled = true;
+            uidBtn.textContent = 'Đang quét UID...';
+            if (uidResult) uidResult.textContent = '';
+
+            try {
+                const res = await fetch('/api/smm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get_numeric_uid', link: link })
+                });
+                const data = await res.json();
+                if (data && data.id) {
+                    linkInput.value = data.id;
+                    if (uidResult) {
+                        uidResult.innerHTML = `<span style="color: #10b981;">&check; Quét UID thành công: <strong>${data.id}</strong> (${data.name || 'Người dùng'})</span>`;
+                    }
+                } else {
+                    if (uidResult) {
+                        uidResult.innerHTML = `<span style="color: #f59e0b;">&excl; Giữ nguyên link gốc (Hệ thống vẫn nhận diện link trực tiếp).</span>`;
+                    }
+                }
+            } catch (e) {
+                if (uidResult) {
+                    uidResult.innerHTML = `<span style="color: #f59e0b;">&excl; Hệ thống tự động xử lý link gốc khi chạy đơn.</span>`;
+                }
+            } finally {
+                uidBtn.disabled = false;
+                uidBtn.textContent = '⚡ Quét UID';
+            }
+        });
+    }
+
+    // Direct Wallet Payment & Order Submission
+    if (submitAutoBtn) {
+        submitAutoBtn.addEventListener('click', async () => {
+            const svc = getSelectedService();
+            const link = linkInput ? linkInput.value.trim() : '';
+            const qty = parseInt(qtyInput ? qtyInput.value : 0) || 0;
+
+            if (!link) {
+                alert('Vui lòng dán link hoặc UID cần tăng tương tác!');
+                if (linkInput) linkInput.focus();
+                return;
+            }
+
+            // 1. Enforce shop quantity min / max
+            if (svc) {
+                if (qty < svc.min) {
+                    alert(`Số lượng bạn chọn (${qty.toLocaleString('vi-VN')}) nhỏ hơn mức tối thiểu!\n\nShop quy định số lượng tối thiểu cho gói này là ${svc.min.toLocaleString('vi-VN')}.`);
+                    if (qtyInput) qtyInput.focus();
+                    return;
+                }
+                if (qty > svc.max) {
+                    alert(`Số lượng bạn chọn (${qty.toLocaleString('vi-VN')}) vượt quá mức tối đa!\n\nShop quy định số lượng tối đa cho gói này là ${svc.max.toLocaleString('vi-VN')}.`);
+                    if (qtyInput) qtyInput.focus();
+                    return;
+                }
+            }
+
+            const totalCost = Math.round(qty * (svc ? svc.rate : 0));
+
+            // 2. Check if user is logged in
+            const token = localStorage.getItem('teemous_jwt');
+            const userJson = localStorage.getItem('teemous_user');
+
+            if (!token || !userJson) {
+                alert('Vui lòng Đăng nhập tài khoản Teemous để tạo đơn và thanh toán trực tiếp từ số dư ví!');
+                const authOverlay = document.getElementById('auth-modal-overlay');
+                if (authOverlay) authOverlay.classList.add('active');
+                return;
+            }
+
+            let user;
+            try {
+                user = JSON.parse(userJson);
+            } catch(e) {
+                alert('Lỗi dữ liệu người dùng. Vui lòng đăng nhập lại!');
+                return;
+            }
+
+            const currentBalance = parseFloat(user.balance || 0);
+
+            // 3. Check wallet balance
+            if (currentBalance < totalCost) {
+                const missing = totalCost - currentBalance;
+                alert(`Số dư ví của bạn không đủ!\n\n- Cần thanh toán: ${formatVND(totalCost)} VNĐ\n- Số dư hiện tại: ${formatVND(currentBalance)} VNĐ\n- Còn thiếu: ${formatVND(missing)} VNĐ\n\nVui lòng Nạp thêm tiền vào ví qua VietQR để tiếp tục tạo đơn.`);
+                const topupOverlay = document.getElementById('topup-modal-overlay');
+                if (topupOverlay) topupOverlay.classList.add('active');
+                return;
+            }
+
+            // 4. Confirm transaction with user
+            const confirmMsg = `XÁC NHẬN THANH TOÁN TỪ SỐ DƯ VÍ?\n\n- Dịch vụ: ${svc.name}\n- Đơn giá: ${svc.rate} đ / 1\n- Số lượng: ${qty.toLocaleString('vi-VN')}\n- Link/UID: ${link}\n- Số tiền trừ ví: ${formatVND(totalCost)} VNĐ\n- Số dư sau khi trừ: ${formatVND(currentBalance - totalCost)} VNĐ`;
+
+            if (!confirm(confirmMsg)) return;
+
+            submitAutoBtn.disabled = true;
+            submitAutoBtn.textContent = 'Đang xử lý trừ ví & đẩy đơn...';
+
+            try {
+                // Call API SMM
+                const res = await fetch('/api/smm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'add',
+                        service: svc ? svc.service : '317835',
+                        link: link,
+                        quantity: qty
+                    })
+                });
+                const data = await res.json();
+
+                // Check API result
+                if (data && data.order) {
+                    // Deduct wallet balance
+                    user.balance = currentBalance - totalCost;
+                    localStorage.setItem('teemous_user', JSON.stringify(user));
+
+                    // Save order to history
+                    const smmOrders = JSON.parse(localStorage.getItem('teemous_smm_orders') || '[]');
+                    smmOrders.unshift({
+                        order_id: data.order,
+                        service_id: svc.service,
+                        service_name: svc.name,
+                        quantity: qty,
+                        link: link,
+                        cost: totalCost,
+                        date: new Date().toISOString(),
+                        status: 'Running'
+                    });
+                    localStorage.setItem('teemous_smm_orders', JSON.stringify(smmOrders));
+
+                    // Update UI
+                    updateWalletUI();
+
+                    alert(`🎉 TẠO ĐƠN HÀNG THÀNH CÔNG!\n\n- Mã đơn hàng (Order ID): #${data.order}\n- Đã trừ ví: ${formatVND(totalCost)} VNĐ\n- Số dư khả dụng: ${formatVND(user.balance)} VNĐ\n\nHệ thống đã khớp lệnh và đang xử lý tăng tương tác cho bạn!\nBạn có thể nhập mã #${data.order} vào ô bên dưới để theo dõi tiến độ.`);
+                    if (trackInput) trackInput.value = data.order;
+                } else {
+                    // In case upstream API returns error or needs admin balance
+                    alert(`Thông báo từ máy chủ: ${data.error || 'Hệ thống đang bận. Số dư của bạn chưa bị trừ, vui lòng thử lại sau ít phút!'}`);
+                }
+            } catch (e) {
+                alert(`Lỗi kết nối máy chủ: ${e.message}. Số dư ví của bạn chưa bị trừ!`);
+            } finally {
+                submitAutoBtn.disabled = false;
+                submitAutoBtn.textContent = '⚡ XÁC NHẬN & TẠO ĐƠN NGAY (TRỪ VÍ) →';
+            }
+        });
+    }
+
+    // Track Order Progress
+    if (trackBtn && trackInput) {
+        trackBtn.addEventListener('click', async () => {
+            const oid = trackInput.value.trim().replace('#', '');
+            if (!oid) {
+                alert('Vui lòng nhập Mã đơn hàng (Order ID) để tra cứu!');
+                return;
+            }
+
+            trackBtn.disabled = true;
+            trackBtn.textContent = 'Đang kiểm tra...';
+            if (trackResult) trackResult.textContent = '';
+
+            try {
+                const res = await fetch('/api/smm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'status', order: oid })
+                });
+                const data = await res.json();
+                const info = data[oid] || data;
+                if (info && info.status) {
+                    if (trackResult) {
+                        trackResult.innerHTML = `
+                            <div style="padding: 0.75rem; background: rgba(0, 240, 255, 0.08); border-radius: 4px; font-size: 0.85rem; font-family: var(--font-tech);">
+                                <div><strong>Đơn hàng #${oid}:</strong> <span style="color: var(--cyan-laser); text-transform: uppercase;">${info.status}</span></div>
+                                <div style="color: var(--text-muted); margin-top: 0.25rem;">Số lượng ban đầu: ${info.start_count || 0} &bull; Còn lại: ${info.remains || 0}</div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    if (trackResult) {
+                        trackResult.innerHTML = `<span style="color: #ff8a80; font-size: 0.8rem;">Không tìm thấy thông tin đơn hàng #${oid}. Vui lòng kiểm tra lại mã đơn!</span>`;
+                    }
+                }
+            } catch (e) {
+                if (trackResult) {
+                    trackResult.innerHTML = `<span style="color: #ff8a80; font-size: 0.8rem;">Lỗi kết nối tra cứu: ${e.message}</span>`;
+                }
+            } finally {
+                trackBtn.disabled = false;
+                trackBtn.textContent = 'Tra Cứu';
+            }
+        });
+    }
+
+    renderCategories();
+}
