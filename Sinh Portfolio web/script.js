@@ -629,7 +629,13 @@ function updateAllTranslations() {
     const langBtns = document.querySelectorAll('.lang-toggle');
     langBtns.forEach(langBtn => {
         const code = currentLang === 'vi' ? 'VI' : 'EN';
-        langBtn.innerHTML = `<span style="font-weight:900; font-family:var(--font-heading); font-size:0.95rem; letter-spacing:0.5px;">${code}</span>`;
+        const isMobileBtn = langBtn.classList.contains('mobile-widget-btn');
+
+        if (isMobileBtn) {
+            langBtn.innerHTML = `<span class="lang-icon" style="font-size: 1rem; line-height: 1; display: inline-flex; align-items: center;">🌐</span> <span class="lang-text" style="font-weight: 800; font-size: 0.82rem; font-family: var(--font-heading, inherit);">${code}</span>`;
+        } else {
+            langBtn.innerHTML = `<span style="font-weight:900; font-family:var(--font-heading); font-size:0.95rem; letter-spacing:0.5px;">${code}</span>`;
+        }
         langBtn.setAttribute('title', currentLang === 'vi' ? 'Đang hiển thị Tiếng Việt (Bấm để chuyển sang English)' : 'Currently English (Click to switch to Tiếng Việt)');
         langBtn.setAttribute('aria-label', currentLang === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt');
     });
@@ -1196,7 +1202,6 @@ function initChatbot() {
 
     async function getAIResponse(userText) {
         if (isThinking) return;
-        const provider = 'local';
         let indicator;
         try {
             isThinking = true;
@@ -1205,155 +1210,98 @@ function initChatbot() {
             sendBtn.style.pointerEvents = 'none';
 
             indicator = showTypingIndicator();
-            const activeLang = (typeof currentLang !== 'undefined') ? currentLang : (localStorage.getItem('td-lang') || 'en');
+            const activeLang = (typeof currentLang !== 'undefined') ? currentLang : (localStorage.getItem('td-lang') || 'vi');
 
-            const systemPrompt = `
-# IDENTITY & PERSONA (VAI TRÒ & PHONG CÁCH CỦA TEEMOUS AI)
-- Bạn là Teemous AI, trợ lý số thông minh chính thức của hệ sinh thái Teemous Digital Lab do Ngô Quang Sinh (sinh năm 2005) sáng lập.
-- Tính cách: Thân thiện, tôn trọng, lịch sự, am hiểu công nghệ, xưng "mình" và gọi "bạn" (hoặc "I" - "you" khi nói tiếng Anh).
-- Độ dài phản hồi: Ngắn gọn, súc tích, đi thẳng vào trọng tâm (khoảng 2 đến 4 câu).
-- Ngôn ngữ: Tự động phát hiện và trả lời theo đúng ngôn ngữ người dùng đang hỏi (${activeLang === "vi" ? "ưu tiên Tiếng Việt" : "ưu tiên English"}).
-
-# RAG KNOWLEDGE BASE (BẢN ĐỒ KIẾN THỨC TOÀN DIỆN VỀ TEEMOUS DIGITAL)
-
-1. VỀ TEEMOUS DIGITAL LAB & FOUNDER QUANG SINH:
-- Phòng nghiên cứu sáng tạo số tại Đà Nẵng, Việt Nam.
-- Người sáng lập: Ngô Quang Sinh (Tech Lead & Founder), sinh viên Digital Marketing tại Đại học Duy Tân. Chuyên kiến trúc Web, tự động hóa AI Workflows, Google AppsScript và giải pháp tăng trưởng số.
-- Kênh liên hệ chính thức: Facebook (facebook.com/quang.sinh.5492), Zalo: 0797747297, Email: teemous.contact@gmail.com.
-
-2. DỊCH VỤ KHỞI TẠO PORTFOLIO CÁ NHÂN (GET PORTFOLIO):
-- Gói Khởi Tạo Cơ Bản (Basic Incubation): Giá gốc 49.000đ, hiện đang TÀI TRỢ 100% (SUẤT 0Đ) cho 20 người đăng ký sớm nhất (chương trình Pioneer Launch Grant). Quyền lợi: Website portfolio chuẩn responsive, tích hợp tải CV PDF, kết nối mạng xã hội, xác thực đưa lên Teemous Hub, mã nguồn tải nhanh chuẩn SEO.
-- Gói Khởi Tạo Nâng Cao (Bespoke VIP): Hiện ĐANG TẠM KHÓA ĐỂ REMAKE & NÂNG CẤP phiên bản mới (sắp ra mắt với tên miền riêng .com/.vn độc lập, trợ lý AI riêng và tích xanh chính thức). Khách hàng hiện nên đăng ký nhận suất 0đ Gói Cơ Bản.
-- Tùy chọn đẩy Top: Đẩy hồ sơ lên Top Featured trên Hub trong 30 ngày (+30.000đ).
-
-3. TEEMOUS PORTFOLIO HUB (DANH BẠ NĂNG LỰC GEN Z):
-- Quy chế xét bậc & điểm năng lực (Power Rating): Đánh giá công tâm dựa trên giá trị thực tế tạo ra cho cộng đồng & sản phẩm thực chiến trên bình diện chung (không gò bó theo từng chuyên ngành riêng biệt).
-  * S+ APEX (>= 95.0): Thủ lĩnh kiến tạo hệ sinh thái, dẫn dắt dự án lớn và tạo tác động cộng đồng đột phá.
-  * S PROFESSIONAL (90.0 - 94.9): Chuyên môn thực chiến xuất sắc, hoàn thiện sản phẩm độc lập chất lượng cao.
-  * A+ IMPRESSIVE (85.0 - 89.9): Nền tảng kỹ năng vững vàng, chủ động triển khai sản phẩm thực tế.
-  * A STANDARD (80.0 - 84.9): Thành thạo công cụ chuyên môn thiết yếu, tác phong nhanh nhẹn, cầu tiến.
-- Bảng xếp hạng thành viên:
-  * Trần Thị Thùy Dương (#01 - 96.0 điểm, Tier S+ Apex): SV Khoa học Máy tính VKU (GPA 3.61/4.0), cựu chuyên Tin Quốc Học Huế (9.3/10), giải ICPC Quốc gia, Top 6 SheCodes. Thuật toán, C++, Java, Full-Stack, Flutter.
-  * Lê Thái Trung (#02 - 90.5 điểm, Tier S Pro): SV Kỹ nghệ Phần mềm ĐH Duy Tân. Backend Developer, REST APIs, IntelliJ IDEA, Postman, Linux/Git.
-  * Ngô Quang Sinh (#03 - 88.0 điểm, Tier A+): Founder Teemous Digital, SV Digital Marketing ĐH Duy Tân. Kiến trúc Web, Tự động hóa AI Workflows, AppsScript, Quản trị hệ thống, Phát triển cộng đồng.: Founder Teemous Digital, SV Digital Marketing ĐH Duy Tân. Kiến trúc Web, Tự động hóa AI Workflows, AppsScript, Quản trị hệ thống, Phát triển cộng đồng.
-  * Lê Thái Trung (#03 - 85.5 điểm, Tier A+): SV Kỹ nghệ Phần mềm ĐH Duy Tân. Backend Developer, REST APIs, IntelliJ IDEA, Postman, Linux/Git.
-  * Bùi Lưu Bảo Hân (#04 - 84.0 điểm, Tier A): SV Kinh doanh Quốc tế ĐH Duy Tân. Quản trị Nhân sự (HR), Điều phối Cộng đồng, Notion, Google Sheets, Giao tiếp đối ngoại.
-  * Vương Quang Tuấn (#05 - 80.5 điểm, Tier A): SV Digital Marketing ĐH Duy Tân. Thiết kế đồ họa Canva, Dựng video ngắn CapCut, Sáng tạo nội dung Fanpage, Facebook Ads cơ bản.
-
-4. DỊCH VỤ TĂNG TRƯỞNG MẠNG XÃ HỘI (SMM TERMINAL):
-- Tăng tương tác, like, follow, view, comment tốc độ cao cho Facebook, Instagram, Threads, TikTok.
-- Tự động lấy UID từ link cá nhân/bài viết, bảo mật tài khoản 100% (không cần mật khẩu), nạp tiền tự động qua VietQR, tra cứu tiến độ bằng Order ID.
-
-5. CỬA HÀNG LIÊN QUÂN (AOV SHOP):
-- Hiện đang TẠM NGƯNG HOẠT ĐỘNG để bảo trì hệ thống và nâng cấp máy chủ bảo mật.
-`;
-
-            const recentHistory = chatHistory.slice(-10);
-            const messagesToSend = [{ role: "system", content: systemPrompt }, ...recentHistory.map(m => ({
-                role: m.role,
-                content: m.content
-            }))];
-
-            let content = "";
+            let content = '';
             let success = false;
-            let lastApiError = "";
 
-            // 1. Try Local AI / 9Router Proxy if running
+            // 1. Direct fetch to /api/chat (Server & Cloudflare Pages backend with sub-second response)
             try {
-                const baseUrls = ['http://127.0.0.1:20128', 'http://localhost:20128', 'http://127.0.0.1:1234', 'http://localhost:1234'];
-                const localKey = await getLocalAiKey();
-                const ngrokHeaders = {
-                    'ngrok-skip-browser-warning': 'true',
-                    'Content-Type': 'application/json',
-                    ...(localKey ? { 'Authorization': `Bearer ${localKey}` } : {})
-                };
-                const model = "custom-agents-for-chatbot";
+                const ctrl = new AbortController();
+                const tid = setTimeout(() => ctrl.abort(), 4000);
 
-                let activeBase = null;
-                for (const base of baseUrls) {
-                    if (!base) continue;
-                    const ctrl = new AbortController();
-                    const tid = setTimeout(() => ctrl.abort(), 3000);
-                    try {
-                        const check = await fetch(base + '/v1/models', { method: 'GET', headers: ngrokHeaders, signal: ctrl.signal });
-                        clearTimeout(tid);
-                        if (check.ok) { activeBase = base; break; }
-                    } catch (e) { clearTimeout(tid); }
-                }
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: [
+                            ...chatHistory.slice(-6).map(m => ({ role: m.role, content: m.content })),
+                            { role: 'user', content: userText }
+                        ]
+                    }),
+                    signal: ctrl.signal
+                });
+                clearTimeout(tid);
 
-                if (activeBase && localKey) {
-                    const ctrl = new AbortController();
-                    const tid = setTimeout(() => ctrl.abort(), 15000);
-                    const resp = await fetch(activeBase + '/v1/chat/completions', {
-                        method: 'POST', signal: ctrl.signal, headers: ngrokHeaders,
-                        body: JSON.stringify({ model, stream: false, messages: messagesToSend, temperature: 0.6, max_tokens: 350 })
-                    });
-                    clearTimeout(tid);
-                    if (resp.ok) {
-                        const data = await resp.json();
-                        content = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
-                        if (content) success = true;
-                    }
-                }
-            } catch (err) {
-                console.log("Local AI bypassed:", err.message);
-            }
-
-            // 2. Seamless Fallback to Backend /api/chat (Server & Cloudflare Worker)
-            if (!success || !content) {
-                try {
-                    const response = await fetch('/api/chat', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ messages: messagesToSend })
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.content) {
                         content = data.content;
-                        if (content) success = true;
+                        success = true;
                     }
-                } catch (e) {
-                    console.warn("Backend /api/chat offline:", e.message);
                 }
+            } catch (netErr) {
+                console.log("[Chatbot] /api/chat bypassed or offline:", netErr.message);
             }
 
-            // 3. Guaranteed High-Intelligence Knowledge Base Fallback
+            // 2. Guaranteed Client-side Instant Knowledge Base Fallback
             if (!success || !content) {
                 const lower = (userText || '').toLowerCase();
-                if (lower.includes('giá') || lower.includes('cost') || lower.includes('price') || lower.includes('bảng giá') || lower.includes('tiền') || lower.includes('bao nhiêu')) {
+
+                if (lower.includes('thùy dương') || lower.includes('thuy duong')) {
+                    content = activeLang === 'vi'
+                        ? "Trần Thị Thùy Dương (#01 - 96.0 điểm, Tier S+ Apex) là tài năng Khoa học Máy tính tại VKU (GPA 3.61/4.0), cựu chuyên Tin Quốc Học Huế (9.3/10), giải ICPC Quốc gia và Top 6 SheCodes. Chuyên sâu thuật toán, C++, Java, Full-Stack và Flutter!"
+                        : "Tran Thi Thuy Duong (#01 - 96.0 pts, Tier S+ Apex) is a top Computer Science talent at VKU (3.61/4.0 GPA, National ICPC, SheCodes Top 6). Specialized in algorithms, Full-Stack Web and Flutter!";
+                    success = true;
+                } else if (lower.includes('lê thái trung') || lower.includes('thái trung') || lower.includes('thai trung')) {
+                    content = activeLang === 'vi'
+                        ? "Lê Thái Trung (#02 - 90.5 điểm, Tier S Professional) là kỹ sư Kỹ nghệ Phần mềm tại ĐH Duy Tân, chuyên sâu Backend APIs, IntelliJ IDEA, Postman và Linux/Git."
+                        : "Le Thai Trung (#02 - 90.5 pts, Tier S Professional) is a Software Engineering student at DTU specialized in Backend APIs, RESTful services, and Linux systems.";
+                    success = true;
+                } else if (lower.includes('quang sinh') || lower.includes('sinh') || lower.includes('founder') || lower.includes('admin')) {
+                    content = activeLang === 'vi'
+                        ? "Ngô Quang Sinh (#03 - 88.0 điểm, Tier A+ Impressive) là Nhà sáng lập Teemous Digital Lab, sinh viên Digital Marketing tại ĐH Duy Tân. Chuyên kiến trúc Web, quy trình tự động hóa AI và phát triển hệ thống số. Liên hệ Sinh qua FB: facebook.com/quang.sinh.5492 hoặc Zalo: 0797747297 nhé!"
+                        : "Ngo Quang Sinh (#03 - 88.0 pts, Tier A+ Impressive) is the Founder of Teemous Digital Lab. Specialized in Web architecture, AI workflows, and system development. Reach out on Facebook: facebook.com/quang.sinh.5492 or Zalo: 0797747297!";
+                    success = true;
+                } else if (lower.includes('bảo hân') || lower.includes('bao han')) {
+                    content = activeLang === 'vi'
+                        ? "Bùi Lưu Bảo Hân (#04 - 84.0 điểm, Tier A Standard) là sinh viên Kinh doanh Quốc tế tại ĐH Duy Tân, có thế mạnh về Quản trị Nhân sự (HR), vận hành cộng đồng thanh niên và quản trị dữ liệu với Notion & Google Sheets."
+                        : "Bui Luu Bao Han (#04 - 84.0 pts, Tier A Standard) studies International Business at DTU, specialized in HR operations and community coordination.";
+                    success = true;
+                } else if (lower.includes('quang tuấn') || lower.includes('quang tuan') || lower.includes('tuấn')) {
+                    content = activeLang === 'vi'
+                        ? "Vương Quang Tuấn (#05 - 80.5 điểm, Tier A Standard) là nhân sự Sáng tạo Nội dung năng động, chuyên thiết kế đồ họa Canva, dựng video ngắn CapCut, quản trị Fanpage và chạy Facebook Ads."
+                        : "Vuong Quang Tuan (#05 - 80.5 pts, Tier A Standard) is a Content Creator specialized in Canva graphic design, CapCut video editing, and social media ads.";
+                    success = true;
+                } else if (lower.includes('giá') || lower.includes('cost') || lower.includes('price') || lower.includes('bảng giá') || lower.includes('chi phí') || lower.includes('bao nhiêu') || lower.includes('0đ') || lower.includes('free')) {
                     content = activeLang === 'vi' 
-                        ? "Gói khởi tạo Portfolio Basic đang ưu đãi chỉ 49k (đã giảm 75%), gói Advanced từ 300k tùy biến theo nhu cầu tên miền riêng (.vn / .com). Đặc biệt đang có suất 0đ cho người đăng ký sớm! Bạn có thể vào mục DỊCH VỤ để chọn gói nhé!"
-                        : "The Basic Portfolio incubation package is currently on special sale for 49,000 VND (75% off), and the Advanced package starts from 300,000 VND with custom domain (.com / .vn). An early 0 VND grant is also available!";
+                        ? "Hiện tại gói Khởi Tạo Portfolio Cơ Bản đang được TÀI TRỢ 100% SUẤT 0Đ (giá gốc 49k) cho người đăng ký sớm! Gói Nâng Cao (Bespoke VIP) hiện đang tạm khóa để remake phiên bản mới. Bạn hãy vào mục SERVICES & SHOP để nhận suất 0đ ngay nha!"
+                        : "The Basic Portfolio incubation package is currently 100% FREE (0 VND Pioneer Grant)! The Bespoke VIP tier is temporarily locked for remake. Visit the Services & Shop page to claim your 0 VND grant!";
                     success = true;
-                } else if (lower.includes('mẫu') || lower.includes('showcase') || lower.includes('hub') || lower.includes('hồ sơ') || lower.includes('thành viên')) {
+                } else if (lower.includes('mẫu') || lower.includes('showcase') || lower.includes('hub') || lower.includes('hồ sơ') || lower.includes('xếp hạng') || lower.includes('tier')) {
                     content = activeLang === 'vi'
-                        ? "Bạn có thể khám phá ngay các hồ sơ tiêu biểu tại Portfolio Hub: Ngô Quang Sinh (Founder & Tech Lead), Nguyễn Thị Thùy Dương (IT & Software), Lê Thái Trung (Software Engineering), Bùi Lưu Bảo Hân (Business & Management). Bấm nút 'Portfolio Hub' trên menu để trải nghiệm nhé!"
-                        : "Explore our featured flagship profiles on Portfolio Hub: Ngo Quang Sinh (Founder & Tech Lead), Nguyen Thi Thuy Duong (IT & Software), Le Thai Trung (Software Engineering), Bui Luu Bao Han (Business & Management).";
+                        ? "Portfolio Hub xếp hạng hồ sơ công tâm dựa trên giá trị thực tế: S+ Apex (>=95.0 - Thùy Dương), S Professional (90.0-94.9 - Thái Trung), A+ Impressive (85.0-89.9 - Quang Sinh), A Standard (80.0-84.9 - Bảo Hân, Quang Tuấn). Bấm mục 'Portfolio Hub' trên menu để xem nhé!"
+                        : "Portfolio Hub benchmarks dossiers objectively: S+ Apex (Thuy Duong), S Pro (Thai Trung), A+ Impressive (Quang Sinh), A Standard (Bao Han, Quang Tuan). Check the Portfolio Hub tab on the menu!";
                     success = true;
-                } else if (lower.includes('carry') || lower.includes('gói trọn gói') || lower.includes('pack')) {
+                } else if (lower.includes('mxh') || lower.includes('smm') || lower.includes('follow') || lower.includes('buff') || lower.includes('like') || lower.includes('tiktok') || lower.includes('facebook') || lower.includes('instagram')) {
                     content = activeLang === 'vi'
-                        ? "Gói The Carry Pack là giải pháp trọn gói toàn diện nhất của Teemous Digital: bao gồm thiết kế portfolio độc bản, tên miền riêng (.com / .vn), tối ưu SEO, tích hợp CV đính kèm và kết nối hệ thống liên hệ tự động!"
-                        : "The Carry Pack is our all-in-one flagship package: bespoke portfolio design, custom domain (.com / .vn), SEO optimization, downloadable CV integration, and automated contact channels.";
-                    success = true;
-                } else if (lower.includes('liên hệ') || lower.includes('contact') || lower.includes('fb') || lower.includes('facebook') || lower.includes('sinh') || lower.includes('admin')) {
-                    content = activeLang === 'vi'
-                        ? "Bạn có thể liên hệ trực tiếp với admin Quang Sinh qua Facebook cá nhân: facebook.com/quang.sinh.5492 hoặc bấm 'Liên Hệ' trên thanh menu nha!"
-                        : "You can reach out directly to founder Quang Sinh on Facebook: facebook.com/quang.sinh.5492 or via the Contact link on the top menu!";
-                    success = true;
-                } else if (lower.includes('buff') || lower.includes('follow') || lower.includes('tương tác') || lower.includes('like') || lower.includes('sub')) {
-                    content = activeLang === 'vi'
-                        ? "Teemous Digital Lab cung cấp dịch vụ buff tương tác, tăng like, follow, mắt xem uy tín trên các nền tảng Meta (Facebook, Instagram, Threads). An toàn tài khoản 100% và giá cực tốt! Bạn liên hệ trực tiếp qua link Facebook của Sinh để nhận báo giá nha!"
-                        : "We provide trusted social media buff & follower services across Meta platforms (Facebook, Instagram, Threads). 100% account safety and competitive rates!";
+                        ? "Hệ thống SMM của Teemous Digital hỗ trợ tăng tương tác, like, follow, view cho Facebook, Instagram, Threads, TikTok. Tự động chuyển link sang UID, bảo mật 100% không cần mật khẩu và nạp tiền tự động qua VietQR!"
+                        : "Our SMM terminal provides high-speed engagement (likes, followers, views) across Meta & TikTok platforms. 100% account safety and instant auto-delivery!";
                     success = true;
                 } else if (lower.includes('aov') || lower.includes('liên quân') || lower.includes('acc') || lower.includes('shop') || lower.includes('nick')) {
                     content = activeLang === 'vi'
-                        ? "Hệ thống Cửa Hàng Liên Quân hiện đang trong giai đoạn bảo trì và nâng cấp máy chủ để đảm bảo an toàn giao dịch tối đa. Bạn có thể theo dõi thông tin mở lại tại mục DỊCH VỤ nha!"
-                        : "The Arena of Valor Shop is currently undergoing system maintenance for server upgrades and transaction security. Stay tuned for updates!";
+                        ? "Cửa hàng Liên Quân hiện đang tạm ngưng hoạt động để bảo trì hệ thống máy chủ và nâng cấp quy trình giao dịch bảo mật. Bạn vui lòng quay lại sau nhé!"
+                        : "The Arena of Valor shop is currently undergoing system maintenance for server security upgrades.";
+                    success = true;
+                } else if (lower.includes('liên hệ') || lower.includes('contact') || lower.includes('fb') || lower.includes('zalo')) {
+                    content = activeLang === 'vi'
+                        ? "Bạn có thể liên hệ trực tiếp với Founder Quang Sinh qua Facebook: facebook.com/quang.sinh.5492, Zalo: 0797747297 hoặc email: teemous.contact@gmail.com nha!"
+                        : "You can reach out directly to founder Quang Sinh on Facebook: facebook.com/quang.sinh.5492 or Zalo: 0797747297!";
                     success = true;
                 } else {
                     content = activeLang === 'vi'
-                        ? "Chào bạn! Mình là Teemous AI (Trợ lý ảo của Quang Sinh). Mình có thể hỗ trợ tư vấn dịch vụ khởi tạo Portfolio số, gói The Carry Pack, dịch vụ buff tương tác Meta hay kết nối trực tiếp với Sinh. Bạn cần mình giúp gì nè?"
-                        : "Hello! I am Teemous AI (Virtual Assistant to Quang Sinh). I can help answer questions about digital portfolio creation, The Carry Pack, Meta social services, or connecting directly with Sinh. How can I help you today?";
+                        ? "Chào bạn! Mình là Teemous AI, trợ lý số của Teemous Digital Lab. Mình có thể hỗ trợ bạn nhận suất khởi tạo Portfolio 0đ, giải đáp thông tin Portfolio Hub, dịch vụ buff tương tác MXH hay kết nối trực tiếp với Founder Quang Sinh. Bạn cần mình hỗ trợ gì nè?"
+                        : "Hello! I am Teemous AI, virtual assistant to Teemous Digital Lab. I can help with claiming your 0 VND portfolio grant, exploring Portfolio Hub, social growth services, or connecting directly with founder Quang Sinh. How can I help you today?";
                     success = true;
                 }
             }
@@ -1364,8 +1312,9 @@ function initChatbot() {
         } catch (e) {
             console.error("AI Error Handled:", e);
             if (indicator) indicator.remove();
-            addMessage(activeLang === 'vi' 
-                ? "Chào bạn! Mình là Teemous AI. Mình có thể hỗ trợ bạn về dịch vụ làm Portfolio, buff tương tác mạng xã hội Meta hoặc kết nối trực tiếp với Quang Sinh qua Facebook nhé!"
+            const fallbackLang = (typeof currentLang !== 'undefined') ? currentLang : 'vi';
+            addMessage(fallbackLang === 'vi' 
+                ? "Chào bạn! Mình là Teemous AI. Mình có thể hỗ trợ bạn về dịch vụ làm Portfolio, buff tương tác mạng xã hội Meta hoặc kết nối trực tiếp với Quang Sinh qua Facebook: facebook.com/quang.sinh.5492 nhé!"
                 : "Hello! I am Teemous AI. I can assist you with digital portfolio creation, Meta social engagement services, or connecting directly with Quang Sinh!", 'ai');
         } finally {
             isThinking = false;
@@ -2797,16 +2746,16 @@ function initSmmTerminal() {
             if (uidResult) uidResult.textContent = '';
 
             try {
-                const res = await fetch('/api/smm', {
+                                const res = await fetch('/api/smm', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'get_numeric_uid', link: link })
                 });
                 const data = await res.json();
                 if (data && data.id) {
-                    linkInput.value = data.id;
+                    linkInput.value = data.link || `https://facebook.com/${data.id}`;
                     if (uidResult) {
-                        uidResult.innerHTML = `<span style="color: #10b981;">&check; Quét UID thành công: <strong>${data.id}</strong> (${data.name || 'Người dùng'})</span>`;
+                        uidResult.innerHTML = `<span style="color: #10b981;">&check; Quét UID thành công: <strong>${data.id}</strong> (${data.name || 'Tài khoản'}) &bull; Đã tự động chuẩn hóa link đơn!</span>`;
                     }
                 } else {
                     if (uidResult) {
@@ -2828,7 +2777,11 @@ function initSmmTerminal() {
     if (submitAutoBtn) {
         submitAutoBtn.addEventListener('click', async () => {
             const svc = getSelectedService();
-            const link = linkInput ? linkInput.value.trim() : '';
+            let link = linkInput ? linkInput.value.trim() : '';
+            if (/^\d+$/.test(link)) {
+                link = `https://facebook.com/${link}`;
+                if (linkInput) linkInput.value = link;
+            }
             const qty = parseInt(qtyInput ? qtyInput.value : 0) || 0;
 
             if (!link) {

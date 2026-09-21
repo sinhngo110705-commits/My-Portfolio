@@ -3289,14 +3289,15 @@ select option {
         border-radius: 10px !important;
     }
 
-    /* Mobile Menu Widgets inside Hamburger */
+        /* Mobile Menu Widgets inside Hamburger (iPhone & iOS Safari Form Perfect) */
     .mobile-nav-widgets {
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
-        margin-top: 0.55rem !important;
-        padding-top: 0.55rem !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+        margin-top: 0.65rem !important;
+        padding-top: 0.65rem !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.14) !important;
+        box-sizing: border-box !important;
     }
 
     .light-mode .mobile-nav-widgets {
@@ -3304,33 +3305,45 @@ select option {
     }
 
     .mobile-widget-row {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 0.45rem !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 0.5rem !important;
         width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     .mobile-widget-btn {
-        display: flex !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        box-sizing: border-box !important;
+        flex: 1 1 0 !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
+        padding: 0 0.5rem !important;
+        margin: 0 !important;
+        display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
         gap: 0.4rem !important;
-        min-height: 2.35rem !important;
-        padding: 0.45rem 0.5rem !important;
         border-radius: 10px !important;
         font-family: var(--font-heading, inherit) !important;
         font-size: 0.82rem !important;
-        font-weight: 700 !important;
-        letter-spacing: 0.5px !important;
+        font-weight: 800 !important;
+        line-height: 1 !important;
         cursor: pointer !important;
-        background: rgba(255, 255, 255, 0.07) !important;
+        background: rgba(255, 255, 255, 0.08) !important;
         color: var(--text-main, #ffffff) !important;
         border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+        transition: all 0.2s ease !important;
         user-select: none !important;
         -webkit-tap-highlight-color: transparent !important;
         text-decoration: none !important;
+        overflow: hidden !important;
+        white-space: nowrap !important;
     }
 
     .mobile-widget-btn:hover,
