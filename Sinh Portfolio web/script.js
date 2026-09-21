@@ -3205,8 +3205,10 @@ function initSmmTerminal() {
                     // In case upstream API returns error or needs admin balance
                     const rawErr = data.error || 'Hệ thống đang bận. Số dư của bạn chưa bị trừ, vui lòng thử lại sau ít phút!';
                     let errMsg = rawErr;
-                    if (/key/i.test(rawErr)) {
-                        errMsg = 'Khóa API (SMM_API_KEY) trên máy chủ không hợp lệ hoặc chưa được cập nhật đúng. Vui lòng kiểm tra lại biến môi trường trên Cloudflare!';
+                    if (data.available_env_keys) {
+                        errMsg = `Chưa tìm thấy SMM_API_KEY trên Cloudflare!\nCác biến hiện có trên Cloudflare: [${data.available_env_keys.join(', ') || 'Chưa có biến nào'}].\nVui lòng vào Cloudflare Dashboard -> Settings -> Variables and Secrets để kiểm tra.`;
+                    } else if (/key/i.test(rawErr)) {
+                        errMsg = `Khóa API (SMM_API_KEY) trên Cloudflare không hợp lệ: ${rawErr}`;
                     } else if (rawErr.includes('không đủ tiền')) {
                         errMsg = 'Số dư tài khoản đại lý trên hệ thống dichvumxh.vn hiện không đủ để thực hiện gói này (cần nạp thêm tiền vào dichvumxh). Số dư ví của bạn chưa bị trừ!';
                     } else if (rawErr.includes('chưa xử lý')) {

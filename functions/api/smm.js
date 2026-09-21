@@ -13,19 +13,36 @@ export async function onRequest(context) {
 
   try {
     const url = new URL(request.url);
-    let smmKey = (env && (env.SMM_API_KEY || env.SMM_KEY || env.SMM_TOKEN)) || "";
+    let smmKey = (env && (
+      env.SMM_API_KEY ||
+      env.smm_api_key ||
+      env.SMM_KEY ||
+      env.smm_key ||
+      env.SMM_TOKEN ||
+      env.smm_token ||
+      env.SMM_API ||
+      env.smm_api ||
+      env.SMM
+    )) || "";
+
+    if (!smmKey && typeof process !== "undefined" && process.env) {
+      smmKey = process.env.SMM_API_KEY || process.env.smm_api_key || process.env.SMM_KEY || "";
+    }
+
     if (typeof smmKey === "string") {
       smmKey = smmKey.trim().replace(/^["']|["']$/g, "").trim();
     }
     const smmUrl = env.SMM_API_URL || "https://dichvumxh.vn/api/v2";
 
     let params = {};
+    for (const [k, v] of url.searchParams.entries()) {
+      params[k] = v;
+    }
     if (request.method === "POST") {
-      params = await request.json().catch(() => ({}));
-    } else {
-      for (const [k, v] of url.searchParams.entries()) {
-        params[k] = v;
-      }
+      try {
+        const json = await request.json();
+        params = { ...params, ...json };
+      } catch (e) {}
     }
 
     async function resolveFbLink(rawLink) {
@@ -49,11 +66,18 @@ export async function onRequest(context) {
 
       if (link.includes("facebook.com") || link.includes("fb.com")) {
         try {
+          const ctrl = new AbortController();
+          const tid = setTimeout(() => ctrl.abort(), 2500);
           const lookupRes = await fetch("https://id.traodoisub.com/api.php", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams({ link: link })
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            },
+            body: new URLSearchParams({ link: link }),
+            signal: ctrl.signal
           });
+          clearTimeout(tid);
           const lookupData = await lookupRes.json();
           if (lookupData && lookupData.id) {
             return { id: lookupData.id, name: lookupData.name, formattedLink: `https://facebook.com/${lookupData.id}` };
@@ -72,6 +96,17 @@ export async function onRequest(context) {
     }
 
     const action = params.action || (url.pathname.includes("services") ? "services" : "balance");
+
+    if (!smmKey) {
+      return new Response(JSON.stringify({
+        error: "Chưa cấu hình SMM_API_KEY trên Cloudflare",
+        success: false,
+        available_env_keys: Object.keys(env || {})
+      }), {
+        status: 200,
+        headers: { "Content-Type": "application/json; charset=utf-8" }
+      });
+    }
 
     if (action === "add" && params.link) {
       const resolved = await resolveFbLink(params.link);
