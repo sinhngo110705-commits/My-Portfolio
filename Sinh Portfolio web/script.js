@@ -2995,21 +2995,56 @@ function initSmmTerminal() {
         });
     });
 
-    // Auto UID lookup
-    if (uidBtn && linkInput) {
-        uidBtn.addEventListener('click', async () => {
-            const link = linkInput.value.trim();
-            if (!link) {
-                alert('Vui lòng dán đường link trang cá nhân hoặc bài viết cần lấy UID!');
-                return;
+    // Smart Auto-Normalize & Check Link / UID
+    let uidLookupTimer = null;
+    async function autoNormalizeLink(silent = false) {
+        if (!linkInput) return;
+        let link = linkInput.value.trim();
+        if (!link) {
+            if (!silent) alert('Vui lòng dán link trang cá nhân hoặc bài viết!');
+            if (uidResult) uidResult.innerHTML = '';
+            return;
+        }
+
+        // 1. Raw numeric UID (e.g. 100052509938927) -> instant client convert
+        if (/^\d{6,}$/.test(link)) {
+            linkInput.value = `https://facebook.com/${link}`;
+            if (uidResult) {
+                uidResult.innerHTML = `<span style="color: #10b981;">&check; Đã nhận diện UID: <strong>${link}</strong></span>`;
             }
+            return;
+        }
 
-            uidBtn.disabled = true;
-            uidBtn.textContent = 'Đang quét UID...';
-            if (uidResult) uidResult.textContent = '';
+        // 2. Facebook Profile with numeric id in URL -> instant client convert
+        const numMatch = link.match(/^https?:\/\/(?:www\.)?facebook\.com\/(?:profile\.php\?id=)?(\d+)\/?$/i);
+        if (numMatch && numMatch[1]) {
+            linkInput.value = `https://facebook.com/${numMatch[1]}`;
+            if (uidResult) {
+                uidResult.innerHTML = `<span style="color: #10b981;">&check; Đã nhận diện UID: <strong>${numMatch[1]}</strong></span>`;
+            }
+            return;
+        }
 
+        // 3. Post / Video / Reel / Story -> Keep untouched for likes/views
+        const isPost = /\/(posts|photos|videos|reel|watch)\/|story_fbid|permalink\.php/i.test(link);
+        if (isPost) {
+            if (uidResult) {
+                uidResult.innerHTML = `<span style="color: #10b981;">&check; Link bài viết / video hợp lệ (tự động tối ưu)</span>`;
+            }
+            return;
+        }
+
+        // 4. Facebook username link (e.g. facebook.com/quang.sinh.5492) -> auto resolve via API
+        if (link.includes('facebook.com') || link.includes('fb.com')) {
+            if (uidBtn) {
+                uidBtn.disabled = true;
+                uidBtn.textContent = 'Checking...';
+            }
+            if (uidResult) {
+                uidResult.innerHTML = `<span style="color: #00e5ff;">⏳ Đang tự động chuyển đổi sang UID...</span>`;
+            }
             try {
-                                const res = await fetch('/api/smm', {
+                const res = await fetch('/api/smm', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'get_numeric_uid', link: link })
@@ -3018,21 +3053,41 @@ function initSmmTerminal() {
                 if (data && data.id) {
                     linkInput.value = data.link || `https://facebook.com/${data.id}`;
                     if (uidResult) {
-                        uidResult.innerHTML = `<span style="color: #10b981;">&check; Quét UID thành công: <strong>${data.id}</strong> (${data.name || 'Tài khoản'}) &bull; Đã tự động chuẩn hóa link đơn!</span>`;
+                        uidResult.innerHTML = `<span style="color: #10b981;">&check; Đã tự động chuyển đổi UID: <strong>${data.id}</strong> (${data.name || 'Tài khoản'})</span>`;
                     }
                 } else {
                     if (uidResult) {
-                        uidResult.innerHTML = `<span style="color: #f59e0b;">&excl; Giữ nguyên link gốc (Hệ thống vẫn nhận diện link trực tiếp).</span>`;
+                        uidResult.innerHTML = `<span style="color: #10b981;">&check; Link hợp lệ (hệ thống sẽ xử lý khi khớp lệnh).</span>`;
                     }
                 }
-            } catch (e) {
+            } catch (err) {
                 if (uidResult) {
-                    uidResult.innerHTML = `<span style="color: #f59e0b;">&excl; Hệ thống tự động xử lý link gốc khi chạy đơn.</span>`;
+                    uidResult.innerHTML = `<span style="color: #10b981;">&check; Link hợp lệ.</span>`;
                 }
             } finally {
-                uidBtn.disabled = false;
-                uidBtn.textContent = '⚡ Quét UID';
+                if (uidBtn) {
+                    uidBtn.disabled = false;
+                    uidBtn.textContent = 'Check';
+                }
             }
+            return;
+        }
+
+        // Other platforms (Instagram, TikTok, Threads)
+        if (uidResult) {
+            uidResult.innerHTML = `<span style="color: #10b981;">&check; Link hợp lệ</span>`;
+        }
+    }
+
+    if (uidBtn) {
+        uidBtn.addEventListener('click', () => autoNormalizeLink(false));
+    }
+    if (linkInput) {
+        linkInput.addEventListener('paste', () => setTimeout(() => autoNormalizeLink(true), 60));
+        linkInput.addEventListener('blur', () => autoNormalizeLink(true));
+        linkInput.addEventListener('input', () => {
+            clearTimeout(uidLookupTimer);
+            uidLookupTimer = setTimeout(() => autoNormalizeLink(true), 400);
         });
     }
 
@@ -3148,7 +3203,11 @@ function initSmmTerminal() {
                     if (trackInput) trackInput.value = data.order;
                 } else {
                     // In case upstream API returns error or needs admin balance
-                    alert(`Thông báo từ máy chủ: ${data.error || 'Hệ thống đang bận. Số dư của bạn chưa bị trừ, vui lòng thử lại sau ít phút!'}`);
+                    let errMsg = data.error || 'Hệ thống đang bận. Số dư của bạn chưa bị trừ, vui lòng thử lại sau ít phút!';
+                    if (/key/i.test(errMsg)) {
+                        errMsg = 'Hệ thống kết nối dịch vụ đang bảo trì hoặc thiếu khóa API. Số dư của bạn chưa bị trừ!';
+                    }
+                    alert(`Thông báo từ máy chủ: ${errMsg}`);
                 }
             } catch (e) {
                 alert(`Lỗi kết nối máy chủ: ${e.message}. Số dư ví của bạn chưa bị trừ!`);
