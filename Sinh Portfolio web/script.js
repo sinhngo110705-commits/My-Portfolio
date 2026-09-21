@@ -2740,21 +2740,40 @@ function initSmmTerminal() {
         .then(res => res.json())
         .then(data => {
             if (Array.isArray(data) && data.length > 0) {
-                allServices = data.map(s => {
+                const curatedMap = new Map();
+                allServices.forEach(s => curatedMap.set(String(s.service), s));
+
+                data.forEach(s => {
+                    const sid = String(s.service);
                     const c = classify(s);
                     const unitVnd = parseFloat(s.rate_vnd_unit) || ((parseFloat(s.rate) * 26000) / 1000) || 1;
                     const finalRate = Math.round(unitVnd * 10) / 10;
-                    return {
-                        service: String(s.service),
-                        name: s.name,
-                        platform: c.platform,
-                        category: c.cat_id,
-                        rate: finalRate,
-                        min: parseInt(s.min) || 50,
-                        max: parseInt(s.max) || 1000000,
-                        description: s.description || '- Gói dịch vụ tự động xử lý qua hệ thống.'
-                    };
+
+                    if (curatedMap.has(sid)) {
+                        const existing = curatedMap.get(sid);
+                        existing.rate = finalRate;
+                        if (parseInt(s.min)) existing.min = parseInt(s.min);
+                        if (parseInt(s.max)) existing.max = parseInt(s.max);
+                    } else {
+                        let cleanName = (s.name || '')
+                            .replace(/^Facebook\s*-\s*/i, '')
+                            .replace(/^Instagram\s*-\s*/i, '')
+                            .replace(/^TikTok\s*-\s*/i, '')
+                            .replace(/^Threads\s*-\s*/i, '');
+                        curatedMap.set(sid, {
+                            service: sid,
+                            name: cleanName,
+                            platform: c.platform,
+                            category: c.cat_id,
+                            rate: finalRate,
+                            min: parseInt(s.min) || 50,
+                            max: parseInt(s.max) || 1000000,
+                            description: s.description || ''
+                        });
+                    }
                 });
+
+                allServices = Array.from(curatedMap.values());
                 renderCategories();
             }
         })
@@ -2883,33 +2902,13 @@ function initSmmTerminal() {
 
         selectedServiceId = svc.service;
 
-        // Display exact shop description in note container
-        if (noteContainer && serviceDesc) {
-            if (svc.description && svc.description.trim()) {
-                noteContainer.style.display = 'block';
-                serviceDesc.textContent = svc.description;
-            } else {
-                noteContainer.style.display = 'none';
-            }
-        }
-
-        // Sync matrix pills highlight
-        matrixPills.forEach(pill => {
-            if (pill.getAttribute('data-sid') === selectedServiceId) {
-                pill.classList.add('selected');
-            } else {
-                pill.classList.remove('selected');
-            }
-        });
-
         // Min/Max strictly in QUANTITY units set by the shop
         if (minMaxLabel) {
             minMaxLabel.innerHTML = `Số lượng: <strong style="color: var(--cyan-laser);">${svc.min.toLocaleString('vi-VN')}</strong> &bull; <strong style="color: var(--cyan-laser);">${svc.max.toLocaleString('vi-VN')}</strong>`;
         }
 
-        // Unit labels strictly /1
         if (rateLabel) {
-            rateLabel.textContent = `Đơn giá: ${svc.rate.toLocaleString('vi-VN')} VNĐ / 1 (${formatVND(svc.rate * 1000)} VNĐ / 1.000)`;
+            rateLabel.textContent = '';
         }
         if (rateUnitBadge) {
             rateUnitBadge.textContent = `${svc.rate.toLocaleString('vi-VN')} ₫ / 1`;
