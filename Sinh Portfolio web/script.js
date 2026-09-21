@@ -1234,60 +1234,120 @@ function initChatbot() {
     }
 
     function clientRagFallback(userText, lang) {
-        const clean = removeAccents(userText);
-        if (clean.includes("thuy duong") || clean.includes("duong")) {
+        const raw = userText || '';
+        const clean = removeAccents(raw);
+
+        // Math calculation check
+        const mathMatch = raw.match(/^\s*(\d+(?:\.\d+)?)\s*([\+\-\*\/])\s*(\d+(?:\.\d+)?)\s*\??\s*$/);
+        if (mathMatch) {
+            const a = parseFloat(mathMatch[1]);
+            const op = mathMatch[2];
+            const b = parseFloat(mathMatch[3]);
+            let res = 0;
+            if (op === '+') res = a + b;
+            else if (op === '-') res = a - b;
+            else if (op === '*') res = a * b;
+            else if (op === '/' && b !== 0) res = a / b;
+            return lang === 'vi'
+                ? `Kết quả phép tính ${a} ${op} ${b} = ${res} nhé! Bạn cần mình giải đáp thêm thông tin gì nè?`
+                : `The result of ${a} ${op} ${b} is ${res}! How else can I assist you today?`;
+        }
+
+        // Greetings
+        if (/^(chao|xin chao|hi|hello|helo|alo|hey|good morning|good evening)\b/i.test(clean) || clean === 'chao' || clean === 'hi') {
+            return lang === 'vi'
+                ? "Xin chào bạn! Mình là Teemous AI. Rất vui được gặp bạn! Hôm nay mình có thể hỗ trợ bạn tư vấn nhận suất làm Portfolio 0đ, khám phá Portfolio Hub hay dịch vụ tăng trưởng MXH SMM?"
+                : "Hello! I am Teemous AI. Delighted to meet you! How can I assist you today with portfolio creation, Portfolio Hub, or social media growth?";
+        }
+
+        // Who is AI
+        if (/\b(ban la ai|who are you|tro ly|ten gi|gioi thieu ban than)\b/i.test(clean)) {
+            return lang === 'vi'
+                ? "Mình là Teemous AI, trợ lý số thông minh của Teemous Digital Lab do Ngô Quang Sinh sáng lập. Mình chuyên hỗ trợ tư vấn làm Portfolio cá nhân chuẩn quốc tế, tra cứu thông tin hồ sơ tài năng Portfolio Hub và cung cấp các dịch vụ tăng trưởng mạng xã hội uy tín!"
+                : "I am Teemous AI, the digital assistant for Teemous Digital Lab founded by Ngo Quang Sinh. I assist with portfolio incubation, exploring top dossiers in Portfolio Hub, and verified social media growth services.";
+        }
+
+        // Personnel: Thuy Duong (#01) & Algorithms
+        if (/\b(thuy duong|tran thi thuy duong|icpc|dijkstra|thuat toan|shecodes)\b/i.test(clean)) {
             return lang === "vi"
                 ? "Trần Thị Thùy Dương (#01 - 96.0 điểm, Tier S+ Apex) là tài năng Khoa học Máy tính tại VKU (GPA 3.61/4.0), cựu chuyên Tin Quốc Học Huế (9.3/10), giải ICPC Quốc gia và Top 6 SheCodes. Chuyên sâu thuật toán, C++, Java, Full-Stack và Flutter Mobile!"
                 : "Tran Thi Thuy Duong (#01 - 96.0 pts, Tier S+ Apex) is a top CS talent at VKU (3.61 GPA, National ICPC, SheCodes Top 6). Specialized in algorithms, Full-Stack Web and Flutter!";
         }
-        if (clean.includes("thai trung") || clean.includes("trung")) {
+
+        // Personnel: Thai Trung (#02) & Backend
+        if (/\b(thai trung|le thai trung|backend|postman|intellij)\b/i.test(clean)) {
             return lang === "vi"
                 ? "Lê Thái Trung (#02 - 90.5 điểm, Tier S Professional) là kỹ sư Kỹ nghệ Phần mềm tại ĐH Duy Tân, chuyên sâu Backend APIs, IntelliJ IDEA, Postman và Linux/Git."
                 : "Le Thai Trung (#02 - 90.5 pts, Tier S Professional) is a Software Engineering student at DTU specialized in Backend APIs, RESTful services, and Linux systems.";
         }
-        if (clean.includes("quang sinh") || clean.includes("sinh") || clean.includes("founder") || clean.includes("admin")) {
+
+        // Personnel: Quang Sinh (#03) & Founder
+        if (/\b(quang sinh|ngo quang sinh|founder|admin)\b/i.test(clean)) {
             return lang === "vi"
                 ? "Ngô Quang Sinh (#03 - 88.0 điểm, Tier A+ Impressive) là Nhà sáng lập Teemous Digital Lab, sinh viên Digital Marketing tại ĐH Duy Tân. Chuyên kiến trúc Web, tự động hóa AI Workflows, Google AppsScript và phát triển hệ sinh thái số. Liên hệ Sinh qua FB: facebook.com/quang.sinh.5492 hoặc Zalo: 0797747297 nhé!"
                 : "Ngo Quang Sinh (#03 - 88.0 pts, Tier A+ Impressive) is the Founder of Teemous Digital Lab. Specialized in Web architecture, AI workflows, and system development. Reach out on Facebook: facebook.com/quang.sinh.5492 or Zalo: 0797747297!";
         }
-        if (clean.includes("bao han") || clean.includes("han")) {
+
+        // Personnel: Bao Han (#04) & HR
+        if (/\b(bao han|bui luu bao han|nhan su|hr|notion)\b/i.test(clean)) {
             return lang === "vi"
                 ? "Bùi Lưu Bảo Hân (#04 - 84.0 điểm, Tier A Standard) là sinh viên Kinh doanh Quốc tế tại ĐH Duy Tân, có thế mạnh về Quản trị Nhân sự (HR), vận hành cộng đồng thanh niên và quản trị dữ liệu với Notion & Google Sheets."
                 : "Bui Luu Bao Han (#04 - 84.0 pts, Tier A Standard) studies International Business at DTU, specialized in HR operations and community coordination.";
         }
-        if (clean.includes("quang tuan") || clean.includes("tuan")) {
+
+        // Personnel: Quang Tuan (#05) & Design
+        if (/\b(quang tuan|vuong quang tuan|capcut|canva|fb ads)\b/i.test(clean)) {
             return lang === "vi"
                 ? "Vương Quang Tuấn (#05 - 80.5 điểm, Tier A Standard) là nhân sự Sáng tạo Nội dung năng động, chuyên thiết kế đồ họa Canva, dựng video ngắn CapCut, quản trị Fanpage và chạy Facebook Ads."
                 : "Vuong Quang Tuan (#05 - 80.5 pts, Tier A Standard) is a Content Creator specialized in Canva graphic design, CapCut video editing, and social media ads.";
         }
-        if (clean.includes("gia") || clean.includes("cost") || clean.includes("price") || clean.includes("bang gia") || clean.includes("chi phi") || clean.includes("bao nhieu") || clean.includes("0d") || clean.includes("free")) {
+
+        // Pricing & 0đ Grant
+        if (/\b(bang gia|chi phi|bao nhieu|bao gia|0d|mien phi|free|cost|price|goi khoi tao)\b/i.test(clean) || (/\bgia\b/i.test(clean) && !/\b(tham gia|danh gia|quoc gia|tac gia|chuyen gia|giai thuat|giai thich)\b/i.test(clean))) {
             return lang === "vi"
                 ? "Hiện tại gói Khởi Tạo Portfolio Cơ Bản đang được TÀI TRỢ 100% SUẤT 0Đ (giá gốc 49k) cho người đăng ký sớm! Gói Nâng Cao (Bespoke VIP) hiện đang tạm khóa để remake phiên bản mới. Bạn hãy vào mục SERVICES & SHOP để nhận suất 0đ ngay nha!"
                 : "The Basic Portfolio incubation package is currently 100% FREE (0 VND Pioneer Grant)! The Bespoke VIP tier is temporarily locked for remake. Visit the Services & Shop page to claim your 0 VND grant!";
         }
-        if (clean.includes("mau") || clean.includes("showcase") || clean.includes("hub") || clean.includes("ho so") || clean.includes("xep hang") || clean.includes("tier") || clean.includes("bac")) {
+
+        // Portfolio Hub & Showcases
+        if (/\b(portfolio hub|hub|mau ho so|mau portfolio|xep hang|showcase|danh ba)\b/i.test(clean)) {
             return lang === "vi"
                 ? "Portfolio Hub xếp hạng hồ sơ công tâm dựa trên giá trị thực tế: S+ Apex (>=95.0 - Thùy Dương), S Professional (90.0-94.9 - Thái Trung), A+ Impressive (85.0-89.9 - Quang Sinh), A Standard (80.0-84.9 - Bảo Hân, Quang Tuấn). Bấm mục 'Portfolio Hub' trên menu để xem nhé!"
                 : "Portfolio Hub benchmarks dossiers objectively: S+ Apex (Thuy Duong), S Pro (Thai Trung), A+ Impressive (Quang Sinh), A Standard (Bao Han, Quang Tuan). Check the Portfolio Hub tab on the menu!";
         }
-        if (clean.includes("mxh") || clean.includes("smm") || clean.includes("mang xa hoi") || clean.includes("social") || clean.includes("follow") || clean.includes("buff") || clean.includes("like") || clean.includes("tiktok") || clean.includes("facebook") || clean.includes("instagram")) {
+
+        // SMM / Social Growth
+        if (/\b(smm|mang xa hoi|buff|follow|like|tang like|tang follow|view tiktok|sub fb|vietqr)\b/i.test(clean)) {
             return lang === "vi"
                 ? "Hệ thống SMM của Teemous Digital hỗ trợ tăng tương tác, like, follow, view cho Facebook, Instagram, Threads, TikTok. Tự động chuyển link sang UID, bảo mật 100% không cần mật khẩu và nạp tiền tự động qua VietQR!"
                 : "Our SMM terminal provides high-speed engagement (likes, followers, views) across Meta & TikTok platforms. 100% account safety and instant auto-delivery!";
         }
-        if (clean.includes("aov") || clean.includes("lien quan") || clean.includes("acc") || clean.includes("shop") || clean.includes("nick")) {
+
+        // AOV Shop
+        if (/\b(lien quan|aov|shop acc|mua acc|nick|skin)\b/i.test(clean)) {
             return lang === "vi"
                 ? "Cửa hàng Liên Quân hiện đang tạm ngưng hoạt động để bảo trì hệ thống máy chủ và nâng cấp quy trình giao dịch bảo mật. Bạn vui lòng quay lại sau nhé!"
                 : "The Arena of Valor shop is currently undergoing system maintenance for server security upgrades.";
         }
-        if (clean.includes("lien he") || clean.includes("contact") || clean.includes("fb") || clean.includes("zalo") || clean.includes("email")) {
+
+        // Contact Admin
+        if (/\b(lien he|contact|zalo|email|so dien thoai|sdt|inbox)\b/i.test(clean)) {
             return lang === "vi"
                 ? "Bạn có thể liên hệ trực tiếp với Founder Quang Sinh qua Facebook: facebook.com/quang.sinh.5492, Zalo: 0797747297 hoặc email: teemous.contact@gmail.com nha!"
                 : "You can reach out directly to founder Quang Sinh on Facebook: facebook.com/quang.sinh.5492 or Zalo: 0797747297!";
         }
+
+        // Services Overview
+        if (/\b(dich vu|services|lam duoc gi|ho tro gi|lam gi)\b/i.test(clean)) {
+            return lang === "vi"
+                ? "Teemous Digital cung cấp các dịch vụ: Khởi tạo Portfolio cá nhân (đang có suất tài trợ 0đ), Dịch vụ tăng trưởng Mạng Xã Hội SMM (Facebook, TikTok, Instagram) và Tự động hóa công cụ AI. Bạn cần mình tư vấn mục nào nhất?"
+                : "Teemous Digital offers: Personal Portfolio Incubation (with 100% 0 VND Grant), SMM Social Growth Services (Meta, TikTok), and AI automation.";
+        }
+
+        // Intelligent Default
         return lang === "vi"
-            ? "Chào bạn! Mình là Teemous AI, trợ lý số của Teemous Digital Lab. Mình có thể hỗ trợ bạn nhận suất khởi tạo Portfolio 0đ, giải đáp thông tin Portfolio Hub, dịch vụ buff tương tác MXH hay kết nối trực tiếp với Founder Quang Sinh. Bạn cần mình hỗ trợ gì nè?"
-            : "Hello! I am Teemous AI, virtual assistant to Teemous Digital Lab. I can help with claiming your 0 VND portfolio grant, exploring Portfolio Hub, social growth services, or connecting directly with founder Quang Sinh. How can I help you today?";
+            ? "Chào bạn! Mình là Teemous AI, trợ lý số của Teemous Digital Lab (Founder: Ngô Quang Sinh). Mình có thể hỗ trợ bạn:\n• Đăng ký nhận suất tài trợ 100% Khởi tạo Portfolio cá nhân 0đ (giá gốc 49k)\n• Tra cứu hồ sơ tài năng thực chiến tại Portfolio Hub\n• Tư vấn dịch vụ tăng trưởng mạng xã hội SMM (Facebook, TikTok, Instagram)\n• Kết nối trực tiếp với Founder Quang Sinh (FB: facebook.com/quang.sinh.5492 hoặc Zalo: 0797747297).\nBạn cần mình tư vấn chi tiết phần nào nè?"
+            : "Hello! I am Teemous AI, assistant to Teemous Digital Lab (Founder: Ngo Quang Sinh). I can help with:\n• Claiming the 100% Free 0 VND Portfolio incubation grant\n• Exploring benchmarked dossiers on Portfolio Hub\n• Meta and TikTok SMM growth services\n• Connecting with founder Quang Sinh (Zalo: 0797747297).";
     }
 
     async function getAIResponse(userText) {
