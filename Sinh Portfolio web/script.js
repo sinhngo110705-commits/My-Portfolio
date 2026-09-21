@@ -1367,32 +1367,110 @@ function initChatbot() {
             let content = '';
             let success = false;
 
-            // Direct fetch to /api/chat with 25s timeout for AI generation
+            const systemPrompt = `Bạn là Teemous AI, trợ lý số thông minh độc quyền của Teemous Digital Lab (được sáng lập bởi Ngô Quang Sinh - sinh viên Digital Marketing tại ĐH Duy Tân).
+Phong cách trả lời: Thân thiện, chu đáo, thông minh, chuyên nghiệp và có tính thẩm mỹ cao. Trình bày rõ ràng bằng Markdown (bullet points, **bold** từ khóa quan trọng).
+Thông tin nền tảng về Teemous Digital Lab:
+- Nhà sáng lập: Ngô Quang Sinh (#03 - Tier A+ Impressive, 88.0 điểm), chuyên gia Web Architecture, tự động hóa AI Workflows, Google AppsScript và hệ sinh thái số. Liên hệ Sinh: FB: facebook.com/quang.sinh.5492, Zalo: 0797747297, Email: teemous.contact@gmail.com.
+- Portfolio Hub: Bảng xếp hạng hồ sơ năng lực thực chiến công tâm:
+  + #01 Trần Thị Thùy Dương: Tier S+ Apex (96.0 điểm), VKU Khoa học Máy tính (GPA 3.61/4.0), cựu chuyên Tin Quốc Học Huế, giải Quốc Gia ICPC, Top 6 SheCodes. Chuyên sâu thuật toán, C++, Java, Full-Stack Web và Flutter Mobile.
+  + #02 Lê Thái Trung: Tier S Professional (90.5 điểm), ĐH Duy Tân Kỹ nghệ Phần mềm, chuyên Backend APIs, IntelliJ IDEA, Postman, Linux/Git.
+  + #04 Bùi Lưu Bảo Hân: Tier A Standard (84.0 điểm), ĐH Duy Tân Kinh doanh Quốc tế, HR & Vận hành dữ liệu Notion/Sheets.
+  + #05 Vương Quang Tuấn: Tier A Standard (80.5 điểm), Content Creator, Canva, CapCut, Facebook Ads.
+- Dịch vụ & Sản phẩm chính:
+  1. Khởi tạo Portfolio cá nhân: Đang có chương trình TÀI TRỢ 100% SUẤT 0Đ (giá gốc 49k) gói Basic cho bạn trẻ đăng ký sớm! Gói VIP Bespoke đang tạm khóa để nâng cấp phiên bản mới.
+  2. SMM Terminal (Dịch vụ Mạng Xã Hội): Tăng Like, Follow, View, Comment tương tác cho Facebook, Instagram, TikTok, Threads với giá cực tốt từ vài chục đồng, bảo mật 100% không cần mật khẩu, tự động lấy UID, nạp tiền tự động qua VietQR.
+  3. Shop Liên Quân: Hiện đang tạm ngưng bảo trì hệ thống.
+Hãy trả lời trực tiếp câu hỏi của người dùng bằng Tiếng Việt hoặc ngôn ngữ của người dùng.`;
+
+            const messagesToSend = [
+                { role: 'system', content: systemPrompt },
+                ...chatHistory.slice(-8).map(m => ({ role: m.role, content: m.content }))
+            ];
+
+            // 1. Level 1: Direct client probe to 9Router / Local AI (no ngrok needed on local machine)
             try {
-                const ctrl = new AbortController();
-                const tid = setTimeout(() => ctrl.abort(), 25000);
+                const localKey = await getLocalAiKey();
+                const localBases = [
+                    'http://127.0.0.1:20128',
+                    'http://localhost:20128',
+                    'http://127.0.0.1:1234',
+                    'http://localhost:1234',
+                    'https://puppylike-macroclimatically-bev.ngrok-free.dev'
+                ];
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    ...(localKey ? { 'Authorization': `Bearer ${localKey}` } : {})
+                };
 
-                const messagesToSend = chatHistory.slice(-8).map(m => ({ role: m.role, content: m.content }));
+                let activeBase = null;
+                for (const base of localBases) {
+                    if (!base) continue;
+                    const ctrl = new AbortController();
+                    const tid = setTimeout(() => ctrl.abort(), 2000);
+                    try {
+                        const check = await fetch(`${base}/v1/models`, { method: 'GET', headers, signal: ctrl.signal });
+                        clearTimeout(tid);
+                        if (check.ok) { activeBase = base; break; }
+                    } catch (e) { clearTimeout(tid); }
+                }
 
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messages: messagesToSend }),
-                    signal: ctrl.signal
-                });
-                clearTimeout(tid);
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data && data.content) {
-                        content = data.content;
-                        success = true;
+                if (activeBase) {
+                    const ctrl = new AbortController();
+                    const tid = setTimeout(() => ctrl.abort(), 25000);
+                    const resp = await fetch(`${activeBase}/v1/chat/completions`, {
+                        method: 'POST',
+                        signal: ctrl.signal,
+                        headers,
+                        body: JSON.stringify({
+                            model: 'custom-agents-for-chatbot',
+                            stream: false,
+                            messages: messagesToSend,
+                            temperature: 0.7,
+                            max_tokens: 600
+                        })
+                    });
+                    clearTimeout(tid);
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        content = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
+                        if (content && content.trim()) {
+                            content = content.trim();
+                            success = true;
+                        }
                     }
                 }
-            } catch (netErr) {
-                // Fallback to client RAG on network failure or timeout
+            } catch (localErr) {
+                // Ignore and proceed to Level 2
             }
 
+            // 2. Level 2: Backend /api/chat (Server & Cloudflare Worker)
+            if (!success || !content) {
+                try {
+                    const ctrl = new AbortController();
+                    const tid = setTimeout(() => ctrl.abort(), 20000);
+
+                    const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ messages: messagesToSend }),
+                        signal: ctrl.signal
+                    });
+                    clearTimeout(tid);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data && data.content) {
+                            content = data.content;
+                            success = true;
+                        }
+                    }
+                } catch (netErr) {
+                    // Proceed to Level 3
+                }
+            }
+
+            // 3. Level 3: Fallback to client RAG on network failure or timeout
             if (!success || !content) {
                 content = clientRagFallback(userText, activeLang);
             }
