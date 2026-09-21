@@ -64,7 +64,7 @@ function generateAIResponse(userText) {
   if (clean.includes("gia") || clean.includes("cost") || clean.includes("price") || clean.includes("bang gia") || clean.includes("chi phi") || clean.includes("bao nhieu") || clean.includes("0d") || clean.includes("free")) {
     return "Hiện tại gói Khởi Tạo Portfolio Cơ Bản đang được TÀI TRỢ 100% SUẤT 0Đ (giá gốc 49k) cho người đăng ký sớm! Gói Khởi Tạo Nâng Cao (Bespoke VIP) hiện đang tạm khóa để remake phiên bản mới. Bạn hãy vào mục SERVICES & SHOP để nhận suất 0đ ngay nha!";
   }
-  if (clean.includes("mxh") || clean.includes("smm") || clean.includes("follow") || clean.includes("buff") || clean.includes("like") || clean.includes("tiktok") || clean.includes("facebook") || clean.includes("instagram")) {
+  if (clean.includes("mxh") || clean.includes("smm") || clean.includes("mang xa hoi") || clean.includes("social") || clean.includes("follow") || clean.includes("buff") || clean.includes("like") || clean.includes("tiktok") || clean.includes("facebook") || clean.includes("instagram")) {
     return "Hệ thống SMM của Teemous Digital hỗ trợ tăng like, follow, view, tương tác bài viết cho Facebook, Instagram, Threads, TikTok với giá từ vài chục đồng/tương tác. Tự động lấy UID từ link, bảo mật 100% không cần mật khẩu và nạp tiền tự động qua VietQR!";
   }
   if (clean.includes("aov") || clean.includes("lien quan") || clean.includes("acc") || clean.includes("shop") || clean.includes("nick")) {

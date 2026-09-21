@@ -1,3 +1,4 @@
+import { onRequest as chatHandler } from '../functions/api/chat.js';
 import { onRequest as registerHandler } from '../functions/api/auth/register.js';
 import { onRequest as loginHandler } from '../functions/api/auth/login.js';
 import { onRequest as profileHandler } from '../functions/api/user/profile.js';
@@ -22,25 +23,9 @@ export default {
       });
     }
 
-    // 2. Handle API routes
-    if (url.pathname === "/api/chat" && request.method === "POST") {
-      try {
-        const { provider, model, messages, temperature, max_tokens } = await request.json();
-        
-        // 2. Provider Routing
-        switch (provider) {
-          case 'openai':
-            return await handleOpenAI(messages, model, temperature, max_tokens, env);
-          case 'anthropic':
-            return await handleAnthropic(messages, model, temperature, max_tokens, env);
-          case 'gemini':
-            return await handleGemini(messages, model, temperature, max_tokens, env);
-          default:
-            return new Response(JSON.stringify({ error: "Unsupported provider" }), { status: 400 });
-        }
-      } catch (error) {
-        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
-      }
+        // 2. Handle API routes (/api/chat)
+    if (url.pathname === "/api/chat") {
+      return await chatHandler({ request, env });
     }
 
     // 3. Handle Account/User API routes
