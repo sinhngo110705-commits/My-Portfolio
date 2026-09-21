@@ -379,6 +379,9 @@ function initScrollAnimations() {
 
 // High-performance hardware-accelerated background animation (Data / Cyberpunk Grid shift)
 function initBackgroundAnimation() {
+    // High-Performance Guard: Skip continuous canvas simulation on dashboard & admin pages
+    if (window.location.pathname.includes('/user')) return;
+
     const canvas = document.getElementById('bg-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: true });
@@ -1092,30 +1095,128 @@ function initChatbot() {
 
     if (!container || !toggle || !windowEl || !messagesEl || !inputEl) return;
 
+    const SESSION_KEY = 'teemous_chat_session';
+    const OPEN_KEY = 'teemous_chat_open';
+
     toggle.addEventListener('click', () => {
         windowEl.classList.toggle('active');
+        try {
+            sessionStorage.setItem(OPEN_KEY, windowEl.classList.contains('active') ? 'true' : 'false');
+        } catch (e) {}
         if (windowEl.classList.contains('active')) {
             inputEl.focus();
+            messagesEl.scrollTop = messagesEl.scrollHeight;
         }
     });
 
     if (closeBtn) {
         closeBtn.addEventListener('click', () => {
             windowEl.classList.remove('active');
+            try {
+                sessionStorage.setItem(OPEN_KEY, 'false');
+            } catch (e) {}
         });
+    }
+
+    // Add reset/clear chat button to chatbot header
+    const headerEl = windowEl.querySelector('.chatbot-header');
+    if (headerEl && !headerEl.querySelector('.chatbot-clear-btn')) {
+        const clearBtn = document.createElement('button');
+        clearBtn.type = 'button';
+        clearBtn.className = 'chatbot-clear-btn';
+        clearBtn.innerHTML = '↺';
+        clearBtn.title = 'Bắt đầu cuộc trò chuyện mới (Xóa lịch sử)';
+        clearBtn.style.cssText = 'background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.15rem; margin-right:0.6rem; transition:color 0.2s, transform 0.2s; padding:0 4px; display:inline-flex; align-items:center;';
+        clearBtn.addEventListener('mouseenter', () => { clearBtn.style.color = 'var(--neon-blue)'; clearBtn.style.transform = 'rotate(45deg)'; });
+        clearBtn.addEventListener('mouseleave', () => { clearBtn.style.color = 'var(--text-muted)'; clearBtn.style.transform = 'rotate(0deg)'; });
+        clearBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            chatHistory.length = 0;
+            try { sessionStorage.removeItem(SESSION_KEY); } catch(err) {}
+            const isEn = (typeof currentLang !== 'undefined' && currentLang === 'en');
+            const welcomeText = isEn ? "Hello! I'm Teemous AI. How can I help you today?" : "Xin chào! Tôi là trợ lý ảo Teemous. Tôi có thể giúp gì cho bạn hôm nay?";
+            messagesEl.innerHTML = `<div class="message ai-message" data-en="Hello! I'm Teemous AI. How can I help you today?" data-vi="Xin chào! Tôi là trợ lý ảo Teemous. Tôi có thể giúp gì cho bạn hôm nay?">${welcomeText}</div>`;
+        });
+        if (closeBtn) {
+            headerEl.insertBefore(clearBtn, closeBtn);
+        } else {
+            headerEl.appendChild(clearBtn);
+        }
     }
 
     let isThinking = false;
     const chatHistory = [];
 
+    function saveSession() {
+        try {
+            sessionStorage.setItem(SESSION_KEY, JSON.stringify(chatHistory));
+        } catch (e) {}
+    }
+
+    function restoreSession() {
+        try {
+            // Clean up any leading whitespace from initial HTML greeting
+            messagesEl.querySelectorAll('.message').forEach(m => {
+                m.innerHTML = m.innerHTML.trim();
+            });
+
+            const raw = sessionStorage.getItem(SESSION_KEY);
+            if (raw) {
+                const saved = JSON.parse(raw);
+                if (Array.isArray(saved) && saved.length > 0) {
+                    messagesEl.innerHTML = '';
+                    saved.forEach(item => {
+                        if (item && item.content) {
+                            const sender = item.role === 'assistant' ? 'ai' : 'user';
+                            const msg = document.createElement('div');
+                            msg.className = `message ${sender}-message`;
+                            if (sender === 'ai') {
+                                msg.innerHTML = formatAiText(item.content);
+                            } else {
+                                msg.innerText = (item.content || '').trim();
+                            }
+                            messagesEl.appendChild(msg);
+                            chatHistory.push(item);
+                        }
+                    });
+                    messagesEl.scrollTop = messagesEl.scrollHeight;
+                }
+            }
+            const wasOpen = sessionStorage.getItem(OPEN_KEY);
+            if (wasOpen === 'true') {
+                windowEl.classList.add('active');
+            }
+        } catch (e) {}
+    }
+
+    restoreSession();
+
+    function formatAiText(text) {
+        if (!text) return '';
+        let trimmed = text.trim();
+        let escaped = trimmed
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        escaped = escaped.replace(/^[\*\-]\s+(.+)$/gm, '• $1');
+        escaped = escaped.replace(/\n/g, '<br>');
+        return escaped;
+    }
+
     function addMessage(text, sender) {
         const msg = document.createElement('div');
         msg.className = `message ${sender}-message`;
-        msg.innerText = text;
+        if (sender === 'ai') {
+            msg.innerHTML = formatAiText(text);
+        } else {
+            msg.innerText = (text || '').trim();
+        }
         messagesEl.appendChild(msg);
         messagesEl.scrollTop = messagesEl.scrollHeight;
-        chatHistory.push({ role: sender === 'ai' ? 'assistant' : 'user', content: text });
-        if (chatHistory.length > 10) chatHistory.shift();
+        chatHistory.push({ role: sender === 'ai' ? 'assistant' : 'user', content: (text || '').trim() });
+        if (chatHistory.length > 20) chatHistory.shift();
+        saveSession();
         return msg;
     }
 
@@ -1206,20 +1307,17 @@ function initChatbot() {
             let content = '';
             let success = false;
 
-            // Direct fetch to /api/chat
+            // Direct fetch to /api/chat with 25s timeout for AI generation
             try {
                 const ctrl = new AbortController();
-                const tid = setTimeout(() => ctrl.abort(), 3000);
+                const tid = setTimeout(() => ctrl.abort(), 25000);
+
+                const messagesToSend = chatHistory.slice(-8).map(m => ({ role: m.role, content: m.content }));
 
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        messages: [
-                            ...chatHistory.slice(-4).map(m => ({ role: m.role, content: m.content })),
-                            { role: 'user', content: userText }
-                        ]
-                    }),
+                    body: JSON.stringify({ messages: messagesToSend }),
                     signal: ctrl.signal
                 });
                 clearTimeout(tid);
@@ -1232,7 +1330,7 @@ function initChatbot() {
                     }
                 }
             } catch (netErr) {
-                // Ignore network error and proceed instantly to client RAG
+                // Fallback to client RAG on network failure or timeout
             }
 
             if (!success || !content) {
@@ -1240,7 +1338,7 @@ function initChatbot() {
             }
 
             if (indicator) indicator.remove();
-            addMessage((content || "").replace(/\*\*/g, ''), 'ai');
+            addMessage(content || '', 'ai');
 
         } catch (e) {
             console.error("Chatbot exception handled:", e);
@@ -1273,21 +1371,11 @@ function initChatbot() {
         sendBtn.addEventListener('click', handleSend);
     }
 
-    inputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
+    inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
             e.preventDefault();
             handleSend(e);
         }
-    });
-
-    windowEl.querySelectorAll('.quick-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            const prompt = chip.getAttribute('data-prompt');
-            if (prompt && inputEl) {
-                inputEl.value = prompt;
-                handleSend();
-            }
-        });
     });
 }
 
@@ -2131,13 +2219,18 @@ function initAdminPanel() {
 
     // ── Search filter ──────────────────────────────────────────────────────
     if (searchInput) {
+        let searchDebounceTimer = null;
         searchInput.addEventListener('input', () => {
-            const q = searchInput.value.toLowerCase();
-            const filtered = allUsers.filter(u =>
-                u.username.toLowerCase().includes(q) ||
-                u.email.toLowerCase().includes(q)
-            );
-            renderTable(filtered);
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                const q = searchInput.value.toLowerCase().trim();
+                const filtered = allUsers.filter(u =>
+                    (u.username && u.username.toLowerCase().includes(q)) ||
+                    (u.email && u.email.toLowerCase().includes(q)) ||
+                    String(u.id).includes(q)
+                );
+                renderTable(filtered);
+            }, 120);
         });
     }
 

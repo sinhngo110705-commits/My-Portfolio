@@ -59,10 +59,41 @@ export async function onRequest(context) {
             if (clean.includes("dich vu") || clean.includes("service") || clean.includes("lam gi") || clean.includes("portfolio")) {
                 return "Teemous Digital cung cấp các dịch vụ: Khởi tạo Portfolio cá nhân (đang có suất tài trợ 0đ), Dịch vụ tăng trưởng Mạng Xã Hội SMM (Facebook, TikTok, Instagram) và Tự động hóa công cụ AI. Bạn cần mình tư vấn mục nào nhất?";
             }
+            if (clean.includes("ban la ai") || clean.includes("who are you") || clean.includes("tro ly") || clean.includes("assistant")) {
+                return "Mình là Teemous AI, trợ lý số thông minh độc quyền của Teemous Digital Lab do Ngô Quang Sinh sáng lập. Mình có thể hỗ trợ bạn tìm hiểu về hồ sơ Portfolio Hub, nhận suất làm Portfolio 0đ, tra cứu dịch vụ buff tương tác mạng xã hội hoặc kết nối trực tiếp với các thành viên!";
+            }
+            if (clean.includes("chao") || clean.includes("hi") || clean.includes("hello") || clean.includes("alo") || clean.includes("hey")) {
+                return "Xin chào bạn! Mình là Teemous AI. Rất vui được gặp bạn! Hôm nay mình có thể hỗ trợ bạn tư vấn nhận suất làm Portfolio 0đ, khám phá Portfolio Hub hay dịch vụ tăng trưởng MXH SMM?";
+            }
             return "Chào bạn! Mình là Teemous AI, trợ lý số của Teemous Digital Lab. Mình có thể hỗ trợ tư vấn nhận suất làm Portfolio 0đ, tra cứu hồ sơ Portfolio Hub, dịch vụ buff tương tác MXH hay kết nối trực tiếp với Founder Quang Sinh. Bạn cần mình hỗ trợ gì nè?";
         }
 
-        const reply = getRagReply(userMsg);
+        let reply = null;
+        const geminiKey = env && (env.GEMINI_API_KEY || env.GEMINI_API);
+        if (geminiKey) {
+            try {
+                const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey.trim()}`;
+                const systemMsg = "Bạn là Teemous AI, trợ lý ảo của Teemous Digital Lab (Founder: Ngô Quang Sinh). Trả lời thân thiện, hữu ích, chuyên nghiệp bằng Tiếng Việt.";
+                const contents = [
+                    { role: "user", parts: [{ text: `${systemMsg}\n\nNgười dùng hỏi: ${userMsg}` }] }
+                ];
+                const gRes = await fetch(geminiUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents, generationConfig: { maxOutputTokens: 800, temperature: 0.7 } })
+                });
+                if (gRes.ok) {
+                    const gData = await gRes.json();
+                    const gText = gData.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (gText && gText.trim()) {
+                        reply = gText.trim();
+                    }
+                }
+            } catch (gErr) {}
+        }
+        if (!reply) {
+            reply = getRagReply(userMsg);
+        }
 
         return new Response(JSON.stringify({ content: reply, role: "assistant" }), {
             headers: {

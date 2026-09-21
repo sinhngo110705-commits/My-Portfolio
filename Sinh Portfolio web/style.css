@@ -4494,10 +4494,12 @@ select option {
 /* Mobile Responsive Chat & Floating Controls */
 @media (max-width: 480px) {
     #chatbot-window {
-        width: calc(100vw - 2rem) !important;
-        max-width: 360px !important;
+        position: fixed !important;
+        left: 1rem !important;
         right: 1rem !important;
         bottom: 5.25rem !important;
+        width: auto !important;
+        max-width: calc(100vw - 2rem) !important;
         height: min(28rem, 72vh) !important;
         border-radius: 20px !important;
     }

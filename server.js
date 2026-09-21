@@ -39,6 +39,64 @@ function removeAccents(str) {
   return (str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
 }
 
+const TEEMOUS_SYSTEM_PROMPT = `Bạn là Teemous AI, trợ lý số thông minh độc quyền của Teemous Digital Lab (được sáng lập bởi Ngô Quang Sinh - sinh viên Digital Marketing tại ĐH Duy Tân).
+Phong cách trả lời: Thân thiện, chu đáo, thông minh, chuyên nghiệp và có tính thẩm mỹ cao. Trình bày rõ ràng bằng Markdown (bullet points, **bold** từ khóa quan trọng).
+Thông tin nền tảng về Teemous Digital Lab:
+- Nhà sáng lập: Ngô Quang Sinh (#03 - Tier A+ Impressive, 88.0 điểm), chuyên gia Web Architecture, tự động hóa AI Workflows, Google AppsScript và hệ sinh thái số. Liên hệ Sinh: FB: facebook.com/quang.sinh.5492, Zalo: 0797747297, Email: teemous.contact@gmail.com.
+- Portfolio Hub: Bảng xếp hạng hồ sơ năng lực thực chiến công tâm:
+  + #01 Trần Thị Thùy Dương: Tier S+ Apex (96.0 điểm), VKU Khoa học Máy tính (GPA 3.61/4.0), cựu chuyên Tin Quốc Học Huế, giải Quốc Gia ICPC, Top 6 SheCodes. Chuyên sâu thuật toán, C++, Java, Full-Stack Web và Flutter Mobile.
+  + #02 Lê Thái Trung: Tier S Professional (90.5 điểm), ĐH Duy Tân Kỹ nghệ Phần mềm, chuyên Backend APIs, IntelliJ IDEA, Postman, Linux/Git.
+  + #04 Bùi Lưu Bảo Hân: Tier A Standard (84.0 điểm), ĐH Duy Tân Kinh doanh Quốc tế, HR & Vận hành dữ liệu Notion/Sheets.
+  + #05 Vương Quang Tuấn: Tier A Standard (80.5 điểm), Content Creator, Canva, CapCut, Facebook Ads.
+- Dịch vụ & Sản phẩm chính:
+  1. Khởi tạo Portfolio cá nhân: Đang có chương trình TÀI TRỢ 100% SUẤT 0Đ (giá gốc 49k) gói Basic cho bạn trẻ đăng ký sớm! Gói VIP Bespoke đang tạm khóa để nâng cấp phiên bản mới.
+  2. SMM Terminal (Dịch vụ Mạng Xã Hội): Tăng Like, Follow, View, Comment tương tác cho Facebook, Instagram, TikTok, Threads với giá cực tốt từ vài chục đồng, bảo mật 100% không cần mật khẩu, tự động lấy UID, nạp tiền tự động qua VietQR.
+  3. Shop Liên Quân: Hiện đang tạm ngưng bảo trì hệ thống.
+Hãy trả lời trực tiếp câu hỏi của người dùng bằng Tiếng Việt hoặc ngôn ngữ của người dùng.`;
+
+async function callAiBackend(messages) {
+  const routerKey = process.env.ROUTER_API_KEY || envConfig.ROUTER_API_KEY || "";
+  const routerUrl = process.env.ROUTER_API_URL || envConfig.ROUTER_API_URL || "http://127.0.0.1:20128/v1/chat/completions";
+
+  const cleanedMessages = (messages || []).filter(m => m && m.content).slice(-8);
+  const payloadMessages = [
+    { role: "system", content: TEEMOUS_SYSTEM_PROMPT },
+    ...cleanedMessages
+  ];
+
+  const candidateUrls = [routerUrl, "http://127.0.0.1:20128/v1/chat/completions", "http://127.0.0.1:1234/v1/chat/completions"];
+  const uniqueUrls = [...new Set(candidateUrls)];
+
+  for (const targetUrl of uniqueUrls) {
+    try {
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 18000);
+      const resp = await fetch(targetUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(routerKey ? { 'Authorization': 'Bearer ' + routerKey } : {})
+        },
+        body: JSON.stringify({
+          model: 'custom-agents-for-chatbot',
+          stream: false,
+          messages: payloadMessages,
+          temperature: 0.7,
+          max_tokens: 800
+        }),
+        signal: ctrl.signal
+      });
+      clearTimeout(tid);
+      if (resp.ok) {
+        const data = await resp.json();
+        const content = data.choices?.[0]?.message?.content || data.choices?.[0]?.text;
+        if (content && content.trim()) return content.trim();
+      }
+    } catch (e) {}
+  }
+  return null;
+}
+
 function generateAIResponse(userText) {
   const raw = (userText || "").toLowerCase();
   const clean = removeAccents(userText);
@@ -114,13 +172,17 @@ function handleRequest(req, res) {
   if (reqPath === '/v1/chat/completions' && req.method === 'POST') {
     let bodyStr = '';
     req.on('data', chunk => { bodyStr += chunk; });
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
         const body = JSON.parse(bodyStr || '{}');
-        const userMsg = (body.messages && body.messages.length > 0)
-          ? body.messages[body.messages.length - 1].content
+        const incomingMessages = Array.isArray(body.messages) ? body.messages : [];
+        const userMsg = (incomingMessages.length > 0)
+          ? incomingMessages[incomingMessages.length - 1].content
           : '';
-        const reply = generateAIResponse(userMsg);
+        let reply = await callAiBackend(incomingMessages);
+        if (!reply) {
+          reply = generateAIResponse(userMsg);
+        }
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
           id: "chatcmpl-" + Date.now(),
@@ -145,18 +207,43 @@ function handleRequest(req, res) {
   if (reqPath === '/api/chat' && req.method === 'POST') {
     let bodyStr = '';
     req.on('data', chunk => { bodyStr += chunk; });
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
         const body = JSON.parse(bodyStr || '{}');
-        const userMsg = (body.messages && body.messages.length > 0)
-          ? body.messages[body.messages.length - 1].content
+        const incomingMessages = Array.isArray(body.messages) ? body.messages : [];
+        const userMsg = (incomingMessages.length > 0)
+          ? incomingMessages[incomingMessages.length - 1].content
           : '';
-        const reply = generateAIResponse(userMsg);
+        let reply = await callAiBackend(incomingMessages);
+        if (!reply) {
+          reply = generateAIResponse(userMsg);
+        }
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ content: reply }));
+        res.end(JSON.stringify({ content: reply, role: "assistant" }));
       } catch (e) {
-        res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ error: e.message }));
+        const fallback = generateAIResponse("");
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ content: fallback, role: "assistant" }));
+      }
+    });
+    return;
+  }
+
+  // Handle /api/admin/manage (Local dev fallback)
+  if (reqPath.startsWith('/api/admin/manage')) {
+    let bodyStr = '';
+    req.on('data', chunk => { bodyStr += chunk; });
+    req.on('end', () => {
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      if (req.method === 'GET') {
+        res.end(JSON.stringify({
+          users: [
+            { id: 1, username: 'quangsinh', email: 'sinh@teemousdigital.id.vn', balance: 500000, role: 'admin', created_at: '2026-03-21 11:30:00' },
+            { id: 2, username: 'demo_user', email: 'demo@gmail.com', balance: 50000, role: 'user', created_at: '2026-03-22 14:15:00' }
+          ]
+        }));
+      } else {
+        res.end(JSON.stringify({ success: true, message: 'Updated successfully (local mode)' }));
       }
     });
     return;
