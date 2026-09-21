@@ -13,7 +13,10 @@ export async function onRequest(context) {
 
   try {
     const url = new URL(request.url);
-    const smmKey = env && env.SMM_API_KEY;
+    let smmKey = (env && (env.SMM_API_KEY || env.SMM_KEY || env.SMM_TOKEN)) || "";
+    if (typeof smmKey === "string") {
+      smmKey = smmKey.trim().replace(/^["']|["']$/g, "").trim();
+    }
     const smmUrl = env.SMM_API_URL || "https://dichvumxh.vn/api/v2";
 
     let params = {};

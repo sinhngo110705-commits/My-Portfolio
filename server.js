@@ -360,7 +360,10 @@ function handleRequest(req, res) {
     req.on('data', chunk => { bodyStr += chunk; });
     req.on('end', async () => {
       try {
-        const smmKey = process.env.SMM_API_KEY || envConfig.SMM_API_KEY || "";
+        let smmKey = process.env.SMM_API_KEY || envConfig.SMM_API_KEY || "";
+        if (typeof smmKey === "string") {
+          smmKey = smmKey.trim().replace(/^["']|["']$/g, "").trim();
+        }
         const smmUrl = process.env.SMM_API_URL || envConfig.SMM_API_URL || "https://dichvumxh.vn/api/v2";
 
         let params = {};

@@ -3203,9 +3203,14 @@ function initSmmTerminal() {
                     if (trackInput) trackInput.value = data.order;
                 } else {
                     // In case upstream API returns error or needs admin balance
-                    let errMsg = data.error || 'Hệ thống đang bận. Số dư của bạn chưa bị trừ, vui lòng thử lại sau ít phút!';
-                    if (/key/i.test(errMsg)) {
-                        errMsg = 'Hệ thống kết nối dịch vụ đang bảo trì hoặc thiếu khóa API. Số dư của bạn chưa bị trừ!';
+                    const rawErr = data.error || 'Hệ thống đang bận. Số dư của bạn chưa bị trừ, vui lòng thử lại sau ít phút!';
+                    let errMsg = rawErr;
+                    if (/key/i.test(rawErr)) {
+                        errMsg = 'Khóa API (SMM_API_KEY) trên máy chủ không hợp lệ hoặc chưa được cập nhật đúng. Vui lòng kiểm tra lại biến môi trường trên Cloudflare!';
+                    } else if (rawErr.includes('không đủ tiền')) {
+                        errMsg = 'Số dư tài khoản đại lý trên hệ thống dichvumxh.vn hiện không đủ để thực hiện gói này (cần nạp thêm tiền vào dichvumxh). Số dư ví của bạn chưa bị trừ!';
+                    } else if (rawErr.includes('chưa xử lý')) {
+                        errMsg = 'Đường link này đang có một đơn hàng khác đang xử lý trên máy chủ. Vui lòng đợi đơn cũ chạy xong rồi đặt tiếp!';
                     }
                     alert(`Thông báo từ máy chủ: ${errMsg}`);
                 }
