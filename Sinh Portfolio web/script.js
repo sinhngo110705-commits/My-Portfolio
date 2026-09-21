@@ -2667,37 +2667,37 @@ function initSmmTerminal() {
     // Default curated packages with 100% exact original prices and original notes
     let allServices = [
         // --- FACEBOOK: LIKE BÀI VIẾT (ĐẦY ĐỦ 100% CÁC SERVER TRONG ẢNH) ---
-        { service: '53977', name: 'SV6 : Like ẩn. tốc độ trung bình, không tụt', platform: 'facebook', category: 'like_post', rate: 25.3, min: 50, max: 200000, description: 'ID: 53977\n- Được phép dồn đơn\n- Hiện tại không tụt, không cam kết bảo hành\n- Lượt cảm xúc chỉ chạy cho bài gốc, không hỗ trợ bài chia sẻ.\nTối thiểu/Tối đa: 50/200k' },
-        { service: '3566', name: 'SV1 : Like ẩn. tốc độ chậm, không tụt', platform: 'facebook', category: 'like_post', rate: 13.7, min: 50, max: 10000, description: 'ID: 3566\n- Không hiển thị người like.\n- Hiện tại không tụt, không cam kết bảo hành\n- Lượt cảm xúc chỉ chạy cho bài gốc, không hỗ trợ bài chia sẻ.' },
-        { service: '4822', name: 'SV2 : Like Ngoại, tốc độ nhanh', platform: 'facebook', category: 'like_post', rate: 16.0, min: 100, max: 100000, description: 'ID: 4822\n- Gói không hỗ trợ huỷ đơn.\n- Tốc độ 10k - 50k / ngày' },
-        { service: '4823', name: 'SV3 : Like việt. Tốc độ ổn', platform: 'facebook', category: 'like_post', rate: 24.1, min: 50, max: 10000, description: 'ID: 4823\n- Like tài nguyên Việt Nam\n- Tốc độ ổn định' },
-        { service: '348536', name: 'SV8 : Like việt. Tốc độ nhanh', platform: 'facebook', category: 'like_post', rate: 28.8, min: 200, max: 1000, description: 'ID: 348536\n- Không hỗ trợ hủy gói.\n- Phù hợp gói like số lượng nhỏ, phần lớn là clone việt' },
-        { service: '403532', name: 'SV15 : Like ẩn. tốc độ chậm, không tụt', platform: 'facebook', category: 'like_post', rate: 36.9, min: 50, max: 100000, description: 'ID: 403532\n- Được phép dồn đơn\n- Hiện tại không tụt, không cam kết bảo hành\n- Lượt cảm xúc chỉ chạy cho bài gốc, không hỗ trợ bài chia sẻ.' },
+        { service: '53977', name: 'SV6 : Like ẩn. tốc độ trung bình, không tụt', platform: 'facebook', category: 'like_post', rate: 30.4, min: 50, max: 200000, description: 'ID: 53977\n- Được phép dồn đơn\n- Hiện tại không tụt, không cam kết bảo hành\n- Lượt cảm xúc chỉ chạy cho bài gốc, không hỗ trợ bài chia sẻ.\nTối thiểu/Tối đa: 50/200k' },
+        { service: '3566', name: 'SV1 : Like ẩn. tốc độ chậm, không tụt', platform: 'facebook', category: 'like_post', rate: 16.4, min: 50, max: 10000, description: 'ID: 3566\n- Không hiển thị người like.\n- Hiện tại không tụt, không cam kết bảo hành\n- Lượt cảm xúc chỉ chạy cho bài gốc, không hỗ trợ bài chia sẻ.' },
+        { service: '4822', name: 'SV2 : Like Ngoại, tốc độ nhanh', platform: 'facebook', category: 'like_post', rate: 19.2, min: 100, max: 100000, description: 'ID: 4822\n- Gói không hỗ trợ huỷ đơn.\n- Tốc độ 10k - 50k / ngày' },
+        { service: '4823', name: 'SV3 : Like việt. Tốc độ ổn', platform: 'facebook', category: 'like_post', rate: 28.9, min: 50, max: 10000, description: 'ID: 4823\n- Like tài nguyên Việt Nam\n- Tốc độ ổn định' },
+        { service: '348536', name: 'SV8 : Like việt. Tốc độ nhanh', platform: 'facebook', category: 'like_post', rate: 34.6, min: 200, max: 1000, description: 'ID: 348536\n- Không hỗ trợ hủy gói.\n- Phù hợp gói like số lượng nhỏ, phần lớn là clone việt' },
+        { service: '403532', name: 'SV15 : Like ẩn. tốc độ chậm, không tụt', platform: 'facebook', category: 'like_post', rate: 44.3, min: 50, max: 100000, description: 'ID: 403532\n- Được phép dồn đơn\n- Hiện tại không tụt, không cam kết bảo hành\n- Lượt cảm xúc chỉ chạy cho bài gốc, không hỗ trợ bài chia sẻ.' },
 
         // --- FACEBOOK: THEO DÕI TRANG CÁ NHÂN / SUB PROFILE (ĐẦY ĐỦ 100% CÁC SERVER TRONG ẢNH) ---
-        { service: '317844', name: 'SV3 : Sub Việt Nam, tốc độ 7-10k /ngày, bảo hành 7 ngày', platform: 'facebook', category: 'follow_profile', rate: 40.4, min: 500, max: 150000, description: 'ID: 317844\n- Hỗ trợ sub cá nhân và sub fanpage\n- Tài nguyên phần lớn là beta hạn chế tụt\nTối thiểu/Tối đa: 500/150k' },
-        { service: '317845', name: 'SV5 : Sub Việt Nam, tốc độ 5-10k/ngày, bảo hành 7 ngày', platform: 'facebook', category: 'follow_profile', rate: 19.5, min: 500, max: 2000, description: 'ID: 317845\n- Phần lớn là sub beta, giới hạn 150k/1 UID' },
-        { service: '317846', name: 'SV7 : Sub Tây, tốc độ 30k/ngày, bảo hành 7 ngày', platform: 'facebook', category: 'follow_profile', rate: 28.9, min: 200, max: 1000000, description: 'ID: 317846\n- Hỗ trợ sub trang cá nhân và sub fanpage\n- Tài nguyên phần lớn là beta hạn chế tụt\n- 1 đơn chỉ hỗ trợ mua tối đa 3 lần' },
-        { service: '317835', name: 'SV8 : Sub Tây, tốc độ 20k / 1 ngày, bảo hành 7 ngày', platform: 'facebook', category: 'follow_profile', rate: 15.7, min: 200, max: 1000000, description: 'ID: 317835\n- Hỗ trợ sub trang cá nhân và sub fanpage\n- Tài nguyên phần lớn là beta hạn chế tụt' },
+        { service: '317844', name: 'SV3 : Sub Việt Nam, tốc độ 7-10k /ngày, bảo hành 7 ngày', platform: 'facebook', category: 'follow_profile', rate: 48.5, min: 500, max: 150000, description: 'ID: 317844\n- Hỗ trợ sub cá nhân và sub fanpage\n- Tài nguyên phần lớn là beta hạn chế tụt\nTối thiểu/Tối đa: 500/150k' },
+        { service: '317845', name: 'SV5 : Sub Việt Nam, tốc độ 5-10k/ngày, bảo hành 7 ngày', platform: 'facebook', category: 'follow_profile', rate: 23.4, min: 500, max: 2000, description: 'ID: 317845\n- Phần lớn là sub beta, giới hạn 150k/1 UID' },
+        { service: '317846', name: 'SV7 : Sub Tây, tốc độ 30k/ngày, bảo hành 7 ngày', platform: 'facebook', category: 'follow_profile', rate: 34.7, min: 200, max: 1000000, description: 'ID: 317846\n- Hỗ trợ sub trang cá nhân và sub fanpage\n- Tài nguyên phần lớn là beta hạn chế tụt\n- 1 đơn chỉ hỗ trợ mua tối đa 3 lần' },
+        { service: '317835', name: 'SV8 : Sub Tây, tốc độ 20k / 1 ngày, bảo hành 7 ngày', platform: 'facebook', category: 'follow_profile', rate: 18.8, min: 200, max: 1000000, description: 'ID: 317835\n- Hỗ trợ sub trang cá nhân và sub fanpage\n- Tài nguyên phần lớn là beta hạn chế tụt' },
 
         // --- FACEBOOK: THÀNH VIÊN NHÓM / GROUP MEMBERS ---
-        { service: '7596', name: 'SV4 : Tăng thành viên nhóm giá rẻ', platform: 'facebook', category: 'group_member', rate: 19.7, min: 100, max: 10000, description: 'ID: 7596\n- Tăng member nhóm số lượng nhỏ\n- Tốc độ nhanh' },
-        { service: '568566', name: 'SV7 : Tăng thành viên nhóm siêu tốc', platform: 'facebook', category: 'group_member', rate: 23.2, min: 200, max: 15000, description: 'ID: 568566\n- Không hỗ trợ group riêng tư.\n- Yêu cầu bật cho fanpage tham gia' },
-        { service: '5106', name: 'SV2 : Tăng thành viên nhóm (Group Member)', platform: 'facebook', category: 'group_member', rate: 33.6, min: 500, max: 200000, description: 'ID: 5106\n- Tăng member cho nhóm công khai và nhóm kín\n- Thành viên tự nhiên, không bảo hành' },
-        { service: '15283', name: 'SV3 : Tăng thành viên nhóm chất lượng cao', platform: 'facebook', category: 'group_member', rate: 41.3, min: 500, max: 30000, description: 'ID: 15283\n- Member chất lượng cao' },
+        { service: '7596', name: 'SV4 : Tăng thành viên nhóm giá rẻ', platform: 'facebook', category: 'group_member', rate: 23.6, min: 100, max: 10000, description: 'ID: 7596\n- Tăng member nhóm số lượng nhỏ\n- Tốc độ nhanh' },
+        { service: '568566', name: 'SV7 : Tăng thành viên nhóm siêu tốc', platform: 'facebook', category: 'group_member', rate: 27.8, min: 200, max: 15000, description: 'ID: 568566\n- Không hỗ trợ group riêng tư.\n- Yêu cầu bật cho fanpage tham gia' },
+        { service: '5106', name: 'SV2 : Tăng thành viên nhóm (Group Member)', platform: 'facebook', category: 'group_member', rate: 40.3, min: 500, max: 200000, description: 'ID: 5106\n- Tăng member cho nhóm công khai và nhóm kín\n- Thành viên tự nhiên, không bảo hành' },
+        { service: '15283', name: 'SV3 : Tăng thành viên nhóm chất lượng cao', platform: 'facebook', category: 'group_member', rate: 49.6, min: 500, max: 30000, description: 'ID: 15283\n- Member chất lượng cao' },
 
         // --- FACEBOOK: CHIA SẺ & LIVESTREAM & VIEW ---
-        { service: '75298', name: 'SV5 : Chia sẻ bài viết giá siêu rẻ', platform: 'facebook', category: 'share_post', rate: 23.2, min: 1000, max: 100000000, description: 'ID: 75298\n- Chia sẻ bài viết số lượng lớn' },
-        { service: '47001', name: 'SV2 : Chia sẻ bài viết chất lượng cao', platform: 'facebook', category: 'share_post', rate: 266.8, min: 20, max: 10000, description: 'ID: 47001\n- Chia sẻ bài viết lên trang cá nhân' },
+        { service: '75298', name: 'SV5 : Chia sẻ bài viết giá siêu rẻ', platform: 'facebook', category: 'share_post', rate: 27.8, min: 1000, max: 100000000, description: 'ID: 75298\n- Chia sẻ bài viết số lượng lớn' },
+        { service: '47001', name: 'SV2 : Chia sẻ bài viết chất lượng cao', platform: 'facebook', category: 'share_post', rate: 320.2, min: 20, max: 10000, description: 'ID: 47001\n- Chia sẻ bài viết lên trang cá nhân' },
         { service: '4038', name: 'SV1 : Chia sẻ bài viết chất lượng cao', platform: 'facebook', category: 'share_post', rate: 400.2, min: 10, max: 50000, description: 'ID: 4038\n- Share bài viết lên tường cá nhân\n- Tăng độ phủ thương hiệu' },
         { service: '134713', name: 'SV4 : Mắt xem Livestream trực tiếp, số mắt tự do', platform: 'facebook', category: 'live_stream', rate: 2.6, min: 50, max: 100000, description: 'ID: 134713\n- Duy trì mắt xem live ổn định trong suốt buổi phát' },
-        { service: '58022', name: 'SV3 : Lượt xem video / Reels', platform: 'facebook', category: 'view_video', rate: 3.2, min: 100000, max: 1000000, description: 'ID: 58022\n- Tăng lượt xem video Reels' },
+        { service: '58022', name: 'SV3 : Lượt xem video / Reels', platform: 'facebook', category: 'view_video', rate: 3.8, min: 100000, max: 1000000, description: 'ID: 58022\n- Tăng lượt xem video Reels' },
 
         // --- TIKTOK & INSTAGRAM & THREADS ---
-        { service: '3113', name: 'SV1 : Follow kênh cá nhân TikTok', platform: 'tiktok', category: 'follow_profile', rate: 59.9, min: 100, max: 1000, description: 'ID: 3113\n- Không dồn đơn và không mua nhiều server cùng lúc.' },
-        { service: '227120', name: 'SV8 : Follow kênh cá nhân TikTok chất lượng', platform: 'tiktok', category: 'follow_profile', rate: 106.7, min: 200, max: 10000, description: 'ID: 227120\n- Tăng follow kênh cá nhân' },
-        { service: '3104', name: 'SV1 : Follow chất lượng cao Instagram (BH 7 Ngày)', platform: 'instagram', category: 'follow_profile', rate: 319.0, min: 100, max: 10000, description: 'ID: 3104\n- Bảo hành 7 ngày\n- Follow chất lượng ổn định' },
-        { service: '410018', name: 'SV9 : Follow Instagram giá tốt', platform: 'instagram', category: 'follow_profile', rate: 80.6, min: 500, max: 5000, description: 'ID: 410018\n- Có tỉ lệ tụt cao và không bảo hành.' },
+        { service: '3113', name: 'SV1 : Follow kênh cá nhân TikTok', platform: 'tiktok', category: 'follow_profile', rate: 71.9, min: 100, max: 1000, description: 'ID: 3113\n- Không dồn đơn và không mua nhiều server cùng lúc.' },
+        { service: '227120', name: 'SV8 : Follow kênh cá nhân TikTok chất lượng', platform: 'tiktok', category: 'follow_profile', rate: 128.0, min: 200, max: 10000, description: 'ID: 227120\n- Tăng follow kênh cá nhân' },
+        { service: '3104', name: 'SV1 : Follow chất lượng cao Instagram (BH 7 Ngày)', platform: 'instagram', category: 'follow_profile', rate: 382.8, min: 100, max: 10000, description: 'ID: 3104\n- Bảo hành 7 ngày\n- Follow chất lượng ổn định' },
+        { service: '410018', name: 'SV9 : Follow Instagram giá tốt', platform: 'instagram', category: 'follow_profile', rate: 96.7, min: 500, max: 5000, description: 'ID: 410018\n- Có tỉ lệ tụt cao và không bảo hành.' },
         { service: '3103', name: 'SV1 : Like bài viết hình ảnh / Reels Instagram', platform: 'instagram', category: 'like_post', rate: 127.6, min: 100, max: 50000, description: 'ID: 3103\n- Lên like nhanh sau 5 - 15 phút' },
         { service: '257088', name: 'SV1 : Like bài viết Threads tự nhiên', platform: 'threads', category: 'all', rate: 348.0, min: 100, max: 20000, description: 'ID: 257088\n- Thả tim bài viết Threads tự nhiên' }
     ];
@@ -2746,7 +2746,7 @@ function initSmmTerminal() {
                 data.forEach(s => {
                     const sid = String(s.service);
                     const c = classify(s);
-                    const unitVnd = parseFloat(s.rate_vnd_unit) || ((parseFloat(s.rate) * 26000) / 1000) || 1;
+                    const unitVnd = parseFloat(s.rate_vnd_unit) || ((parseFloat(s.rate) * 26000 * 1.20) / 1000) || 1;
                     const finalRate = Math.round(unitVnd * 10) / 10;
 
                     if (curatedMap.has(sid)) {

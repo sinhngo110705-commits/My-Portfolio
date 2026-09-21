@@ -454,6 +454,7 @@ function handleRequest(req, res) {
         // If action is services, enhance with accurate VND retail rates
         if (action === 'services' && Array.isArray(smmData)) {
           const vndRate = 26000;
+          const margin = 1.20; // 20% profit margin for the shop
           const processed = smmData
             .filter(s => {
               const name = (s.name || '').toLowerCase();
@@ -466,12 +467,12 @@ function handleRequest(req, res) {
             .map(s => {
               const usdPer1k = parseFloat(s.rate) || 0;
               const rawCostPerUnit = (usdPer1k * vndRate) / 1000;
-              const retailPerUnit = Math.max(0.1, Math.round(rawCostPerUnit * 10) / 10);
+              const retailPerUnit = Math.max(0.5, Math.round(rawCostPerUnit * margin * 10) / 10);
               const retailPer1k = Math.round(retailPerUnit * 1000);
               return {
                 ...s,
                 raw_rate_usd: usdPer1k,
-                cost_vnd_unit: retailPerUnit,
+                cost_vnd_unit: Math.round(rawCostPerUnit * 10) / 10,
                 rate_vnd_unit: retailPerUnit,
                 rate_vnd_1k: retailPer1k,
                 rate_display: `${retailPerUnit.toLocaleString('vi-VN')} đ`
