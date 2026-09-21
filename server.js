@@ -319,16 +319,16 @@ function handleRequest(req, res) {
   fs.createReadStream(filePath).pipe(res);
 }
 
-function startServer(port) {
+function startServer(port, host = process.env.HOST || "127.0.0.1") {
   const server = http.createServer(handleRequest);
-  server.on('error', (err) => {
+  server.on("error", (err) => {
     console.log(`Port ${port} error: ${err.message}`);
   });
-  server.listen(port, '0.0.0.0', () => {
+  server.listen(port, host, () => {
     console.log(`Preview server running at http://localhost:${port}/ and http://127.0.0.1:${port}/`);
   });
   return server;
 }
 
-startServer(3000);
-startServer(1234);
+const PORT = parseInt(process.env.PORT || "3000", 10);
+startServer(PORT);
