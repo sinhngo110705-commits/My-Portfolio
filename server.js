@@ -35,6 +35,19 @@ const MIME_TYPES = {
   '.txt': 'text/plain; charset=utf-8'
 };
 
+
+// Local mock data store for full local fidelity
+let mockUsers = [
+  { id: 1, username: "quangsinh", email: "sinh@teemousdigital.id.vn", balance: 500000, role: "admin", created_at: "2026-03-21 11:30:00" },
+  { id: 2, username: "demo_user", email: "demo@gmail.com", balance: 100000, role: "user", created_at: "2026-03-22 14:15:00" }
+];
+let mockOrders = [
+  { id: 101, user_id: 1, username: "quangsinh", email: "sinh@teemousdigital.id.vn", service_name: "Facebook - Theo dõi trang cá nhân sv8", link: "https://facebook.com/100052509938927", quantity: 500, price_at_purchase: 9400, smm_service_id: "317835", smm_order_id: "", status: "Pending", created_at: new Date().toISOString() }
+];
+let mockTransactions = [
+  { id: 201, user_id: 1, amount: 9400, type: "purchase", status: "success", payment_method: "balance", description: "Thanh toán đơn SMM (Hàng chờ): Facebook - Theo dõi trang cá nhân sv8", ref_id: "SMM-Q-101", created_at: new Date().toISOString() }
+];
+
 function removeAccents(str) {
   return (str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
 }
@@ -308,6 +321,24 @@ function handleRequest(req, res) {
     return;
   }
 
+    // Handle /api/user/profile (Local mode)
+  if (reqPath === "/api/user/profile") {
+    res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+    const user = mockUsers[0];
+    res.end(JSON.stringify({
+      user,
+      transactions: mockTransactions.filter(t => t.user_id === user.id),
+      orders: mockOrders.filter(o => o.user_id === user.id).map(o => ({
+        id: o.id,
+        product_name: o.service_name || "Dịch vụ SMM #" + o.id,
+        price_at_purchase: o.price_at_purchase,
+        status: o.status,
+        created_at: o.created_at
+      }))
+    }));
+    return;
+  }
+
   // Handle /api/chat (Cloudflare Worker format)
   if (reqPath === '/api/chat' && req.method === 'POST') {
     let bodyStr = '';
@@ -334,72 +365,146 @@ function handleRequest(req, res) {
     return;
   }
 
-  // Handle /api/admin/manage (Local dev fallback)
-  if (reqPath.startsWith('/api/admin/manage')) {
-    let bodyStr = '';
-    req.on('data', chunk => { bodyStr += chunk; });
-    req.on('end', () => {
-      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-      if (req.method === 'GET') {
-        res.end(JSON.stringify({
-          users: [
-            { id: 1, username: 'quangsinh', email: 'sinh@teemousdigital.id.vn', balance: 500000, role: 'admin', created_at: '2026-03-21 11:30:00' },
-            { id: 2, username: 'demo_user', email: 'demo@gmail.com', balance: 50000, role: 'user', created_at: '2026-03-22 14:15:00' }
-          ]
-        }));
-      } else {
-        res.end(JSON.stringify({ success: true, message: 'Updated successfully (local mode)' }));
+  // Handle /api/admin/manage (Local mode with SMM Queue & Dispatch)
+  if (reqPath.startsWith("/api/admin/manage")) {
+    let bodyStr = "";
+    req.on("data", chunk => { bodyStr += chunk; });
+    req.on("end", async () => {
+      res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      const queryString = req.url.split("?")[1] || "";
+      const searchParams = new URLSearchParams(queryString);
+      const action = searchParams.get("action");
+
+      if (req.method === "GET") {
+        if (action === "users") {
+          return res.end(JSON.stringify({ users: mockUsers }));
+        }
+        if (action === "smm_orders" || action === "orders") {
+          const pendingCount = mockOrders.filter(o => o.status === "Pending" || !o.smm_order_id).length;
+          return res.end(JSON.stringify({ orders: mockOrders, pending_count: pendingCount }));
+        }
+        return res.end(JSON.stringify({ users: mockUsers }));
+      }
+
+      // POST
+      try {
+        const body = JSON.parse(bodyStr || "{}");
+        const act = body.action;
+
+        if (act === "dispatch_smm_order") {
+          const orderId = body.orderId;
+          const order = mockOrders.find(o => o.id == orderId);
+          if (!order) return res.end(JSON.stringify({ error: "Order not found" }));
+
+          let smmKey = process.env.SMM_API_KEY || envConfig.SMM_API_KEY || "";
+          if (typeof smmKey === "string") smmKey = smmKey.trim().replace(/^["']|["']$/g, "").trim();
+          const smmUrl = process.env.SMM_API_URL || envConfig.SMM_API_URL || "https://dichvumxh.vn/api/v2";
+
+          const smmResp = await fetch(smmUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded", "User-Agent": "Mozilla/5.0" },
+            body: new URLSearchParams({ key: smmKey, action: "add", service: order.smm_service_id || "317835", link: order.link, quantity: order.quantity || 100 })
+          });
+          const smmData = await smmResp.json();
+
+          if (smmData && smmData.order) {
+            order.status = "Running";
+            order.smm_order_id = String(smmData.order);
+            return res.end(JSON.stringify({ success: true, smm_order_id: smmData.order, message: `Đã đẩy đơn #${orderId} lên máy chủ thành công! Mã đơn đối tác: #${smmData.order}` }));
+          } else {
+            return res.end(JSON.stringify({ success: false, error: smmData.error, message: `Không thể đẩy đơn: ${smmData.error || "Máy chủ đối tác từ chối"}` }));
+          }
+        }
+
+        if (act === "sync_order_status") {
+          const orderId = body.orderId;
+          const order = mockOrders.find(o => o.id == orderId);
+          if (!order) return res.end(JSON.stringify({ error: "Order not found" }));
+
+          if (!order.smm_order_id) {
+            return res.end(JSON.stringify({ success: true, status: order.status, message: "Đơn hàng đang trong hàng chờ duyệt." }));
+          }
+
+          let smmKey = process.env.SMM_API_KEY || envConfig.SMM_API_KEY || "";
+          if (typeof smmKey === "string") smmKey = smmKey.trim().replace(/^["']|["']$/g, "").trim();
+          const smmUrl = process.env.SMM_API_URL || envConfig.SMM_API_URL || "https://dichvumxh.vn/api/v2";
+
+          const smmResp = await fetch(smmUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ key: smmKey, action: "status", order: order.smm_order_id })
+          });
+          const info = await smmResp.json();
+
+          if (info && info.status) {
+            let mapped = info.status;
+            if (info.status === "In progress" || info.status === "Processing") mapped = "Running";
+            order.status = mapped;
+            return res.end(JSON.stringify({ success: true, status: mapped, raw: info, message: `Trạng thái: ${mapped}` }));
+          }
+
+          return res.end(JSON.stringify({ success: false, info }));
+        }
+
+        if (act === "update_balance") {
+          const u = mockUsers.find(x => x.id == body.userId);
+          if (u) u.balance = parseInt(body.amount);
+          return res.end(JSON.stringify({ success: true, message: "Balance updated" }));
+        }
+
+        if (act === "update_role") {
+          const u = mockUsers.find(x => x.id == body.userId);
+          if (u) u.role = body.role;
+          return res.end(JSON.stringify({ success: true, message: "Role updated" }));
+        }
+
+        res.end(JSON.stringify({ success: true, message: "Updated" }));
+      } catch(e) {
+        res.end(JSON.stringify({ error: e.message }));
       }
     });
     return;
   }
 
-    // Handle /api/smm (Social SMM Proxy to dichvumxh.vn)
-  if (reqPath.startsWith('/api/smm')) {
-    let bodyStr = '';
-    req.on('data', chunk => { bodyStr += chunk; });
-    req.on('end', async () => {
+  // Handle /api/smm (Social SMM Proxy with full DB persistence & auto-queue)
+  if (reqPath.startsWith("/api/smm")) {
+    let bodyStr = "";
+    req.on("data", chunk => { bodyStr += chunk; });
+    req.on("end", async () => {
       try {
         let smmKey = process.env.SMM_API_KEY || envConfig.SMM_API_KEY || "";
-        if (typeof smmKey === "string") {
-          smmKey = smmKey.trim().replace(/^["']|["']$/g, "").trim();
-        }
+        if (typeof smmKey === "string") smmKey = smmKey.trim().replace(/^["']|["']$/g, "").trim();
         const smmUrl = process.env.SMM_API_URL || envConfig.SMM_API_URL || "https://dichvumxh.vn/api/v2";
 
         let params = {};
-        if (req.method === 'POST') {
-          try { params = JSON.parse(bodyStr || '{}'); } catch(e) {}
+        if (req.method === "POST") {
+          try { params = JSON.parse(bodyStr || "{}"); } catch(e) {}
         } else {
-          const queryString = req.url.split('?')[1] || '';
+          const queryString = req.url.split("?")[1] || "";
           const searchParams = new URLSearchParams(queryString);
           for (const [k, v] of searchParams.entries()) {
             params[k] = v;
           }
         }
 
-        // Helper: Resolve Facebook link or UID to standard https://facebook.com/<numeric_id>
         async function resolveFbLink(rawLink) {
           if (!rawLink) return rawLink;
           let link = rawLink.trim();
 
-          // If raw numeric UID, format as standard profile link
           if (/^\d+$/.test(link)) {
             return { id: link, formattedLink: `https://facebook.com/${link}` };
           }
 
-          // Never mutilate post/video/reel/photo links into profile links!
           const isPost = /\/(posts|photos|videos|reel|watch)\/|story_fbid|permalink\.php/i.test(link);
           if (isPost) {
             return { id: null, formattedLink: link };
           }
 
-          // If already https://facebook.com/1000... or numeric profile link
           const numMatch = link.match(/facebook\.com\/(?:profile\.php\?id=)?(\d+)/i);
           if (numMatch && numMatch[1]) {
             return { id: numMatch[1], formattedLink: `https://facebook.com/${numMatch[1]}` };
           }
 
-          // If Facebook link with username, lookup numeric UID via traodoisub
           if (link.includes("facebook.com") || link.includes("fb.com")) {
             try {
               const lookupRes = await fetch("https://id.traodoisub.com/api.php", {
@@ -411,84 +516,188 @@ function handleRequest(req, res) {
               if (lookupData && lookupData.id) {
                 return { id: lookupData.id, name: lookupData.name, formattedLink: `https://facebook.com/${lookupData.id}` };
               }
-            } catch(err) {
-              console.log("UID lookup fallback error:", err.message);
-            }
+            } catch(err) {}
           }
 
           return { id: null, formattedLink: link };
         }
 
-        // Action: get_numeric_uid (Frontend UID lookup button)
-        if (params.action === 'get_numeric_uid') {
+        if (params.action === "get_numeric_uid") {
           const resolved = await resolveFbLink(params.link);
-          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-          res.end(JSON.stringify(resolved.id ? { success: true, id: resolved.id, name: resolved.name, link: resolved.formattedLink } : { success: false, error: "Không tìm thấy UID" }));
-          return;
+          res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+          return res.end(JSON.stringify(resolved.id ? { success: true, id: resolved.id, name: resolved.name, link: resolved.formattedLink } : { success: false, error: "Không tìm thấy UID" }));
         }
 
-        const action = params.action || (reqPath.includes('services') ? 'services' : 'balance');
+        const action = params.action || (reqPath.includes("services") ? "services" : "balance");
 
-        // If action is add, auto-resolve and format link
-        if (action === 'add' && params.link) {
-          const resolved = await resolveFbLink(params.link);
-          if (resolved.formattedLink) {
-            params.link = resolved.formattedLink;
+        if (action === "services") {
+          const smmResp = await fetch(smmUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded", "User-Agent": "Mozilla/5.0" },
+            body: new URLSearchParams({ key: smmKey, action: "services" })
+          });
+          const smmData = await smmResp.json();
+          if (Array.isArray(smmData)) {
+            const vndRate = 26000;
+            const margin = 1.20;
+            const processed = smmData
+              .filter(s => {
+                const name = (s.name || "").toLowerCase();
+                const cat = (s.category || "").toLowerCase();
+                if (cat.includes("vip") || name.includes("vip") || (parseInt(s.min) === 1 && parseInt(s.max) === 1)) return false;
+                return true;
+              })
+              .map(s => {
+                const usdPer1k = parseFloat(s.rate) || 0;
+                const rawCostPerUnit = (usdPer1k * vndRate) / 1000;
+                const retailPerUnit = Math.max(0.5, Math.round(rawCostPerUnit * margin * 10) / 10);
+                const retailPer1k = Math.round(retailPerUnit * 1000);
+                return {
+                  ...s,
+                  raw_rate_usd: usdPer1k,
+                  cost_vnd_unit: Math.round(rawCostPerUnit * 10) / 10,
+                  rate_vnd_unit: retailPerUnit,
+                  rate_vnd_1k: retailPer1k,
+                  rate_display: `${retailPerUnit.toLocaleString("vi-VN")} đ`
+                };
+              });
+            res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+            return res.end(JSON.stringify(processed));
+          }
+          res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+          return res.end(JSON.stringify(smmData));
+        }
+
+        if (action === "status") {
+          const orderParam = params.order || "";
+          const found = mockOrders.find(o => o.id == orderParam || o.smm_order_id == orderParam);
+
+          if (found && (!found.smm_order_id || found.status === "Pending")) {
+            res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+            return res.end(JSON.stringify({
+              order: found.id,
+              status: "Pending",
+              start_count: 0,
+              remains: found.quantity,
+              internal: true,
+              message: "Đơn hàng đang trong hàng chờ duyệt của hệ thống."
+            }));
+          }
+
+          const targetId = (found && found.smm_order_id) ? found.smm_order_id : orderParam;
+          const smmResp = await fetch(smmUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ key: smmKey, action: "status", order: targetId })
+          });
+          const info = await smmResp.json();
+          if (found && info && info.status) {
+            let mapped = info.status;
+            if (info.status === "In progress" || info.status === "Processing") mapped = "Running";
+            found.status = mapped;
+          }
+          res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+          return res.end(JSON.stringify(info));
+        }
+
+        if (action === "add") {
+          let link = (params.link || "").trim();
+          const resolved = await resolveFbLink(link);
+          if (resolved && resolved.formattedLink) link = resolved.formattedLink;
+
+          const qty = parseInt(params.quantity || 0);
+          const rate = parseFloat(params.rate || 1);
+          const totalCost = Math.round(qty * rate);
+
+          // Get mock user
+          const user = mockUsers[0];
+          if (user.balance < totalCost) {
+            res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
+            return res.end(JSON.stringify({ error: `Số dư ví không đủ (${user.balance.toLocaleString("vi-VN")} đ / cần ${totalCost.toLocaleString("vi-VN")} đ). Vui lòng nạp thêm!`, success: false }));
+          }
+
+          // Call dichvumxh
+          let smmData = null;
+          let upstreamSuccess = false;
+          let isBalanceError = false;
+
+          try {
+            const smmResp = await fetch(smmUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded", "User-Agent": "Mozilla/5.0" },
+              body: new URLSearchParams({ key: smmKey, action: "add", service: params.service || "317835", link, quantity: qty })
+            });
+            smmData = await smmResp.json();
+            if (smmData && smmData.order) {
+              upstreamSuccess = true;
+            } else {
+              const errStr = (smmData?.error || "").toLowerCase();
+              if (errStr.includes("số dư") || errStr.includes("balance") || errStr.includes("không đủ")) {
+                isBalanceError = true;
+              }
+            }
+          } catch(e) {}
+
+          // Deduct user balance
+          user.balance -= totalCost;
+
+          // Record transaction
+          const localOrderId = Math.floor(Math.random() * 90000) + 10000;
+          mockTransactions.unshift({
+            id: mockTransactions.length + 1,
+            user_id: user.id,
+            amount: totalCost,
+            type: "purchase",
+            status: "success",
+            payment_method: "balance",
+            description: upstreamSuccess ? `Thanh toán đơn SMM #${smmData.order}: ${params.service_name || "Dịch vụ"} (SL: ${qty})` : `Thanh toán đơn SMM (Hàng chờ): ${params.service_name || "Dịch vụ"} (SL: ${qty})`,
+            ref_id: `SMM-${Date.now()}-${user.id}`,
+            created_at: new Date().toISOString()
+          });
+
+          // Record order
+          mockOrders.unshift({
+            id: localOrderId,
+            user_id: user.id,
+            username: user.username,
+            email: user.email,
+            service_name: params.service_name || "Dịch vụ tăng tương tác SMM",
+            link: link,
+            quantity: qty,
+            price_at_purchase: totalCost,
+            smm_service_id: params.service || "317835",
+            smm_order_id: upstreamSuccess ? String(smmData.order) : "",
+            status: upstreamSuccess ? "Running" : "Pending",
+            created_at: new Date().toISOString()
+          });
+
+          res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+          if (upstreamSuccess) {
+            return res.end(JSON.stringify({
+              success: true,
+              order: smmData.order,
+              internal_order_id: localOrderId,
+              status: "Running",
+              new_balance: user.balance,
+              message: "Tạo đơn hàng thành công!"
+            }));
+          } else {
+            return res.end(JSON.stringify({
+              success: true,
+              queued: true,
+              order: localOrderId,
+              internal_order_id: localOrderId,
+              status: "Pending",
+              new_balance: user.balance,
+              message: "Đơn hàng đã được tiếp nhận và đưa vào hàng chờ xử lý."
+            }));
           }
         }
 
-        const postParams = {
-          key: smmKey,
-          action: action,
-          ...params
-        };
-
-        const smmResp = await fetch(smmUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'Mozilla/5.0'
-          },
-          body: new URLSearchParams(postParams)
-        });
-
-        const smmData = await smmResp.json();
-        
-        // If action is services, enhance with accurate VND retail rates
-        if (action === 'services' && Array.isArray(smmData)) {
-          const vndRate = 26000;
-          const margin = 1.20; // 20% profit margin for the shop
-          const processed = smmData
-            .filter(s => {
-              const name = (s.name || '').toLowerCase();
-              const cat = (s.category || '').toLowerCase();
-              if (cat.includes('vip') || name.includes('vip') || (parseInt(s.min) === 1 && parseInt(s.max) === 1)) {
-                return false;
-              }
-              return true;
-            })
-            .map(s => {
-              const usdPer1k = parseFloat(s.rate) || 0;
-              const rawCostPerUnit = (usdPer1k * vndRate) / 1000;
-              const retailPerUnit = Math.max(0.5, Math.round(rawCostPerUnit * margin * 10) / 10);
-              const retailPer1k = Math.round(retailPerUnit * 1000);
-              return {
-                ...s,
-                raw_rate_usd: usdPer1k,
-                cost_vnd_unit: Math.round(rawCostPerUnit * 10) / 10,
-                rate_vnd_unit: retailPerUnit,
-                rate_vnd_1k: retailPer1k,
-                rate_display: `${retailPerUnit.toLocaleString('vi-VN')} đ`
-              };
-            });
-          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-          res.end(JSON.stringify(processed));
-          return;
-        }
-        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify(smmData));
-      } catch (err) {
-        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ success: true }));
+      } catch(err) {
+        res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
         res.end(JSON.stringify({ error: err.message, success: false }));
       }
     });

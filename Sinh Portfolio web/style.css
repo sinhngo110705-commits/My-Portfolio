@@ -6242,3 +6242,149 @@ select option {
     background: var(--cyan-laser);
     color: #000;
 }
+
+
+/* ==========================================================================
+   ADMIN SMM ORDER QUEUE & DISPATCH SYSTEM
+   ========================================================================== */
+.admin-sub-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0 1.25rem;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.75rem;
+}
+
+.admin-sub-tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.light-mode .admin-sub-tab {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #475569;
+}
+
+.admin-sub-tab.active {
+    background: rgba(0, 240, 255, 0.12);
+    border-color: var(--cyan-laser);
+    color: var(--text-main);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+}
+
+.light-mode .admin-sub-tab.active {
+    background: #e0f2fe;
+    border-color: #0284c7;
+    color: #0369a1;
+}
+
+.admin-filter-pill {
+    padding: 0.3rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: var(--font-tech);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-filter-pill.active {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--text-main);
+    color: var(--text-main);
+}
+
+.light-mode .admin-filter-pill.active {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    font-family: var(--font-tech);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.status-pending,
+.status-badge.status-queue {
+    background: rgba(245, 158, 11, 0.15) !important;
+    color: #f59e0b !important;
+    border: 1px solid rgba(245, 158, 11, 0.35) !important;
+}
+
+.status-badge.status-running,
+.status-badge.status-processing {
+    background: rgba(0, 240, 255, 0.15) !important;
+    color: var(--cyan-laser) !important;
+    border: 1px solid rgba(0, 240, 255, 0.35) !important;
+}
+
+.status-badge.status-completed,
+.status-badge.status-success {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #10b981 !important;
+    border: 1px solid rgba(16, 185, 129, 0.35) !important;
+}
+
+.status-badge.status-canceled,
+.status-badge.status-failed {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.35) !important;
+}
+
+.admin-btn-dispatch {
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 800;
+    font-family: var(--font-tech);
+    background: linear-gradient(135deg, #00f0ff, #0077ff);
+    color: #000;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.admin-btn-dispatch:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 14px rgba(0, 240, 255, 0.6);
+}
+
+.admin-btn-sync {
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: var(--font-tech);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+    border: 1px solid var(--glass-border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.admin-btn-sync:hover {
+    border-color: var(--cyan-laser);
+    color: var(--cyan-laser);
+}

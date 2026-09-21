@@ -67,7 +67,7 @@
       }
     ]
     </script>
-    <link rel="stylesheet" href="style.css?v=perf-v31">
+    <link rel="stylesheet" href="style.css?v=perf-v18">
     <!-- Updated Font to Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
 
@@ -619,62 +619,102 @@
             <div id="tab-admin" class="dash-section admin-panel-section">
                 <div class="admin-panel-header">
                     <h3 class="neon-gradient-text">⚙️ Admin Console</h3>
-                    <p class="admin-panel-subtitle">Manage users, balance &amp; permissions</p>
+                    <p class="admin-panel-subtitle">Manage users, balance, permissions &amp; SMM order queue</p>
                 </div>
 
-                <!-- Search & Refresh -->
-                <div class="admin-toolbar">
-                    <input type="text" id="admin-search-input" class="admin-search"
-                        placeholder="Search by name or email...">
-                    <button id="admin-refresh-btn" class="admin-action-btn neon-border">🔄 Refresh</button>
+                <div class="admin-sub-tabs">
+                    <button type="button" class="admin-sub-tab active" id="admin-subtab-btn-users">👥 Quản lý người dùng</button>
+                    <button type="button" class="admin-sub-tab" id="admin-subtab-btn-orders">📦 Hàng chờ đơn SMM &amp; Đơn hàng (<span id="admin-pending-badge" style="color:#f59e0b; font-weight:800;">0</span>)</button>
                 </div>
 
-                <!-- User Table -->
-                <div class="admin-table-wrapper">
-                    <table class="dash-table admin-user-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>Balance (VND)</th>
-                                <th>Role</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-users-tbody">
-                            <tr>
-                                <td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">
-                                    Loading users...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Edit Panel -->
-                <div id="admin-edit-panel" class="admin-edit-panel glass-card" style="display:none;">
-                    <h4 id="admin-edit-title">Edit User</h4>
-                    <div class="admin-edit-grid">
-                        <div class="admin-edit-group">
-                            <label>New Balance (VND)</label>
-                            <input type="number" id="admin-edit-balance" min="0" placeholder="e.g. 500000">
-                            <button id="admin-save-balance-btn" class="admin-action-btn neon-border">💾 Save
-                                Balance</button>
-                        </div>
-                        <div class="admin-edit-group">
-                            <label>Role</label>
-                            <select id="admin-edit-role" class="admin-role-select">
-                                <option value="user">user</option>
-                                <option value="admin">admin</option>
-                            </select>
-                            <button id="admin-save-role-btn" class="admin-action-btn neon-border">💾 Save Role</button>
-                        </div>
+                <!-- Sub-view 1: User Management -->
+                <div id="admin-subview-users" class="admin-subview-pane">
+                    <!-- Search & Refresh -->
+                    <div class="admin-toolbar">
+                        <input type="text" id="admin-search-input" class="admin-search"
+                            placeholder="Search by name or email...">
+                        <button id="admin-refresh-btn" class="admin-action-btn neon-border">🔄 Refresh</button>
                     </div>
-                    <button id="admin-edit-close-btn" class="admin-close-edit-btn">✕ Close</button>
+
+                    <!-- User Table -->
+                    <div class="admin-table-wrapper">
+                        <table class="dash-table admin-user-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Balance (VND)</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-tbody">
+                                <tr>
+                                    <td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">
+                                        Loading users...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Edit Panel -->
+                    <div id="admin-edit-panel" class="admin-edit-panel glass-card" style="display:none;">
+                        <h4 id="admin-edit-title">Edit User</h4>
+                        <div class="admin-edit-grid">
+                            <div class="admin-edit-group">
+                                <label>New Balance (VND)</label>
+                                <input type="number" id="admin-edit-balance" min="0" placeholder="e.g. 500000">
+                                <button id="admin-save-balance-btn" class="admin-action-btn neon-border">💾 Save Balance</button>
+                            </div>
+                            <div class="admin-edit-group">
+                                <label>Role</label>
+                                <select id="admin-edit-role" class="admin-role-select">
+                                    <option value="user">user</option>
+                                    <option value="admin">admin</option>
+                                </select>
+                                <button id="admin-save-role-btn" class="admin-action-btn neon-border">💾 Save Role</button>
+                            </div>
+                        </div>
+                        <button id="admin-edit-close-btn" class="admin-close-edit-btn">✕ Close</button>
+                    </div>
                 </div>
 
-                <p class="admin-security-note">🔒 All actions are verified server-side. Your admin status is confirmed
-                    via database — not your browser.</p>
+                <!-- Sub-view 2: SMM Order Queue & Dispatch -->
+                <div id="admin-subview-orders" class="admin-subview-pane" style="display:none;">
+                    <div class="admin-toolbar" style="margin-top: 0.5rem; margin-bottom: 1rem; display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                            <button type="button" class="admin-filter-pill active" data-smm-filter="all">Tất cả</button>
+                            <button type="button" class="admin-filter-pill" data-smm-filter="Pending" style="color:#f59e0b;">⏳ Hàng chờ duyệt</button>
+                            <button type="button" class="admin-filter-pill" data-smm-filter="Running" style="color:#00f0ff;">⚡ Đang chạy</button>
+                            <button type="button" class="admin-filter-pill" data-smm-filter="Completed" style="color:#10b981;">✓ Hoàn thành</button>
+                        </div>
+                        <button id="admin-refresh-orders-btn" class="admin-action-btn neon-border">🔄 Tải lại đơn</button>
+                    </div>
+
+                    <div class="admin-table-wrapper" style="max-height: 450px; overflow-y: auto;">
+                        <table class="dash-table admin-smm-orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Dịch vụ SMM</th>
+                                    <th>Số lượng</th>
+                                    <th>Link / UID</th>
+                                    <th>Trừ ví</th>
+                                    <th>Mã đối tác</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-smm-orders-tbody">
+                                <tr><td colspan="9" style="text-align:center; padding: 2rem; color: var(--text-muted);">Đang tải danh sách đơn hàng...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <p class="admin-security-note" style="margin-top: 1rem;">🔒 All actions are verified server-side. Your admin status is confirmed via database — not your browser.</p>
             </div>
 
         </div>
@@ -730,7 +770,7 @@
     <!-- Use CDN GSAP as fallback or main while local might conflict with simple static hosting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="script.js?v=perf-v31"></script>
+    <script src="script.js?v=perf-v18"></script>
 </body>
 
 </html>

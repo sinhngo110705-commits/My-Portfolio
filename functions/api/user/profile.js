@@ -51,7 +51,7 @@ export async function onRequest(context) {
 
         // Fetch Orders
         const { results: orders } = await env.teemous_db.prepare(
-            "SELECT o.id, p.name as product_name, p.type as product_type, o.price_at_purchase, o.status, o.created_at FROM orders o JOIN products p ON o.product_id = p.id WHERE o.user_id = ? ORDER BY o.created_at DESC LIMIT 20"
+            "SELECT o.id, COALESCE(p.name, 'Dịch vụ SMM #' || o.id) as product_name, COALESCE(p.type, 'service') as product_type, o.price_at_purchase, o.status, o.created_at FROM orders o LEFT JOIN products p ON o.product_id = p.id WHERE o.user_id = ? ORDER BY o.created_at DESC LIMIT 50"
         ).bind(payload.id).all();
 
         return new Response(JSON.stringify({ 

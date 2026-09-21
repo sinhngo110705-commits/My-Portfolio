@@ -43,6 +43,11 @@ CREATE TABLE IF NOT EXISTS orders (
     product_id INTEGER NOT NULL,
     price_at_purchase INTEGER NOT NULL,
     status TEXT DEFAULT 'completed',
+    service_name TEXT,
+    link TEXT,
+    quantity INTEGER,
+    smm_service_id TEXT,
+    smm_order_id TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (product_id) REFERENCES products(id)

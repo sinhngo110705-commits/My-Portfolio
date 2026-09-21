@@ -40,7 +40,7 @@ export default {
       if (url.pathname === "/api/user/v-avatar") return await vAvatarHandler(apiContext);
       if (url.pathname === "/api/payment/webhook") return await handleSePayWebhook(request, env);
       if (url.pathname === "/api/admin/manage") return await adminManageHandler(apiContext);
-      if (url.pathname.startsWith("/api/smm")) return await smmHandler({ request, env });
+      if (url.pathname.startsWith("/api/smm")) return await smmHandler(apiContext);
 
     }
 

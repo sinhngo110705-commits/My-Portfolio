@@ -2296,69 +2296,263 @@ if (typeof window.openDashboard === 'undefined') {
  * ================================================================
  */
 function initAdminPanel() {
-    const tbody       = document.getElementById('admin-users-tbody');
-    const searchInput = document.getElementById('admin-search-input');
-    const refreshBtn  = document.getElementById('admin-refresh-btn');
-    const editPanel   = document.getElementById('admin-edit-panel');
-    const editTitle   = document.getElementById('admin-edit-title');
-    const editBalance = document.getElementById('admin-edit-balance');
-    const editRole    = document.getElementById('admin-edit-role');
-    const saveBalBtn  = document.getElementById('admin-save-balance-btn');
-    const saveRoleBtn = document.getElementById('admin-save-role-btn');
-    const closeEditBtn= document.getElementById('admin-edit-close-btn');
+    const tbody       = document.getElementById("admin-users-tbody");
+    const searchInput = document.getElementById("admin-search-input");
+    const refreshBtn  = document.getElementById("admin-refresh-btn");
+    const editPanel   = document.getElementById("admin-edit-panel");
+    const editTitle   = document.getElementById("admin-edit-title");
+    const editBalance = document.getElementById("admin-edit-balance");
+    const editRole    = document.getElementById("admin-edit-role");
+    const saveBalBtn  = document.getElementById("admin-save-balance-btn");
+    const saveRoleBtn = document.getElementById("admin-save-role-btn");
+    const closeEditBtn= document.getElementById("admin-edit-close-btn");
 
-    if (!tbody) return;
+    const ordersTbody = document.getElementById("admin-smm-orders-tbody") || document.getElementById("user-admin-smm-orders-tbody");
+    const refreshOrdersBtn = document.getElementById("admin-refresh-orders-btn") || document.getElementById("user-admin-refresh-orders-btn");
+    const pendingBadges = [document.getElementById("admin-pending-badge"), document.getElementById("user-admin-pending-badge")].filter(Boolean);
 
     let allUsers = [];
+    let allOrders = [];
+    let activeSmmFilter = "all";
     let selectedUserId = null;
 
-    // Helper: get token
-    const getToken = () => localStorage.getItem('teemous_jwt');
+    const getToken = () => localStorage.getItem("teemous_jwt");
 
-    // ── Load users from Admin API ───────────────────────────────────────────
+    // ── Sub-tab Switcher (Users vs SMM Orders) ─────────────────────────────
+    function setupSubTabs(btnUsersId, btnOrdersId, viewUsersId, viewOrdersId) {
+        const btnUsers = document.getElementById(btnUsersId);
+        const btnOrders = document.getElementById(btnOrdersId);
+        const viewUsers = document.getElementById(viewUsersId);
+        const viewOrders = document.getElementById(viewOrdersId);
+
+        if (btnUsers && btnOrders) {
+            btnUsers.onclick = () => {
+                btnUsers.classList.add("active");
+                btnOrders.classList.remove("active");
+                if (viewUsers) viewUsers.style.display = "block";
+                if (viewOrders) viewOrders.style.display = "none";
+            };
+            btnOrders.onclick = () => {
+                btnOrders.classList.add("active");
+                btnUsers.classList.remove("active");
+                if (viewUsers) viewUsers.style.display = "none";
+                if (viewOrders) viewOrders.style.display = "block";
+                loadSmmOrders();
+            };
+        }
+    }
+
+    setupSubTabs("admin-subtab-btn-users", "admin-subtab-btn-orders", "admin-subview-users", "admin-subview-orders");
+    setupSubTabs("user-admin-subtab-btn-users", "user-admin-subtab-btn-orders", "user-admin-subview-users", "user-admin-subview-orders");
+
+    // ── Load Users ─────────────────────────────────────────────────────────
     async function loadUsers() {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">⏳ Loading...</td></tr>`;
+        if (!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">⏳ Đang tải danh sách người dùng...</td></tr>';
         try {
-            const res = await fetch('/api/admin/manage?action=users', {
-                headers: { 'Authorization': `Bearer ${getToken()}` }
+            const res = await fetch("/api/admin/manage?action=users", {
+                headers: { "Authorization": "Bearer " + getToken() }
             });
             if (res.status === 403) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:#ff5252;">🚫 Access Denied. Not an admin.</td></tr>`;
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:#ff5252;">🚫 Quyền truy cập bị từ chối. Không phải tài khoản admin.</td></tr>';
                 return;
             }
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'API Error');
+            if (!res.ok) throw new Error(data.error || "API Error");
             allUsers = data.users || [];
             renderTable(allUsers);
         } catch (e) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:#ff5252;">❌ Error: ${e.message}</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:#ff5252;">❌ Lỗi: ' + e.message + '</td></tr>';
         }
     }
 
-    // ── Render Table ───────────────────────────────────────────────────────
+    // ── Render Users Table ─────────────────────────────────────────────────
     function renderTable(users) {
+        if (!tbody) return;
         if (!users || users.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">No users found.</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">Không tìm thấy người dùng.</td></tr>';
             return;
         }
-        tbody.innerHTML = users.map(u => `
-            <tr class="admin-user-row" data-userid="${u.id}">
-                <td><span class="admin-id-badge">#${u.id}</span></td>
-                <td><strong>${u.username}</strong></td>
-                <td class="admin-email-cell">${u.email}</td>
-                <td><span class="admin-balance-val">${(u.balance || 0).toLocaleString()}</span></td>
-                <td><span class="rank-badge rank-${u.role === 'admin' ? 'elite' : 'standard'}">${u.role}</span></td>
-                <td>
-                    <button class="admin-edit-btn neon-border" onclick="adminOpenEdit(${u.id}, '${u.username}', ${u.balance}, '${u.role}')">✏️ Edit</button>
-                </td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = users.map(u => {
+            const roleClass = u.role === "admin" ? "elite" : "standard";
+            const bal = (u.balance || 0).toLocaleString("vi-VN");
+            return '<tr class="admin-user-row" data-userid="' + u.id + '">' +
+                '<td><span class="admin-id-badge">#' + u.id + '</span></td>' +
+                '<td><strong>' + u.username + '</strong></td>' +
+                '<td class="admin-email-cell">' + u.email + '</td>' +
+                '<td><span class="admin-balance-val">' + bal + ' đ</span></td>' +
+                '<td><span class="rank-badge rank-' + roleClass + '">' + u.role + '</span></td>' +
+                '<td>' +
+                    '<button class="admin-edit-btn neon-border" onclick="adminOpenEdit(' + u.id + ', &apos;' + u.username + '&apos;, ' + (u.balance || 0) + ', &apos;' + u.role + '&apos;)">✏️ Sửa</button>' +
+                '</td>' +
+            '</tr>';
+        }).join("");
     }
 
-    // ── Search filter ──────────────────────────────────────────────────────
+    // ── Load SMM Orders & Queue ────────────────────────────────────────────
+    async function loadSmmOrders() {
+        const tbodies = [document.getElementById("admin-smm-orders-tbody"), document.getElementById("user-admin-smm-orders-tbody")].filter(Boolean);
+        if (tbodies.length === 0) return;
+
+        tbodies.forEach(tb => {
+            tb.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:2rem; color:var(--text-muted);">⏳ Đang tải danh sách hàng chờ & đơn hàng SMM...</td></tr>';
+        });
+
+        try {
+            const res = await fetch("/api/admin/manage?action=smm_orders", {
+                headers: { "Authorization": "Bearer " + getToken() }
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "API Error");
+
+            allOrders = data.orders || [];
+            const pendingCount = data.pending_count !== undefined 
+                ? data.pending_count 
+                : allOrders.filter(o => o.status === "Pending" || !o.smm_order_id).length;
+
+            pendingBadges.forEach(b => { b.textContent = pendingCount; });
+            renderSmmOrdersTable(allOrders);
+        } catch (e) {
+            tbodies.forEach(tb => {
+                tb.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:2rem; color:#ff5252;">❌ Lỗi: ' + e.message + '</td></tr>';
+            });
+        }
+    }
+
+    // ── Render SMM Orders Table ────────────────────────────────────────────
+    function renderSmmOrdersTable(orders) {
+        const tbodies = [document.getElementById("admin-smm-orders-tbody"), document.getElementById("user-admin-smm-orders-tbody")].filter(Boolean);
+        if (tbodies.length === 0) return;
+
+        let filtered = orders || [];
+        if (activeSmmFilter !== "all") {
+            filtered = filtered.filter(o => o.status === activeSmmFilter);
+        }
+
+        if (filtered.length === 0) {
+            tbodies.forEach(tb => {
+                tb.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:2rem; color:var(--text-muted);">Không có đơn hàng nào trong mục này.</td></tr>';
+            });
+            return;
+        }
+
+        const rowsHtml = filtered.map(o => {
+            const statusClass = (o.status || "pending").toLowerCase();
+            const partnerBadge = o.smm_order_id 
+                ? '<strong style="color:var(--cyan-laser);">#' + o.smm_order_id + '</strong>'
+                : '<span style="color:#f59e0b; font-weight:800; font-size:0.75rem;">⏳ Chờ đẩy đơn</span>';
+
+            const isPending = o.status === "Pending" || !o.smm_order_id;
+            const price = (o.price_at_purchase || 0).toLocaleString("vi-VN");
+            const qty = (o.quantity || 0).toLocaleString("vi-VN");
+            const shortLink = (o.link || "").length > 28 ? (o.link || "").slice(0, 26) + "..." : (o.link || "");
+
+            return '<tr>' +
+                '<td><strong>#' + o.id + '</strong></td>' +
+                '<td>' +
+                    '<div><strong>' + (o.username || "User #" + o.user_id) + '</strong></div>' +
+                    '<div style="font-size:0.75rem; color:var(--text-muted);">' + (o.email || "") + '</div>' +
+                '</td>' +
+                '<td>' +
+                    '<div><strong>' + (o.service_name || "Dịch vụ SMM") + '</strong></div>' +
+                    '<div style="font-size:0.75rem; color:var(--text-muted);">ID gói: #' + (o.smm_service_id || "317835") + '</div>' +
+                '</td>' +
+                '<td><strong style="color:var(--text-main);">' + qty + '</strong></td>' +
+                '<td>' +
+                    '<a href="' + o.link + '" target="_blank" style="color:var(--cyan-laser); font-size:0.75rem; text-decoration:underline;" title="' + o.link + '">' +
+                        shortLink +
+                    '</a>' +
+                '</td>' +
+                '<td><strong>' + price + ' đ</strong></td>' +
+                '<td>' + partnerBadge + '</td>' +
+                '<td><span class="status-badge status-' + statusClass + '">' + (o.status || "Pending") + '</span></td>' +
+                '<td>' +
+                    '<div style="display:flex; gap:0.35rem; flex-wrap:wrap;">' +
+                        (isPending ? '<button type="button" class="admin-btn-dispatch" data-dispatch-id="' + o.id + '">🚀 Đẩy đơn API</button>' : '') +
+                        '<button type="button" class="admin-btn-sync" data-sync-id="' + o.id + '">🔄 Tiến độ</button>' +
+                    '</div>' +
+                '</td>' +
+            '</tr>';
+        }).join("");
+
+        tbodies.forEach(tb => { tb.innerHTML = rowsHtml; });
+
+        // Bind dispatch and sync buttons
+        document.querySelectorAll("[data-dispatch-id]").forEach(btn => {
+            btn.onclick = async () => {
+                const oid = btn.getAttribute("data-dispatch-id");
+                if (!confirm("Bấm xác nhận để đẩy đơn #" + oid + " lên máy chủ dichvumxh.vn ngay bây giờ?")) return;
+
+                btn.disabled = true;
+                btn.textContent = "⏳ Đang đẩy...";
+                try {
+                    const res = await fetch("/api/admin/manage", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() },
+                        body: JSON.stringify({ action: "dispatch_smm_order", orderId: oid })
+                    });
+                    const result = await res.json();
+                    if (result.success) {
+                        alert(result.message || "Đã đẩy đơn thành công!");
+                        loadSmmOrders();
+                    } else {
+                        alert("⚠️ Không thể đẩy đơn: " + (result.message || result.error) + "\n\n(Nếu do tài khoản đại lý chưa đủ tiền, bạn hãy nạp thêm tiền bên dichvumxh.vn rồi bấm lại nút này nhé!)");
+                    }
+                } catch(e) {
+                    alert("Lỗi kết nối: " + e.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = "🚀 Đẩy đơn API";
+                }
+            };
+        });
+
+        document.querySelectorAll("[data-sync-id]").forEach(btn => {
+            btn.onclick = async () => {
+                const oid = btn.getAttribute("data-sync-id");
+                btn.disabled = true;
+                btn.textContent = "⏳...";
+                try {
+                    const res = await fetch("/api/admin/manage", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() },
+                        body: JSON.stringify({ action: "sync_order_status", orderId: oid })
+                    });
+                    const result = await res.json();
+                    if (result.success) {
+                        alert(result.message || ("Trạng thái hiện tại: " + result.status));
+                        loadSmmOrders();
+                    } else {
+                        alert("Thông báo: " + (result.message || "Không thể đồng bộ tiến độ"));
+                    }
+                } catch(e) {
+                    alert("Lỗi kết nối: " + e.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = "🔄 Tiến độ";
+                }
+            };
+        });
+    }
+
+    // Filter pills
+    document.querySelectorAll("[data-smm-filter]").forEach(pill => {
+        pill.addEventListener("click", () => {
+            document.querySelectorAll("[data-smm-filter]").forEach(p => p.classList.remove("active"));
+            pill.classList.add("active");
+            activeSmmFilter = pill.getAttribute("data-smm-filter");
+            renderSmmOrdersTable(allOrders);
+        });
+    });
+
+    if (refreshOrdersBtn) {
+        refreshOrdersBtn.addEventListener("click", () => loadSmmOrders());
+    }
+
+    // ── Search Filter ──────────────────────────────────────────────────────
     if (searchInput) {
         let searchDebounceTimer = null;
-        searchInput.addEventListener('input', () => {
+        searchInput.addEventListener("input", () => {
             clearTimeout(searchDebounceTimer);
             searchDebounceTimer = setTimeout(() => {
                 const q = searchInput.value.toLowerCase().trim();
@@ -2372,137 +2566,108 @@ function initAdminPanel() {
         });
     }
 
-    // ── Refresh button ─────────────────────────────────────────────────────
     if (refreshBtn) {
-        refreshBtn.addEventListener('click', () => loadUsers());
+        refreshBtn.addEventListener("click", () => loadUsers());
     }
 
-    // ── Close edit panel ───────────────────────────────────────────────────
     if (closeEditBtn) {
-        closeEditBtn.addEventListener('click', () => {
-            editPanel.style.display = 'none';
+        closeEditBtn.addEventListener("click", () => {
+            editPanel.style.display = "none";
             selectedUserId = null;
         });
     }
 
-    // ── Save Balance ───────────────────────────────────────────────────────
     if (saveBalBtn) {
-        saveBalBtn.addEventListener('click', async () => {
+        saveBalBtn.addEventListener("click", async () => {
             if (!selectedUserId) return;
             const amount = parseInt(editBalance.value);
             if (isNaN(amount) || amount < 0) {
-                alert('Invalid amount. Must be a non-negative number.');
+                alert("Số tiền không hợp lệ.");
                 return;
             }
             saveBalBtn.disabled = true;
-            saveBalBtn.innerText = '⏳ Saving...';
+            saveBalBtn.innerText = "⏳ Đang lưu...";
             try {
-                const res = await fetch('/api/admin/manage', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${getToken()}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ action: 'update_balance', userId: selectedUserId, amount })
+                const res = await fetch("/api/admin/manage", {
+                    method: "POST",
+                    headers: { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" },
+                    body: JSON.stringify({ action: "update_balance", userId: selectedUserId, amount })
                 });
                 const data = await res.json();
                 if (res.ok) {
-                    // Update local allUsers cache
                     const u = allUsers.find(x => x.id === selectedUserId);
                     if (u) u.balance = amount;
                     renderTable(allUsers);
-                    editPanel.style.display = 'none';
-                    alert(`✅ ${data.message}`);
+                    editPanel.style.display = "none";
+                    alert("✅ " + data.message);
                 } else {
-                    alert(`❌ Error: ${data.error}`);
+                    alert("❌ Lỗi: " + data.error);
                 }
             } catch (e) {
-                alert(`❌ Network error: ${e.message}`);
+                alert("❌ Lỗi mạng: " + e.message);
             } finally {
                 saveBalBtn.disabled = false;
-                saveBalBtn.innerText = '💾 Save Balance';
+                saveBalBtn.innerText = "💾 Save Balance";
             }
         });
     }
 
-    // ── Save Role ──────────────────────────────────────────────────────────
     if (saveRoleBtn) {
-        saveRoleBtn.addEventListener('click', async () => {
+        saveRoleBtn.addEventListener("click", async () => {
             if (!selectedUserId) return;
             const role = editRole.value;
-            if (!['user', 'admin'].includes(role)) return;
+            if (!["user", "admin"].includes(role)) return;
 
             const confirmed = confirm(
-                role === 'admin'
-                    ? `⚠️ Grant ADMIN privileges to this user? This gives full database access.`
-                    : `Downgrade this user to 'user' role?`
+                role === "admin"
+                    ? "⚠️ Trao quyền ADMIN cho tài khoản này? Người này sẽ có toàn quyền quản lý hệ thống."
+                    : "Hạ quyền tài khoản này xuống 'user'?"
             );
             if (!confirmed) return;
 
             saveRoleBtn.disabled = true;
-            saveRoleBtn.innerText = '⏳ Saving...';
+            saveRoleBtn.innerText = "⏳ Đang lưu...";
             try {
-                const res = await fetch('/api/admin/manage', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${getToken()}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ action: 'update_role', userId: selectedUserId, role })
+                const res = await fetch("/api/admin/manage", {
+                    method: "POST",
+                    headers: { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" },
+                    body: JSON.stringify({ action: "update_role", userId: selectedUserId, role })
                 });
                 const data = await res.json();
                 if (res.ok) {
                     const u = allUsers.find(x => x.id === selectedUserId);
                     if (u) u.role = role;
                     renderTable(allUsers);
-                    editPanel.style.display = 'none';
-                    alert(`✅ ${data.message}`);
+                    editPanel.style.display = "none";
+                    alert("✅ " + data.message);
                 } else {
-                    alert(`❌ Error: ${data.error}`);
+                    alert("❌ Lỗi: " + data.error);
                 }
             } catch (e) {
-                alert(`❌ Network error: ${e.message}`);
+                alert("❌ Lỗi mạng: " + e.message);
             } finally {
                 saveRoleBtn.disabled = false;
-                saveRoleBtn.innerText = '💾 Save Role';
+                saveRoleBtn.innerText = "💾 Save Role";
             }
         });
     }
 
-    // Load immediately when panel first initialized
     loadUsers();
+    loadSmmOrders();
 
-    // Expose openEdit globally so inline onclick calls work
     window.adminOpenEdit = function(userId, username, balance, role) {
         selectedUserId = userId;
-        editTitle.innerText = `Editing: ${username} (ID #${userId})`;
+        editTitle.innerText = "Chỉnh sửa: " + username + " (ID #" + userId + ")";
         editBalance.value = balance || 0;
-        editRole.value = role || 'user';
-        editPanel.style.display = 'block';
-        if (typeof gsap !== 'undefined') {
+        editRole.value = role || "user";
+        editPanel.style.display = "block";
+        if (typeof gsap !== "undefined") {
             gsap.fromTo(editPanel, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3 });
         }
     };
 }
 
-// Wire admin tab click to initialize admin panel (lazy load)
-document.addEventListener('DOMContentLoaded', () => {
-    const adminTab = document.getElementById('admin-dash-tab');
-    if (adminTab) {
-        let adminPanelInitialized = false;
-        adminTab.addEventListener('click', () => {
-            if (!adminPanelInitialized) {
-                adminPanelInitialized = true;
-                initAdminPanel();
-            }
-        });
-    }
-});
 
-
-// ==========================================
-// MENG TO TELEMETRY & CARD SPOTLIGHT SYSTEM
-// ==========================================
 function initLiveTelemetry() {
     const clockEl = document.getElementById('live-danang-clock');
     if (!clockEl) return;
@@ -3091,7 +3256,7 @@ function initSmmTerminal() {
         });
     }
 
-    // Direct Wallet Payment & Order Submission
+    // Direct Wallet Payment & Order Submission (With real DB deduction & Auto-Queue)
     if (submitAutoBtn) {
         submitAutoBtn.addEventListener('click', async () => {
             const svc = getSelectedService();
@@ -3108,7 +3273,6 @@ function initSmmTerminal() {
                 return;
             }
 
-            // 1. Enforce shop quantity min / max
             if (svc) {
                 if (qty < svc.min) {
                     alert(`Số lượng bạn chọn (${qty.toLocaleString('vi-VN')}) nhỏ hơn mức tối thiểu!\n\nShop quy định số lượng tối thiểu cho gói này là ${svc.min.toLocaleString('vi-VN')}.`);
@@ -3124,7 +3288,7 @@ function initSmmTerminal() {
 
             const totalCost = Math.round(qty * (svc ? svc.rate : 0));
 
-            // 2. Check if user is logged in
+            // Check if user is logged in
             const token = localStorage.getItem('teemous_jwt');
             const userJson = localStorage.getItem('teemous_user');
 
@@ -3145,7 +3309,6 @@ function initSmmTerminal() {
 
             const currentBalance = parseFloat(user.balance || 0);
 
-            // 3. Check wallet balance
             if (currentBalance < totalCost) {
                 const missing = totalCost - currentBalance;
                 alert(`Số dư ví của bạn không đủ!\n\n- Cần thanh toán: ${formatVND(totalCost)} VNĐ\n- Số dư hiện tại: ${formatVND(currentBalance)} VNĐ\n- Còn thiếu: ${formatVND(missing)} VNĐ\n\nVui lòng Nạp thêm tiền vào ví qua VietQR để tiếp tục tạo đơn.`);
@@ -3154,7 +3317,6 @@ function initSmmTerminal() {
                 return;
             }
 
-            // 4. Confirm transaction with user
             const confirmMsg = `XÁC NHẬN THANH TOÁN TỪ SỐ DƯ VÍ?\n\n- Dịch vụ: ${svc.name}\n- Đơn giá: ${svc.rate} đ / 1\n- Số lượng: ${qty.toLocaleString('vi-VN')}\n- Link/UID: ${link}\n- Số tiền trừ ví: ${formatVND(totalCost)} VNĐ\n- Số dư sau khi trừ: ${formatVND(currentBalance - totalCost)} VNĐ`;
 
             if (!confirm(confirmMsg)) return;
@@ -3163,61 +3325,58 @@ function initSmmTerminal() {
             submitAutoBtn.textContent = 'Đang xử lý trừ ví & đẩy đơn...';
 
             try {
-                // Call API SMM
                 const res = await fetch('/api/smm', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
                     body: JSON.stringify({
                         action: 'add',
                         service: svc ? svc.service : '317835',
+                        service_name: svc ? svc.name : 'Dịch vụ tăng tương tác SMM',
                         link: link,
-                        quantity: qty
+                        quantity: qty,
+                        rate: svc ? svc.rate : 1
                     })
                 });
                 const data = await res.json();
 
-                // Check API result
-                if (data && data.order) {
-                    // Deduct wallet balance
-                    user.balance = currentBalance - totalCost;
+                if (data && data.success) {
+                    const newBal = (data.new_balance !== undefined ? data.new_balance : currentBalance - totalCost);
+                    user.balance = newBal;
                     localStorage.setItem('teemous_user', JSON.stringify(user));
+                    updateWalletUI();
 
-                    // Save order to history
+                    const orderId = data.internal_order_id || data.order;
+                    if (trackInput) trackInput.value = orderId;
+
                     const smmOrders = JSON.parse(localStorage.getItem('teemous_smm_orders') || '[]');
                     smmOrders.unshift({
-                        order_id: data.order,
+                        order_id: orderId,
+                        smm_order_id: data.order,
                         service_id: svc.service,
                         service_name: svc.name,
                         quantity: qty,
                         link: link,
                         cost: totalCost,
                         date: new Date().toISOString(),
-                        status: 'Running'
+                        status: data.status || (data.queued ? 'Pending' : 'Running')
                     });
                     localStorage.setItem('teemous_smm_orders', JSON.stringify(smmOrders));
 
-                    // Update UI
-                    updateWalletUI();
-
-                    alert(`🎉 TẠO ĐƠN HÀNG THÀNH CÔNG!\n\n- Mã đơn hàng (Order ID): #${data.order}\n- Đã trừ ví: ${formatVND(totalCost)} VNĐ\n- Số dư khả dụng: ${formatVND(user.balance)} VNĐ\n\nHệ thống đã khớp lệnh và đang xử lý tăng tương tác cho bạn!\nBạn có thể nhập mã #${data.order} vào ô bên dưới để theo dõi tiến độ.`);
-                    if (trackInput) trackInput.value = data.order;
-                } else {
-                    // In case upstream API returns error or needs admin balance
-                    const rawErr = data.error || 'Hệ thống đang bận. Số dư của bạn chưa bị trừ, vui lòng thử lại sau ít phút!';
-                    let errMsg = rawErr;
-                    if (data.available_env_keys) {
-                        errMsg = `Chưa tìm thấy SMM_API_KEY trên Cloudflare!\nCác biến hiện có trên Cloudflare: [${data.available_env_keys.join(', ') || 'Chưa có biến nào'}].\nVui lòng vào Cloudflare Dashboard -> Settings -> Variables and Secrets để kiểm tra.`;
-                    } else if (/key/i.test(rawErr)) {
-                        errMsg = `Khóa API (SMM_API_KEY) trên Cloudflare không hợp lệ: ${rawErr}`;
-                    } else if (rawErr.includes('không đủ tiền')) {
-                        errMsg = 'Số dư tài khoản đại lý trên hệ thống dichvumxh.vn hiện không đủ để thực hiện gói này (cần nạp thêm tiền vào dichvumxh). Số dư ví của bạn chưa bị trừ!';
-                    } else if (rawErr.includes('chưa xử lý')) {
-                        errMsg = 'Đường link này đang có một đơn hàng khác đang xử lý trên máy chủ. Vui lòng đợi đơn cũ chạy xong rồi đặt tiếp!';
+                    if (data.queued) {
+                        alert(`🎉 ĐƠN HÀNG ĐÃ ĐƯỢC TIẾP NHẬN & ĐƯA VÀO HÀNG CHỜ!\n\n- Mã đơn hàng: #${orderId}\n- Dịch vụ: ${svc.name}\n- Số lượng: ${qty.toLocaleString('vi-VN')}\n- Đã trừ ví: ${formatVND(totalCost)} VNĐ\n- Số dư khả dụng: ${formatVND(user.balance)} VNĐ\n\nĐơn hàng của bạn đã được ghi nhận vào hệ thống và đang trong hàng chờ duyệt (Hệ thống/Admin sẽ duyệt và đẩy đơn tự động cho bạn ngay khi sẵn sàng)!\nBạn có thể nhập mã #${orderId} vào ô bên dưới để theo dõi tiến độ.`);
+                    } else {
+                        alert(`🎉 TẠO ĐƠN HÀNG THÀNH CÔNG!\n\n- Mã đơn hàng (Order ID): #${data.order}\n- Dịch vụ: ${svc.name}\n- Số lượng: ${qty.toLocaleString('vi-VN')}\n- Đã trừ ví: ${formatVND(totalCost)} VNĐ\n- Số dư khả dụng: ${formatVND(user.balance)} VNĐ\n\nHệ thống đã khớp lệnh và đang xử lý tăng tương tác cho bạn!\nBạn có thể nhập mã #${data.order} vào ô bên dưới để theo dõi tiến độ.`);
                     }
-                    alert(`Thông báo từ máy chủ: ${errMsg}`);
+
+                    if (window.refreshBalance) window.refreshBalance();
+                } else {
+                    alert(`Thông báo từ hệ thống: ${data.error || 'Hệ thống đang bận. Vui lòng thử lại sau ít phút!'}`);
                 }
             } catch (e) {
-                alert(`Lỗi kết nối máy chủ: ${e.message}. Số dư ví của bạn chưa bị trừ!`);
+                alert(`Lỗi kết nối máy chủ: ${e.message}. Vui lòng thử lại sau!`);
             } finally {
                 submitAutoBtn.disabled = false;
                 submitAutoBtn.textContent = '⚡ XÁC NHẬN & TẠO ĐƠN NGAY (TRỪ VÍ) →';
@@ -3244,14 +3403,29 @@ function initSmmTerminal() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'status', order: oid })
                 });
-                const data = await res.json();
-                const info = data[oid] || data;
-                if (info && info.status) {
+                const info = await res.json();
+
+                if (info && (info.status || info.order)) {
+                    let badgeColor = 'var(--cyan-laser)';
+                    let statusText = info.status || 'Running';
+                    if (statusText === 'Completed' || statusText === 'Hoàn thành') {
+                        badgeColor = '#10b981';
+                        statusText = 'Hoàn thành (Completed)';
+                    } else if (statusText === 'Pending' || statusText === 'Chờ xử lý') {
+                        badgeColor = '#f59e0b';
+                        statusText = 'Hàng chờ duyệt (Pending)';
+                    } else if (statusText === 'Running' || statusText === 'In progress' || statusText === 'Processing') {
+                        badgeColor = '#00f0ff';
+                        statusText = 'Đang tăng tương tác (Running)';
+                    }
                     if (trackResult) {
                         trackResult.innerHTML = `
-                            <div style="padding: 0.75rem; background: rgba(0, 240, 255, 0.08); border-radius: 4px; font-size: 0.85rem; font-family: var(--font-tech);">
-                                <div><strong>Đơn hàng #${oid}:</strong> <span style="color: var(--cyan-laser); text-transform: uppercase;">${info.status}</span></div>
-                                <div style="color: var(--text-muted); margin-top: 0.25rem;">Số lượng ban đầu: ${info.start_count || 0} &bull; Còn lại: ${info.remains || 0}</div>
+                            <div style="padding: 0.85rem 1rem; background: rgba(0, 240, 255, 0.06); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 6px; font-size: 0.85rem; font-family: var(--font-tech);">
+                                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                                    <div><strong>Đơn hàng #${oid}:</strong> <span style="color: ${badgeColor}; font-weight:800; text-transform: uppercase;">${statusText}</span></div>
+                                    ${info.remains !== undefined ? `<div style="color: var(--text-muted); font-size: 0.8rem;">Khởi chạy: ${info.start_count || 0} &bull; Còn lại: ${info.remains}</div>` : ''}
+                                </div>
+                                ${info.message ? `<div style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.4rem;">${info.message}</div>` : ''}
                             </div>
                         `;
                     }
