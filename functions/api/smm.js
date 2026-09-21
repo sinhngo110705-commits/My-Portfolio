@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
   try {
     const url = new URL(request.url);
-    const smmKey = env.SMM_API_KEY || "";
+    const smmKey = env && env.SMM_API_KEY;
     const smmUrl = env.SMM_API_URL || "https://dichvumxh.vn/api/v2";
 
     let params = {};
@@ -31,6 +31,12 @@ export async function onRequest(context) {
 
       if (/^\d+$/.test(link)) {
         return { id: link, formattedLink: `https://facebook.com/${link}` };
+      }
+
+      // Never mutilate post/video/reel/photo links into profile links!
+      const isPost = /\/(posts|photos|videos|reel|watch)\/|story_fbid|permalink\.php/i.test(link);
+      if (isPost) {
+        return { id: null, formattedLink: link };
       }
 
       const numMatch = link.match(/facebook\.com\/(?:profile\.php\?id=)?(\d+)/i);
@@ -90,7 +96,6 @@ export async function onRequest(context) {
 
     if (action === "services" && Array.isArray(smmData)) {
       const vndRate = 26000;
-      const margin = 1.20;
       const processed = smmData
         .filter(s => {
           const name = (s.name || "").toLowerCase();
@@ -103,12 +108,12 @@ export async function onRequest(context) {
         .map(s => {
           const usdPer1k = parseFloat(s.rate) || 0;
           const rawCostPerUnit = (usdPer1k * vndRate) / 1000;
-          const retailPerUnit = Math.max(0.5, Math.round(rawCostPerUnit * margin * 10) / 10);
+          const retailPerUnit = Math.max(0.1, Math.round(rawCostPerUnit * 10) / 10);
           const retailPer1k = Math.round(retailPerUnit * 1000);
           return {
             ...s,
             raw_rate_usd: usdPer1k,
-            cost_vnd_unit: Math.round(rawCostPerUnit * 10) / 10,
+            cost_vnd_unit: retailPerUnit,
             rate_vnd_unit: retailPerUnit,
             rate_vnd_1k: retailPer1k,
             rate_display: `${retailPerUnit.toLocaleString("vi-VN")} đ`

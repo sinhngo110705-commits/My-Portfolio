@@ -112,37 +112,66 @@ export async function onRequest(context) {
 
         let reply = null;
 
-        // 1. Try Cloudflare Workers AI if bound
-        if (env && env.AI) {
+        const TEEMOUS_PROMPT = `Bạn là Teemous AI, trợ lý số thông minh độc quyền của Teemous Digital Lab (được sáng lập bởi Ngô Quang Sinh - sinh viên Digital Marketing tại ĐH Duy Tân).
+Phong cách trả lời: Thân thiện, chu đáo, thông minh, chuyên nghiệp và có tính thẩm mỹ cao. Trình bày rõ ràng bằng Markdown (bullet points, **bold** từ khóa quan trọng).
+Thông tin nền tảng về Teemous Digital Lab:
+- Nhà sáng lập: Ngô Quang Sinh (#03 - Tier A+ Impressive, 88.0 điểm), chuyên gia Web Architecture, tự động hóa AI Workflows, Google AppsScript và hệ sinh thái số. Liên hệ Sinh: FB: facebook.com/quang.sinh.5492, Zalo: 0797747297, Email: teemous.contact@gmail.com.
+- Portfolio Hub: Bảng xếp hạng hồ sơ năng lực thực chiến công tâm:
+  + #01 Trần Thị Thùy Dương: Tier S+ Apex (96.0 điểm), VKU Khoa học Máy tính (GPA 3.61/4.0), cựu chuyên Tin Quốc Học Huế, giải Quốc Gia ICPC, Top 6 SheCodes. Chuyên sâu thuật toán, C++, Java, Full-Stack Web và Flutter Mobile.
+  + #02 Lê Thái Trung: Tier S Professional (90.5 điểm), ĐH Duy Tân Kỹ nghệ Phần mềm, chuyên Backend APIs, IntelliJ IDEA, Postman, Linux/Git.
+  + #04 Bùi Lưu Bảo Hân: Tier A Standard (84.0 điểm), ĐH Duy Tân Kinh doanh Quốc tế, HR & Vận hành dữ liệu Notion/Sheets.
+  + #05 Vương Quang Tuấn: Tier A Standard (80.5 điểm), Content Creator, Canva, CapCut, Facebook Ads.
+- Dịch vụ & Sản phẩm chính:
+  1. Khởi tạo Portfolio cá nhân: Đang có chương trình TÀI TRỢ 100% SUẤT 0Đ (giá gốc 49k) gói Basic cho bạn trẻ đăng ký sớm! Gói VIP Bespoke đang tạm khóa để nâng cấp phiên bản mới.
+  2. SMM Terminal (Dịch vụ Mạng Xã Hội): Tăng Like, Follow, View, Comment tương tác cho Facebook, Instagram, TikTok, Threads với giá cực tốt từ vài chục đồng, bảo mật 100% không cần mật khẩu, tự động lấy UID, nạp tiền tự động qua VietQR.
+  3. Shop Liên Quân: Hiện đang tạm ngưng bảo trì hệ thống.
+Hãy trả lời trực tiếp câu hỏi của người dùng bằng Tiếng Việt hoặc ngôn ngữ của người dùng.`;
+
+        // 1. Priority 1: OpenAI (gpt-4o-mini)
+        const openaiKey = env && env.OPENAI_API_KEY;
+        if (openaiKey) {
             try {
-                const systemPrompt = "Bạn là Teemous AI, trợ lý số của Teemous Digital Lab (Founder: Ngô Quang Sinh). Trả lời ngắn gọn, thân thiện, chính xác bằng Tiếng Việt.";
-                const aiRes = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        ...messages.slice(-5)
-                    ]
+                const formattedMsgs = [
+                    { role: "system", content: TEEMOUS_PROMPT },
+                    ...messages.slice(-8).map(m => ({ role: m.role, content: m.content }))
+                ];
+                const oRes = await fetch("https://api.openai.com/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${openaiKey.trim()}`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-4o-mini",
+                        messages: formattedMsgs,
+                        temperature: 0.7,
+                        max_tokens: 600
+                    })
                 });
-                if (aiRes && aiRes.response && aiRes.response.trim()) {
-                    reply = aiRes.response.trim();
+                if (oRes.ok) {
+                    const oData = await oRes.json();
+                    const oText = oData.choices?.[0]?.message?.content;
+                    if (oText && oText.trim()) {
+                        reply = oText.trim();
+                    }
                 }
-            } catch (aiErr) {}
+            } catch (oErr) {}
         }
 
-        // 2. Try Gemini with multi-model fallback
+        // 2. Priority 2: Google Gemini (gemini-3.6-flash)
         const geminiKey = env && (env.GEMINI_API_KEY || env.GEMINI_API);
         if (!reply && geminiKey) {
-            const geminiModels = ["gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.0-flash", "gemini-pro"];
+            const geminiModels = ["gemini-3.6-flash", "gemini-3.7-flash", "gemini-2.5-pro", "gemini-flash-latest"];
             for (const m of geminiModels) {
                 try {
                     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${geminiKey.trim()}`;
-                    const systemMsg = "Bạn là Teemous AI, trợ lý ảo của Teemous Digital Lab (Founder: Ngô Quang Sinh). Trả lời thân thiện, hữu ích, chuyên nghiệp bằng Tiếng Việt.";
                     const contents = [
-                        { role: "user", parts: [{ text: `${systemMsg}\n\nNgười dùng hỏi: ${userMsg}` }] }
+                        { role: "user", parts: [{ text: `${TEEMOUS_PROMPT}\n\nNgười dùng hỏi: ${userMsg}` }] }
                     ];
                     const gRes = await fetch(geminiUrl, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ contents, generationConfig: { maxOutputTokens: 800, temperature: 0.7 } })
+                        body: JSON.stringify({ contents, generationConfig: { maxOutputTokens: 600, temperature: 0.7 } })
                     });
                     if (gRes.ok) {
                         const gData = await gRes.json();
@@ -156,7 +185,22 @@ export async function onRequest(context) {
             }
         }
 
-        // 3. High-precision RAG matcher
+        // 3. Priority 3: Cloudflare Workers AI
+        if (env && env.AI) {
+            try {
+                const aiRes = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+                    messages: [
+                        { role: 'system', content: TEEMOUS_PROMPT },
+                        ...messages.slice(-5)
+                    ]
+                });
+                if (aiRes && aiRes.response && aiRes.response.trim()) {
+                    reply = aiRes.response.trim();
+                }
+            } catch (aiErr) {}
+        }
+
+        // 4. Priority 4: High-precision RAG matcher
         if (!reply) {
             reply = getRagReply(userMsg);
         }

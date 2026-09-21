@@ -55,15 +55,73 @@ Thông tin nền tảng về Teemous Digital Lab:
 Hãy trả lời trực tiếp câu hỏi của người dùng bằng Tiếng Việt hoặc ngôn ngữ của người dùng.`;
 
 async function callAiBackend(messages) {
-  const routerKey = process.env.ROUTER_API_KEY || envConfig.ROUTER_API_KEY || "";
-  const routerUrl = process.env.ROUTER_API_URL || envConfig.ROUTER_API_URL || "http://127.0.0.1:20128/v1/chat/completions";
-
   const cleanedMessages = (messages || []).filter(m => m && m.content).slice(-8);
   const payloadMessages = [
     { role: "system", content: TEEMOUS_SYSTEM_PROMPT },
     ...cleanedMessages
   ];
+  const lastUserMsg = (cleanedMessages.length > 0 ? cleanedMessages[cleanedMessages.length - 1].content : "") || "";
 
+  // 1. Try OpenAI
+  const openaiKey = process.env.OPENAI_API_KEY || envConfig.OPENAI_API_KEY || "";
+  if (openaiKey) {
+    try {
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 18000);
+      const oRes = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${openaiKey.trim()}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: payloadMessages,
+          temperature: 0.7,
+          max_tokens: 600
+        }),
+        signal: ctrl.signal
+      });
+      clearTimeout(tid);
+      if (oRes.ok) {
+        const oData = await oRes.json();
+        const oText = oData.choices?.[0]?.message?.content;
+        if (oText && oText.trim()) return oText.trim();
+      }
+    } catch (e) {}
+  }
+
+  // 2. Try Gemini
+  const geminiKey = process.env.GEMINI_API_KEY || envConfig.GEMINI_API_KEY || "";
+  if (geminiKey) {
+    const geminiModels = ["gemini-3.6-flash", "gemini-3.7-flash", "gemini-2.5-pro", "gemini-flash-latest"];
+    for (const m of geminiModels) {
+      try {
+        const ctrl = new AbortController();
+        const tid = setTimeout(() => ctrl.abort(), 18000);
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${geminiKey.trim()}`;
+        const gRes = await fetch(geminiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: `${TEEMOUS_SYSTEM_PROMPT}\n\nNgười dùng hỏi: ${lastUserMsg}` }] }],
+            generationConfig: { maxOutputTokens: 600, temperature: 0.7 }
+          }),
+          signal: ctrl.signal
+        });
+        clearTimeout(tid);
+        if (gRes.ok) {
+          const gData = await gRes.json();
+          const gText = gData.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (gText && gText.trim()) return gText.trim();
+        }
+      } catch (e) {}
+    }
+  }
+
+  // 3. Try Local 9Router
+  const routerKey = process.env.ROUTER_API_KEY || envConfig.ROUTER_API_KEY || "";
+  const routerUrl = process.env.ROUTER_API_URL || envConfig.ROUTER_API_URL || "http://127.0.0.1:20128/v1/chat/completions";
   const candidateUrls = [routerUrl, "http://127.0.0.1:20128/v1/chat/completions", "http://127.0.0.1:1234/v1/chat/completions"];
   const uniqueUrls = [...new Set(candidateUrls)];
 
@@ -326,6 +384,12 @@ function handleRequest(req, res) {
             return { id: link, formattedLink: `https://facebook.com/${link}` };
           }
 
+          // Never mutilate post/video/reel/photo links into profile links!
+          const isPost = /\/(posts|photos|videos|reel|watch)\/|story_fbid|permalink\.php/i.test(link);
+          if (isPost) {
+            return { id: null, formattedLink: link };
+          }
+
           // If already https://facebook.com/1000... or numeric profile link
           const numMatch = link.match(/facebook\.com\/(?:profile\.php\?id=)?(\d+)/i);
           if (numMatch && numMatch[1]) {
@@ -390,7 +454,6 @@ function handleRequest(req, res) {
         // If action is services, enhance with accurate VND retail rates
         if (action === 'services' && Array.isArray(smmData)) {
           const vndRate = 26000;
-          const margin = 1.20;
           const processed = smmData
             .filter(s => {
               const name = (s.name || '').toLowerCase();
@@ -403,12 +466,12 @@ function handleRequest(req, res) {
             .map(s => {
               const usdPer1k = parseFloat(s.rate) || 0;
               const rawCostPerUnit = (usdPer1k * vndRate) / 1000;
-              const retailPerUnit = Math.max(0.5, Math.round(rawCostPerUnit * margin * 10) / 10);
+              const retailPerUnit = Math.max(0.1, Math.round(rawCostPerUnit * 10) / 10);
               const retailPer1k = Math.round(retailPerUnit * 1000);
               return {
                 ...s,
                 raw_rate_usd: usdPer1k,
-                cost_vnd_unit: Math.round(rawCostPerUnit * 10) / 10,
+                cost_vnd_unit: retailPerUnit,
                 rate_vnd_unit: retailPerUnit,
                 rate_vnd_1k: retailPer1k,
                 rate_display: `${retailPerUnit.toLocaleString('vi-VN')} đ`

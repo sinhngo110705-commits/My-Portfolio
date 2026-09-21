@@ -13,7 +13,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../style.css?v=perf-v24">
+    <link rel="stylesheet" href="../../style.css?v=perf-v25">
 
     <style>
         .social-terminal-wrap {
@@ -406,6 +406,98 @@
             color: #475569 !important;
             font-weight: 700;
         }
+
+        /* ── Modern SMM Server Radio Selection (Matching Original Shop UI) ── */
+        .smm-server-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-top: 0.25rem;
+        }
+        .smm-server-item {
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .smm-server-item:hover {
+            border-color: rgba(33, 150, 243, 0.5);
+            background: rgba(33, 150, 243, 0.04);
+        }
+        .smm-server-item.active {
+            border: 1.5px solid #2196f3;
+            background: rgba(33, 150, 243, 0.08);
+            box-shadow: 0 0 16px rgba(33, 150, 243, 0.2);
+        }
+        .smm-server-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+        .smm-server-radio {
+            width: 17px;
+            height: 17px;
+            accent-color: #2196f3;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .smm-server-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-main);
+            flex: 1;
+            line-height: 1.4;
+        }
+        .smm-server-price {
+            font-weight: 800;
+            color: #ff3366;
+            font-size: 0.92rem;
+            white-space: nowrap;
+        }
+        .smm-server-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .smm-server-badge.active-badge {
+            background: #00b894;
+            color: #ffffff;
+        }
+        .smm-server-badge.maintenance-badge {
+            background: #e74c3c;
+            color: #ffffff;
+        }
+        .smm-server-details-card {
+            margin-top: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: 6px;
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            font-size: 0.82rem;
+            line-height: 1.6;
+        }
+        .light-mode .smm-server-item {
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+        .light-mode .smm-server-item.active {
+            border-color: #0284c7;
+            background: #f0f9ff;
+            box-shadow: 0 0 12px rgba(2, 132, 199, 0.15);
+        }
+        .light-mode .smm-server-name {
+            color: #0f172a;
+        }
+        .light-mode .smm-server-details-card {
+            background: #ecfeff;
+            border-color: #a5f3fc;
+            color: #0f172a;
+        }
 </style>
 
     <!-- Theme Initialization Script -->
@@ -522,28 +614,28 @@
                     </div>
                     <div class="service-card-matrix">
                         <!-- Recommendation 1: Sub Viet Nam (Primary) -->
-                        <div class="matrix-pill selected" data-sid="317844" data-plat="facebook" data-cat="follow_profile" data-rate="48.5" data-min="500" data-max="150000">
-                            <div class="matrix-pill-plat">⭐ Facebook &bull; Sub Việt Nam</div>
-                            <div class="matrix-pill-title">Follow Facebook (Sub Việt Nam, Hạn Chế Tụt)</div>
-                            <div class="matrix-pill-rate">48,5 ₫ / 1 (48.500 ₫ / 1.000)</div>
+                        <div class="matrix-pill selected" data-sid="317844" data-plat="facebook" data-cat="follow_profile" data-rate="40.4" data-min="500" data-max="150000">
+                            <div class="matrix-pill-plat">⭐ Facebook &bull; SV3 Sub Việt Nam</div>
+                            <div class="matrix-pill-title">SV3 : Sub Việt Nam, tốc độ 7-10k /ngày, bảo hành 7 ngày</div>
+                            <div class="matrix-pill-rate">40,4 ₫ / 1 (40.400 ₫ / 1.000)</div>
                         </div>
-                        <!-- Recommendation 2: Like Viet Nam -->
-                        <div class="matrix-pill" data-sid="3566" data-plat="facebook" data-cat="like_post" data-rate="16.4" data-min="50" data-max="10000">
-                            <div class="matrix-pill-plat">⭐ Facebook &bull; Like Việt Nam</div>
-                            <div class="matrix-pill-title">Like Bài Viết Facebook (Server Việt, Tốc Độ Nhanh)</div>
-                            <div class="matrix-pill-rate">16,4 ₫ / 1 (16.400 ₫ / 1.000)</div>
+                        <!-- Recommendation 2: Like SV6 -->
+                        <div class="matrix-pill" data-sid="53977" data-plat="facebook" data-cat="like_post" data-rate="25.3" data-min="50" data-max="200000">
+                            <div class="matrix-pill-plat">⭐ Facebook &bull; SV6 Like Ẩn</div>
+                            <div class="matrix-pill-title">SV6 : Like ẩn. tốc độ trung bình, không tụt (Dồn đơn)</div>
+                            <div class="matrix-pill-rate">25,3 ₫ / 1 (25.300 ₫ / 1.000)</div>
                         </div>
                         <!-- Recommendation 3: Sub Tay / Quoc Te -->
-                        <div class="matrix-pill" data-sid="317835" data-plat="facebook" data-cat="follow_profile" data-rate="18.8" data-min="200" data-max="1000000">
-                            <div class="matrix-pill-plat">Facebook &bull; Sub Quốc Tế (Tây)</div>
-                            <div class="matrix-pill-title">Follow Facebook (Sub Tây, Tốc Độ Cao, BH 7 Ngày)</div>
-                            <div class="matrix-pill-rate">18,8 ₫ / 1 (18.800 ₫ / 1.000)</div>
+                        <div class="matrix-pill" data-sid="317835" data-plat="facebook" data-cat="follow_profile" data-rate="15.7" data-min="200" data-max="1000000">
+                            <div class="matrix-pill-plat">Facebook &bull; SV8 Sub Tây</div>
+                            <div class="matrix-pill-title">SV8 : Sub Tây, tốc độ 20k / 1 ngày, bảo hành 7 ngày</div>
+                            <div class="matrix-pill-rate">15,7 ₫ / 1 (15.700 ₫ / 1.000)</div>
                         </div>
                         <!-- Recommendation 4: TikTok Follow -->
-                        <div class="matrix-pill" data-sid="3113" data-plat="tiktok" data-cat="follow_profile" data-rate="71.9" data-min="100" data-max="1000">
-                            <div class="matrix-pill-plat">TikTok &bull; Follow Kênh</div>
-                            <div class="matrix-pill-title">Follow Kênh TikTok (Tăng Tương Tác Kênh Nhanh)</div>
-                            <div class="matrix-pill-rate">71,9 ₫ / 1 (71.900 ₫ / 1.000)</div>
+                        <div class="matrix-pill" data-sid="3113" data-plat="tiktok" data-cat="follow_profile" data-rate="59.9" data-min="100" data-max="1000">
+                            <div class="matrix-pill-plat">TikTok &bull; SV1 Follow Kênh</div>
+                            <div class="matrix-pill-title">SV1 : Follow kênh cá nhân TikTok</div>
+                            <div class="matrix-pill-rate">59,9 ₫ / 1 (59.900 ₫ / 1.000)</div>
                         </div>
                     </div>
 
@@ -572,10 +664,14 @@
                                 <!-- Service Select -->
                                 <div class="smm-field-group">
                                     <label class="smm-field-label">
-                                        <span>Gói Dịch Vụ Cụ Thể</span>
-                                        <span id="smm-rate-label" style="color: var(--cyan-laser);">Đơn giá: 48,5 VNĐ / 1 (48.500 VNĐ / 1.000)</span>
+                                        <span>Chọn server</span>
+                                        <span id="smm-rate-label" style="color: var(--cyan-laser);">Đơn giá: 40,4 VNĐ / 1 (40.400 VNĐ / 1.000)</span>
                                     </label>
-                                    <select id="smm-service-select" class="smm-select"></select>
+                                    <div style="font-size: 0.78rem; color: #ff5252; margin-top: -2px; margin-bottom: 8px; font-weight: 600;">
+                                        Đọc kĩ trước khi chọn gói, tốc độ ở mỗi gói mang tính chất tham khảo.
+                                    </div>
+                                    <div id="smm-server-list" class="smm-server-list"></div>
+                                    <select id="smm-service-select" class="smm-select" style="display: none;"></select>
                                     <!-- Live Server Guidelines Note from Original Shop -->
                                     <div id="smm-note-container" class="smm-server-note-box" style="display: none;">
                                         <div class="smm-note-title">
@@ -883,7 +979,7 @@
     <!-- Use CDN GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="../../script.js?v=perf-v24"></script>
+    <script src="../../script.js?v=perf-v25"></script>
 
     <!-- Matrix Quick Pill Click Listener -->
     <script>
