@@ -608,75 +608,83 @@
             '</div>' +
             '<div class="hub-hud-container container mx-auto px-4">' +
                 '<div class="hub-hud-deck">' +
-                    '<!-- TIER BENCHMARK & RUBRICS NOTE BOX -->' +
-                    '<div class="hub-criteria-note-box">' +
-                        '<div class="hub-criteria-header">' +
-                            '<div class="hub-criteria-title-wrap">' +
-                                '<span class="hub-criteria-icon">⚖️</span>' +
-                                '<span class="hub-criteria-title" data-en="EVALUATION RUBRIC: AGE-RELATIVE MATURITY &amp; REAL COMMUNITY VALUE" data-vi="QUY CHẾ ĐÁNH GIÁ: NĂNG LỰC TƯƠNG QUAN ĐỘ TUỔI &amp; GIÁ TRỊ THỰC TIỄN">' + (isVi ? 'QUY CHẾ XÉT BẬC &amp; ĐIỂM NĂNG LỰC TOÀN DIỆN' : 'OFFICIAL EVALUATION CRITERIA &amp; TIER FRAMEWORK') + '</span>' +
-                            '</div>' +
-                            '<button type="button" id="hub-criteria-toggle-btn" class="hub-criteria-toggle">' +
-                                '<span id="hub-criteria-toggle-text" data-en="View Criteria Details ▼" data-vi="Xem chi tiết quy chế ▼">' + (isVi ? 'Xem chi tiết quy chế ▼' : 'View Criteria Details ▼') + '</span>' +
-                            '</button>' +
-                        '</div>' +
-                        '<p class="hub-criteria-summary" data-en="Power index and tiering are evaluated objectively across 3 core pillars: (1) Verified real-world products & execution; (2) Authentic community value; (3) Competency superiority relative to age and academic cohort (Cohort Relative Index). Specifically honoring young Gen Z builders who demonstrate self-driven mastery ahead of their age." data-vi="Điểm năng lực và xếp bậc được đánh giá công tâm dựa trên 3 tiêu chí: (1) Sản phẩm & năng lực thực chiến đã kiểm chứng; (2) Giá trị đóng góp thực tế cho cộng đồng; (3) Mức độ vượt trội của năng lực chuyên môn so với độ tuổi & năm sinh (Cohort Relative Index). Hệ thống đặc biệt tôn vinh các tài năng trẻ tự chủ kiến trúc hoặc sớm đạt thành tích lớn so với lứa tuổi cùng thời điểm.">' +
-                            (isVi ? 'Điểm năng lực và xếp bậc được đánh giá công tâm dựa trên 3 tiêu chí: (1) Sản phẩm & năng lực thực chiến đã kiểm chứng; (2) Giá trị đóng góp thực tế cho cộng đồng; (3) Mức độ vượt trội của năng lực chuyên môn so với độ tuổi & năm sinh (Cohort Relative Index). Hệ thống đặc biệt tôn vinh các tài năng trẻ tự chủ kiến trúc hoặc sớm đạt thành tích lớn so với lứa tuổi cùng thời điểm.' : 'Power index and tiering are evaluated objectively across 3 core pillars: (1) Verified real-world products & execution; (2) Authentic community value; (3) Competency superiority relative to age and academic cohort (Cohort Relative Index). Specifically honoring young Gen Z builders who demonstrate self-driven mastery ahead of their age.') +
-                        '</p>' +
-                        '<div id="hub-criteria-details" class="hub-criteria-details" style="display: none;">' +
-                            '<div class="hub-tier-threshold-grid">' +
-                                '<div class="threshold-card s-plus">' +
-                                    '<div class="threshold-header">' +
-                                        '<span class="threshold-tier-tag s-plus">S+ APEX</span>' +
-                                        '<span class="threshold-score">&ge; 95.0</span>' +
-                                    '</div>' +
-                                    '<p class="threshold-desc" data-en="Exceptional mastery ahead of cohort age. National contest honors, academic peak, or breakthrough self-built platforms at a very young age." data-vi="Năng lực xuất sắc vượt bậc so với lứa tuổi. Đạt giải thưởng quy mô quốc gia, học thuật đỉnh cao hoặc tự kiến tạo nền tảng đột phá khi còn rất trẻ.">Thủ lĩnh kiến tạo hệ sinh thái, dẫn dắt dự án lớn và tạo tác động cộng đồng đột phá.</p>' +
-                                '</div>' +
-                                '<div class="hub-tier-rule-card tier-rule-s threshold-card s">' +
-                                    '<div class="threshold-header">' +
-                                        '<span class="threshold-tier-tag s">S PROFESSIONAL</span>' +
-                                        '<span class="threshold-score">90.0 – 94.9</span>' +
-                                    '</div>' +
-                                    '<p class="threshold-desc" data-en="Solid practical domain expertise, independent project management and training capabilities matching graduation maturity standards." data-vi="Năng lực chuyên môn thực chiến vững vàng, khả năng quản trị dự án & đào tạo độc lập rất tốt so với độ tuổi năm cuối / mới tốt nghiệp.">Chuyên môn thực chiến xuất sắc, hoàn thiện sản phẩm độc lập chất lượng cao, thành tích thực tế rõ ràng.</p>' +
-                                '</div>' +
-                                '<div class="hub-tier-rule-card tier-rule-a-plus threshold-card a-plus">' +
-                                    '<div class="threshold-header">' +
-                                        '<span class="threshold-tier-tag a-plus">A+ IMPRESSIVE</span>' +
-                                        '<span class="threshold-score">85.0 – 89.9</span>' +
-                                    '</div>' +
-                                    '<p class="threshold-desc" data-en="Autonomous digital system builder, proactive execution and practical experience superior to student peers (e.g. self-developing digital ecosystem at age 21)." data-vi="Tự chủ hệ sinh thái số, năng lực thực thi và kinh nghiệm thực tế vượt trội so với độ tuổi sinh viên (như tự phát triển nền tảng ở tuổi 21).">Nền tảng kỹ năng vững vàng, chủ động triển khai sản phẩm thực tế và có tiềm năng bứt phá mạnh mẽ.</p>' +
-                                '</div>' +
-                                '<div class="hub-tier-rule-card tier-rule-a threshold-card a">' +
-                                    '<div class="threshold-header">' +
-                                        '<span class="threshold-tier-tag a">A STANDARD</span>' +
-                                        '<span class="threshold-score">80.0 – 84.9</span>' +
-                                    '</div>' +
-                                    '<p class="threshold-desc" data-en="Proficient in essential professional toolkits, hands-on workplace internship experience and certified standards matching cohort expectations." data-vi="Thành thạo công cụ chuyên môn thiết yếu, có kinh nghiệm làm việc thực tế tại cơ sở và có chứng chỉ chuẩn hóa tốt so với độ tuổi sinh viên.">Thành thạo công cụ chuyên môn thiết yếu, tác phong thực thi nhanh nhẹn và tinh thần cầu tiến.</p>' +
-                                '</div>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="hub-hud-top-row">' +
+                    '<!-- TOP COMMAND BAR: Search | Views | Sort & Rubric Trigger (All in 1 Row) -->' +
+                    '<div class="hub-hud-action-bar">' +
                         '<div class="hub-search-box">' +
                             '<svg class="hub-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
                             '<input type="text" id="hub-search-input" class="hub-search-input" placeholder="' + (isVi ? 'Tìm theo tên, vai trò, trường, kỹ năng...' : 'Search by name, role, school, skills...') + '"' +
                                    ' data-en-placeholder="Search by name, role, school, skills..." data-vi-placeholder="Tìm theo tên, vai trò, trường, kỹ năng...">' +
                             '<button id="hub-search-clear" class="hub-search-clear" title="Clear">✕</button>' +
                         '</div>' +
-                        '<div class="hub-view-switch">' +
-                            '<button class="hub-view-btn active" data-view="tier-hierarchy">' +
-                                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>' +
-                                '<span data-en="Tier Hierarchy" data-vi="Bậc Xếp Hạng">' + (isVi ? 'Bậc Xếp Hạng' : 'Tier Hierarchy') + '</span>' +
-                            '</button>' +
-                            '<button class="hub-view-btn" data-view="holo-grid">' +
-                                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>' +
-                                '<span data-en="3D Holo Grid" data-vi="Lưới 3D Holo">' + (isVi ? 'Lưới 3D Holo' : '3D Holo Grid') + '</span>' +
-                            '</button>' +
-                            '<button class="hub-view-btn" data-view="benchmark-matrix">' +
-                                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>' +
-                                '<span data-en="Benchmark Matrix" data-vi="Ma Trận So Sánh">' + (isVi ? 'Ma Trận So Sánh' : 'Benchmark Matrix') + '</span>' +
+                        '<div class="hub-hud-controls-group">' +
+                            '<div class="hub-view-switch">' +
+                                '<button class="hub-view-btn active" data-view="tier-hierarchy">' +
+                                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>' +
+                                    '<span data-en="Tier Hierarchy" data-vi="Bậc Xếp Hạng">' + (isVi ? 'Bậc Xếp Hạng' : 'Tier Hierarchy') + '</span>' +
+                                '</button>' +
+                                '<button class="hub-view-btn" data-view="holo-grid">' +
+                                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>' +
+                                    '<span data-en="3D Holo Grid" data-vi="Lưới 3D Holo">' + (isVi ? 'Lưới 3D Holo' : '3D Holo Grid') + '</span>' +
+                                '</button>' +
+                                '<button class="hub-view-btn" data-view="benchmark-matrix">' +
+                                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>' +
+                                    '<span data-en="Benchmark Matrix" data-vi="Ma Trận So Sánh">' + (isVi ? 'Ma Trận So Sánh' : 'Benchmark Matrix') + '</span>' +
+                                '</button>' +
+                            '</div>' +
+                            '<div class="hub-sort-dropdown-wrap">' +
+                                '<span class="hub-sort-label" data-en="SORT:" data-vi="SẮP XẾP:">' + (isVi ? 'SẮP XẾP:' : 'SORT:') + '</span>' +
+                                '<select id="hub-sort-select" class="hub-sort-select">' +
+                                    '<option value="power">' + (isVi ? 'Chỉ số Năng lực (Cao đến Thấp)' : 'Power Index (High to Low)') + '</option>' +
+                                    '<option value="rank">' + (isVi ? 'Bậc Thứ Hạng' : 'Rank Tier') + '</option>' +
+                                    '<option value="name">' + (isVi ? 'Tên (A-Z)' : 'Name (A-Z)') + '</option>' +
+                                    '<option value="year">' + (isVi ? 'Khóa / Năm' : 'Graduation / Batch') + '</option>' +
+                                '</select>' +
+                            '</div>' +
+                            '<button type="button" id="hub-criteria-toggle-btn" class="hub-rubric-badge-btn" title="Xem chi tiết quy chế">' +
+                                '<span class="hub-criteria-icon">⚖️</span>' +
+                                '<span id="hub-criteria-toggle-text" data-en="Rubric &amp; Criteria ▼" data-vi="Quy chế xét bậc ▼">' + (isVi ? 'Quy chế xét bậc ▼' : 'Rubric &amp; Criteria ▼') + '</span>' +
                             '</button>' +
                         '</div>' +
                     '</div>' +
+                    '<!-- EXPANDABLE RUBRIC DRAWER (COLLAPSED BY DEFAULT TO SAVE SPACE) -->' +
+                    '<div id="hub-criteria-details" class="hub-criteria-drawer" style="display: none;">' +
+                        '<div class="hub-criteria-drawer-inner">' +
+                            '<p class="hub-criteria-summary" data-en="Power index and tiering are evaluated objectively across 3 core pillars: (1) Verified real-world products &amp; execution; (2) Authentic community value; (3) Competency superiority relative to age and academic cohort (Cohort Relative Index). Specifically honoring young Gen Z builders who demonstrate self-driven mastery ahead of their age." data-vi="Điểm năng lực và xếp bậc được đánh giá công tâm dựa trên 3 tiêu chí: (1) Sản phẩm &amp; năng lực thực chiến đã kiểm chứng; (2) Giá trị đóng góp thực tế cho cộng đồng; (3) Mức độ vượt trội của năng lực chuyên môn so với độ tuổi &amp; năm sinh (Cohort Relative Index). Hệ thống đặc biệt tôn vinh các tài năng trẻ tự chủ kiến trúc hoặc sớm đạt thành tích lớn so với lứa tuổi cùng thời điểm.">' +
+                                (isVi ? 'Điểm năng lực và xếp bậc được đánh giá công tâm dựa trên 3 tiêu chí: (1) Sản phẩm &amp; năng lực thực chiến đã kiểm chứng; (2) Giá trị đóng góp thực tế cho cộng đồng; (3) Mức độ vượt trội của năng lực chuyên môn so với độ tuổi &amp; năm sinh (Cohort Relative Index). Hệ thống đặc biệt tôn vinh các tài năng trẻ tự chủ kiến trúc hoặc sớm đạt thành tích lớn so với lứa tuổi cùng thời điểm.' : 'Power index and tiering are evaluated objectively across 3 core pillars: (1) Verified real-world products &amp; execution; (2) Authentic community value; (3) Competency superiority relative to age and academic cohort (Cohort Relative Index). Specifically honoring young Gen Z builders who demonstrate self-driven mastery ahead of their age.') +
+                            '</p>' +
+                            '<div class="hub-tier-threshold-grid">' +
+                                '<div class="threshold-card s-plus">' +
+                                    '<div class="threshold-header">' +
+                                        '<span class="threshold-tier-tag s-plus">S+ APEX</span>' +
+                                        '<span class="threshold-score">&ge; 95.0</span>' +
+                                    '</div>' +
+                                    '<p class="threshold-desc" data-en="Exceptional mastery ahead of cohort age. National contest honors, academic peak, or breakthrough self-built platforms at a very young age." data-vi="Năng lực xuất sắc vượt bậc so với lứa tuổi. Đạt giải thưởng quy mô quốc gia, học thuật đỉnh cao hoặc tự kiến tạo nền tảng đột phá khi còn rất trẻ.">Năng lực xuất sắc vượt bậc so với lứa tuổi. Đạt giải thưởng quy mô quốc gia, học thuật đỉnh cao hoặc tự kiến tạo nền tảng đột phá khi còn rất trẻ.</p>' +
+                                '</div>' +
+                                '<div class="hub-tier-rule-card tier-rule-s threshold-card s">' +
+                                    '<div class="threshold-header">' +
+                                        '<span class="threshold-tier-tag s">S PROFESSIONAL</span>' +
+                                        '<span class="threshold-score">90.0 – 94.9</span>' +
+                                    '</div>' +
+                                    '<p class="threshold-desc" data-en="Solid practical domain expertise, independent project management and training capabilities matching graduation maturity standards." data-vi="Năng lực chuyên môn thực chiến vững vàng, khả năng quản trị dự án &amp; đào tạo độc lập rất tốt so với độ tuổi năm cuối / mới tốt nghiệp.">Năng lực chuyên môn thực chiến vững vàng, khả năng quản trị dự án &amp; đào tạo độc lập rất tốt so với độ tuổi năm cuối / mới tốt nghiệp.</p>' +
+                                '</div>' +
+                                '<div class="hub-tier-rule-card tier-rule-a-plus threshold-card a-plus">' +
+                                    '<div class="threshold-header">' +
+                                        '<span class="threshold-tier-tag a-plus">A+ IMPRESSIVE</span>' +
+                                        '<span class="threshold-score">85.0 – 89.9</span>' +
+                                    '</div>' +
+                                    '<p class="threshold-desc" data-en="Autonomous digital system builder, proactive execution and practical experience superior to student peers (e.g. self-developing digital ecosystem at age 21)." data-vi="Tự chủ hệ sinh thái số, năng lực thực thi và kinh nghiệm thực tế vượt trội so với độ tuổi sinh viên (như tự phát triển nền tảng ở tuổi 21).">Tự chủ hệ sinh thái số, năng lực thực thi và kinh nghiệm thực tế vượt trội so với độ tuổi sinh viên (như tự phát triển nền tảng ở tuổi 21).</p>' +
+                                '</div>' +
+                                '<div class="hub-tier-rule-card tier-rule-a threshold-card a">' +
+                                    '<div class="threshold-header">' +
+                                        '<span class="threshold-tier-tag a">A STANDARD</span>' +
+                                        '<span class="threshold-score">80.0 – 84.9</span>' +
+                                    '</div>' +
+                                    '<p class="threshold-desc" data-en="Proficient in essential professional toolkits, hands-on workplace internship experience and certified standards matching cohort expectations." data-vi="Thành thạo công cụ chuyên môn thiết yếu, có kinh nghiệm làm việc thực tế tại cơ sở và có chứng chỉ chuẩn hóa tốt so với độ tuổi.">Thành thạo công cụ chuyên môn thiết yếu, có kinh nghiệm làm việc thực tế tại cơ sở và có chứng chỉ chuẩn hóa tốt so với độ tuổi.</p>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<!-- PRIMARY TIER SEGMENTED SELECTOR -->' +
                     '<div class="hub-tier-selector-bar">' +
                         '<button class="hub-tier-chip active" data-tier="all">' +
                             '<span class="hub-tier-badge-letter" style="background: rgba(255,255,255,0.2);">ALL</span>' +
@@ -691,7 +699,7 @@
                         '<button class="hub-tier-chip" data-tier="professional">' +
                             '<span class="hub-tier-badge-letter" style="color: #FFB800;">S</span>' +
                             '<span data-en="PROFESSIONAL" data-vi="CHUYÊN NGHIỆP">' + (isVi ? 'CHUYÊN NGHIỆP' : 'PROFESSIONAL') + '</span>' +
-                            '<span class="hub-chip-count">(1)</span>' +
+                            '<span class="hub-chip-count">(' + countPro + ')</span>' +
                         '</button>' +
                         '<button class="hub-tier-chip" data-tier="impressive">' +
                             '<span class="hub-tier-badge-letter" style="color: #00FF88;">A+</span>' +
@@ -704,51 +712,37 @@
                             '<span class="hub-chip-count">(' + countStd + ')</span>' +
                         '</button>' +
                     '</div>' +
-                    '<div class="hub-secondary-filter-row">' +
-                        '<div class="hub-sector-pills">' +
-                            '<button class="hub-sector-btn active" data-field="all" data-en="All Fields" data-vi="Tất cả Lĩnh vực">' + (isVi ? 'Tất cả Lĩnh vực' : 'All Fields') + '</button>' +
-                            '<button class="hub-sector-btn" data-field="it" data-en="Tech &amp; Systems" data-vi="Công nghệ &amp; Hệ thống">' + (isVi ? 'Công nghệ &amp; Hệ thống' : 'Tech &amp; Systems') + '</button>' +
-                            '<button class="hub-sector-btn" data-field="digital-marketing" data-en="Growth &amp; Media" data-vi="Truyền thông &amp; Tăng trưởng">' + (isVi ? 'Truyền thông &amp; Tăng trưởng' : 'Growth &amp; Media') + '</button>' +
-                            '<button class="hub-sector-btn" data-field="business" data-en="Business &amp; Ops" data-vi="Kinh doanh &amp; Quản trị">' + (isVi ? 'Kinh doanh &amp; Quản trị' : 'Business &amp; Ops') + '</button>' +
+                    '<!-- COMPACT COMBINED FILTER RIBBON (MAJORS & SKILLS IN 1 UNIFIED STREAMLINED BAR) -->' +
+                    '<div class="hub-bottom-filters-bar">' +
+                        '<div class="hub-filter-cluster">' +
+                            '<div class="hub-filter-cluster-label">' +
+                                '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>' +
+                                '<span data-en="MAJOR:" data-vi="NGÀNH HỌC:">' + (isVi ? 'NGÀNH HỌC:' : 'MAJOR:') + '</span>' +
+                            '</div>' +
+                            '<div class="hub-major-pills">' +
+                                '<button class="hub-major-btn active" data-major="all" data-en="All" data-vi="Tất cả">' + (isVi ? 'Tất cả' : 'All') + '</button>' +
+                                '<button class="hub-major-btn" data-major="computer-science" data-en="Computer Science" data-vi="Khoa học Máy tính">' + (isVi ? 'Khoa học Máy tính' : 'Computer Science') + '</button>' +
+                                '<button class="hub-major-btn" data-major="software-engineering" data-en="Software Eng" data-vi="Kỹ nghệ Phần mềm">' + (isVi ? 'Kỹ nghệ Phần mềm' : 'Software Eng') + '</button>' +
+                                '<button class="hub-major-btn" data-major="digital-marketing" data-en="Digital Marketing" data-vi="Digital Marketing">Digital Marketing</button>' +
+                                '<button class="hub-major-btn" data-major="international-business" data-en="International Business" data-vi="Kinh doanh Quốc tế">' + (isVi ? 'Kinh doanh Quốc tế' : 'Intl Business') + '</button>' +
+                            '</div>' +
                         '</div>' +
-                        '<div class="hub-sort-dropdown-wrap">' +
-                            '<span class="hub-sort-label" data-en="SORT BY:" data-vi="SẮP XẾP:">' + (isVi ? 'SẮP XẾP:' : 'SORT BY:') + '</span>' +
-                            '<select id="hub-sort-select" class="hub-sort-select">' +
-                                '<option value="power">' + (isVi ? 'Chỉ số Năng lực (Cao đến Thấp)' : 'Power Index (High to Low)') + '</option>' +
-                                '<option value="rank">' + (isVi ? 'Bậc Thứ Hạng' : 'Rank Tier') + '</option>' +
-                                '<option value="name">' + (isVi ? 'Tên (A-Z)' : 'Name (A-Z)') + '</option>' +
-                                '<option value="year">' + (isVi ? 'Khóa / Năm' : 'Graduation / Batch') + '</option>' +
-                            '</select>' +
-                        '</div>' +
-                    '</div>' +
-                    '<!-- ACADEMIC MAJOR FILTER ROW -->' +
-                    '<div class="hub-major-filter-row">' +
-                        '<div class="hub-major-filter-label">' +
-                            '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>' +
-                            '<span data-en="ACADEMIC MAJOR:" data-vi="NGÀNH THEO HỌC:">' + (isVi ? 'NGÀNH THEO HỌC:' : 'ACADEMIC MAJOR:') + '</span>' +
-                        '</div>' +
-                        '<div class="hub-major-pills">' +
-                            '<button class="hub-major-btn active" data-major="all" data-en="All Majors" data-vi="Tất cả Ngành">' + (isVi ? 'Tất cả Ngành' : 'All Majors') + '</button>' +
-                            '<button class="hub-major-btn" data-major="computer-science" data-en="Computer Science" data-vi="Khoa học Máy tính / CNTT">' + (isVi ? 'Khoa học Máy tính / CNTT' : 'Computer Science') + '</button>' +
-                            '<button class="hub-major-btn" data-major="software-engineering" data-en="Software Engineering" data-vi="Kỹ nghệ Phần mềm">' + (isVi ? 'Kỹ nghệ Phần mềm' : 'Software Engineering') + '</button>' +
-                            '<button class="hub-major-btn" data-major="digital-marketing" data-en="Digital Marketing" data-vi="Digital Marketing">Digital Marketing</button>' +
-                            '<button class="hub-major-btn" data-major="international-business" data-en="International Business" data-vi="Kinh doanh Quốc tế">' + (isVi ? 'Kinh doanh Quốc tế' : 'International Business') + '</button>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="hub-skills-filter-row">' +
-                        '<div class="hub-skills-filter-label">' +
-                            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' +
-                            '<span data-en="ANIMATION &amp; TECH MATRIX:" data-vi="KỸ NĂNG CHUYỂN ĐỘNG &amp; CÔNG NGHỆ:">' + (isVi ? 'KỸ NĂNG CHUYỂN ĐỘNG &amp; CÔNG NGHỆ:' : 'ANIMATION &amp; TECH MATRIX:') + '</span>' +
-                        '</div>' +
-                        '<div class="hub-skill-filter-pills">' +
-                            '<button class="hub-skill-filter-btn active" data-skill="all"><span class="hub-skill-icon">✨</span><span>' + (isVi ? 'Tất cả Kỹ năng' : 'All Specialties') + '</span></button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="algorithms"><span class="hub-skill-icon icon-gold">🏆</span><span>' + (isVi ? 'Thuật toán &amp; ICPC' : 'Algorithms &amp; ICPC') + '</span></button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="web-dev"><span class="hub-skill-icon icon-cyan">🌐</span><span>' + (isVi ? 'Full-Stack &amp; Web' : 'Full-Stack &amp; Web') + '</span></button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="backend-apis"><span class="hub-skill-icon icon-indigo">💻</span><span>' + (isVi ? 'Backend &amp; APIs' : 'Backend &amp; APIs') + '</span></button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="ai-automation"><span class="hub-skill-icon icon-emerald">🤖</span><span>' + (isVi ? 'AI &amp; AppsScript' : 'AI &amp; AppsScript') + '</span></button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="canva-design"><span class="hub-skill-icon icon-pink">🎨</span><span>' + (isVi ? 'Thiết kế Canva' : 'Canva Graphic Design') + '</span></button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="capcut-editor"><span class="hub-skill-icon icon-rose">🎬</span><span>' + (isVi ? 'Dựng Video CapCut' : 'CapCut Video Editor') + '</span></button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="hr-community"><span class="hub-skill-icon icon-violet">👥</span><span>' + (isVi ? 'Nhân sự &amp; Cộng đồng' : 'HR &amp; Community') + '</span></button>' +
+                        '<div class="hub-filters-separator"></div>' +
+                        '<div class="hub-filter-cluster">' +
+                            '<div class="hub-filter-cluster-label">' +
+                                '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' +
+                                '<span data-en="SKILLS:" data-vi="KỸ NĂNG:">' + (isVi ? 'KỸ NĂNG:' : 'SKILLS:') + '</span>' +
+                            '</div>' +
+                            '<div class="hub-skill-filter-pills">' +
+                                '<button class="hub-skill-filter-btn active" data-skill="all"><span class="hub-skill-icon">✨</span><span>' + (isVi ? 'Tất cả' : 'All') + '</span></button>' +
+                                '<button class="hub-skill-filter-btn" data-skill="algorithms"><span class="hub-skill-icon icon-gold">🏆</span><span>Thuật toán &amp; ICPC</span></button>' +
+                                '<button class="hub-skill-filter-btn" data-skill="web-dev"><span class="hub-skill-icon icon-cyan">🌐</span><span>Full-Stack &amp; Web</span></button>' +
+                                '<button class="hub-skill-filter-btn" data-skill="backend-apis"><span class="hub-skill-icon icon-indigo">💻</span><span>Backend &amp; APIs</span></button>' +
+                                '<button class="hub-skill-filter-btn" data-skill="ai-automation"><span class="hub-skill-icon icon-emerald">🤖</span><span>AI &amp; AppsScript</span></button>' +
+                                '<button class="hub-skill-filter-btn" data-skill="canva-design"><span class="hub-skill-icon icon-pink">🎨</span><span>Thiết kế Canva</span></button>' +
+                                '<button class="hub-skill-filter-btn" data-skill="capcut-editor"><span class="hub-skill-icon icon-rose">🎬</span><span>Dựng Video CapCut</span></button>' +
+                                '<button class="hub-skill-filter-btn" data-skill="hr-community"><span class="hub-skill-icon icon-violet">👥</span><span>Nhân sự &amp; Cộng đồng</span></button>' +
+                            '</div>' +
                         '</div>' +
                     '</div>' +
                 '</div>' +
