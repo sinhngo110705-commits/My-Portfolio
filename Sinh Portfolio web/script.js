@@ -2685,7 +2685,7 @@ function initLiveTelemetry() {
 function initCardSpotlights() {
     if (window.matchMedia('(pointer: coarse)').matches) return;
 
-    const cards = document.querySelectorAll('.lookbook-card, .spectrum-col, .services-spec-col');
+    const cards = document.querySelectorAll('.lookbook-card, .spectrum-col, .category-row-panel');
     cards.forEach(card => {
         let ticking = false;
         let rect = null;
