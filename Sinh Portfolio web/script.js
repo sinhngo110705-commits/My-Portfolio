@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try { gsap.registerPlugin(ScrollTrigger); } catch(e) {}
     }
 
-    runSafe(initServiceCards3D, 'ServiceCards3D');
     runSafe(initBackgroundAnimation, 'BackgroundAnimation');
     runSafe(initLiveTelemetry, 'LiveTelemetry');
     runSafe(initCardSpotlights, 'CardSpotlights');
@@ -2685,7 +2684,7 @@ function initLiveTelemetry() {
 function initCardSpotlights() {
     if (window.matchMedia('(pointer: coarse)').matches) return;
 
-    const cards = document.querySelectorAll('.lookbook-card, .spectrum-col');
+    const cards = document.querySelectorAll('.lookbook-card, .spectrum-col, .services-spec-col');
     cards.forEach(card => {
         let ticking = false;
         let rect = null;
@@ -2717,69 +2716,6 @@ function initCardSpotlights() {
 
 // ==========================================
 // INTERACTIVE META BUFF TERMINAL (DICHVUMXH.VN)
-
-// 3D Gyroscopic Card Tilt for Service Showcase Cards
-function initServiceCards3D() {
-    if (window.matchMedia('(pointer: coarse)').matches) return;
-
-    const cards = document.querySelectorAll('.service-card-3d');
-    cards.forEach(card => {
-        let isHovered = false;
-        let targetRotX = 0, targetRotY = 0;
-        let currentRotX = 0, currentRotY = 0;
-        let animId = null;
-
-        function tiltLoop() {
-            if (!isHovered) {
-                targetRotX = 0;
-                targetRotY = 0;
-            }
-
-            currentRotX += (targetRotX - currentRotX) * 0.12;
-            currentRotY += (targetRotY - currentRotY) * 0.12;
-
-            card.style.setProperty('--tilt-x', currentRotX.toFixed(2) + 'deg');
-            card.style.setProperty('--tilt-y', currentRotY.toFixed(2) + 'deg');
-
-            if (isHovered || Math.abs(currentRotX) > 0.05 || Math.abs(currentRotY) > 0.05) {
-                animId = requestAnimationFrame(tiltLoop);
-            } else {
-                card.style.setProperty('--tilt-x', '0deg');
-                card.style.setProperty('--tilt-y', '0deg');
-                animId = null;
-            }
-        }
-
-        card.addEventListener('pointerenter', () => {
-            isHovered = true;
-            if (!animId) animId = requestAnimationFrame(tiltLoop);
-        });
-
-        card.addEventListener('pointermove', (e) => {
-            const rect = card.getBoundingClientRect();
-            if (rect.width === 0 || rect.height === 0) return;
-
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-
-            const normX = Math.max(-1, Math.min(1, (mouseX / rect.width) * 2 - 1));
-            const normY = Math.max(-1, Math.min(1, (mouseY / rect.height) * 2 - 1));
-
-            const maxTilt = 6;
-            targetRotX = -normY * maxTilt;
-            targetRotY = normX * maxTilt;
-
-            const holoX = Math.max(0, Math.min(100, Math.round((mouseX / rect.width) * 100)));
-            const holoY = Math.max(0, Math.min(100, Math.round((mouseY / rect.height) * 100)));
-            card.style.setProperty('--holo-x', holoX + '%');
-            card.style.setProperty('--holo-y', holoY + '%');
-        }, { passive: true });
-
-        card.addEventListener('pointerleave', () => {
-            isHovered = false;
-        });
-    });
-}
 
 // ==========================================
 function initSmmTerminal() {
