@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     runSafe(ensureMobileWidgets, 'EnsureMobileWidgets');
     runSafe(initLanguageToggle, 'LanguageToggle');
     runSafe(initThemeToggle, 'ThemeToggle');
+    runSafe(initServicesDirectory, 'ServicesDirectory');
     runSafe(initSmmTerminal, 'SmmTerminal');
     runSafe(initChatbot, 'Chatbot');
     runSafe(initAuthModal, 'AuthModal');
