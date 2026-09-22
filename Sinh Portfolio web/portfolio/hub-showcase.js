@@ -26,7 +26,7 @@
             year: 2005,
             gpa: '3.61 / 4.0',
             accoladesEn: 'ICPC National Contest • SheCodes Top 6 National • Quoc Hoc Hue CS Gifted (9.3/10)',
-            accoladesVi: 'Huy chương ICPC Quốc gia • Top 6 SheCodes Toàn quốc • Cựu Chuyên Tin Quốc Học Huế (9.3/10)',
+            accoladesVi: 'Giải Khuyến Khích ICPC Miền Trung (2023) • Top 6 SheCodes Hackathon Toàn quốc • Cựu Chủ tịch BBE Aurora (NK I)',
             bioEn: 'Computer Science student at VKU with a 3.61/4.0 GPA. Strong background in data structures, algorithms, and full-stack software development (Flutter, Node.js, C++, Java, SQL). Former CS specialized student at Quoc Hoc Hue High School.',
             bioVi: 'Sinh viên ngành Khoa học Máy tính tại VKU với GPA 3.61/4.0. Nền tảng thuật toán vững chắc, lập trình ứng dụng đa nền tảng (Flutter, Node.js, C++, Java, SQL). Cựu học sinh Chuyên Tin THPT Chuyên Quốc Học Huế với điểm chuyên 9.3/10.',
             avatar: '../Avatar/tttduong.jpg',
@@ -64,8 +64,8 @@
             schoolVi: 'Đại học Duy Tân (2003)',
             year: 2003,
             gpa: 'Senior Stack',
-            accoladesEn: 'Software Engineering Specialist • Backend APIs & Cloud Deployment',
-            accoladesVi: 'Chuyên viên Kỹ nghệ Phần mềm • Xây dựng Backend APIs & Cloud',
+            accoladesEn: 'VP Membership & Training - JCI Danang • Teaching Assistant DZFullStack • Core Leader DNA BBE',
+            accoladesVi: 'Phó Chủ tịch (VP) Membership & Training - JCI Danang • Trợ giảng Lập trình DZFullStack • Lãnh đạo Ban DNA BBE',
             bioEn: 'Software Engineering student at Duy Tan University focused on backend server logic, RESTful APIs, clean architecture, and reliable system deployment using IntelliJ, Postman, Linux, and Git.',
             bioVi: 'Sinh viên Kỹ nghệ Phần mềm tại Đại học Duy Tân, tập trung phát triển logic backend, thiết kế RESTful APIs, cấu trúc mã nguồn chuẩn mực và triển khai hệ thống ổn định với IntelliJ, Postman, Linux và Git.',
             avatar: '../Avatar/lethaitrung2003.jpg',
@@ -99,8 +99,8 @@
             schoolVi: 'Đại học Duy Tân (2005)',
             year: 2005,
             gpa: 'Founder Track',
-            accoladesEn: 'Founder Teemous Digital • Web Platform Dev • SMM API Automation',
-            accoladesVi: 'Founder Teemous Digital • Phát triển Hệ thống Web • Tích hợp API SMM',
+            accoladesEn: 'Founder Teemous Digital Lab • Head of Communications KSDN Club • Project Manager VLXD Co.',
+            accoladesVi: 'Founder Teemous Digital Lab • Trưởng Ban Truyền thông CLB KSDN • Quản lý Dự án VLXD Co.',
             bioEn: 'Founder of Teemous Digital creative ecosystem. Combines web architecture, Google AppsScript automation, AI workflows, and digital brand development. Built working portfolio hub and automated social terminal.',
             bioVi: 'Nhà sáng lập hệ sinh thái Teemous Digital. Kết hợp kiến trúc web, tự động hóa Google AppsScript, trợ lý AI và phát triển thương hiệu số. Trực tiếp xây dựng nền tảng Portfolio Hub và hệ thống dịch vụ số tự động.',
             avatar: '../Avatar/IMG_5907_compressed.jpg',
@@ -137,8 +137,8 @@
             schoolVi: 'Đại học Duy Tân (2007)',
             year: 2007,
             gpa: 'Honor Student',
-            accoladesEn: 'HR & Media Lead Dak Lak Green Project • Youth Event Coordinator',
-            accoladesVi: 'Trưởng ban HR & TT Dự án Xanh Đắk Lắk • Điều phối Sự kiện Trẻ',
+            accoladesEn: 'HR Member KSDN Club • Communications Member Dak Lak Green • 9 Verified Youth Certificates',
+            accoladesVi: 'Ban Nhân sự CLB Khởi sự Doanh nghiệp • Ban Truyền thông Dự án Xanh • 9 Chứng nhận Hoạt động Thanh niên',
             bioEn: 'Proactive International Business student with practical experience in human resources, youth community projects, organizational workflows with Notion & Google Sheets, and cross-cultural communication.',
             bioVi: 'Sinh viên ngành Kinh doanh Quốc tế năng nổ với kinh nghiệm thực tế trong công tác nhân sự, điều phối dự án cộng đồng thanh niên, quản trị dữ liệu công việc với Notion & Google Sheets và giao tiếp đối ngoại.',
             avatar: '../Avatar/baohan2007.jpg',
@@ -175,8 +175,8 @@
             schoolVi: 'Đại học Duy Tân (2005)',
             year: 2005,
             gpa: 'Active Creative',
-            accoladesEn: 'Canva Creative Design • CapCut Video Production • Social Content Creation',
-            accoladesVi: 'Thiết kế Đồ họa Canva • Sản xuất Video CapCut • Sáng tạo Nội dung Kênh',
+            accoladesEn: 'Marketing Assistant Homestay New Life • Marketing Intern D Coffee • Certified MOS Specialist',
+            accoladesVi: 'Trợ lý Marketing Homestay New Life • Thực tập sinh Marketing D Coffee • Chứng chỉ Tin học Quốc tế MOS',
             bioEn: 'Creative media builder skilled in visual design with Canva, short-form video editing with CapCut, social channel management, and practical advertising campaign execution.',
             bioVi: 'Nhân sự sáng tạo nội dung năng động, thành thạo thiết kế hình ảnh với Canva, dựng video ngắn chuyên nghiệp với CapCut, quản trị fanpage mạng xã hội và hỗ trợ triển khai chiến dịch quảng cáo cơ bản.',
             avatar: '../Avatar/quangtuan2005.jpg',
@@ -553,10 +553,6 @@
             '<!-- EDITORIAL BRAND HERO CHAMBER -->' +
             '<div class="hub-hero-wrapper">' +
                 '<div class="hub-hero-main">' +
-                    '<div class="hero-brand-pill">' +
-                        '<span class="meta-dot"></span>' +
-                        '<span data-en="TEEMOUS DIGITAL // VERIFIED GEN Z ECOSYSTEM" data-vi="HỆ SINH THÁI TÀI NĂNG GEN Z // TEEMOUS DIGITAL">' + (isVi ? 'HỆ SINH THÁI TÀI NĂNG GEN Z // TEEMOUS DIGITAL' : 'TEEMOUS DIGITAL // VERIFIED GEN Z ECOSYSTEM') + '</span>' +
-                    '</div>' +
                     '<h1 class="editorial-hero-title">' +
                         '<span class="mask-wrap"><span class="title-line">PORTFOLIO</span></span> ' +
                         '<span class="mask-wrap"><span class="title-line editorial-hero-sub">HUB</span></span>' +
@@ -719,14 +715,14 @@
                             '<span data-en="ANIMATION &amp; TECH MATRIX:" data-vi="KỸ NĂNG CHUYỂN ĐỘNG &amp; CÔNG NGHỆ:">' + (isVi ? 'KỸ NĂNG CHUYỂN ĐỘNG &amp; CÔNG NGHỆ:' : 'ANIMATION &amp; TECH MATRIX:') + '</span>' +
                         '</div>' +
                         '<div class="hub-skill-filter-pills">' +
-                            '<button class="hub-skill-filter-btn active" data-skill="all" data-en="All Specialties" data-vi="Tất cả Kỹ năng">' + (isVi ? 'Tất cả Kỹ năng' : 'All Specialties') + '</button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="algorithms" data-en="🏆 Thuật toán &amp; ICPC" data-vi="🏆 Thuật toán &amp; ICPC">🏆 Thuật toán &amp; ICPC</button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="web-dev" data-en="🌐 Full-Stack &amp; Web" data-vi="🌐 Full-Stack &amp; Web">🌐 Full-Stack &amp; Web</button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="backend-apis" data-en="💻 Backend &amp; APIs" data-vi="💻 Backend &amp; APIs">💻 Backend &amp; APIs</button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="ai-automation" data-en="🤖 AI &amp; AppsScript" data-vi="🤖 AI &amp; AppsScript">🤖 AI &amp; AppsScript</button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="canva-design" data-en="🎨 Thiết kế Canva" data-vi="🎨 Thiết kế Canva">🎨 Thiết kế Canva</button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="capcut-editor" data-en="🎬 Dựng Video CapCut" data-vi="🎬 Dựng Video CapCut">🎬 Dựng Video CapCut</button>' +
-                            '<button class="hub-skill-filter-btn" data-skill="hr-community" data-en="👥 Nhân sự &amp; Cộng đồng" data-vi="👥 Nhân sự &amp; Cộng đồng">👥 Nhân sự &amp; Cộng đồng</button>' +
+                            '<button class="hub-skill-filter-btn active" data-skill="all"><span class="hub-skill-icon">✨</span><span>' + (isVi ? 'Tất cả Kỹ năng' : 'All Specialties') + '</span></button>' +
+                            '<button class="hub-skill-filter-btn" data-skill="algorithms"><span class="hub-skill-icon icon-gold">🏆</span><span>' + (isVi ? 'Thuật toán &amp; ICPC' : 'Algorithms &amp; ICPC') + '</span></button>' +
+                            '<button class="hub-skill-filter-btn" data-skill="web-dev"><span class="hub-skill-icon icon-cyan">🌐</span><span>' + (isVi ? 'Full-Stack &amp; Web' : 'Full-Stack &amp; Web') + '</span></button>' +
+                            '<button class="hub-skill-filter-btn" data-skill="backend-apis"><span class="hub-skill-icon icon-indigo">💻</span><span>' + (isVi ? 'Backend &amp; APIs' : 'Backend &amp; APIs') + '</span></button>' +
+                            '<button class="hub-skill-filter-btn" data-skill="ai-automation"><span class="hub-skill-icon icon-emerald">🤖</span><span>' + (isVi ? 'AI &amp; AppsScript' : 'AI &amp; AppsScript') + '</span></button>' +
+                            '<button class="hub-skill-filter-btn" data-skill="canva-design"><span class="hub-skill-icon icon-pink">🎨</span><span>' + (isVi ? 'Thiết kế Canva' : 'Canva Graphic Design') + '</span></button>' +
+                            '<button class="hub-skill-filter-btn" data-skill="capcut-editor"><span class="hub-skill-icon icon-rose">🎬</span><span>' + (isVi ? 'Dựng Video CapCut' : 'CapCut Video Editor') + '</span></button>' +
+                            '<button class="hub-skill-filter-btn" data-skill="hr-community"><span class="hub-skill-icon icon-violet">👥</span><span>' + (isVi ? 'Nhân sự &amp; Cộng đồng' : 'HR &amp; Community') + '</span></button>' +
                         '</div>' +
                     '</div>' +
                 '</div>' +
@@ -1051,64 +1047,71 @@
         }
 
         renderBenchmarkMatrixView(container, dossiers) {
+            const isVi = document.documentElement.lang === 'vi' || localStorage.getItem('td-lang') === 'vi';
+
             let html = '<div class="hub-benchmark-table-wrap">' +
                 '<table class="hub-benchmark-table">' +
                     '<thead>' +
                         '<tr>' +
-                            '<th data-en="RANK" data-vi="HẠNG">RANK</th>' +
-                            '<th data-en="CREATOR &amp; DOMAIN" data-vi="TÀI NĂNG &amp; LĨNH VỰC">CREATOR &amp; DOMAIN</th>' +
-                            '<th data-en="TIER LEVEL" data-vi="CẤP ĐỘ">TIER LEVEL</th>' +
-                            '<th data-en="POWER INDEX" data-vi="CHỈ SỐ NĂNG LỰC">POWER INDEX</th>' +
-                            '<th data-en="KEY HIGHLIGHTS" data-vi="THẾ MẠNH CHỦ CHỐT">KEY HIGHLIGHTS</th>' +
-                            '<th data-en="ACCOLADES" data-vi="THÀNH TÍCH">ACCOLADES</th>' +
-                            '<th data-en="ACTIONS" data-vi="THAO TÁC">ACTIONS</th>' +
+                            '<th class="col-rank">' + (isVi ? 'HẠNG' : 'RANK') + '</th>' +
+                            '<th class="col-talent">' + (isVi ? 'TÀI NĂNG &amp; LĨNH VỰC' : 'TALENT &amp; DOMAIN') + '</th>' +
+                            '<th class="col-tier">' + (isVi ? 'CẤP BẬC' : 'TIER') + '</th>' +
+                            '<th class="col-power">' + (isVi ? 'CHỈ SỐ NĂNG LỰC' : 'POWER INDEX') + '</th>' +
+                            '<th class="col-skills">' + (isVi ? 'THẾ MẠNH CHỦ CHỐT' : 'CORE SKILLS') + '</th>' +
+                            '<th class="col-accolades">' + (isVi ? 'THÀNH TÍCH THỰC TẾ TIÊU BIỂU' : 'VERIFIED ACCOLADES &amp; ROLES') + '</th>' +
+                            '<th class="col-action">' + (isVi ? 'THAO TÁC' : 'ACTION') + '</th>' +
                         '</tr>' +
                     '</thead>' +
                     '<tbody>';
 
             dossiers.forEach(d => {
-                const isVi = document.documentElement.lang === 'vi' || localStorage.getItem('td-lang') === 'vi';
                 const name = isVi ? d.nameVi : d.nameEn;
                 const role = isVi ? d.roleVi : d.roleEn;
-                const accolades = isVi ? d.accoladesVi : d.accoladesEn;
+                const rawAccolades = isVi ? d.accoladesVi : d.accoladesEn;
 
                 let skillChips = '';
                 for (let i = 0; i < Math.min(2, d.skills.length); i++) {
                     skillChips += '<span class="hub-skill-chip">' + d.skills[i] + '</span>';
                 }
 
+                // Render each real achievement as a crisp item with dedicated badge
+                const items = rawAccolades.split('•').map(x => x.trim()).filter(Boolean);
+                const accoladesListHtml = '<div class="hub-accolades-list">' +
+                    items.map(it => '<div class="hub-accolade-item"><span class="hub-accolade-bullet">🎖️</span><span class="hub-accolade-text">' + it + '</span></div>').join('') +
+                '</div>';
+
                 html += '<tr>' +
-                    '<td class="font-mono font-black text-sm" style="color: var(--brand-cyan);">' + d.rankNumber + '</td>' +
-                    '<td>' +
+                    '<td class="col-rank font-mono font-black text-sm" style="color: var(--brand-cyan);">' + d.rankNumber + '</td>' +
+                    '<td class="col-talent">' +
                         '<div class="hub-table-talent-cell">' +
-                            '<img src="' + d.avatar + '" alt="' + name + '" class="hub-table-avatar" data-tier="' + d.tier + '">' +
-                            '<div>' +
+                            '<img src="' + d.avatar + '" alt="' + name + '" class="w-11 h-11 rounded-full object-cover border border-white/20 flex-shrink-0">' +
+                            '<div style="min-width:0;">' +
                                 '<div class="font-black text-sm text-[var(--hub-text-main)] flex items-center gap-1.5">' +
                                     name +
-                                    (d.verified ? '<img src="../Logo/tickxanh.png" alt="Verified" style="width: 14px; height: 14px;">' : '') +
+                                    (d.verified ? '<img src="../Logo/tickxanh.png" alt="Verified" style="width: 14px; height: 14px; flex-shrink:0;">' : '') +
                                 '</div>' +
-                                '<div class="text-[11px] text-neutral-400">' + role + '</div>' +
+                                '<div class="text-[11px] text-neutral-400 truncate" style="max-width: 210px;" title="' + role + '">' + role + '</div>' +
                             '</div>' +
                         '</div>' +
                     '</td>' +
-                    '<td>' +
-                        '<span class="font-mono font-extrabold text-xs uppercase px-2.5 py-1 rounded-md" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);">' +
+                    '<td class="col-tier">' +
+                        '<span class="font-mono font-extrabold text-xs uppercase px-2.5 py-1 rounded-md whitespace-nowrap inline-block" style="background: rgba(255,255,255,0.06); color: var(--tier-accent, #00F0FF); border: 1px solid rgba(255,255,255,0.12);">' +
                             d.tierLabel +
                         '</span>' +
                     '</td>' +
-                    '<td>' +
+                    '<td class="col-power">' +
                         '<div class="flex items-center gap-2">' +
-                            '<span class="font-mono font-black text-sm" style="color: var(--brand-cyan);">' + d.powerScore + '</span>' +
-                            '<div class="w-16 h-1.5 bg-neutral-800 rounded-full overflow-hidden">' +
+                            '<span class="font-mono font-black text-sm" style="color: #FF2A85;">' + d.powerScore + '</span>' +
+                            '<div class="w-16 h-1.5 bg-neutral-800 rounded-full overflow-hidden flex-shrink-0">' +
                                 '<div class="h-full bg-gradient-to-r from-pink-500 to-cyan-400" style="width: ' + d.powerScore + '%;"></div>' +
                             '</div>' +
                         '</div>' +
                     '</td>' +
-                    '<td><div class="flex flex-wrap gap-1">' + skillChips + '</div></td>' +
-                    '<td class="text-xs text-neutral-400 max-w-xs">' + accolades + '</td>' +
-                    '<td>' +
-                        '<button class="hub-btn-inspect" style="padding: 0.4rem 0.8rem; font-size: 0.68rem;" data-inspect="' + d.id + '" onclick="event.stopPropagation(); window.hubShowcaseInstance && window.hubShowcaseInstance.openDossierModal(&apos;' + d.id + '&apos;);">' +
-                            '<span data-en="INSPECT" data-vi="CHI TIẾT">INSPECT</span>' +
+                    '<td class="col-skills"><div class="flex flex-col gap-1.5">' + skillChips + '</div></td>' +
+                    '<td class="col-accolades">' + accoladesListHtml + '</td>' +
+                    '<td class="col-action">' +
+                        '<button class="hub-btn-inspect" style="padding: 0.45rem 0.85rem; font-size: 0.72rem; white-space: nowrap;" onclick="event.stopPropagation(); window.hubShowcaseInstance && window.hubShowcaseInstance.openDossierModal(\'' + d.id + '\');">' +
+                            (isVi ? 'Chi Tiết' : 'Inspect') +
                         '</button>' +
                     '</td>' +
                 '</tr>';
