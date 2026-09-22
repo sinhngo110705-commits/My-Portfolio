@@ -2383,7 +2383,7 @@ function initAdminPanel() {
                 '<td><span class="admin-balance-val">' + bal + ' đ</span></td>' +
                 '<td><span class="rank-badge rank-' + roleClass + '">' + u.role + '</span></td>' +
                 '<td>' +
-                    '<button class="admin-edit-btn neon-border" onclick="adminOpenEdit(' + u.id + ', &apos;' + u.username + '&apos;, ' + (u.balance || 0) + ', &apos;' + u.role + '&apos;)">✏️ Sửa</button>' +
+                    '<button class="admin-edit-btn" onclick="adminOpenEdit(' + u.id + ', &apos;' + u.username + '&apos;, ' + (u.balance || 0) + ', &apos;' + u.role + '&apos;)">✏️ Sửa</button>' +
                 '</td>' +
             '</tr>';
         }).join("");

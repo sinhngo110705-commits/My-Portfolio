@@ -4604,18 +4604,26 @@ select option {
 .admin-action-btn {
     padding: 0.45rem 1rem;
     font-size: 0.82rem;
-    font-family: var(--font-body);
-    font-weight: 600;
+    font-family: var(--font-tech);
+    font-weight: 700;
     border-radius: 8px;
     cursor: pointer;
-    background: rgba(255, 30, 150, 0.1);
-    color: var(--neon-pink);
-    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--glass-border) !important;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+    animation: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
 }
 
 .admin-action-btn:hover:not(:disabled) {
-    background: rgba(255, 30, 150, 0.2);
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: var(--cyan-laser) !important;
+    color: var(--cyan-laser) !important;
     transform: translateY(-1px);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.2) !important;
 }
 
 .admin-action-btn:disabled {
@@ -4684,19 +4692,39 @@ select option {
 
 .admin-edit-btn {
     font-size: 0.75rem;
-    padding: 0.3rem 0.6rem;
+    padding: 0.35rem 0.75rem;
     border-radius: 6px;
     cursor: pointer;
-    background: rgba(33, 150, 243, 0.1);
-    color: var(--neon-blue);
-    font-weight: 600;
-    font-family: var(--font-body);
-    transition: all 0.2s ease;
+    background: rgba(0, 240, 255, 0.08) !important;
+    color: var(--cyan-laser) !important;
+    border: 1px solid rgba(0, 240, 255, 0.25) !important;
+    font-weight: 700;
+    font-family: var(--font-tech);
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+    animation: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
 }
 
 .admin-edit-btn:hover {
-    background: rgba(33, 150, 243, 0.2);
+    background: var(--cyan-laser) !important;
+    color: #000 !important;
+    border-color: var(--cyan-laser) !important;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3) !important;
     transform: translateY(-1px);
+}
+
+.light-mode .admin-edit-btn {
+    background: rgba(2, 132, 199, 0.08) !important;
+    color: #0284c7 !important;
+    border: 1px solid rgba(2, 132, 199, 0.25) !important;
+}
+
+.light-mode .admin-edit-btn:hover {
+    background: #0284c7 !important;
+    color: #ffffff !important;
+    border-color: #0284c7 !important;
 }
 
 /* Edit Panel */
