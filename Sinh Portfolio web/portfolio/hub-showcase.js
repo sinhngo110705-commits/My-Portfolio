@@ -593,11 +593,11 @@
                         '<div class="hub-stat-label" data-en="VERIFIED DOSSIERS" data-vi="HỒ SƠ XÁC MINH">' + (isVi ? 'HỒ SƠ XÁC MINH' : 'VERIFIED DOSSIERS') + '</div>' +
                     '</div>' +
                     '<div class="hub-stat-box">' +
-                        '<div class="hub-stat-val">S</div>' +
+                        '<div class="hub-stat-val">S+</div>' +
                         '<div class="hub-stat-label" data-en="APEX PEAK RANK" data-vi="THỨ HẠNG ĐỈNH CAO">' + (isVi ? 'THỨ HẠNG ĐỈNH CAO' : 'APEX PEAK RANK') + '</div>' +
                     '</div>' +
                     '<div class="hub-stat-box">' +
-                        '<div class="hub-stat-val">93.5</div>' +
+                        '<div class="hub-stat-val">96.0</div>' +
                         '<div class="hub-stat-label" data-en="MAX POWER INDEX" data-vi="CHỈ SỐ NĂNG LỰC TỐI ĐA">' + (isVi ? 'CHỈ SỐ NĂNG LỰC TỐI ĐA' : 'MAX POWER INDEX') + '</div>' +
                     '</div>' +
                     '<div class="hub-stat-box">' +
@@ -640,48 +640,10 @@
                                     '<option value="year">' + (isVi ? 'Khóa / Năm' : 'Graduation / Batch') + '</option>' +
                                 '</select>' +
                             '</div>' +
-                            '<button type="button" id="hub-criteria-toggle-btn" class="hub-rubric-badge-btn" title="Xem chi tiết quy chế">' +
+                            '<button type="button" id="hub-rubric-modal-trigger" class="hub-rubric-badge-btn" title="' + (isVi ? 'Xem quy chế xét bậc năng lực' : 'View Evaluation Rubric') + '">' +
                                 '<span class="hub-criteria-icon">⚖️</span>' +
-                                '<span id="hub-criteria-toggle-text" data-en="Rubric &amp; Criteria ▼" data-vi="Quy chế xét bậc ▼">' + (isVi ? 'Quy chế xét bậc ▼' : 'Rubric &amp; Criteria ▼') + '</span>' +
+                                '<span data-en="Evaluation Rubric" data-vi="Quy chế xét bậc">' + (isVi ? 'Quy chế xét bậc' : 'Evaluation Rubric') + '</span>' +
                             '</button>' +
-                        '</div>' +
-                    '</div>' +
-                    '<!-- EXPANDABLE RUBRIC DRAWER (COLLAPSED BY DEFAULT TO SAVE SPACE) -->' +
-                    '<div id="hub-criteria-details" class="hub-criteria-drawer" style="display: none;">' +
-                        '<div class="hub-criteria-drawer-inner">' +
-                            '<p class="hub-criteria-summary" data-en="Power index and tiering are evaluated objectively across 3 core pillars: (1) Verified real-world products &amp; execution; (2) Authentic community value; (3) Competency superiority relative to age and academic cohort (Cohort Relative Index). Specifically honoring young Gen Z builders who demonstrate self-driven mastery ahead of their age." data-vi="Điểm năng lực và xếp bậc được đánh giá công tâm dựa trên 3 tiêu chí: (1) Sản phẩm &amp; năng lực thực chiến đã kiểm chứng; (2) Giá trị đóng góp thực tế cho cộng đồng; (3) Mức độ vượt trội của năng lực chuyên môn so với độ tuổi &amp; năm sinh (Cohort Relative Index). Hệ thống đặc biệt tôn vinh các tài năng trẻ tự chủ kiến trúc hoặc sớm đạt thành tích lớn so với lứa tuổi cùng thời điểm.">' +
-                                (isVi ? 'Điểm năng lực và xếp bậc được đánh giá công tâm dựa trên 3 tiêu chí: (1) Sản phẩm &amp; năng lực thực chiến đã kiểm chứng; (2) Giá trị đóng góp thực tế cho cộng đồng; (3) Mức độ vượt trội của năng lực chuyên môn so với độ tuổi &amp; năm sinh (Cohort Relative Index). Hệ thống đặc biệt tôn vinh các tài năng trẻ tự chủ kiến trúc hoặc sớm đạt thành tích lớn so với lứa tuổi cùng thời điểm.' : 'Power index and tiering are evaluated objectively across 3 core pillars: (1) Verified real-world products &amp; execution; (2) Authentic community value; (3) Competency superiority relative to age and academic cohort (Cohort Relative Index). Specifically honoring young Gen Z builders who demonstrate self-driven mastery ahead of their age.') +
-                            '</p>' +
-                            '<div class="hub-tier-threshold-grid">' +
-                                '<div class="threshold-card s-plus">' +
-                                    '<div class="threshold-header">' +
-                                        '<span class="threshold-tier-tag s-plus">S+ APEX</span>' +
-                                        '<span class="threshold-score">&ge; 95.0</span>' +
-                                    '</div>' +
-                                    '<p class="threshold-desc" data-en="Exceptional mastery ahead of cohort age. National contest honors, academic peak, or breakthrough self-built platforms at a very young age." data-vi="Năng lực xuất sắc vượt bậc so với lứa tuổi. Đạt giải thưởng quy mô quốc gia, học thuật đỉnh cao hoặc tự kiến tạo nền tảng đột phá khi còn rất trẻ.">Năng lực xuất sắc vượt bậc so với lứa tuổi. Đạt giải thưởng quy mô quốc gia, học thuật đỉnh cao hoặc tự kiến tạo nền tảng đột phá khi còn rất trẻ.</p>' +
-                                '</div>' +
-                                '<div class="hub-tier-rule-card tier-rule-s threshold-card s">' +
-                                    '<div class="threshold-header">' +
-                                        '<span class="threshold-tier-tag s">S PROFESSIONAL</span>' +
-                                        '<span class="threshold-score">90.0 – 94.9</span>' +
-                                    '</div>' +
-                                    '<p class="threshold-desc" data-en="Solid practical domain expertise, independent project management and training capabilities matching graduation maturity standards." data-vi="Năng lực chuyên môn thực chiến vững vàng, khả năng quản trị dự án &amp; đào tạo độc lập rất tốt so với độ tuổi năm cuối / mới tốt nghiệp.">Năng lực chuyên môn thực chiến vững vàng, khả năng quản trị dự án &amp; đào tạo độc lập rất tốt so với độ tuổi năm cuối / mới tốt nghiệp.</p>' +
-                                '</div>' +
-                                '<div class="hub-tier-rule-card tier-rule-a-plus threshold-card a-plus">' +
-                                    '<div class="threshold-header">' +
-                                        '<span class="threshold-tier-tag a-plus">A+ IMPRESSIVE</span>' +
-                                        '<span class="threshold-score">85.0 – 89.9</span>' +
-                                    '</div>' +
-                                    '<p class="threshold-desc" data-en="Autonomous digital system builder, proactive execution and practical experience superior to student peers (e.g. self-developing digital ecosystem at age 21)." data-vi="Tự chủ hệ sinh thái số, năng lực thực thi và kinh nghiệm thực tế vượt trội so với độ tuổi sinh viên (như tự phát triển nền tảng ở tuổi 21).">Tự chủ hệ sinh thái số, năng lực thực thi và kinh nghiệm thực tế vượt trội so với độ tuổi sinh viên (như tự phát triển nền tảng ở tuổi 21).</p>' +
-                                '</div>' +
-                                '<div class="hub-tier-rule-card tier-rule-a threshold-card a">' +
-                                    '<div class="threshold-header">' +
-                                        '<span class="threshold-tier-tag a">A STANDARD</span>' +
-                                        '<span class="threshold-score">80.0 – 84.9</span>' +
-                                    '</div>' +
-                                    '<p class="threshold-desc" data-en="Proficient in essential professional toolkits, hands-on workplace internship experience and certified standards matching cohort expectations." data-vi="Thành thạo công cụ chuyên môn thiết yếu, có kinh nghiệm làm việc thực tế tại cơ sở và có chứng chỉ chuẩn hóa tốt so với độ tuổi.">Thành thạo công cụ chuyên môn thiết yếu, có kinh nghiệm làm việc thực tế tại cơ sở và có chứng chỉ chuẩn hóa tốt so với độ tuổi.</p>' +
-                                '</div>' +
-                            '</div>' +
                         '</div>' +
                     '</div>' +
                     '<!-- PRIMARY TIER SEGMENTED SELECTOR -->' +
@@ -752,6 +714,51 @@
                 '<div class="hub-modal-dossier">' +
                     '<button id="hub-modal-close-btn" class="hub-modal-close" aria-label="Close">✕</button>' +
                     '<div id="hub-modal-content" class="contents"></div>' +
+                '</div>' +
+            '</div>' +
+            '<div id="hub-rubric-modal" class="hub-modal-overlay">' +
+                '<div class="hub-modal-dossier hub-modal-rubric" style="max-width: 840px; padding: 2.25rem 2rem; display: flex; flex-direction: column; position: relative;">' +
+                    '<button id="hub-rubric-modal-close" class="hub-modal-close" aria-label="Close">✕</button>' +
+                    '<div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.25rem;">' +
+                        '<span style="font-size: 1.8rem; line-height: 1;">⚖️</span>' +
+                        '<div>' +
+                            '<h3 class="font-black text-lg text-[var(--hub-text-main)] uppercase" style="margin-bottom: 0.25rem;" data-en="EVALUATION RUBRIC: AGE-RELATIVE MATURITY &amp; REAL COMMUNITY VALUE" data-vi="QUY CHẾ ĐÁNH GIÁ: NĂNG LỰC TƯƠNG QUAN ĐỘ TUỔI &amp; GIÁ TRỊ THỰC TIỄN">' + (isVi ? 'QUY CHẾ ĐÁNH GIÁ: NĂNG LỰC TƯƠNG QUAN ĐỘ TUỔI &amp; GIÁ TRỊ THỰC TIỄN' : 'EVALUATION RUBRIC: AGE-RELATIVE MATURITY &amp; REAL COMMUNITY VALUE') + '</h3>' +
+                            '<p class="text-xs text-neutral-400" data-en="Objective multi-dimensional competency benchmarking framework for Gen Z builders." data-vi="Khung tiêu chuẩn đánh giá năng lực đa chiều, công tâm cho thế hệ Gen Z.">' + (isVi ? 'Khung tiêu chuẩn đánh giá năng lực đa chiều, công tâm cho thế hệ Gen Z.' : 'Objective multi-dimensional competency benchmarking framework for Gen Z builders.') + '</p>' +
+                        '</div>' +
+                    '</div>' +
+                    '<p class="hub-criteria-summary text-sm leading-relaxed mb-6" style="color: var(--hub-text-dim); line-height: 1.6;" data-en="Power index and tiering are evaluated objectively across 3 core pillars: (1) Verified real-world products &amp; execution; (2) Authentic community value; (3) Competency superiority relative to age and academic cohort (Cohort Relative Index). Specifically honoring young Gen Z builders who demonstrate self-driven mastery ahead of their age." data-vi="Điểm năng lực và xếp bậc được đánh giá công tâm dựa trên 3 tiêu chí: (1) Sản phẩm &amp; năng lực thực chiến đã kiểm chứng; (2) Giá trị đóng góp thực tế cho cộng đồng; (3) Mức độ vượt trội của năng lực chuyên môn so với độ tuổi &amp; năm sinh (Cohort Relative Index). Hệ thống đặc biệt tôn vinh các tài năng trẻ tự chủ kiến trúc hoặc sớm đạt thành tích lớn so với lứa tuổi cùng thời điểm.">' +
+                        (isVi ? 'Điểm năng lực và xếp bậc được đánh giá công tâm dựa trên 3 tiêu chí cốt lõi: (1) Sản phẩm &amp; năng lực thực chiến đã kiểm chứng; (2) Giá trị đóng góp thực tế cho cộng đồng; (3) Mức độ vượt trội của năng lực chuyên môn so với độ tuổi &amp; năm sinh (Cohort Relative Index). Hệ thống đặc biệt tôn vinh các tài năng trẻ tự chủ kiến trúc hoặc sớm đạt thành tích lớn so với lứa tuổi cùng thời điểm.' : 'Power index and tiering are evaluated objectively across 3 core pillars: (1) Verified real-world products &amp; execution; (2) Authentic community value; (3) Competency superiority relative to age and academic cohort (Cohort Relative Index). Specifically honoring young Gen Z builders who demonstrate self-driven mastery ahead of their age.') +
+                    '</p>' +
+                    '<div class="hub-tier-threshold-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem;">' +
+                        '<div class="threshold-card s-plus">' +
+                            '<div class="threshold-header">' +
+                                '<span class="threshold-tier-tag s-plus">S+ APEX</span>' +
+                                '<span class="threshold-score">&ge; 95.0</span>' +
+                            '</div>' +
+                            '<p class="threshold-desc" data-en="Exceptional mastery ahead of cohort age. National contest honors, academic peak, or breakthrough self-built platforms at a very young age." data-vi="Năng lực xuất sắc vượt bậc so với lứa tuổi. Đạt giải thưởng quy mô quốc gia, học thuật đỉnh cao hoặc tự kiến tạo nền tảng đột phá khi còn rất trẻ.">' + (isVi ? 'Năng lực xuất sắc vượt bậc so với lứa tuổi. Đạt giải thưởng quy mô quốc gia, học thuật đỉnh cao hoặc tự kiến tạo nền tảng đột phá khi còn rất trẻ.' : 'Exceptional mastery ahead of cohort age. National contest honors, academic peak, or breakthrough self-built platforms at a very young age.') + '</p>' +
+                        '</div>' +
+                        '<div class="hub-tier-rule-card tier-rule-s threshold-card s">' +
+                            '<div class="threshold-header">' +
+                                '<span class="threshold-tier-tag s">S PROFESSIONAL</span>' +
+                                '<span class="threshold-score">90.0 – 94.9</span>' +
+                            '</div>' +
+                            '<p class="threshold-desc" data-en="Solid practical domain expertise, independent project management and training capabilities matching graduation maturity standards." data-vi="Năng lực chuyên môn thực chiến vững vàng, khả năng quản trị dự án &amp; đào tạo độc lập rất tốt so với độ tuổi năm cuối / mới tốt nghiệp.">' + (isVi ? 'Năng lực chuyên môn thực chiến vững vàng, khả năng quản trị dự án &amp; đào tạo độc lập rất tốt so với độ tuổi năm cuối / mới tốt nghiệp.' : 'Solid practical domain expertise, independent project management and training capabilities matching graduation maturity standards.') + '</p>' +
+                        '</div>' +
+                        '<div class="hub-tier-rule-card tier-rule-a-plus threshold-card a-plus">' +
+                            '<div class="threshold-header">' +
+                                '<span class="threshold-tier-tag a-plus">A+ IMPRESSIVE</span>' +
+                                '<span class="threshold-score">85.0 – 89.9</span>' +
+                            '</div>' +
+                            '<p class="threshold-desc" data-en="Autonomous digital system builder, proactive execution and practical experience superior to student peers (e.g. self-developing digital ecosystem at age 21)." data-vi="Tự chủ hệ sinh thái số, năng lực thực thi và kinh nghiệm thực tế vượt trội so với độ tuổi sinh viên (như tự phát triển nền tảng ở tuổi 21).">' + (isVi ? 'Tự chủ hệ sinh thái số, năng lực thực thi và kinh nghiệm thực tế vượt trội so với độ tuổi sinh viên (như tự phát triển nền tảng ở tuổi 21).' : 'Autonomous digital system builder, proactive execution and practical experience superior to student peers (e.g. self-developing digital ecosystem at age 21).') + '</p>' +
+                        '</div>' +
+                        '<div class="hub-tier-rule-card tier-rule-a threshold-card a">' +
+                            '<div class="threshold-header">' +
+                                '<span class="threshold-tier-tag a">A STANDARD</span>' +
+                                '<span class="threshold-score">80.0 – 84.9</span>' +
+                            '</div>' +
+                            '<p class="threshold-desc" data-en="Proficient in essential professional toolkits, hands-on workplace internship experience and certified standards matching cohort expectations." data-vi="Thành thạo công cụ chuyên môn thiết yếu, có kinh nghiệm làm việc thực tế tại cơ sở và có chứng chỉ chuẩn hóa tốt so với độ tuổi sinh viên.">' + (isVi ? 'Thành thạo công cụ chuyên môn thiết yếu, có kinh nghiệm làm việc thực tế tại cơ sở và có chứng chỉ chuẩn hóa tốt so với độ tuổi sinh viên.' : 'Proficient in essential professional toolkits, hands-on workplace internship experience and certified standards matching cohort expectations.') + '</p>' +
+                        '</div>' +
+                    '</div>' +
                 '</div>' +
             '</div>';
         }
@@ -867,6 +874,26 @@
 
             document.addEventListener('click', (e) => {
                 if (e.target.closest('.hub-btn-direct')) return;
+
+                // Rubric modal trigger
+                if (e.target.closest('#hub-rubric-modal-trigger')) {
+                    const rubricModal = document.getElementById('hub-rubric-modal');
+                    if (rubricModal) {
+                        rubricModal.classList.add('active');
+                        document.body.classList.add('hub-modal-open');
+                    }
+                    return;
+                }
+
+                // Rubric modal close
+                if (e.target.closest('#hub-rubric-modal-close') || e.target === document.getElementById('hub-rubric-modal')) {
+                    const rubricModal = document.getElementById('hub-rubric-modal');
+                    if (rubricModal) {
+                        rubricModal.classList.remove('active');
+                        document.body.classList.remove('hub-modal-open');
+                    }
+                    return;
+                }
 
                 if (e.target.closest('#hub-modal-close-btn')) {
                     this.closeDossierModal();

@@ -2043,3 +2043,33 @@ body.hub-modal-open #chatbot-container {
     pointer-events: none !important;
     transition: opacity 0.2s ease, visibility 0.2s ease;
 }
+
+
+/* ==========================================================================
+   DEDICATED RUBRIC MODAL POPUP (POPS UP CLEANLY ON DEMAND)
+   ========================================================================== */
+.hub-modal-rubric {
+    max-width: 820px !important;
+    width: 100% !important;
+    max-height: 88vh !important;
+    overflow-y: auto !important;
+    padding: 2.25rem 2rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+}
+
+.light-mode .hub-modal-rubric {
+    background: #ffffff !important;
+    border: 2px solid #cbd5e1 !important;
+    box-shadow: 0 25px 70px rgba(15, 23, 42, 0.25) !important;
+}
+
+.light-mode .hub-modal-rubric h3 {
+    color: #0f172a !important;
+}
+
+.light-mode .hub-modal-rubric .hub-criteria-summary {
+    color: #334155 !important;
+    font-weight: 500 !important;
+}
