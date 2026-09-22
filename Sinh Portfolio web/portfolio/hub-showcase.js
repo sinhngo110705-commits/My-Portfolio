@@ -25,6 +25,10 @@
             schoolVi: 'ĐH CNTT & Truyền thông Việt - Hàn (2005)',
             year: 2005,
             gpa: '3.61 / 4.0',
+            ageRelativeVi: 'Xuất sắc vượt bậc so với tuổi 2005 (Top 1% lứa tuổi)',
+            ageRelativeEn: 'Exceptional mastery ahead of 2005 cohort (Top 1%)',
+            ageRelativeShortVi: 'Vượt bậc tuổi 2005',
+            ageRelativeShortEn: 'Ahead of 2005 cohort',
             accoladesEn: 'ICPC National Contest • SheCodes Top 6 National • Quoc Hoc Hue CS Gifted (9.3/10)',
             accoladesVi: 'Giải Khuyến Khích ICPC Miền Trung (2023) • Top 6 SheCodes Hackathon Toàn quốc • Cựu Chủ tịch BBE Aurora (NK I)',
             bioEn: 'Computer Science student at VKU with a 3.61/4.0 GPA. Strong background in data structures, algorithms, and full-stack software development (Flutter, Node.js, C++, Java, SQL). Former CS specialized student at Quoc Hoc Hue High School.',
@@ -64,6 +68,10 @@
             schoolVi: 'Đại học Duy Tân (2003)',
             year: 2003,
             gpa: 'Senior Stack',
+            ageRelativeVi: 'Chuyên môn & quản trị dự án vững vàng (Khóa 2003)',
+            ageRelativeEn: 'Solid engineering & management maturity for 2003 cohort',
+            ageRelativeShortVi: 'Vững vàng khóa 2003',
+            ageRelativeShortEn: 'Solid 2003 cohort',
             accoladesEn: 'VP Membership & Training - JCI Danang • Teaching Assistant DZFullStack • Core Leader DNA BBE',
             accoladesVi: 'Phó Chủ tịch (VP) Membership & Training - JCI Danang • Trợ giảng Lập trình DZFullStack • Lãnh đạo Ban DNA BBE',
             bioEn: 'Software Engineering student at Duy Tan University focused on backend server logic, RESTful APIs, clean architecture, and reliable system deployment using IntelliJ, Postman, Linux, and Git.',
@@ -99,6 +107,10 @@
             schoolVi: 'Đại học Duy Tân (2005)',
             year: 2005,
             gpa: 'Founder Track',
+            ageRelativeVi: 'Tự chủ phát triển nền tảng số sớm ở tuổi 21 (Khóa 2005)',
+            ageRelativeEn: 'Early autonomous digital builder at age 21 (2005 cohort)',
+            ageRelativeShortVi: 'Tự chủ số tuổi 2005',
+            ageRelativeShortEn: 'Early builder 2005',
             accoladesEn: 'Founder Teemous Digital Lab • Head of Communications KSDN Club • Project Manager VLXD Co.',
             accoladesVi: 'Founder Teemous Digital Lab • Trưởng Ban Truyền thông CLB KSDN • Quản lý Dự án VLXD Co.',
             bioEn: 'Founder of Teemous Digital creative ecosystem. Combines web architecture, Google AppsScript automation, AI workflows, and digital brand development. Built working portfolio hub and automated social terminal.',
@@ -137,6 +149,10 @@
             schoolVi: 'Đại học Duy Tân (2007)',
             year: 2007,
             gpa: 'Honor Student',
+            ageRelativeVi: 'Rất năng nổ & dày dặn kinh nghiệm so với tuổi 19 (Khóa 2007)',
+            ageRelativeEn: 'Highly active & experienced for age 19 (2007 cohort)',
+            ageRelativeShortVi: 'Năng nổ tuổi 19 (2007)',
+            ageRelativeShortEn: 'Active at 19yo',
             accoladesEn: 'HR Member KSDN Club • Communications Member Dak Lak Green • 9 Verified Youth Certificates',
             accoladesVi: 'Ban Nhân sự CLB Khởi sự Doanh nghiệp • Ban Truyền thông Dự án Xanh • 9 Chứng nhận Hoạt động Thanh niên',
             bioEn: 'Proactive International Business student with practical experience in human resources, youth community projects, organizational workflows with Notion & Google Sheets, and cross-cultural communication.',
@@ -175,6 +191,10 @@
             schoolVi: 'Đại học Duy Tân (2005)',
             year: 2005,
             gpa: 'Active Creative',
+            ageRelativeVi: 'Thực chiến tốt theo độ tuổi sinh viên (Khóa 2005)',
+            ageRelativeEn: 'Solid practical execution for student age (2005 cohort)',
+            ageRelativeShortVi: 'Thực chiến tốt 2005',
+            ageRelativeShortEn: 'Practical 2005',
             accoladesEn: 'Marketing Assistant Homestay New Life • Marketing Intern D Coffee • Certified MOS Specialist',
             accoladesVi: 'Trợ lý Marketing Homestay New Life • Thực tập sinh Marketing D Coffee • Chứng chỉ Tin học Quốc tế MOS',
             bioEn: 'Creative media builder skilled in visual design with Canva, short-form video editing with CapCut, social channel management, and practical advertising campaign execution.',
@@ -548,6 +568,12 @@
 
             const isVi = document.documentElement.lang === 'vi' || localStorage.getItem('td-lang') === 'vi';
 
+            const countAll = DOSSIERS.length;
+            const countElite = DOSSIERS.filter(d => d.tier === 'elite').length;
+            const countPro = DOSSIERS.filter(d => d.tier === 'professional').length;
+            const countImp = DOSSIERS.filter(d => d.tier === 'impressive').length;
+            const countStd = DOSSIERS.filter(d => d.tier === 'standard').length;
+
             container.innerHTML = 
             '<canvas id="hub-fluid-canvas"></canvas>' +
             '<!-- EDITORIAL BRAND HERO CHAMBER -->' +
@@ -587,14 +613,14 @@
                         '<div class="hub-criteria-header">' +
                             '<div class="hub-criteria-title-wrap">' +
                                 '<span class="hub-criteria-icon">⚖️</span>' +
-                                '<span class="hub-criteria-title" data-en="OFFICIAL EVALUATION CRITERIA &amp; TIER FRAMEWORK" data-vi="QUY CHẾ XÉT BẬC &amp; ĐIỂM NĂNG LỰC TOÀN DIỆN">' + (isVi ? 'QUY CHẾ XÉT BẬC &amp; ĐIỂM NĂNG LỰC TOÀN DIỆN' : 'OFFICIAL EVALUATION CRITERIA &amp; TIER FRAMEWORK') + '</span>' +
+                                '<span class="hub-criteria-title" data-en="EVALUATION RUBRIC: AGE-RELATIVE MATURITY &amp; REAL COMMUNITY VALUE" data-vi="QUY CHẾ ĐÁNH GIÁ: NĂNG LỰC TƯƠNG QUAN ĐỘ TUỔI &amp; GIÁ TRỊ THỰC TIỄN">' + (isVi ? 'QUY CHẾ XÉT BẬC &amp; ĐIỂM NĂNG LỰC TOÀN DIỆN' : 'OFFICIAL EVALUATION CRITERIA &amp; TIER FRAMEWORK') + '</span>' +
                             '</div>' +
                             '<button type="button" id="hub-criteria-toggle-btn" class="hub-criteria-toggle">' +
                                 '<span id="hub-criteria-toggle-text" data-en="View Criteria Details ▼" data-vi="Xem chi tiết quy chế ▼">' + (isVi ? 'Xem chi tiết quy chế ▼' : 'View Criteria Details ▼') + '</span>' +
                             '</button>' +
                         '</div>' +
-                        '<p class="hub-criteria-summary" data-en="Power score is evaluated objectively based on authentic community value, working products, and demonstrated execution capacity across all fields (not restricted to any single narrow major)." data-vi="Điểm năng lực được đánh giá công tâm dựa trên giá trị thực tế tạo ra cho cộng đồng, sản phẩm thực chiến và năng lực thực thi trên bình diện chung (không gò bó cứng nhắc theo từng chuyên ngành riêng biệt).">' +
-                            (isVi ? 'Điểm năng lực được đánh giá công tâm dựa trên giá trị thực tế tạo ra cho cộng đồng, sản phẩm thực chiến và năng lực thực thi trên bình diện chung (không gò bó cứng nhắc theo từng chuyên ngành riêng biệt).' : 'Power score is evaluated objectively based on authentic community value, working products, and demonstrated execution capacity across all fields (not restricted to any single narrow major).') +
+                        '<p class="hub-criteria-summary" data-en="Power index and tiering are evaluated objectively across 3 core pillars: (1) Verified real-world products & execution; (2) Authentic community value; (3) Competency superiority relative to age and academic cohort (Cohort Relative Index). Specifically honoring young Gen Z builders who demonstrate self-driven mastery ahead of their age." data-vi="Điểm năng lực và xếp bậc được đánh giá công tâm dựa trên 3 tiêu chí: (1) Sản phẩm & năng lực thực chiến đã kiểm chứng; (2) Giá trị đóng góp thực tế cho cộng đồng; (3) Mức độ vượt trội của năng lực chuyên môn so với độ tuổi & năm sinh (Cohort Relative Index). Hệ thống đặc biệt tôn vinh các tài năng trẻ tự chủ kiến trúc hoặc sớm đạt thành tích lớn so với lứa tuổi cùng thời điểm.">' +
+                            (isVi ? 'Điểm năng lực và xếp bậc được đánh giá công tâm dựa trên 3 tiêu chí: (1) Sản phẩm & năng lực thực chiến đã kiểm chứng; (2) Giá trị đóng góp thực tế cho cộng đồng; (3) Mức độ vượt trội của năng lực chuyên môn so với độ tuổi & năm sinh (Cohort Relative Index). Hệ thống đặc biệt tôn vinh các tài năng trẻ tự chủ kiến trúc hoặc sớm đạt thành tích lớn so với lứa tuổi cùng thời điểm.' : 'Power index and tiering are evaluated objectively across 3 core pillars: (1) Verified real-world products & execution; (2) Authentic community value; (3) Competency superiority relative to age and academic cohort (Cohort Relative Index). Specifically honoring young Gen Z builders who demonstrate self-driven mastery ahead of their age.') +
                         '</p>' +
                         '<div id="hub-criteria-details" class="hub-criteria-details" style="display: none;">' +
                             '<div class="hub-tier-threshold-grid">' +
@@ -603,28 +629,28 @@
                                         '<span class="threshold-tier-tag s-plus">S+ APEX</span>' +
                                         '<span class="threshold-score">&ge; 95.0</span>' +
                                     '</div>' +
-                                    '<p class="threshold-desc" data-en="Ecosystem architects with breakthrough community impact and large-scale autonomous deliverables." data-vi="Thủ lĩnh kiến tạo hệ sinh thái, dẫn dắt dự án lớn và tạo tác động cộng đồng đột phá.">Thủ lĩnh kiến tạo hệ sinh thái, dẫn dắt dự án lớn và tạo tác động cộng đồng đột phá.</p>' +
+                                    '<p class="threshold-desc" data-en="Exceptional mastery ahead of cohort age. National contest honors, academic peak, or breakthrough self-built platforms at a very young age." data-vi="Năng lực xuất sắc vượt bậc so với lứa tuổi. Đạt giải thưởng quy mô quốc gia, học thuật đỉnh cao hoặc tự kiến tạo nền tảng đột phá khi còn rất trẻ.">Thủ lĩnh kiến tạo hệ sinh thái, dẫn dắt dự án lớn và tạo tác động cộng đồng đột phá.</p>' +
                                 '</div>' +
                                 '<div class="hub-tier-rule-card tier-rule-s threshold-card s">' +
                                     '<div class="threshold-header">' +
                                         '<span class="threshold-tier-tag s">S PROFESSIONAL</span>' +
                                         '<span class="threshold-score">90.0 – 94.9</span>' +
                                     '</div>' +
-                                    '<p class="threshold-desc" data-en="Exceptional domain specialists with verified high-impact products and independent execution capacity." data-vi="Chuyên môn thực chiến xuất sắc, hoàn thiện sản phẩm độc lập chất lượng cao, thành tích thực tế rõ ràng.">Chuyên môn thực chiến xuất sắc, hoàn thiện sản phẩm độc lập chất lượng cao, thành tích thực tế rõ ràng.</p>' +
+                                    '<p class="threshold-desc" data-en="Solid practical domain expertise, independent project management and training capabilities matching graduation maturity standards." data-vi="Năng lực chuyên môn thực chiến vững vàng, khả năng quản trị dự án & đào tạo độc lập rất tốt so với độ tuổi năm cuối / mới tốt nghiệp.">Chuyên môn thực chiến xuất sắc, hoàn thiện sản phẩm độc lập chất lượng cao, thành tích thực tế rõ ràng.</p>' +
                                 '</div>' +
                                 '<div class="hub-tier-rule-card tier-rule-a-plus threshold-card a-plus">' +
                                     '<div class="threshold-header">' +
                                         '<span class="threshold-tier-tag a-plus">A+ IMPRESSIVE</span>' +
                                         '<span class="threshold-score">85.0 – 89.9</span>' +
                                     '</div>' +
-                                    '<p class="threshold-desc" data-en="Solid core technical foundation, actively deploying practical deliverables with strong growth potential." data-vi="Nền tảng kỹ năng vững vàng, chủ động triển khai sản phẩm thực tế và có tiềm năng bứt phá mạnh mẽ.">Nền tảng kỹ năng vững vàng, chủ động triển khai sản phẩm thực tế và có tiềm năng bứt phá mạnh mẽ.</p>' +
+                                    '<p class="threshold-desc" data-en="Autonomous digital system builder, proactive execution and practical experience superior to student peers (e.g. self-developing digital ecosystem at age 21)." data-vi="Tự chủ hệ sinh thái số, năng lực thực thi và kinh nghiệm thực tế vượt trội so với độ tuổi sinh viên (như tự phát triển nền tảng ở tuổi 21).">Nền tảng kỹ năng vững vàng, chủ động triển khai sản phẩm thực tế và có tiềm năng bứt phá mạnh mẽ.</p>' +
                                 '</div>' +
                                 '<div class="hub-tier-rule-card tier-rule-a threshold-card a">' +
                                     '<div class="threshold-header">' +
                                         '<span class="threshold-tier-tag a">A STANDARD</span>' +
                                         '<span class="threshold-score">80.0 – 84.9</span>' +
                                     '</div>' +
-                                    '<p class="threshold-desc" data-en="Proficient with essential specialized toolkits, agile execution mindset, and proactive learner attitude." data-vi="Thành thạo công cụ chuyên môn thiết yếu, tác phong thực thi nhanh nhẹn và tinh thần cầu tiến.">Thành thạo công cụ chuyên môn thiết yếu, tác phong thực thi nhanh nhẹn và tinh thần cầu tiến.</p>' +
+                                    '<p class="threshold-desc" data-en="Proficient in essential professional toolkits, hands-on workplace internship experience and certified standards matching cohort expectations." data-vi="Thành thạo công cụ chuyên môn thiết yếu, có kinh nghiệm làm việc thực tế tại cơ sở và có chứng chỉ chuẩn hóa tốt so với độ tuổi sinh viên.">Thành thạo công cụ chuyên môn thiết yếu, tác phong thực thi nhanh nhẹn và tinh thần cầu tiến.</p>' +
                                 '</div>' +
                             '</div>' +
                         '</div>' +
@@ -655,12 +681,12 @@
                         '<button class="hub-tier-chip active" data-tier="all">' +
                             '<span class="hub-tier-badge-letter" style="background: rgba(255,255,255,0.2);">ALL</span>' +
                             '<span data-en="ALL TIERS" data-vi="TẤT CẢ BẬC">' + (isVi ? 'TẤT CẢ BẬC' : 'ALL TIERS') + '</span>' +
-                            '<span class="hub-chip-count">(5)</span>' +
+                            '<span class="hub-chip-count">(' + countAll + ')</span>' +
                         '</button>' +
                         '<button class="hub-tier-chip" data-tier="elite">' +
                             '<span class="hub-tier-badge-letter" style="color: #B026FF;">S+</span>' +
                             '<span data-en="ELITE (APEX)" data-vi="TINH HOA (ĐỈNH CAO)">' + (isVi ? 'TINH HOA (ĐỈNH CAO)' : 'ELITE (APEX)') + '</span>' +
-                            '<span class="hub-chip-count">(0)</span>' +
+                            '<span class="hub-chip-count">(' + countElite + ')</span>' +
                         '</button>' +
                         '<button class="hub-tier-chip" data-tier="professional">' +
                             '<span class="hub-tier-badge-letter" style="color: #FFB800;">S</span>' +
@@ -670,12 +696,12 @@
                         '<button class="hub-tier-chip" data-tier="impressive">' +
                             '<span class="hub-tier-badge-letter" style="color: #00FF88;">A+</span>' +
                             '<span data-en="IMPRESSIVE" data-vi="ẤN TƯỢNG">' + (isVi ? 'ẤN TƯỢNG' : 'IMPRESSIVE') + '</span>' +
-                            '<span class="hub-chip-count">(2)</span>' +
+                            '<span class="hub-chip-count">(' + countImp + ')</span>' +
                         '</button>' +
                         '<button class="hub-tier-chip" data-tier="standard">' +
                             '<span class="hub-tier-badge-letter" style="color: #00F0FF;">A</span>' +
                             '<span data-en="STANDARD" data-vi="TIÊU CHUẨN">' + (isVi ? 'TIÊU CHUẨN' : 'STANDARD') + '</span>' +
-                            '<span class="hub-chip-count">(2)</span>' +
+                            '<span class="hub-chip-count">(' + countStd + ')</span>' +
                         '</button>' +
                     '</div>' +
                     '<div class="hub-secondary-filter-row">' +
@@ -1098,6 +1124,9 @@
                         '<span class="font-mono font-extrabold text-xs uppercase px-2.5 py-1 rounded-md whitespace-nowrap inline-block" style="background: rgba(255,255,255,0.06); color: var(--tier-accent, #00F0FF); border: 1px solid rgba(255,255,255,0.12);">' +
                             d.tierLabel +
                         '</span>' +
+                        '<div style="font-size: 10px; color: var(--text-muted); margin-top: 3px; font-weight: 600;">' +
+                            (isVi ? ('Khóa ' + d.year + ' &bull; ' + d.ageRelativeShortVi) : ('Cohort ' + d.year + ' &bull; ' + d.ageRelativeShortEn)) +
+                        '</div>' +
                     '</td>' +
                     '<td class="col-power">' +
                         '<div class="flex items-center gap-2">' +
@@ -1181,6 +1210,10 @@
                     '<div class="telemetry-row">' +
                         '<span class="telemetry-label" data-en="POWER RATING" data-vi="ĐIỂM NĂNG LỰC">POWER RATING</span>' +
                         '<span class="telemetry-val-pink">' + dossier.powerScore + ' / 100</span>' +
+                    '</div>' +
+                    '<div class="telemetry-row">' +
+                        '<span class="telemetry-label" data-en="COHORT EVAL" data-vi="ĐÁNH GIÁ THEO TUỔI">ĐÁNH GIÁ THEO TUỔI</span>' +
+                        '<span class="telemetry-val-emerald" style="font-size: 0.72rem; font-weight: 700;">' + (isVi ? dossier.ageRelativeVi : dossier.ageRelativeEn) + '</span>' +
                     '</div>' +
                     '<div class="telemetry-row">' +
                         '<span class="telemetry-label" data-en="STATUS" data-vi="TRẠNG THÁI">STATUS</span>' +
