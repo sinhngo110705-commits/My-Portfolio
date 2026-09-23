@@ -129,23 +129,29 @@ function initScrollAnimations() {
             if (metaBar) {
                 heroTl.fromTo(metaBar, { y: -18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' });
             }
-            heroTl.fromTo(titleLines, 
-                { yPercent: 115 }, 
-                { 
-                    yPercent: 0, 
-                    duration: 1.2, 
-                    stagger: 0.14, 
-                    ease: 'power4.out',
-                    onComplete: () => {
-                        document.querySelectorAll('.mask-wrap').forEach(w => {
-                            w.style.overflow = 'visible';
-                        });
-                    }
-                },
-                "-=0.5"
-            );
+
+            const isMobile = window.innerWidth <= 768 || window.matchMedia('(pointer: coarse)').matches;
+            if (isMobile) {
+                heroTl.from(titleLines, { y: 15, duration: 0.45, stagger: 0.06, ease: 'power2.out' });
+            } else {
+                heroTl.fromTo(titleLines, 
+                    { yPercent: 115 }, 
+                    { 
+                        yPercent: 0, 
+                        duration: 1.1, 
+                        stagger: 0.12, 
+                        ease: 'power4.out',
+                        onComplete: () => {
+                            document.querySelectorAll('.mask-wrap').forEach(w => {
+                                w.style.overflow = 'visible';
+                            });
+                        }
+                    },
+                    "-=0.5"
+                );
+            }
             if (manifesto) {
-                heroTl.from(manifesto, { y: 12, duration: 0.6, ease: 'power2.out' }, "<0.1");
+                heroTl.from(manifesto, { y: 12, duration: 0.5, ease: 'power2.out' }, "<0.1");
             }
             if (ctas.length > 0) {
                 heroTl.fromTo(ctas, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.06, ease: 'power3.out' }, "<0.15");
@@ -588,6 +594,11 @@ function initBackgroundAnimation() {
     });
 
     resize();
+    if (isCoarse || width < 768) {
+        // Touch/Mobile optimization: render static subtle snapshot and skip 60fps rAF loop to save 100% mobile CPU
+        drawParticlesAndConnections(document.documentElement.classList.contains('light-mode') || document.body.classList.contains('light-mode'));
+        return;
+    }
     lastTime = performance.now();
     animId = requestAnimationFrame(animate);
 }
