@@ -580,7 +580,7 @@
             '<div class="hub-hero-wrapper">' +
                 '<div class="hub-hero-main">' +
                     '<h1 class="editorial-hero-title">' +
-                        '<span class="mask-wrap"><span class="title-line">PORTFOLIO</span></span> ' +
+                        '<span class="mask-wrap"><span class="title-line">PORTFOLIO</span></span>' +
                         '<span class="mask-wrap"><span class="title-line editorial-hero-sub">HUB</span></span>' +
                     '</h1>' +
                     '<p class="hub-hero-lead" data-en="Discover elite Gen Z creators, software engineers, and digital growth leaders." data-vi="Khám phá các tài năng Gen Z, kỹ sư phần mềm và thủ lĩnh truyền thông trong hệ sinh thái Teemous.">' +

@@ -13,7 +13,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../style.css?v=perf-v37">
+    <link rel="stylesheet" href="../../style.css?v=perf-v40">
 
     <style>
         .social-terminal-wrap {
@@ -24,8 +24,8 @@
 
         .terminal-shell {
             position: relative;
-            background: rgba(10, 10, 14, 0.75);
-            border: 1px solid var(--glass-border);
+            background: rgba(11, 13, 19, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.14);
             border-radius: 12px;
             padding: 2.5rem;
             backdrop-filter: blur(40px) saturate(180%);
@@ -40,19 +40,32 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
         }
 
-        .terminal-corner {
-            position: absolute;
-            font-family: var(--font-tech);
-            font-size: 0.9rem;
-            color: var(--cyan-laser);
-            opacity: 0.6;
-            pointer-events: none;
-            z-index: 5;
+        @media (max-width: 768px) {
+            .terminal-shell {
+                padding: 1.25rem 1rem !important;
+                border-radius: 10px !important;
+            }
+            .terminal-header-row {
+                padding-bottom: 0.85rem !important;
+                margin-bottom: 1.25rem !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.5rem !important;
+            }
+            .smm-platform-tabs {
+                gap: 0.4rem !important;
+                overflow-x: auto !important;
+                flex-wrap: nowrap !important;
+                padding-bottom: 0.4rem !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+            .smm-tab-btn {
+                white-space: nowrap !important;
+                flex-shrink: 0 !important;
+                font-size: 0.78rem !important;
+                padding: 0.45rem 0.85rem !important;
+            }
         }
-        .tc-tl { top: 12px; left: 14px; }
-        .tc-tr { top: 12px; right: 14px; }
-        .tc-bl { bottom: 12px; left: 14px; }
-        .tc-br { bottom: 12px; right: 14px; }
 
         .terminal-beam-line {
             position: absolute;
@@ -174,8 +187,8 @@
         }
 
         .summary-card {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px dashed rgba(0, 240, 255, 0.3);
+            background: rgba(10, 12, 18, 0.75);
+            border: 1px dashed rgba(0, 240, 255, 0.35);
             border-radius: 8px;
             padding: 2rem;
             display: flex;
@@ -241,10 +254,6 @@
             background: #ffffff;
             border: 1px solid #cbd5e1;
             box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
-        }
-        .light-mode .terminal-corner {
-            color: #0284c7;
-            opacity: 0.8;
         }
         .light-mode .terminal-header-row {
             border-bottom-color: #e2e8f0;
@@ -415,21 +424,21 @@
             margin-top: 0.25rem;
         }
         .smm-server-item {
-            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
             border-radius: 8px;
-            padding: 0.8rem 1rem;
+            padding: 0.85rem 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.04);
         }
         .smm-server-item:hover {
-            border-color: rgba(33, 150, 243, 0.5);
-            background: rgba(33, 150, 243, 0.04);
+            border-color: rgba(0, 240, 255, 0.5);
+            background: rgba(0, 240, 255, 0.06);
         }
         .smm-server-item.active {
-            border: 1.5px solid #2196f3;
-            background: rgba(33, 150, 243, 0.08);
-            box-shadow: 0 0 16px rgba(33, 150, 243, 0.2);
+            border: 1.5px solid var(--cyan-laser);
+            background: rgba(0, 240, 255, 0.09);
+            box-shadow: 0 0 18px rgba(0, 240, 255, 0.2);
         }
         .smm-server-row {
             display: flex;
@@ -476,10 +485,11 @@
             margin-top: 0.75rem;
             padding: 0.85rem 1rem;
             border-radius: 6px;
-            background: rgba(0, 240, 255, 0.05);
-            border: 1px solid rgba(0, 240, 255, 0.2);
+            background: rgba(0, 240, 255, 0.06);
+            border: 1px solid rgba(0, 240, 255, 0.24);
             font-size: 0.82rem;
             line-height: 1.6;
+            color: #e2e8f0;
         }
         .light-mode .smm-server-item {
             background: #ffffff;
@@ -542,7 +552,7 @@
                             data-vi="Dịch vụ &amp; Hệ thống">SERVICES &amp; SYSTEMS</a></li>
                     <li><a href="../../portfolio/index.html" data-en="Portfolio Hub" data-vi="Hồ sơ Năng lực">Portfolio Hub</a></li>
                     <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us" data-vi="Liên Hệ">Contact Us</a></li>
-                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
+                    <li><button id="nav-login-btn" class="nav-login-btn ready" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký">Đăng Nhập | Đăng Ký</button></li>
                 </ul>
             <div class="mobile-nav-widgets">
                 <div class="mobile-widget-row">
@@ -594,11 +604,6 @@
             <div class="social-terminal-wrap">
                 <div class="terminal-shell">
                     <div class="terminal-beam-line"></div>
-                    <span class="terminal-corner tc-tl">+</span>
-                    <span class="terminal-corner tc-tr">+</span>
-                    <span class="terminal-corner tc-bl">+</span>
-                    <span class="terminal-corner tc-br">+</span>
-
                     <div class="terminal-header-row">
                         <div class="terminal-tag">DỊCH VỤ TĂNG TƯƠNG TÁC MẠNG XÃ HỘI</div>
                         <div class="terminal-meta-indicators">
@@ -938,7 +943,7 @@
     <!-- Use CDN GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="../../script.js?v=perf-v37"></script>
+    <script src="../../script.js?v=perf-v40"></script>
 
     <!-- Matrix Quick Pill Click Listener -->
     <script>

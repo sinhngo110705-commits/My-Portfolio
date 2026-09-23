@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+﻿document.addEventListener('DOMContentLoaded', () => {
     const runSafe = (fn, name) => {
         try {
             if (typeof fn === 'function') fn();
@@ -120,7 +120,17 @@ function initScrollAnimations() {
             }
             heroTl.fromTo(titleLines, 
                 { yPercent: 115 }, 
-                { yPercent: 0, duration: 1.2, stagger: 0.14, ease: 'power4.out' }, 
+                { 
+                    yPercent: 0, 
+                    duration: 1.2, 
+                    stagger: 0.14, 
+                    ease: 'power4.out',
+                    onComplete: () => {
+                        document.querySelectorAll('.mask-wrap').forEach(w => {
+                            w.style.overflow = 'visible';
+                        });
+                    }
+                },
                 "-=0.5"
             );
             if (manifesto) {
@@ -649,17 +659,20 @@ function updateAllTranslations() {
     translatableElements.forEach(el => {
         if (el.closest('#root')) return; // DO NOT FIGHT WITH REACT
 
-        // SPECIAL CASE: Login Button (Skip if logged in)
-        if (el.id === 'nav-login-btn' && el.classList.contains('logged-in')) {
-            const userJson = localStorage.getItem('teemous_user');
-            if (userJson) {
-                try {
-                    const user = JSON.parse(userJson);
-                    const prefix = currentLang === 'vi' ? 'Chào' : 'Hi';
-                    el.innerHTML = `${prefix}, ${user.username}`;
-                } catch(e) {}
+        // SPECIAL CASE: Login Button (Skip if logged in, ensure ready)
+        if (el.id === 'nav-login-btn') {
+            el.classList.add('ready');
+            if (el.classList.contains('logged-in')) {
+                const userJson = localStorage.getItem('teemous_user');
+                if (userJson) {
+                    try {
+                        const user = JSON.parse(userJson);
+                        const prefix = currentLang === 'vi' ? 'Chào' : 'Hi';
+                        el.innerHTML = prefix + ", " + user.username;
+                    } catch(e) {}
+                }
+                return;
             }
-            return;
         }
 
         // Only update innerHTML if it's not an input/textarea
@@ -1521,6 +1534,12 @@ Hãy trả lời trực tiếp câu hỏi của người dùng bằng Tiếng Vi
 
 function initAuthModal() {
     const navLoginBtn = document.getElementById('nav-login-btn');
+    if (navLoginBtn) {
+        navLoginBtn.classList.add('ready');
+        if (!navLoginBtn.innerHTML.trim()) {
+            navLoginBtn.innerHTML = navLoginBtn.getAttribute('data-' + currentLang) || (currentLang === 'vi' ? 'Đăng Nhập | Đăng Ký' : 'Login | Sign Up');
+        }
+    }
     const authOverlay = document.getElementById('auth-modal-overlay');
     const closeBtn = document.getElementById('close-auth-modal');
     
@@ -2719,6 +2738,192 @@ function initCardSpotlights() {
 // INTERACTIVE META BUFF TERMINAL (DICHVUMXH.VN)
 
 // ==========================================
+// ==========================================
+// SERVICES DIRECTORY (MODULAR HANDLER & HERO VFX)
+// ==========================================
+function initServicesDirectory() {
+    const heroCanvas = document.getElementById('services-hero-canvas');
+    if (!heroCanvas) return;
+
+    const ctx = heroCanvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+
+    let width = 0, height = 0;
+    function resize() {
+        if (!heroCanvas) return;
+        width = heroCanvas.width = window.innerWidth;
+        height = heroCanvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    let time = 0;
+    let mouse = {
+        x: width / 2,
+        y: height / 2,
+        targetX: width / 2,
+        targetY: height / 2,
+        isInside: false
+    };
+
+    window.addEventListener('mousemove', (e) => {
+        mouse.targetX = e.clientX;
+        mouse.targetY = e.clientY;
+        mouse.isInside = true;
+    }, { passive: true });
+
+    document.addEventListener('mouseleave', () => {
+        mouse.isInside = false;
+        mouse.targetX = width / 2;
+        mouse.targetY = height / 2;
+    }, { passive: true });
+
+    // Multi-Harmonic Wave Spectrum: Cyan Laser (#00F0FF), Royal Violet (#8B6CCF), Neon Pink (#FF2A85)
+    const waveConfigs = [
+        { speed: 0.011, freq: 0.0022, amp: 46, yRatio: 0.38, colorDark: 'rgba(0, 240, 255, 0.34)', colorLight: 'rgba(2, 132, 199, 0.26)', width: 2.2 },
+        { speed: 0.015, freq: 0.0030, amp: 36, yRatio: 0.44, colorDark: 'rgba(139, 108, 207, 0.38)', colorLight: 'rgba(109, 40, 217, 0.26)', width: 1.8 },
+        { speed: 0.009, freq: 0.0018, amp: 52, yRatio: 0.50, colorDark: 'rgba(255, 42, 133, 0.28)', colorLight: 'rgba(233, 30, 99, 0.20)', width: 1.8 },
+        { speed: 0.018, freq: 0.0036, amp: 26, yRatio: 0.41, colorDark: 'rgba(0, 240, 255, 0.44)', colorLight: 'rgba(2, 132, 199, 0.32)', width: 1.2 },
+        { speed: 0.012, freq: 0.0026, amp: 40, yRatio: 0.56, colorDark: 'rgba(139, 108, 207, 0.28)', colorLight: 'rgba(109, 40, 217, 0.20)', width: 1.6 }
+    ];
+
+    // Constellation Particle Mesh spanning full background
+    const particles = [];
+    const particleCount = 38;
+    for (let i = 0; i < particleCount; i++) {
+        particles.push({
+            x: Math.random() * (width || window.innerWidth),
+            y: Math.random() * (height || window.innerHeight),
+            vx: (Math.random() - 0.5) * 0.32,
+            vy: (Math.random() - 0.5) * 0.32,
+            radius: Math.random() * 2 + 1,
+            hue: Math.random() > 0.5 ? 'cyan' : 'violet'
+        });
+    }
+
+    let isVisible = !document.hidden;
+    let animId = null;
+
+    function render() {
+        time += 1;
+
+        mouse.x += (mouse.targetX - mouse.x) * 0.08;
+        mouse.y += (mouse.targetY - mouse.y) * 0.08;
+
+        ctx.clearRect(0, 0, width, height);
+
+        const isLight = document.documentElement.classList.contains('light-mode') || document.body.classList.contains('light-mode');
+        const isMobile = width < 768;
+        const ampScale = isMobile ? 0.65 : 1.0;
+
+        // Draw Interactive Ambient Spotlight around cursor
+        const spotRadius = Math.max(width, height) * 0.42;
+        const spotGrad = ctx.createRadialGradient(
+            mouse.x, mouse.y, 8,
+            mouse.x, mouse.y, spotRadius
+        );
+        if (isLight) {
+            spotGrad.addColorStop(0, 'rgba(2, 132, 199, 0.08)');
+            spotGrad.addColorStop(0.5, 'rgba(109, 40, 217, 0.025)');
+            spotGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        } else {
+            spotGrad.addColorStop(0, 'rgba(0, 240, 255, 0.12)');
+            spotGrad.addColorStop(0.45, 'rgba(139, 108, 207, 0.05)');
+            spotGrad.addColorStop(1, 'rgba(6, 6, 8, 0)');
+        }
+        ctx.fillStyle = spotGrad;
+        ctx.fillRect(0, 0, width, height);
+
+        // Smooth subtle parallax shift when scrolling down
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        const scrollShift = scrollY * 0.18;
+
+        // Draw Fluid Wave Beams across the background
+        waveConfigs.forEach((cfg, idx) => {
+            const baseColor = isLight ? cfg.colorLight : cfg.colorDark;
+            const baseY = (height * cfg.yRatio) - scrollShift;
+
+            ctx.beginPath();
+            const step = isMobile ? 24 : 18;
+            for (let x = 0; x <= width + step; x += step) {
+                const dx = x - mouse.x;
+                const dy = baseY - mouse.y;
+                const dist = Math.hypot(dx, dy);
+                const mouseDeflection = Math.max(0, (1 - dist / 320)) * (30 * ampScale) * Math.sin(time * 0.05 + idx);
+
+                const sin1 = Math.sin(x * cfg.freq + time * cfg.speed);
+                const sin2 = Math.cos(x * (cfg.freq * 1.35) - time * (cfg.speed * 0.75));
+                const y = baseY + (sin1 + sin2 * 0.5) * (cfg.amp * ampScale) + mouseDeflection;
+
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+
+            ctx.strokeStyle = baseColor;
+            ctx.lineWidth = cfg.width;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+        });
+
+        // Update & Render Floating Constellation Nodes
+        particles.forEach((p, i) => {
+            p.x += p.vx;
+            p.y += p.vy;
+
+            if (p.x < 0) p.x = width;
+            if (p.x > width) p.x = 0;
+            if (p.y < 0) p.y = height;
+            if (p.y > height) p.y = 0;
+
+            const nodeColor = isLight
+                ? (p.hue === 'cyan' ? 'rgba(2, 132, 199, 0.55)' : 'rgba(109, 40, 217, 0.45)')
+                : (p.hue === 'cyan' ? 'rgba(0, 240, 255, 0.7)' : 'rgba(139, 108, 207, 0.6)');
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = nodeColor;
+            ctx.fill();
+
+            // Connect nearby nodes
+            for (let j = i + 1; j < particles.length; j++) {
+                const p2 = particles[j];
+                const d = Math.hypot(p.x - p2.x, p.y - p2.y);
+                if (d < 110) {
+                    const lineAlpha = (1 - d / 110) * (isLight ? 0.15 : 0.22);
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.strokeStyle = isLight ? 
+gba(15, 23, 42, ) : 
+gba(0, 240, 255, );
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                }
+            }
+        });
+
+        if (isVisible) {
+            animId = requestAnimationFrame(render);
+        }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            isVisible = false;
+            if (animId) cancelAnimationFrame(animId);
+        } else {
+            isVisible = true;
+            resize();
+            animId = requestAnimationFrame(render);
+        }
+    });
+
+    animId = requestAnimationFrame(render);
+}
+
 function initSmmTerminal() {
     const terminal = document.getElementById('smm-terminal');
     if (!terminal) return;
@@ -2944,7 +3149,10 @@ function initSmmTerminal() {
                 renderCategories();
             }
         })
-        .catch(() => console.log('Using default curated SMM packages.'));
+        .catch(() => {
+            console.log('Using default curated SMM packages.');
+            renderCategories();
+        });
 
     function renderCategories() {
         if (!categoryGrid) return;
@@ -2973,6 +3181,9 @@ function initSmmTerminal() {
 
         populateDropdown();
     }
+
+    // Synchronous initial render of default curated packages
+    renderCategories();
 
     function populateDropdown() {
         if (!serviceSelect) return;

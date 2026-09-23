@@ -47,7 +47,7 @@
     }
     </script>
 
-    <link rel="stylesheet" href="../style.css?v=perf-v37">
+    <link rel="stylesheet" href="../style.css?v=perf-v51">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
 
 
@@ -71,6 +71,7 @@
 
 <body>
     <canvas id="bg-canvas"></canvas>
+    <canvas id="services-hero-canvas"></canvas>
 
     <main class="container">
         <!-- Global Navigation Header -->
@@ -98,7 +99,7 @@
                             Hub</a></li>
                     <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
                             data-vi="Liên Hệ">Contact Us</a></li>
-                    <li><button id="nav-login-btn" class="nav-login-btn" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký"></button></li>
+                    <li><button id="nav-login-btn" class="nav-login-btn ready" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký">Đăng Nhập | Đăng Ký</button></li>
                 </ul>
             <div class="mobile-nav-widgets">
                 <div class="mobile-widget-row">
@@ -114,24 +115,21 @@
         </nav>
         </header>
 
-        <!-- Services Hero: Premium Studio Architectural Branding -->
-        <section id="hero" class="services-hero-section">
+        <!-- Services Hero: Studio Architectural Branding -->
+        <section id="hero" class="editorial-hero services-hero-section">
             <div class="hero-ambient-glow"></div>
-            
-            <div class="services-hero-center">
-                <span class="section-tag services-hero-tag" data-en="[ 03 // ARCHITECTURAL SOLUTIONS &amp; SERVICES ]" data-vi="[ 03 // HỆ THỐNG DỊCH VỤ &amp; GIẢI PHÁP ]">
-                    [ 03 // HỆ THỐNG DỊCH VỤ &amp; GIẢI PHÁP ]
-                </span>
+            <div class="hero-ambient-glow-secondary"></div>
 
-                <h1 class="services-hero-title">
-                    <span class="title-solid" data-en="SERVICES &amp;" data-vi="DỊCH VỤ &amp;">DỊCH VỤ &amp;</span>
-                    <span class="title-gradient" data-en="SOLUTIONS" data-vi="GIẢI PHÁP SỐ">GIẢI PHÁP SỐ</span>
+            <div class="services-hero-center">
+                <h1 class="editorial-hero-title">
+                    <span class="mask-wrap"><span class="title-line" data-en="SERVICES &amp;" data-vi="DỊCH VỤ &amp;">DỊCH VỤ &amp;</span></span>
+                    <span class="mask-wrap"><span class="title-line editorial-hero-sub" data-en="SOLUTIONS" data-vi="GIẢI PHÁP SỐ">GIẢI PHÁP SỐ</span></span>
                 </h1>
 
-                <p class="services-hero-sub"
-                   data-en="Turnkey digital identity hubs, high-velocity social growth platforms, and verified creative utilities."
-                   data-vi="Khởi tạo định danh cá nhân độc bản, hệ thống tăng trưởng mạng xã hội và tiện ích công nghệ.">
-                    Khởi tạo định danh cá nhân độc bản, hệ thống tăng trưởng mạng xã hội và tiện ích công nghệ.
+                <p class="editorial-manifesto-text"
+                   data-en="Custom personal portfolio websites, reliable social growth services, and smart digital utilities."
+                   data-vi="Dịch vụ làm website hồ sơ cá nhân theo yêu cầu, tăng tương tác mạng xã hội uy tín và tiện ích số tiện lợi.">
+                    Dịch vụ làm website hồ sơ cá nhân theo yêu cầu, tăng tương tác mạng xã hội uy tín và tiện ích số tiện lợi.
                 </p>
             </div>
         </section>
@@ -192,7 +190,7 @@
                 <div class="service-cat-info">
                     <div class="service-cat-kicker-row">
                         <span class="service-cat-kicker" data-en="[ 02 // SOCIAL GROWTH ]" data-vi="[ 02 // TĂNG TRƯỞNG MẠNG XÃ HỘI ]">[ 02 // TĂNG TRƯỞNG MẠNG XÃ HỘI ]</span>
-                        
+                        <span class="badge-recommended" data-en="★ Recommended: Facebook Follow" data-vi="★ Khuyên dùng: Follow Facebook">★ Khuyên dùng: Follow Facebook</span>
                     </div>
 
                     <h2 class="service-cat-heading" data-en="Social Media Engagement &amp; Growth (Meta &amp; TikTok)" data-vi="Tăng Tương Tác Mạng Xã Hội (Facebook, TikTok, Instagram)">
@@ -204,17 +202,20 @@
                         Dịch vụ tăng like, theo dõi (follow), lượt xem và bình luận uy tín cho Facebook, TikTok, Instagram, Threads. Khớp đơn tự động, bảo mật 100% không cần cung cấp mật khẩu, nạp tiền tự động qua VietQR.
                     </p>
                     <div class="service-cat-perks">
-                        <span class="perk-tag"><span class="perk-check">&check;</span> Tăng like bài viết, follow trang cá nhân &amp; fanpage</span>
-                        <span class="perk-tag"><span class="perk-check">&check;</span> Tự động tìm UID theo link cực kỳ nhanh chóng</span>
-                        <span class="perk-tag"><span class="perk-check">&check;</span> Nạp tiền tiện lợi, tra cứu tiến độ đơn hàng dễ dàng</span>
+                        <span class="perk-tag perk-highlight"><span class="perk-check">★</span> <span data-en="Recommended: Facebook Follow (Profile &amp; Fanpage) - High authority" data-vi="Khuyên dùng: Follow Facebook (Trang cá nhân &amp; Fanpage) - Tối ưu uy tín">Khuyên dùng: Follow Facebook (Trang cá nhân &amp; Fanpage) - Tối ưu uy tín</span></span>
+                        <span class="perk-tag"><span class="perk-check">&check;</span> <span data-en="Post Like &amp; Heart from only ~16 đ / 1 like" data-vi="Like bài viết, thả tim chỉ từ ~16 đ / 1 like">Like bài viết, thả tim chỉ từ ~16 đ / 1 like</span></span>
+                        <span class="perk-tag"><span class="perk-check">&check;</span> <span data-en="Auto find UID by link, instant order execution" data-vi="Tự động tìm UID theo link, khớp đơn tức thì">Tự động tìm UID theo link, khớp đơn tức thì</span></span>
                     </div>
                 </div>
 
                 <div class="service-cat-action">
                     <div class="service-cat-price">
-                        <span class="price-type" data-en="Starting from" data-vi="Đơn giá từ">Đơn giá từ</span>
+                        <span class="price-type price-type-recommended" data-en="★ Recommended: Facebook Follow" data-vi="★ Khuyên dùng: Follow Facebook">★ Khuyên dùng: Follow Facebook</span>
                         <div class="price-val-wrap">
-                            <span class="price-val" style="font-size: 1.45rem;">0.6 đ <span class="price-unit">/ lượt</span></span>
+                            <span class="price-val" style="font-size: 1.5rem;">~19 đ <span class="price-unit" data-en="/ 1 follow" data-vi="/ 1 follow">/ 1 follow</span></span>
+                        </div>
+                        <div class="price-sub-note">
+                            <span data-en="Like / Heart from ~16 đ / 1 like" data-vi="Like / Thả tim từ ~16 đ / 1 like">Like / Thả tim từ ~16 đ / 1 like</span>
                         </div>
                     </div>
                     <a href="social/" class="service-cat-btn primary-btn"
@@ -245,7 +246,7 @@
                        data-vi="Cửa hàng mua bán tài khoản game Liên Quân Mobile uy tín, giao dịch an toàn và có bảo hành. Hiện hệ thống đang tạm ngưng hoạt động để nâng cấp máy chủ, sẽ mở lại sớm cho bạn.">
                         Cửa hàng mua bán tài khoản game Liên Quân Mobile uy tín, giao dịch an toàn và có bảo hành. Hiện hệ thống đang tạm ngưng hoạt động để nâng cấp máy chủ, sẽ mở lại sớm cho bạn.
                     </p>
-                    <div class="service-cat-perks" style="opacity: 0.6;">
+                    <div class="service-cat-perks">
                         <span class="perk-tag">&bull; Hệ thống máy chủ đang nâng cấp</span>
                         <span class="perk-tag">&bull; Bảo trì quy trình giao dịch bảo mật</span>
                     </div>
@@ -526,7 +527,7 @@
 
     
     
-    <script src="../script.js?v=perf-v37"></script>
-</body>
+    <script src="../script.js?v=perf-v51"></script>
+    </body>
 
 </html>

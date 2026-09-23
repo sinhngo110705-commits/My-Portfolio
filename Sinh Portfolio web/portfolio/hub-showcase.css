@@ -120,22 +120,26 @@
 /* Editorial Hero Title */
 .editorial-hero-title {
     font-family: var(--hub-font-heading);
-    font-size: clamp(3rem, 7.5vw, 6.5rem);
+    font-size: clamp(2.8rem, 7vw, 6.2rem);
     font-weight: 900;
-    line-height: 0.95;
-    letter-spacing: -0.04em;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
     text-transform: uppercase;
     color: var(--hub-text-main);
     margin: 0 0 1.5rem 0;
     cursor: default;
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.22em;
 }
 
 .mask-wrap {
-    display: inline-block;
-    overflow: hidden;
-    padding-bottom: 0.08em;
+    display: inline-flex;
+    overflow: visible !important;
+    padding: 0.12em 0 0.08em 0;
+    vertical-align: middle;
 }
 
 .title-line {
@@ -149,6 +153,8 @@
     opacity: 0.9;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
+    padding-right: 0.06em;
+    display: inline-block;
 }
 
 .editorial-hero-title:hover .editorial-hero-sub {
@@ -853,7 +859,7 @@
 
 .hub-bracket-info p {
     font-size: 0.78rem;
-    color: var(--hub-text-dim);
+    color: #cbd5e1;
     font-weight: 600;
 }
 
@@ -1100,7 +1106,7 @@
 .hub-card-school {
     font-size: 0.72rem;
     font-weight: 600;
-    color: var(--hub-text-dim);
+    color: #cbd5e1;
 }
 
 /* Power Meter Bar on Card */
@@ -1116,7 +1122,7 @@
     font-size: 0.68rem;
     font-family: var(--hub-font-mono);
     font-weight: 700;
-    color: var(--hub-text-dim);
+    color: #cbd5e1;
     margin-bottom: 0.3rem;
 }
 
@@ -1153,9 +1159,9 @@
 .hub-skill-chip {
     font-size: 0.62rem;
     font-weight: 700;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: var(--hub-text-dim);
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #e2e8f0;
     padding: 0.2rem 0.5rem;
     border-radius: 6px;
     letter-spacing: 0.02em;
@@ -1543,7 +1549,8 @@
 .hub-dossier-bio {
     font-size: 0.9rem;
     line-height: 1.7;
-    color: var(--hub-text-dim);
+    color: #e2e8f0;
+    font-weight: 500;
 }
 
 .hub-dossier-skill-bars {
@@ -1779,8 +1786,8 @@
 }
 
 .threshold-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
     padding: 0.75rem 0.85rem;
     display: flex;
@@ -1832,7 +1839,8 @@
 .threshold-desc {
     font-size: 0.72rem;
     line-height: 1.5;
-    color: var(--hub-text-dim);
+    color: #cbd5e1;
+    font-weight: 500;
 }
 
 .light-mode .threshold-desc {
@@ -1933,8 +1941,8 @@
     border-radius: 12px;
     margin-bottom: 1.25rem;
     text-align: left;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .light-mode .hub-modal-telemetry-box {
@@ -1952,7 +1960,7 @@
 .telemetry-row:last-child { margin-bottom: 0; }
 
 .telemetry-label {
-    color: #94a3b8;
+    color: #cbd5e1;
     font-weight: 700;
     letter-spacing: 0.05em;
 }
@@ -1965,7 +1973,7 @@
 .telemetry-val-cyan { color: #00F0FF; font-weight: 800; }
 .telemetry-val-pink { color: #FF2A85; font-weight: 800; }
 .telemetry-val-emerald { color: #10B981; font-weight: 800; }
-.telemetry-val-neutral { color: #cbd5e1; font-weight: 700; }
+.telemetry-val-neutral { color: #f8fafc; font-weight: 700; }
 
 .light-mode .telemetry-val-cyan { color: #0284c7 !important; font-weight: 900 !important; }
 .light-mode .telemetry-val-pink { color: #db2777 !important; font-weight: 900 !important; }
@@ -1976,11 +1984,11 @@
     font-size: 0.82rem;
     font-weight: 600;
     line-height: 1.6;
-    color: #e2e8f0;
-    background: rgba(255, 255, 255, 0.06);
+    color: #f8fafc;
+    background: rgba(255, 255, 255, 0.07);
     padding: 0.85rem 1rem;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .light-mode .hub-modal-accolades-box {
@@ -2057,6 +2065,10 @@ body.hub-modal-open #chatbot-container {
     display: flex !important;
     flex-direction: column !important;
     position: relative !important;
+    background: #0b0d14 !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.85) !important;
+    color: #f8fafc !important;
 }
 
 .light-mode .hub-modal-rubric {
