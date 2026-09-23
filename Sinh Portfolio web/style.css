@@ -5466,7 +5466,7 @@ select option {
 }
 
 .light-mode .section-tag {
-    color: #008da6;
+    color: #0369a1;
 }
 
 .editorial-section-title {
@@ -7232,3 +7232,4 @@ select option {
     line-height: 1.7;
     color: var(--text-muted);
 }
+

@@ -67,89 +67,48 @@ function initScrollProgress() {
 
 function initScrollAnimations() {
     if (typeof gsap === 'undefined') return;
-    // Hero Entrance
-    const avatar = document.querySelector('.avatar-container');
-    if (avatar) {
-        gsap.from(avatar, {
-            duration: 1.2,
-            y: 50,
-            opacity: 0,
-            ease: 'power3.out'
-        });
-    }
-
-    const titles = document.querySelectorAll('.glitch, .tagline-sub, .tagline');
-    if (titles.length > 0) {
-        gsap.fromTo(titles,
-            { y: 30, opacity: 0 },
-            {
-                duration: 1,
-                y: 0,
-                opacity: 1,
-                stagger: 0.2,
-                delay: 0.3,
-                ease: 'power3.out'
-            }
-        );
-    }
-
-    const socialBtns = document.querySelectorAll('.social-btn');
-    if (socialBtns.length > 0) {
-        gsap.fromTo(socialBtns,
-            { y: 20, opacity: 0 },
-            {
-                duration: 0.8,
-                y: 0,
-                opacity: 1,
-                stagger: 0.15,
-                delay: 0.9,
-                ease: 'back.out(1.7)'
-            }
-        );
-    }
 
     // ==========================================
     // MENG TO CINEMATIC MOTION SYSTEM (Awwwards / Studio-Grade)
     // ==========================================
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
-    if (!prefersReducedMotion && typeof gsap !== 'undefined') {
+    if (!prefersReducedMotion) {
         gsap.defaults({ ease: 'power3.out', duration: 0.85 });
 
-        // 1. Hero Entrance: Masked Line Reveal & Laser Sweep
+        const isMobile = window.innerWidth <= 768 || window.matchMedia('(pointer: coarse)').matches;
+
+        // 1. Hero Entrance: Masked Line Reveal & Laser Sweep (Desktop Only)
+        // On mobile, keep hero 100% static so the LCP element (manifesto) is painted by native browser engine with 0ms delay.
         const titleLines = document.querySelectorAll('.title-line');
         const metaBar = document.querySelector('.editorial-meta-bar');
         const manifesto = document.querySelector('.editorial-manifesto-text');
         const ctas = document.querySelectorAll('.editorial-cta-row a, .commission-gate a');
         const hairlines = document.querySelectorAll('.hairline');
 
-        if (titleLines.length > 0) {
+        if (!isMobile && titleLines.length > 0) {
             const heroTl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
             if (metaBar) {
                 heroTl.fromTo(metaBar, { y: -18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' });
             }
 
-            const isMobile = window.innerWidth <= 768 || window.matchMedia('(pointer: coarse)').matches;
-            if (isMobile) {
-                heroTl.from(titleLines, { y: 15, duration: 0.45, stagger: 0.06, ease: 'power2.out' });
-            } else {
-                heroTl.fromTo(titleLines, 
-                    { yPercent: 115 }, 
-                    { 
-                        yPercent: 0, 
-                        duration: 1.1, 
-                        stagger: 0.12, 
-                        ease: 'power4.out',
-                        onComplete: () => {
-                            document.querySelectorAll('.mask-wrap').forEach(w => {
-                                w.style.overflow = 'visible';
-                            });
-                        }
-                    },
-                    "-=0.5"
-                );
-            }
+            heroTl.fromTo(titleLines, 
+                { yPercent: 115 }, 
+                { 
+                    yPercent: 0, 
+                    duration: 1.1, 
+                    stagger: 0.12, 
+                    ease: 'power4.out',
+                    onComplete: () => {
+                        document.querySelectorAll('.mask-wrap').forEach(w => {
+                            w.style.overflow = 'visible';
+                        });
+                    }
+                },
+                "-=0.5"
+            );
+
             if (manifesto) {
                 heroTl.from(manifesto, { y: 12, duration: 0.5, ease: 'power2.out' }, "<0.1");
             }
@@ -159,8 +118,6 @@ function initScrollAnimations() {
             if (hairlines.length > 0) {
                 heroTl.fromTo(hairlines[0], { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: 1.2, ease: 'power3.inOut' }, "-=0.5");
             }
-
-            // Hero Drift removed for 120fps buttery smooth scrolling
         }
 
         // 2. Meng To Magnetic Button Physics (Pointer Reactive Inertia)
