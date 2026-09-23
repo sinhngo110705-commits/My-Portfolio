@@ -11,24 +11,35 @@ document.addEventListener('DOMContentLoaded', () => {
         try { gsap.registerPlugin(ScrollTrigger); } catch(e) {}
     }
 
-    runSafe(initBackgroundAnimation, 'BackgroundAnimation');
-    runSafe(initLiveTelemetry, 'LiveTelemetry');
-    runSafe(initCardSpotlights, 'CardSpotlights');
-    runSafe(ensureMobileWidgets, 'EnsureMobileWidgets');
-    runSafe(initLanguageToggle, 'LanguageToggle');
+    // Critical UI initializations (Immediate)
     runSafe(initThemeToggle, 'ThemeToggle');
-    runSafe(initServicesDirectory, 'ServicesDirectory');
-    runSafe(initSmmTerminal, 'SmmTerminal');
-    runSafe(initChatbot, 'Chatbot');
-    runSafe(initAuthModal, 'AuthModal');
-    runSafe(initDashboard, 'Dashboard');
-    runSafe(initTopUpModal, 'TopUpModal');
+    runSafe(initLanguageToggle, 'LanguageToggle');
     runSafe(initMobileMenu, 'MobileMenu');
-    runSafe(initScrollProgress, 'ScrollProgress');
     runSafe(initScrollAnimations, 'ScrollAnimations');
-    runSafe(initHoverEffects, 'HoverEffects');
-    runSafe(initPortfolioFilters, 'PortfolioFilters');
-    runSafe(initGalleryToggle, 'GalleryToggle');
+
+    // Defer non-critical features to idle time so main thread stays 100% free for FCP/LCP
+    const runIdle = (fn, name) => {
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => runSafe(fn, name), { timeout: 2000 });
+        } else {
+            setTimeout(() => runSafe(fn, name), 100);
+        }
+    };
+
+    runIdle(initBackgroundAnimation, 'BackgroundAnimation');
+    runIdle(initScrollProgress, 'ScrollProgress');
+    runIdle(initCardSpotlights, 'CardSpotlights');
+    runIdle(initLiveTelemetry, 'LiveTelemetry');
+    runIdle(initHoverEffects, 'HoverEffects');
+    runIdle(initServicesDirectory, 'ServicesDirectory');
+    runIdle(initSmmTerminal, 'SmmTerminal');
+    runIdle(initChatbot, 'Chatbot');
+    runIdle(initAuthModal, 'AuthModal');
+    runIdle(initDashboard, 'Dashboard');
+    runIdle(initTopUpModal, 'TopUpModal');
+    runIdle(initPortfolioFilters, 'PortfolioFilters');
+    runIdle(initGalleryToggle, 'GalleryToggle');
+    runIdle(ensureMobileWidgets, 'EnsureMobileWidgets');
 });
 
 function initScrollProgress() {
