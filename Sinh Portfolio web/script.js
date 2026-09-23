@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const runSafe = (fn, name) => {
         try {
             if (typeof fn === 'function') fn();
@@ -651,7 +651,7 @@ function updateAllTranslations() {
             langBtn.innerHTML = `<span style="font-weight:900; font-family:var(--font-heading); font-size:0.95rem; letter-spacing:0.5px;">${code}</span>`;
         }
         langBtn.setAttribute('title', currentLang === 'vi' ? 'Đang hiển thị Tiếng Việt (Bấm để chuyển sang English)' : 'Currently English (Click to switch to Tiếng Việt)');
-        langBtn.setAttribute('aria-label', currentLang === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt');
+        langBtn.setAttribute('aria-label', currentLang === 'vi' ? 'Ngôn ngữ VI - Chuyển sang English' : 'Language EN - Switch to Tiếng Việt');
     });
 
     // 1. Text elements

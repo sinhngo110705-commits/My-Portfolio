@@ -5941,7 +5941,7 @@ select option {
 }
 
 .light-mode .editorial-footer .footer-location {
-    color: #008da6;
+    color: #006b80;
 }
 
 .editorial-footer .footer-col-title {
@@ -7070,4 +7070,17 @@ select option {
     .service-cat-price {
         align-items: flex-start;
     }
+}
+
+/* Accessibility & Crawler Utility: Screen Reader Only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
 }

@@ -1,0 +1,27 @@
+# Teemous Digital Lab
+
+> Teemous Digital Lab is a specialized digital identity & AI creative engineering lab founded by Ngô Quang Sinh in Da Nang, Vietnam. It engineers bespoke digital portfolio hubs, autonomous AI agent workflows, and turnkey cloud infrastructure for ambitious Gen Z builders, students, and young professionals.
+
+## Core Capabilities & Services
+- Living Portfolio Hubs: High-performance, bespoke personal branding and portfolio websites replacing flat PDF resumes with verified credentials and proof of work.
+- Autonomous AI Agents: Purpose-built conversational AI agents answering recruiter questions 24/7 and specialized workflow automation tools.
+- Turnkey Digital Infrastructure: Scalable edge deployment on custom domains with Cloudflare security.
+- Social Media Growth Terminal: Strategic engagement acceleration across Meta & TikTok ecosystems.
+
+## Flagship Portfolio Showcase
+- Trần Thị Thùy Dương: Software Engineering & Algorithms (VKU, Top 6 SheCodes, ICPC National).
+- Lê Thái Trung: Backend Development & Distributed Architecture.
+- Ngô Quang Sinh: Founder, AI Automation & Digital Systems (Duy Tân University).
+- Bùi Lưu Bảo Hân: HR Operations & Community Building.
+
+## Official URLs & Navigation
+- Main Website: https://teemousdigital.id.vn/
+- Portfolio Showcase: https://teemousdigital.id.vn/portfolio/
+- Services & Shop: https://teemousdigital.id.vn/services/
+- Commission Hub: https://teemousdigital.id.vn/services/get-portfolio/
+
+## Contact & Location
+- Headquarters: Da Nang, Vietnam
+- Email: teemous.contact@gmail.com
+- Founder: Ngô Quang Sinh (https://facebook.com/quang.sinh.5492)
+- Direct Inquiries: https://zalo.me/0797747297

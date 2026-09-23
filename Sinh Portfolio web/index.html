@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" data-lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teemous Digital Lab | Architectural Identity &amp; Autonomous Systems</title>
+    <title>Teemous Digital Lab | Thiết Kế Portfolio &amp; Hệ Thống AI Độc Bản</title>
     <link rel="icon" href="Logo/favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="Logo/favicon.png">
     <link rel="canonical" href="https://teemousdigital.id.vn/">
     <meta name="description"
-        content="Teemous Digital Lab engineers bespoke portfolio hubs, autonomous AI agents, and turnkey cloud infrastructure for ambitious Gen Z builders.">
+        content="Teemous Digital Lab thiết kế hồ sơ năng lực số (Portfolio Hub) độc bản, hệ thống trợ lý AI và hạ tầng số cho sinh viên, lập trình viên và Gen Z tại Việt Nam.">
+    <meta name="keywords"
+        content="thiết kế portfolio, portfolio website sinh viên, digital portfolio, personal branding, AI automation, teemous digital, đà nẵng">
 
     <!-- Site Name for Search Results -->
     <meta name="application-name" content="Teemous Digital">
@@ -19,21 +21,40 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://teemousdigital.id.vn/">
     <meta property="og:site_name" content="Teemous Digital">
-    <meta property="og:title" content="Build a Professional Digital Portfolio | Teemous Digital">
+    <meta property="og:title" content="Teemous Digital Lab | Thiết Kế Portfolio &amp; Hệ Thống AI Độc Bản">
     <meta property="og:description"
-        content="TeemousDigital — Your Personal Branding Partner for personal branding facelift and digital presence.">
+        content="Teemous Digital Lab thiết kế hồ sơ năng lực số (Portfolio Hub) độc bản, hệ thống trợ lý AI và hạ tầng số cho sinh viên, lập trình viên và Gen Z tại Việt Nam.">
     <meta property="og:image" content="https://teemousdigital.id.vn/Logo/logo.png">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://teemousdigital.id.vn/">
-    <meta name="twitter:title" content="Build a Professional Digital Portfolio | Teemous Digital">
-    <meta name="twitter:description" content="Build a professional digital portfolio and elevate your personal brand. Teemous Digital helps Gen Z students and young professionals create a standout online presence.">
+    <meta name="twitter:title" content="Teemous Digital Lab | Thiết Kế Portfolio &amp; Hệ Thống AI Độc Bản">
+    <meta name="twitter:description"
+        content="Teemous Digital Lab thiết kế hồ sơ năng lực số (Portfolio Hub) độc bản, hệ thống trợ lý AI và hạ tầng số cho sinh viên, lập trình viên và Gen Z tại Việt Nam.">
     <meta name="twitter:image" content="https://teemousdigital.id.vn/Logo/logo.png">
 
-    <!-- Structured Data (JSON-LD) for SEO -->
+    <!-- Structured Data (JSON-LD) for SEO & Local E-E-A-T -->
     <script type="application/ld+json">
     [
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Teemous Digital Lab",
+        "image": "https://teemousdigital.id.vn/Logo/logo.png",
+        "url": "https://teemousdigital.id.vn",
+        "telephone": "+84797747297",
+        "email": "teemous.contact@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Da Nang",
+          "addressCountry": "VN"
+        },
+        "priceRange": "$$",
+        "sameAs": [
+          "https://www.facebook.com/quang.sinh.5492"
+        ]
+      },
       {
         "@context": "https://schema.org",
         "@type": "Organization",
@@ -51,8 +72,16 @@
               "@type": "Offer",
               "itemOffered": {
                 "@type": "Service",
-                "name": "Build Professional Portfolio",
-                "description": "Professional digital portfolio initialization and curation."
+                "name": "Living Portfolio Hubs",
+                "description": "Bespoke personal portfolio website architected for ambitious students and builders."
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "AI Agents & Custom Tools",
+                "description": "Autonomous AI agent workflows and custom digital tooling."
               }
             }
           ]
@@ -67,7 +96,11 @@
       }
     ]
     </script>
-    <link rel="stylesheet" href="style.css?v=perf-v50">
+
+    <!-- Font Preconnect & Performance Optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="style.css?v=perf-v51">
     <!-- Updated Font to Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
 
@@ -94,7 +127,7 @@
         <header class="global-header">
             <div class="header-logo">
                 <a href="index.html">
-                    <img src="Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img"
+                    <img src="Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img" width="32" height="32"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
                     <span style="display:none;">TD</span>
                 </a>
@@ -144,6 +177,7 @@
                 <h1 class="editorial-hero-title">
                     <span class="mask-wrap"><span class="title-line">TEEMOUS</span></span>
                     <span class="mask-wrap"><span class="title-line editorial-hero-sub">DIGITAL LAB</span></span>
+                    <span class="sr-only"> — Thiết kế Digital Portfolio &amp; Hệ thống Trợ lý AI cho Sinh viên &amp; Gen Z</span>
                 </h1>
 
                 <div class="editorial-hero-footer">
@@ -193,7 +227,7 @@
                     <span class="lookbook-crosshair ch-bl">+</span>
                     <span class="lookbook-crosshair ch-br">+</span>
                     <div class="lookbook-media-wrap">
-                        <img src="Avatar/tttduong.jpg" alt="Trần Thị Thùy Dương" class="lookbook-img" loading="lazy" decoding="async">
+                        <img src="Avatar/tttduong.jpg" alt="Hồ sơ năng lực cá nhân ngành Kỹ nghệ phần mềm - Trần Thị Thùy Dương (VKU)" width="275" height="330" class="lookbook-img" loading="lazy" decoding="async">
                         <div class="lookbook-overlay"></div>
                     </div>
                     <div class="lookbook-info">
@@ -217,7 +251,7 @@
                     <span class="lookbook-crosshair ch-bl">+</span>
                     <span class="lookbook-crosshair ch-br">+</span>
                     <div class="lookbook-media-wrap">
-                        <img src="Avatar/lethaitrung2003.jpg" alt="Lê Thái Trung" class="lookbook-img" loading="lazy" decoding="async">
+                        <img src="Avatar/lethaitrung2003.jpg" alt="Hồ sơ năng lực Lập trình viên Backend &amp; Kiến trúc hệ thống - Lê Thái Trung" width="275" height="330" class="lookbook-img" loading="lazy" decoding="async">
                         <div class="lookbook-overlay"></div>
                     </div>
                     <div class="lookbook-info">
@@ -241,7 +275,7 @@
                     <span class="lookbook-crosshair ch-bl">+</span>
                     <span class="lookbook-crosshair ch-br">+</span>
                     <div class="lookbook-media-wrap">
-                        <img src="Avatar/IMG_5907_compressed.jpg" alt="Ngô Quang Sinh" class="lookbook-img" loading="lazy" decoding="async">
+                        <img src="Avatar/IMG_5907_compressed.jpg" alt="Hồ sơ năng lực Nhà sáng lập &amp; AI Automation - Ngô Quang Sinh (Đại học Duy Tân)" width="275" height="330" class="lookbook-img" loading="lazy" decoding="async">
                         <div class="lookbook-overlay"></div>
                     </div>
                     <div class="lookbook-info">
@@ -265,7 +299,7 @@
                     <span class="lookbook-crosshair ch-bl">+</span>
                     <span class="lookbook-crosshair ch-br">+</span>
                     <div class="lookbook-media-wrap">
-                        <img src="Avatar/baohan2007.jpg" alt="Bùi Lưu Bảo Hân" class="lookbook-img" loading="lazy" decoding="async">
+                        <img src="Avatar/baohan2007.jpg" alt="Hồ sơ năng lực Vận hành Nhân sự &amp; Phát triển cộng đồng - Bùi Lưu Bảo Hân" width="275" height="330" class="lookbook-img" loading="lazy" decoding="async">
                         <div class="lookbook-overlay"></div>
                     </div>
                     <div class="lookbook-info">
@@ -391,8 +425,8 @@
                 <div class="footer-col-title" data-en="CONNECT" data-vi="KẾT NỐI">CONNECT</div>
                 <ul class="footer-links">
                     <li><a href="mailto:teemous.contact@gmail.com">Email: teemous.contact@gmail.com</a></li>
-                    <li><a href="https://zalo.me/0797747297" target="_blank" rel="noopener">Zalo: 0797747297 &rarr;</a></li>
-                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" rel="noopener">Facebook: Quang Sinh &rarr;</a></li>
+                    <li><a href="https://zalo.me/0797747297" target="_blank" rel="noopener noreferrer">Zalo: 0797747297 &rarr;</a></li>
+                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" rel="noopener noreferrer">Facebook: Quang Sinh &rarr;</a></li>
                 </ul>
             </div>
         </div>
@@ -406,12 +440,12 @@
     <!-- Fixed UI Controls -->
     <div class="ui-controls">
         <!-- Light/Dark Mode Toggle -->
-        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme">
+        <button id="theme-toggle" class="theme-toggle neon-border" title="Toggle Theme" aria-label="Chuyển chế độ sáng tối">
             <span class="mode-icon">🌙</span>
         </button>
 
         <!-- Global Translation Sticky Label -->
-        <button id="lang-toggle" class="lang-toggle neon-border">VI</button>
+        <button id="lang-toggle" class="lang-toggle neon-border" title="Đang hiển thị Tiếng Việt (Bấm để chuyển sang English)" aria-label="Ngôn ngữ VI - Chuyển sang English">VI</button>
     </div>
 
     <!-- Chatbot AI Local -->
