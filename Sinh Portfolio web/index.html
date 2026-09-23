@@ -100,9 +100,14 @@
     <!-- Font Preconnect & Performance Optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="style.css?v=perf-v51">
-    <!-- Updated Font to Montserrat -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="style.css?v=perf-v55">
+    <!-- Non-render-blocking Combined Google Fonts (Montserrat & Space Grotesk) -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&family=Space+Grotesk:wght@300;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&family=Space+Grotesk:wght@300;700&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&family=Space+Grotesk:wght@300;700&display=swap">
+    </noscript>
 
     <!-- Theme Initialization Script (Prevent FOUC) -->
     <script>
@@ -127,8 +132,11 @@
         <header class="global-header">
             <div class="header-logo">
                 <a href="index.html">
-                    <img src="Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img" width="32" height="32"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <picture>
+                        <source srcset="Logo/logo.webp" type="image/webp">
+                        <img src="Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img" width="32" height="32"
+                            onerror="this.style.display='none'; this.closest('a').querySelector('span').style.display='inline';">
+                    </picture>
                     <span style="display:none;">TD</span>
                 </a>
             </div>
@@ -227,7 +235,10 @@
                     <span class="lookbook-crosshair ch-bl">+</span>
                     <span class="lookbook-crosshair ch-br">+</span>
                     <div class="lookbook-media-wrap">
-                        <img src="Avatar/tttduong.jpg" alt="Hồ sơ năng lực cá nhân ngành Kỹ nghệ phần mềm - Trần Thị Thùy Dương (VKU)" width="275" height="330" class="lookbook-img" loading="lazy" decoding="async">
+                        <picture>
+                            <source srcset="Avatar/tttduong.webp" type="image/webp">
+                            <img src="Avatar/tttduong.jpg" alt="Hồ sơ năng lực cá nhân ngành Kỹ nghệ phần mềm - Trần Thị Thùy Dương (VKU)" width="275" height="330" class="lookbook-img" loading="lazy" decoding="async">
+                        </picture>
                         <div class="lookbook-overlay"></div>
                     </div>
                     <div class="lookbook-info">
@@ -251,7 +262,10 @@
                     <span class="lookbook-crosshair ch-bl">+</span>
                     <span class="lookbook-crosshair ch-br">+</span>
                     <div class="lookbook-media-wrap">
-                        <img src="Avatar/lethaitrung2003.jpg" alt="Hồ sơ năng lực Lập trình viên Backend &amp; Kiến trúc hệ thống - Lê Thái Trung" width="275" height="330" class="lookbook-img" loading="lazy" decoding="async">
+                        <picture>
+                            <source srcset="Avatar/lethaitrung2003.webp" type="image/webp">
+                            <img src="Avatar/lethaitrung2003.jpg" alt="Hồ sơ năng lực Lập trình viên Backend &amp; Kiến trúc hệ thống - Lê Thái Trung" width="275" height="330" class="lookbook-img" loading="lazy" decoding="async">
+                        </picture>
                         <div class="lookbook-overlay"></div>
                     </div>
                     <div class="lookbook-info">
@@ -275,7 +289,10 @@
                     <span class="lookbook-crosshair ch-bl">+</span>
                     <span class="lookbook-crosshair ch-br">+</span>
                     <div class="lookbook-media-wrap">
-                        <img src="Avatar/IMG_5907_compressed.jpg" alt="Hồ sơ năng lực Nhà sáng lập &amp; AI Automation - Ngô Quang Sinh (Đại học Duy Tân)" width="275" height="330" class="lookbook-img" loading="lazy" decoding="async">
+                        <picture>
+                            <source srcset="Avatar/IMG_5907_compressed.webp" type="image/webp">
+                            <img src="Avatar/IMG_5907_compressed.jpg" alt="Hồ sơ năng lực Nhà sáng lập &amp; AI Automation - Ngô Quang Sinh (Đại học Duy Tân)" width="275" height="330" class="lookbook-img" loading="lazy" decoding="async">
+                        </picture>
                         <div class="lookbook-overlay"></div>
                     </div>
                     <div class="lookbook-info">
@@ -299,7 +316,10 @@
                     <span class="lookbook-crosshair ch-bl">+</span>
                     <span class="lookbook-crosshair ch-br">+</span>
                     <div class="lookbook-media-wrap">
-                        <img src="Avatar/baohan2007.jpg" alt="Hồ sơ năng lực Vận hành Nhân sự &amp; Phát triển cộng đồng - Bùi Lưu Bảo Hân" width="275" height="330" class="lookbook-img" loading="lazy" decoding="async">
+                        <picture>
+                            <source srcset="Avatar/baohan2007.webp" type="image/webp">
+                            <img src="Avatar/baohan2007.jpg" alt="Hồ sơ năng lực Vận hành Nhân sự &amp; Phát triển cộng đồng - Bùi Lưu Bảo Hân" width="275" height="330" class="lookbook-img" loading="lazy" decoding="async">
+                        </picture>
                         <div class="lookbook-overlay"></div>
                     </div>
                     <div class="lookbook-info">
@@ -788,10 +808,10 @@
         </div>
     </div>
 
-    <!-- Use CDN GSAP as fallback or main while local might conflict with simple static hosting -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="script.js?v=perf-v50"></script>
+    <!-- Use CDN GSAP with defer to ensure immediate DOM rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+    <script src="script.js?v=perf-v55" defer></script>
 </body>
 
 </html>

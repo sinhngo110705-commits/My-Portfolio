@@ -3,25 +3,26 @@
 > Teemous Digital Lab is a specialized digital identity & AI creative engineering lab founded by Ngô Quang Sinh in Da Nang, Vietnam. It engineers bespoke digital portfolio hubs, autonomous AI agent workflows, and turnkey cloud infrastructure for ambitious Gen Z builders, students, and young professionals.
 
 ## Core Capabilities & Services
-- Living Portfolio Hubs: High-performance, bespoke personal branding and portfolio websites replacing flat PDF resumes with verified credentials and proof of work.
-- Autonomous AI Agents: Purpose-built conversational AI agents answering recruiter questions 24/7 and specialized workflow automation tools.
-- Turnkey Digital Infrastructure: Scalable edge deployment on custom domains with Cloudflare security.
-- Social Media Growth Terminal: Strategic engagement acceleration across Meta & TikTok ecosystems.
+- [Living Portfolio Hubs](https://teemousdigital.id.vn/portfolio/): High-performance, bespoke personal branding and portfolio websites replacing flat PDF resumes with verified credentials and proof of work.
+- [Autonomous AI Agents](https://teemousdigital.id.vn/services/): Purpose-built conversational AI agents answering recruiter questions 24/7 and specialized workflow automation tools.
+- [Turnkey Digital Infrastructure](https://teemousdigital.id.vn/services/): Scalable edge deployment on custom domains with Cloudflare security.
+- [Social Media Growth Terminal](https://teemousdigital.id.vn/services/social/): Strategic engagement acceleration across Meta & TikTok ecosystems.
 
 ## Flagship Portfolio Showcase
-- Trần Thị Thùy Dương: Software Engineering & Algorithms (VKU, Top 6 SheCodes, ICPC National).
-- Lê Thái Trung: Backend Development & Distributed Architecture.
-- Ngô Quang Sinh: Founder, AI Automation & Digital Systems (Duy Tân University).
-- Bùi Lưu Bảo Hân: HR Operations & Community Building.
+- [Trần Thị Thùy Dương](https://teemousdigital.id.vn/portfolio/tranthithuyduong/): Software Engineering & Algorithms (VKU, Top 6 SheCodes, ICPC National).
+- [Lê Thái Trung](https://teemousdigital.id.vn/portfolio/lethaitrung/): Backend Development & Distributed Architecture.
+- [Ngô Quang Sinh](https://teemousdigital.id.vn/portfolio/ngoquangsinh/): Founder, AI Automation & Digital Systems (Duy Tân University).
+- [Bùi Lưu Bảo Hân](https://teemousdigital.id.vn/portfolio/builuubaohan/): HR Operations & Community Building.
 
-## Official URLs & Navigation
-- Main Website: https://teemousdigital.id.vn/
-- Portfolio Showcase: https://teemousdigital.id.vn/portfolio/
-- Services & Shop: https://teemousdigital.id.vn/services/
-- Commission Hub: https://teemousdigital.id.vn/services/get-portfolio/
+## Official Links
+- [Main Website](https://teemousdigital.id.vn/): High-performance digital portfolios and AI agents homepage.
+- [Portfolio Showcase](https://teemousdigital.id.vn/portfolio/): Directory of verified digital resumes.
+- [Services & Shop](https://teemousdigital.id.vn/services/): Atelier solutions and development packages.
+- [Commission Hub](https://teemousdigital.id.vn/services/get-portfolio/): Direct portfolio onboarding and request space.
+- [Social Media Services](https://teemousdigital.id.vn/services/social/): Automated Meta and TikTok acceleration.
 
 ## Contact & Location
 - Headquarters: Da Nang, Vietnam
 - Email: teemous.contact@gmail.com
-- Founder: Ngô Quang Sinh (https://facebook.com/quang.sinh.5492)
-- Direct Inquiries: https://zalo.me/0797747297
+- [Founder Profile (Facebook)](https://www.facebook.com/quang.sinh.5492): Direct personal profile of Ngô Quang Sinh
+- [Direct Inquiries (Zalo)](https://zalo.me/0797747297): Instant messaging support

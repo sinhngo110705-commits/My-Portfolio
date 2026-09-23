@@ -134,10 +134,10 @@ function initScrollAnimations() {
                 "-=0.5"
             );
             if (manifesto) {
-                heroTl.fromTo(manifesto, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out' }, "-=0.7");
+                heroTl.from(manifesto, { y: 12, duration: 0.6, ease: 'power2.out' }, "<0.1");
             }
             if (ctas.length > 0) {
-                heroTl.fromTo(ctas, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.08, ease: 'power3.out' }, "-=0.6");
+                heroTl.fromTo(ctas, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.06, ease: 'power3.out' }, "<0.15");
             }
             if (hairlines.length > 0) {
                 heroTl.fromTo(hairlines[0], { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: 1.2, ease: 'power3.inOut' }, "-=0.5");
