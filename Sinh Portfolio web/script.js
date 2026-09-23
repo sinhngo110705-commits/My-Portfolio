@@ -709,14 +709,14 @@ function updateThemeButtonText() {
 
     // FOOLPROOF ASSET PATH: Use the script's own src location to find the root
     let rootPath = '';
-    const scriptTag = document.querySelector('script[src*="script.js"]');
+    const scriptTag = document.querySelector('script[src*="script"]');
     if (scriptTag) {
         const src = scriptTag.getAttribute('src');
-        rootPath = src.split('script.js')[0];
+        rootPath = src.split(/script(?:\.min)?\.js/)[0] || '';
     }
 
-    const dayIcon = `${rootPath}Logo/daymodeicon.png`;
-    const nightIcon = `${rootPath}Logo/nightmodeicon.png`;
+    const dayIcon = `${rootPath}Logo/daymodeicon.webp`;
+    const nightIcon = `${rootPath}Logo/nightmodeicon.webp`;
     const currentIcon = isLight ? dayIcon : nightIcon;
     const fallbackEmoji = isLight ? '☀️' : '🌙';
 
