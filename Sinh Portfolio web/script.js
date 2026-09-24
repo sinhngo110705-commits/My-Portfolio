@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     runSafe(initThemeToggle, 'ThemeToggle');
     runSafe(initLanguageToggle, 'LanguageToggle');
     runSafe(initMobileMenu, 'MobileMenu');
-    runSafe(initScrollAnimations, 'ScrollAnimations');
 
     // Defer non-critical features to idle time so main thread stays 100% free for FCP/LCP
     const runIdle = (fn, name) => {
@@ -25,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => runSafe(fn, name), 100);
         }
     };
+
+    runIdle(initScrollAnimations, 'ScrollAnimations');
 
     runIdle(initBackgroundAnimation, 'BackgroundAnimation');
     runIdle(initScrollProgress, 'ScrollProgress');

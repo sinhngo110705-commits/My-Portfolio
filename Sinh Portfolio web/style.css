@@ -5288,9 +5288,9 @@ select option {
 
 .editorial-hero-title {
     font-family: var(--font-heading);
-    font-size: clamp(3.8rem, 10vw, 8.5rem);
+    font-size: clamp(2.6rem, 9.5vw, 8.5rem);
     font-weight: 900;
-    line-height: 0.92;
+    line-height: 0.95;
     letter-spacing: -0.04em;
     text-transform: uppercase;
     color: var(--text-main);
@@ -5306,6 +5306,7 @@ select option {
 
 .title-line {
     display: block;
+    white-space: nowrap;
     will-change: transform;
 }
 
