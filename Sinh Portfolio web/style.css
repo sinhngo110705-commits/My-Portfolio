@@ -5288,13 +5288,13 @@ select option {
 
 .editorial-hero-title {
     font-family: var(--font-heading);
-    font-size: clamp(3.2rem, 8.5vw, 7.5rem);
+    font-size: clamp(3.8rem, 10vw, 8.5rem);
     font-weight: 900;
-    line-height: 0.95;
+    line-height: 0.92;
     letter-spacing: -0.04em;
     text-transform: uppercase;
     color: var(--text-main);
-    margin: 0 0 3rem 0;
+    margin: 0 0 2.5rem 0;
     cursor: default;
 }
 
@@ -5311,8 +5311,8 @@ select option {
 
 .editorial-hero-sub {
     color: transparent;
-    -webkit-text-stroke: 1.5px var(--text-main);
-    opacity: 0.85;
+    -webkit-text-stroke: 2px var(--text-main);
+    opacity: 0.9;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     padding-right: 0.06em;
