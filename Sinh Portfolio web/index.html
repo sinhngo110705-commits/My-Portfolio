@@ -150,6 +150,7 @@
 
     <!-- Critical Above-The-Fold CSS (Sub-1s Instant Render, 0ms Render-Blocking) -->
     <style id="critical-hero-css">
+        @font-face{font-family:'Montserrat';font-style:normal;font-weight:900;font-display:swap;src:url(https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
         html{font-size:80%;}
         :root{--bg-base:#050505;--bg-alt:#0e111a;--text-main:#f0f0f0;--text-muted:#94a3b8;--neon-pink:#E91E63;--neon-purple:#9C27B0;--neon-blue:#2196F3;--gradient-brand:linear-gradient(135deg,var(--neon-pink),var(--neon-purple),var(--neon-blue));--glass-bg:rgba(255,255,255,0.045);--glass-border:rgba(255,255,255,0.13);--cyan-laser:#00f0ff;--brand-violet:#8b6ccf;--cyan-glow:rgba(0,240,255,0.4);--cyan-subtle:rgba(0,240,255,0.08);--cyan-border:rgba(0,240,255,0.2);--font-heading:'Montserrat',sans-serif;--font-body:'Montserrat',sans-serif;--font-tech:'Space Grotesk',sans-serif;}
         .light-mode{--cyan-laser:#0284c7;--brand-violet:#6d28d9;--cyan-glow:rgba(2,132,199,0.25);--cyan-subtle:rgba(2,132,199,0.08);--cyan-border:rgba(2,132,199,0.25);--bg-base:#f5f5f5;--bg-alt:#ffffff;--text-main:#000000;--text-muted:#4b5563;--neon-pink:#ff4081;--neon-purple:#d500f9;--neon-blue:#00b0ff;--gradient-brand:linear-gradient(135deg,var(--neon-pink),var(--neon-purple),var(--neon-blue));--glass-bg:rgba(0,0,0,0.03);--glass-border:rgba(0,0,0,0.1);}
@@ -170,10 +171,10 @@
         .nav-login-btn{padding:.55rem 1.4rem;border-radius:9999px;font-family:var(--font-heading);font-weight:700;font-size:.85rem;letter-spacing:.5px;cursor:pointer;background:linear-gradient(135deg,rgba(233,30,99,.2),rgba(33,150,243,.2));border:1px solid rgba(233,30,99,.4);color:var(--text-main);}
         .editorial-hero{min-height:calc(100vh - 1rem);display:flex;flex-direction:column;justify-content:space-between;padding:6.5rem 0 2rem;position:relative;width:100%;isolation:isolate;}
         .hero-ambient-glow{position:absolute;top:25%;left:50%;transform:translate(-50%,-20%);width:clamp(320px,65vw,850px);height:clamp(250px,45vw,480px);background:radial-gradient(ellipse at center,rgba(0,240,255,.14) 0%,rgba(124,92,173,.07) 35%,rgba(124,92,173,.01) 60%,transparent 75%);pointer-events:none;z-index:-1;opacity:.85;}
-        .editorial-meta-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;font-family:var(--font-tech);font-size:.8rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);padding-bottom:1.25rem;border-bottom:1px solid var(--glass-border);margin-bottom:3rem;}
+        .editorial-meta-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:gap;gap:1rem;font-family:var(--font-tech);font-size:.8rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);padding-bottom:1.25rem;border-bottom:1px solid var(--glass-border);margin-bottom:3rem;}
         .meta-status{display:inline-flex;align-items:center;gap:.6rem;color:var(--text-main);}
         .meta-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan-laser);box-shadow:0 0 10px var(--cyan-laser);}
-        .hero-brand-center{margin:auto 0;display:flex;flex-direction:column;width:100%;min-height:280px;contain:layout style;}
+        .hero-brand-center{margin:auto 0;display:flex;flex-direction:column;width:100%;contain:layout style;}
         .editorial-hero-title{font-family:var(--font-heading);font-size:clamp(2.6rem,9.5vw,8.5rem);font-weight:900;line-height:.95;letter-spacing:-.04em;text-transform:uppercase;color:var(--text-main);margin:0 0 2.5rem 0;cursor:default;}
         .mask-wrap{display:block;overflow:hidden;padding-bottom:.08em;}
         .title-line{display:block;white-space:nowrap;}
@@ -190,14 +191,14 @@
         .scroll-cue-arrow{font-size:.85rem;color:var(--cyan-laser);}
         .hairline{width:100%;height:1px;background:var(--glass-border);margin:4.5rem 0;border:none;}
         @media(max-width:850px){.editorial-hero-footer{grid-template-columns:1fr;gap:2rem;}.editorial-cta-row{justify-content:flex-start;}}
-        @media(max-width:768px){.global-header{padding:.8rem 1.2rem!important;}.mobile-menu-toggle{display:flex!important;}.header-nav{display:none;}.container{padding:0 1.2rem;}.editorial-hero{padding:5.5rem 0 1.5rem;min-height:auto;}.editorial-meta-bar{margin-bottom:2rem;}.editorial-hero-title{margin:0 0 1.75rem 0;}}
+        @media(max-width:768px){.global-header{padding:.8rem 1.2rem!important;}.mobile-menu-toggle{display:flex!important;}.header-nav{display:none;}.container{padding:0 1.2rem;}.editorial-hero{padding:5.5rem 0 1.5rem;min-height:auto;}.editorial-meta-bar{margin-bottom:2rem;}.hero-brand-center{margin:1.5rem 0 2rem 0!important;}.editorial-hero-title{margin:0 0 1.75rem 0;}}
     </style>
 
     <!-- Non-render-blocking Full Stylesheet -->
-    <link rel="preload" href="style.min.css?v=perf-v62" as="style">
-    <link rel="stylesheet" href="style.min.css?v=perf-v62" media="print" onload="this.media='all'">
+    <link rel="preload" href="style.min.css?v=perf-v63" as="style">
+    <link rel="stylesheet" href="style.min.css?v=perf-v63" media="print" onload="this.media='all'">
     <noscript>
-        <link rel="stylesheet" href="style.min.css?v=perf-v62">
+        <link rel="stylesheet" href="style.min.css?v=perf-v63">
     </noscript>
 
     <!-- Theme Initialization Script (Prevent FOUC) -->
@@ -985,7 +986,7 @@
     <!-- Use CDN GSAP with defer to ensure immediate DOM rendering -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
-    <script src="script.min.js?v=perf-v62" defer></script>
+    <script src="script.min.js?v=perf-v63" defer></script>
 </body>
 
 </html>

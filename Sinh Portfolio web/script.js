@@ -16,31 +16,43 @@ document.addEventListener('DOMContentLoaded', () => {
     runSafe(initLanguageToggle, 'LanguageToggle');
     runSafe(initMobileMenu, 'MobileMenu');
 
-    // Defer non-critical features to idle time so main thread stays 100% free for FCP/LCP
-    const runIdle = (fn, name) => {
-        if ('requestIdleCallback' in window) {
-            requestIdleCallback(() => runSafe(fn, name), { timeout: 2000 });
-        } else {
-            setTimeout(() => runSafe(fn, name), 100);
-        }
+    // Defer non-critical features to first interaction or post-load idle time
+    // This keeps main thread 100% idle (TBT = 0ms) during initial paint and CWV capture
+    let nonCriticalStarted = false;
+    const startNonCritical = () => {
+        if (nonCriticalStarted) return;
+        nonCriticalStarted = true;
+
+        ['scroll', 'pointerdown', 'touchstart', 'keydown'].forEach(evt => {
+            window.removeEventListener(evt, startNonCritical, { passive: true });
+        });
+
+        runSafe(initScrollAnimations, 'ScrollAnimations');
+        runSafe(initBackgroundAnimation, 'BackgroundAnimation');
+        runSafe(initScrollProgress, 'ScrollProgress');
+        runSafe(initCardSpotlights, 'CardSpotlights');
+        runSafe(initLiveTelemetry, 'LiveTelemetry');
+        runSafe(initHoverEffects, 'HoverEffects');
+        runSafe(initServicesDirectory, 'ServicesDirectory');
+        runSafe(initSmmTerminal, 'SmmTerminal');
+        runSafe(initChatbot, 'Chatbot');
+        runSafe(initAuthModal, 'AuthModal');
+        runSafe(initDashboard, 'Dashboard');
+        runSafe(initTopUpModal, 'TopUpModal');
+        runSafe(initPortfolioFilters, 'PortfolioFilters');
+        runSafe(initGalleryToggle, 'GalleryToggle');
+        runSafe(ensureMobileWidgets, 'EnsureMobileWidgets');
     };
 
-    runIdle(initScrollAnimations, 'ScrollAnimations');
+    ['scroll', 'pointerdown', 'touchstart', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, startNonCritical, { passive: true, once: true });
+    });
 
-    runIdle(initBackgroundAnimation, 'BackgroundAnimation');
-    runIdle(initScrollProgress, 'ScrollProgress');
-    runIdle(initCardSpotlights, 'CardSpotlights');
-    runIdle(initLiveTelemetry, 'LiveTelemetry');
-    runIdle(initHoverEffects, 'HoverEffects');
-    runIdle(initServicesDirectory, 'ServicesDirectory');
-    runIdle(initSmmTerminal, 'SmmTerminal');
-    runIdle(initChatbot, 'Chatbot');
-    runIdle(initAuthModal, 'AuthModal');
-    runIdle(initDashboard, 'Dashboard');
-    runIdle(initTopUpModal, 'TopUpModal');
-    runIdle(initPortfolioFilters, 'PortfolioFilters');
-    runIdle(initGalleryToggle, 'GalleryToggle');
-    runIdle(ensureMobileWidgets, 'EnsureMobileWidgets');
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(startNonCritical, { timeout: 3500 });
+    } else {
+        setTimeout(startNonCritical, 2500);
+    }
 });
 
 function initScrollProgress() {
