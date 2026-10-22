@@ -1,4 +1,4 @@
-﻿const http = require('http');
+﻿﻿const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
@@ -62,7 +62,7 @@ Thông tin nền tảng về Teemous Digital Lab:
   + #04 Bùi Lưu Bảo Hân: Tier A Standard (84.0 điểm), ĐH Duy Tân Kinh doanh Quốc tế, HR & Vận hành dữ liệu Notion/Sheets.
   + #05 Vương Quang Tuấn: Tier A Standard (80.5 điểm), Content Creator, Canva, CapCut, Facebook Ads.
 - Dịch vụ & Sản phẩm chính:
-  1. Khởi tạo Portfolio cá nhân: Đang có chương trình TÀI TRỢ 100% SUẤT 0Đ (giá gốc 49k) gói Basic cho bạn trẻ đăng ký sớm! Gói VIP Bespoke đang tạm khóa để nâng cấp phiên bản mới.
+  1. Khởi tạo Portfolio cá nhân: Hiện tại hoàn toàn MIỄN PHÍ 100% (0đ) cho việc khởi tạo và duy trì lưu trữ portfolio, chưa có dự kiến thu phí.
   2. SMM Terminal (Dịch vụ Mạng Xã Hội): Tăng Like, Follow, View, Comment tương tác cho Facebook, Instagram, TikTok, Threads với giá cực tốt từ vài chục đồng, bảo mật 100% không cần mật khẩu, tự động lấy UID, nạp tiền tự động qua VietQR.
   3. Shop Liên Quân: Hiện đang tạm ngưng bảo trì hệ thống.
 Hãy trả lời trực tiếp câu hỏi của người dùng bằng Tiếng Việt hoặc ngôn ngữ của người dùng.`;
@@ -383,6 +383,13 @@ function handleRequest(req, res) {
           const pendingCount = mockOrders.filter(o => o.status === "Pending" || !o.smm_order_id).length;
           return res.end(JSON.stringify({ orders: mockOrders, pending_count: pendingCount }));
         }
+        if (action === "pending_orders") {
+          const pendingOrders = mockOrders
+            .filter(o => o.status === "Pending" || (!o.smm_order_id && o.status !== "Cancelled" && o.status !== "Completed"))
+            .slice()
+            .sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0) || a.id - b.id);
+          return res.end(JSON.stringify({ orders: pendingOrders, count: pendingOrders.length }));
+        }
         return res.end(JSON.stringify({ users: mockUsers }));
       }
 
@@ -391,8 +398,64 @@ function handleRequest(req, res) {
         const body = JSON.parse(bodyStr || "{}");
         const act = body.action;
 
+        if (act === "approve_smm_order" || act === "approve_order") {
+          const orderId = body.orderId || body.order_id;
+          const order = mockOrders.find(o => o.id == orderId);
+          if (!order) return res.end(JSON.stringify({ error: "Order not found" }));
+
+          order.status = "Processing";
+          order.admin_note = body.note || "Đã duyệt thủ công bởi Admin";
+          order.updated_at = new Date().toISOString();
+          return res.end(JSON.stringify({
+            success: true,
+            status: order.status,
+            message: `Đã duyệt đơn #${orderId} thành công (chuyển sang xử lý thủ công)!`
+          }));
+        }
+
+        if (act === "cancel_smm_order" || act === "refund_order") {
+          const orderId = body.orderId || body.order_id;
+          const reason = (body.reason || "Admin hủy đơn").trim();
+          const order = mockOrders.find(o => o.id == orderId);
+          if (!order) return res.end(JSON.stringify({ error: "Order not found" }));
+
+          if (order.status === "Cancelled" || order.status === "Refunded") {
+            return res.end(JSON.stringify({ error: "Đơn hàng này đã được hủy/hoàn tiền trước đó!" }));
+          }
+
+          const refundAmount = parseInt(order.price_at_purchase || 0);
+          const targetUser = mockUsers.find(u => u.id == order.user_id);
+          if (targetUser && refundAmount > 0) {
+            targetUser.balance = (targetUser.balance || 0) + refundAmount;
+          }
+
+          order.status = "Cancelled";
+          order.cancel_reason = reason;
+          order.updated_at = new Date().toISOString();
+
+          mockTransactions.unshift({
+            id: mockTransactions.length + 1,
+            user_id: order.user_id,
+            amount: refundAmount,
+            type: "refund",
+            status: "success",
+            payment_method: "balance",
+            description: `Hoàn tiền đơn hàng #${orderId}${reason ? ": " + reason : ""}`,
+            ref_id: `REFUND-${Date.now()}-${order.user_id}`,
+            created_at: new Date().toISOString()
+          });
+
+          return res.end(JSON.stringify({
+            success: true,
+            status: order.status,
+            refund_amount: refundAmount,
+            new_balance: targetUser ? targetUser.balance : undefined,
+            message: `Đã hủy đơn #${orderId} và hoàn ${refundAmount.toLocaleString("vi-VN")} VND về ví khách hàng!`
+          }));
+        }
+
         if (act === "dispatch_smm_order") {
-          const orderId = body.orderId;
+          const orderId = body.orderId || body.order_id;
           const order = mockOrders.find(o => o.id == orderId);
           if (!order) return res.end(JSON.stringify({ error: "Order not found" }));
 

@@ -1,4 +1,4 @@
-import { verifyJWT } from "../utils.js";
+﻿import { verifyJWT } from "../utils.js";
 
 async function verifyAdmin(request, env) {
     const authHeader = request.headers.get("Authorization");
@@ -56,6 +56,33 @@ export async function onRequest(context) {
                 });
             }
 
+            if (action === "pending_orders") {
+                try { await env.teemous_db.prepare("ALTER TABLE orders ADD COLUMN service_name TEXT").run(); } catch(e) {}
+                try { await env.teemous_db.prepare("ALTER TABLE orders ADD COLUMN link TEXT").run(); } catch(e) {}
+                try { await env.teemous_db.prepare("ALTER TABLE orders ADD COLUMN quantity INTEGER").run(); } catch(e) {}
+                try { await env.teemous_db.prepare("ALTER TABLE orders ADD COLUMN smm_service_id TEXT").run(); } catch(e) {}
+                try { await env.teemous_db.prepare("ALTER TABLE orders ADD COLUMN smm_order_id TEXT").run(); } catch(e) {}
+                try { await env.teemous_db.prepare("ALTER TABLE orders ADD COLUMN cancel_reason TEXT").run(); } catch(e) {}
+                try { await env.teemous_db.prepare("ALTER TABLE orders ADD COLUMN admin_note TEXT").run(); } catch(e) {}
+
+                const query = "SELECT o.id, o.user_id, u.username, u.email, " +
+                              "COALESCE(o.service_name, p.name, 'Đơn SMM #' || o.id) as service_name, " +
+                              "o.link, o.quantity, o.price_at_purchase, " +
+                              "o.smm_service_id, o.smm_order_id, " +
+                              "o.status, o.created_at, o.cancel_reason, o.admin_note " +
+                              "FROM orders o " +
+                              "LEFT JOIN users u ON o.user_id = u.id " +
+                              "LEFT JOIN products p ON o.product_id = p.id " +
+                              "WHERE (o.status = 'Pending' OR (o.smm_order_id IS NULL AND o.status NOT IN ('Cancelled', 'Completed', 'Refunded'))) " +
+                              "ORDER BY o.id ASC";
+
+                const { results } = await env.teemous_db.prepare(query).all();
+                return new Response(JSON.stringify({ orders: results || [], count: (results || []).length }), {
+                    status: 200,
+                    headers: { "Content-Type": "application/json" }
+                });
+            }
+
             if (action === "smm_orders" || action === "orders") {
                 try { await env.teemous_db.prepare("ALTER TABLE orders ADD COLUMN service_name TEXT").run(); } catch(e) {}
                 try { await env.teemous_db.prepare("ALTER TABLE orders ADD COLUMN link TEXT").run(); } catch(e) {}
@@ -99,8 +126,70 @@ export async function onRequest(context) {
             const body = await request.json().catch(() => ({}));
             const { action } = body;
 
+            if (action === "approve_smm_order" || action === "approve_order") {
+                const orderId = body.orderId || body.order_id;
+                if (!orderId) {
+                    return new Response(JSON.stringify({ error: "Missing orderId" }), { status: 400 });
+                }
+                const note = (body.note || "Đã duyệt thủ công bởi Admin").trim();
+                await env.teemous_db.prepare(
+                    "UPDATE orders SET status = 'Processing', admin_note = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+                ).bind(note, orderId).run();
+
+                return new Response(JSON.stringify({
+                    success: true,
+                    status: "Processing",
+                    message: `Đã duyệt đơn #${orderId} thành công (chuyển sang xử lý thủ công)!`
+                }), { status: 200, headers: { "Content-Type": "application/json" } });
+            }
+
+            if (action === "cancel_smm_order" || action === "refund_order") {
+                const orderId = body.orderId || body.order_id;
+                const reason = (body.reason || "Admin hủy đơn").trim();
+                if (!orderId) {
+                    return new Response(JSON.stringify({ error: "Missing orderId" }), { status: 400 });
+                }
+
+                const order = await env.teemous_db.prepare(
+                    "SELECT * FROM orders WHERE id = ? LIMIT 1"
+                ).bind(orderId).first();
+
+                if (!order) {
+                    return new Response(JSON.stringify({ error: "Order not found" }), { status: 404 });
+                }
+
+                if (order.status === "Cancelled" || order.status === "Refunded") {
+                    return new Response(JSON.stringify({ error: "Đơn hàng này đã được hủy/hoàn tiền trước đó!" }), { status: 400 });
+                }
+
+                const refundAmount = parseInt(order.price_at_purchase || 0);
+
+                await env.teemous_db.prepare(
+                    "UPDATE orders SET status = 'Cancelled', cancel_reason = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+                ).bind(reason, orderId).run();
+
+                if (refundAmount > 0 && order.user_id) {
+                    await env.teemous_db.prepare(
+                        "UPDATE users SET balance = balance + ? WHERE id = ?"
+                    ).bind(refundAmount, order.user_id).run();
+
+                    try {
+                        await env.teemous_db.prepare(
+                            "INSERT INTO transactions (user_id, amount, type, status, payment_method, description, ref_id) VALUES (?, ?, 'refund', 'success', 'balance', ?, ?)"
+                        ).bind(order.user_id, refundAmount, `Hoàn tiền đơn hàng #${orderId}${reason ? ': ' + reason : ''}`, `REFUND-${Date.now()}-${order.user_id}`).run();
+                    } catch(e) {}
+                }
+
+                return new Response(JSON.stringify({
+                    success: true,
+                    status: "Cancelled",
+                    refund_amount: refundAmount,
+                    message: `Đã hủy đơn #${orderId} và hoàn ${refundAmount.toLocaleString("vi-VN")} VND về ví khách hàng!`
+                }), { status: 200, headers: { "Content-Type": "application/json" } });
+            }
+
             if (action === "dispatch_smm_order") {
-                const orderId = body.orderId;
+                const orderId = body.orderId || body.order_id;
                 if (!orderId) {
                     return new Response(JSON.stringify({ error: "Missing orderId" }), { status: 400 });
                 }

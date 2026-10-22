@@ -51,7 +51,7 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style.css?v=perf-v43">
-    <link rel="stylesheet" href="hub-showcase.css?v=perf-v43">
+    <link rel="stylesheet" href="hub-showcase.css?v=perf-v66">
 
     <!-- Tailwind CSS for Grid -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -176,20 +176,22 @@
     </style>
 
 
-<!-- Theme & Language Pre-hydration (Prevent FOUC & language flash) -->
+
+    <!-- Immediate Theme & Language Pre-hydration (Prevent FOUC & Jump) -->
     <script>
-        (function () {
+        (function() {
             try {
-                const savedTheme = localStorage.getItem('td-theme');
-                if (savedTheme === 'light') {
+                var savedTheme = localStorage.getItem('theme') || localStorage.getItem('td-theme');
+                if (savedTheme === 'light' || (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
                     document.documentElement.classList.add('light-mode');
-                } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches) {
-                    document.documentElement.classList.add('light-mode');
+                } else {
+                    document.documentElement.classList.remove('light-mode');
                 }
-                const savedLang = localStorage.getItem('td-lang') || 'vi';
-                document.documentElement.lang = savedLang;
-                document.documentElement.setAttribute('data-lang', savedLang);
-            } catch (e) { }
+                var p = new URLSearchParams(window.location.search).get('lang');
+                var l = p || localStorage.getItem('td-lang') || localStorage.getItem('lang') || 'vi';
+                document.documentElement.lang = l;
+                document.documentElement.setAttribute('data-lang', l);
+            } catch(e) {}
         })();
     </script>
 </head>
@@ -198,11 +200,14 @@
     <canvas id="bg-canvas"></canvas>
 
     <!-- Global Navigation Header -->
-    <header class="global-header">
+        <header class="global-header">
             <div class="header-logo">
                 <a href="../index.html">
-                    <img src="../Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                    <picture>
+                        <source srcset="../Logo/logo.webp" type="image/webp">
+                        <img src="../Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img" width="32" height="32"
+                            onerror="this.style.display='none'; (this.closest('a') ? this.closest('a').querySelector('span') : this.nextElementSibling).style.display='inline';">
+                    </picture>
                     <span style="display:none;">TD</span>
                 </a>
             </div>
@@ -215,28 +220,28 @@
 
             <nav class="header-nav">
                 <ul class="nav-links">
-                    <li><a href="../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
-                    <li><a href="../services/index.html" data-en="SERVICES & SHOP"
-                            data-vi="Dịch vụ &amp; Cửa hàng">SERVICES & SHOP</a></li>
-                    <li><a href="../portfolio/index.html" class="active" data-en="Portfolio Hub" data-vi="Hồ sơ Năng lực">Portfolio
-                            Hub</a></li>
-                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
-                            data-vi="Liên Hệ">Contact Us</a></li>
+                    <li><a href="../index.html" data-en="Home" data-vi="Trang Chủ">Trang Chủ</a></li>
+                    <li><a href="../services/index.html" data-en="SERVICES &amp; SHOP" data-vi="Dịch Vụ &amp; Cửa Hàng">Dịch Vụ &amp; Cửa Hàng</a></li>
+                    <li><a href="../portfolio/index.html" class="active" data-en="Portfolio Hub" data-vi="Hồ Sơ Năng Lực">Hồ Sơ Năng Lực</a></li>
+                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" rel="noopener noreferrer" data-en="Contact Us" data-vi="Liên Hệ">Liên Hệ</a></li>
                     <li><button id="nav-login-btn" class="nav-login-btn ready" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký">Đăng Nhập | Đăng Ký</button></li>
                 </ul>
-            <div class="mobile-nav-widgets">
-                <div class="mobile-widget-row">
-                    <button type="button" class="mobile-widget-btn theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
-                        <span class="mode-icon">🌙</span>
-                        <span class="theme-label">Tối</span>
-                    </button>
-                    <button type="button" class="mobile-widget-btn lang-toggle" title="Toggle Language" aria-label="Toggle Language">
-                        <span class="lang-icon" style="font-size: 1rem; line-height: 1; display: inline-flex; align-items: center;">🌐</span> <span class="lang-text" style="font-weight: 800; font-size: 0.82rem;">VI</span>
-                    </button>
+                <div class="mobile-nav-widgets">
+                    <div class="mobile-widget-row">
+                        <button type="button" class="mobile-widget-btn theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
+                            <span class="mode-icon">🌙</span>
+                            <span class="theme-label">Tối</span>
+                        </button>
+                        <button type="button" class="mobile-widget-btn lang-toggle" title="Toggle Language" aria-label="Toggle Language">
+                            <span class="lang-icon" style="font-size: 1rem; line-height: 1; display: inline-flex; align-items: center;">🌐</span> <span class="lang-text" style="font-weight: 800; font-size: 0.82rem;">VI</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
         </header>
+        <script>
+            (function(){try{var l=document.documentElement.getAttribute('data-lang')||localStorage.getItem('td-lang')||'vi';var h=document.currentScript.previousElementSibling;if(l==='en'&&h){h.querySelectorAll('[data-en]').forEach(function(e){if(e.tagName!=='INPUT'&&e.tagName!=='TEXTAREA'){e.innerHTML=e.getAttribute('data-en');}});var lt=h.querySelector('.lang-text');if(lt)lt.innerText='EN';}var u=localStorage.getItem('teemous_user');if(u&&h){var d=JSON.parse(u);if(d&&d.username){var b=h.querySelector('#nav-login-btn');if(b){b.classList.add('logged-in');b.innerHTML=(l==='vi'?'Chào, ':'Hi, ')+d.username;}}}}catch(e){}})();
+        </script>
 
     <main id="hub-showcase-mount" class="w-full relative z-10"></main>
 
@@ -287,7 +292,7 @@
     </div>
 
     <!-- Auth Modal Overlay -->
-    <div id="auth-modal-overlay" class="auth-modal-overlay">
+    <div id="auth-modal-overlay" class="auth-modal-overlay" style="display:none;">
         <div id="auth-modal" class="auth-modal-container glass-card">
             <button id="close-auth-modal" class="close-modal-btn">✕</button>
             
@@ -336,7 +341,7 @@
     </div>
 
     <!-- User Dashboard Modal Overlay -->
-    <div id="dashboard-modal-overlay" class="auth-modal-overlay">
+    <div id="dashboard-modal-overlay" class="auth-modal-overlay" style="display:none;">
         <div id="dashboard-modal" class="auth-modal-container glass-card dashboard-modal">
             <button id="close-dashboard-modal" class="close-modal-btn">✕</button>
             <div class="dashboard-header">
@@ -431,7 +436,7 @@
 
 
     <!-- Top Up Modal Overlay (Separated for focus) -->
-    <div id="topup-modal-overlay" class="auth-modal-overlay" style="z-index: 10001;">
+    <div id="topup-modal-overlay" class="auth-modal-overlay" style="display:none; z-index: 10001;">
         <div id="topup-modal" class="auth-modal-container glass-card topup-modal">
             <button id="close-topup-modal" class="close-modal-btn">✕</button>
             <div class="modal-header">
@@ -468,8 +473,8 @@
 
     
     
-    <script src="hub-showcase.js?v=perf-v43"></script>
-    <script src="../script.js?v=perf-v43"></script>
+    <script src="hub-showcase.js?v=perf-v66"></script>
+    <script src="../script.js?v=perf-v66"></script>
 </body>
 
 </html>

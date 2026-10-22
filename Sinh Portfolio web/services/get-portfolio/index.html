@@ -279,47 +279,71 @@
             }
         }
     </style>
+    <!-- Immediate Theme & Language Pre-hydration (Prevent FOUC & Jump) -->
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('theme') || localStorage.getItem('td-theme');
+                if (savedTheme === 'light' || (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+                    document.documentElement.classList.add('light-mode');
+                } else {
+                    document.documentElement.classList.remove('light-mode');
+                }
+                var p = new URLSearchParams(window.location.search).get('lang');
+                var l = p || localStorage.getItem('td-lang') || localStorage.getItem('lang') || 'vi';
+                document.documentElement.lang = l;
+                document.documentElement.setAttribute('data-lang', l);
+            } catch(e) {}
+        })();
+    </script>
 </head>
 
 <body class="font-montserrat relative">
     <canvas id="bg-canvas" class="fixed inset-0 z-[-1] pointer-events-none"></canvas>
 
-    <header class="global-header service-header">
-        <div class="header-logo">
-            <a href="../../index.html">
-                <img src="../../Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img"
-                    onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
-                <span style="display:none;">TD</span>
-            </a>
-        </div>
-        <button class="mobile-menu-toggle" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <nav class="header-nav">
-            <ul class="nav-links">
-                <li><a href="../../index.html" data-en="Home" data-vi="Trang Chủ">Home</a></li>
-                <li><a href="../../services/index.html" class="active" data-en="SERVICES & SHOP"
-                        data-vi="Dịch vụ &amp; Cửa hàng">SERVICES & SHOP</a></li>
-                <li><a href="../../portfolio/index.html" data-en="Portfolio Hub" data-vi="Hồ sơ Năng lực">Portfolio Hub</a></li>
-                <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" data-en="Contact Us"
-                        data-vi="Liên Hệ">Contact Us</a></li>
-                <li><button id="nav-login-btn" class="nav-login-btn ready neon-border" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký">Đăng Nhập | Đăng Ký</button></li>
-            </ul>
-            <div class="mobile-nav-widgets">
-                <div class="mobile-widget-row">
-                    <button type="button" class="mobile-widget-btn theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
-                        <span class="mode-icon">🌙</span>
-                        <span class="theme-label">Tối</span>
-                    </button>
-                    <button type="button" class="mobile-widget-btn lang-toggle" title="Toggle Language" aria-label="Toggle Language">
-                        <span class="lang-icon" style="font-size: 1rem; line-height: 1; display: inline-flex; align-items: center;">🌐</span> <span class="lang-text" style="font-weight: 800; font-size: 0.82rem;">VI</span>
-                    </button>
-                </div>
+    <!-- Global Navigation Header -->
+        <header class="global-header">
+            <div class="header-logo">
+                <a href="../../index.html">
+                    <picture>
+                        <source srcset="../../Logo/logo.webp" type="image/webp">
+                        <img src="../../Logo/logo.png" alt="Teemous Digital Logo" class="header-logo-img" width="32" height="32"
+                            onerror="this.style.display='none'; (this.closest('a') ? this.closest('a').querySelector('span') : this.nextElementSibling).style.display='inline';">
+                    </picture>
+                    <span style="display:none;">TD</span>
+                </a>
             </div>
-        </nav>
-    </header>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="header-nav">
+                <ul class="nav-links">
+                    <li><a href="../../index.html" data-en="Home" data-vi="Trang Chủ">Trang Chủ</a></li>
+                    <li><a href="../../services/index.html" class="active" data-en="SERVICES &amp; SHOP" data-vi="Dịch Vụ &amp; Cửa Hàng">Dịch Vụ &amp; Cửa Hàng</a></li>
+                    <li><a href="../../portfolio/index.html" data-en="Portfolio Hub" data-vi="Hồ Sơ Năng Lực">Hồ Sơ Năng Lực</a></li>
+                    <li><a href="https://www.facebook.com/quang.sinh.5492" target="_blank" rel="noopener noreferrer" data-en="Contact Us" data-vi="Liên Hệ">Liên Hệ</a></li>
+                    <li><button id="nav-login-btn" class="nav-login-btn ready" data-en="Login | Sign Up" data-vi="Đăng Nhập | Đăng Ký">Đăng Nhập | Đăng Ký</button></li>
+                </ul>
+                <div class="mobile-nav-widgets">
+                    <div class="mobile-widget-row">
+                        <button type="button" class="mobile-widget-btn theme-toggle" title="Toggle Theme" aria-label="Toggle Theme">
+                            <span class="mode-icon">🌙</span>
+                            <span class="theme-label">Tối</span>
+                        </button>
+                        <button type="button" class="mobile-widget-btn lang-toggle" title="Toggle Language" aria-label="Toggle Language">
+                            <span class="lang-icon" style="font-size: 1rem; line-height: 1; display: inline-flex; align-items: center;">🌐</span> <span class="lang-text" style="font-weight: 800; font-size: 0.82rem;">VI</span>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <script>
+            (function(){try{var l=document.documentElement.getAttribute('data-lang')||localStorage.getItem('td-lang')||'vi';var h=document.currentScript.previousElementSibling;if(l==='en'&&h){h.querySelectorAll('[data-en]').forEach(function(e){if(e.tagName!=='INPUT'&&e.tagName!=='TEXTAREA'){e.innerHTML=e.getAttribute('data-en');}});var lt=h.querySelector('.lang-text');if(lt)lt.innerText='EN';}var u=localStorage.getItem('teemous_user');if(u&&h){var d=JSON.parse(u);if(d&&d.username){var b=h.querySelector('#nav-login-btn');if(b){b.classList.add('logged-in');b.innerHTML=(l==='vi'?'Chào, ':'Hi, ')+d.username;}}}}catch(e){}})();
+        </script>
 
     <div id="root"></div>
 

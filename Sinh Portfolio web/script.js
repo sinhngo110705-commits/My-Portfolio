@@ -11,13 +11,19 @@ document.addEventListener('DOMContentLoaded', () => {
         try { gsap.registerPlugin(ScrollTrigger); } catch(e) {}
     }
 
-    // Critical UI initializations (Immediate)
+    // Critical UI initializations (Immediate on DOM ready)
     runSafe(initThemeToggle, 'ThemeToggle');
     runSafe(initLanguageToggle, 'LanguageToggle');
     runSafe(initMobileMenu, 'MobileMenu');
+    runSafe(initScrollAnimations, 'ScrollAnimations');
+    runSafe(initBackgroundAnimation, 'BackgroundAnimation');
+    runSafe(initScrollProgress, 'ScrollProgress');
+    runSafe(initCardSpotlights, 'CardSpotlights');
+    runSafe(initLiveTelemetry, 'LiveTelemetry');
+    runSafe(initHoverEffects, 'HoverEffects');
+    runSafe(initServicesDirectory, 'ServicesDirectory');
 
-    // Defer non-critical features to first interaction or post-load idle time
-    // This keeps main thread 100% idle (TBT = 0ms) during initial paint and CWV capture
+    // Defer non-critical modals, heavy chatbot and widgets to idle
     let nonCriticalStarted = false;
     const startNonCritical = () => {
         if (nonCriticalStarted) return;
@@ -27,13 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
             window.removeEventListener(evt, startNonCritical, { passive: true });
         });
 
-        runSafe(initScrollAnimations, 'ScrollAnimations');
-        runSafe(initBackgroundAnimation, 'BackgroundAnimation');
-        runSafe(initScrollProgress, 'ScrollProgress');
-        runSafe(initCardSpotlights, 'CardSpotlights');
-        runSafe(initLiveTelemetry, 'LiveTelemetry');
-        runSafe(initHoverEffects, 'HoverEffects');
-        runSafe(initServicesDirectory, 'ServicesDirectory');
         runSafe(initSmmTerminal, 'SmmTerminal');
         runSafe(initChatbot, 'Chatbot');
         runSafe(initAuthModal, 'AuthModal');
@@ -42,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         runSafe(initPortfolioFilters, 'PortfolioFilters');
         runSafe(initGalleryToggle, 'GalleryToggle');
         runSafe(ensureMobileWidgets, 'EnsureMobileWidgets');
+        runSafe(initAdminPanel, 'AdminPanel');
     };
 
     ['scroll', 'pointerdown', 'touchstart', 'keydown'].forEach(evt => {
@@ -49,9 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if ('requestIdleCallback' in window) {
-        requestIdleCallback(startNonCritical, { timeout: 3500 });
+        requestIdleCallback(startNonCritical, { timeout: 2000 });
     } else {
-        setTimeout(startNonCritical, 2500);
+        setTimeout(startNonCritical, 1000);
     }
 });
 
@@ -81,303 +81,253 @@ function initScrollProgress() {
 function initScrollAnimations() {
     if (typeof gsap === 'undefined') return;
 
-    // ==========================================
-    // MENG TO CINEMATIC MOTION SYSTEM (Awwwards / Studio-Grade)
-    // ==========================================
+    if (typeof ScrollTrigger !== 'undefined') {
+        try { gsap.registerPlugin(ScrollTrigger); } catch(e) {}
+    }
+
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    if (!prefersReducedMotion) {
-        gsap.defaults({ ease: 'power3.out', duration: 0.85 });
+    if (prefersReducedMotion) return;
 
-        const isMobile = window.innerWidth <= 768 || window.matchMedia('(pointer: coarse)').matches;
+    gsap.defaults({ ease: 'power3.out', duration: 0.85 });
 
-        // 1. Hero Entrance: Masked Line Reveal & Laser Sweep (Desktop Only)
-        // On mobile, keep hero 100% static so the LCP element (manifesto) is painted by native browser engine with 0ms delay.
-        const titleLines = document.querySelectorAll('.title-line');
-        const metaBar = document.querySelector('.editorial-meta-bar');
-        const manifesto = document.querySelector('.editorial-manifesto-text');
-        const ctas = document.querySelectorAll('.editorial-cta-row a, .commission-gate a');
-        const hairlines = document.querySelectorAll('.hairline');
+    // 1. Hero Entrance: Masked Line Reveal, H1, Meta Bar, Manifesto & Laser Sweep
+    const titleLines = document.querySelectorAll('.title-line');
+    const metaBar = document.querySelector('.editorial-meta-bar');
+    const manifesto = document.querySelector('.editorial-manifesto-text');
+    const ctas = document.querySelectorAll('.editorial-cta-row a, .commission-gate a');
+    const hairlines = document.querySelectorAll('.hairline');
 
-        if (!isMobile && titleLines.length > 0) {
-            const heroTl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    if (titleLines.length > 0) {
+        const heroTl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-            if (metaBar) {
-                heroTl.fromTo(metaBar, { y: -18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' });
-            }
-
-            heroTl.fromTo(titleLines, 
-                { yPercent: 115 }, 
-                { 
-                    yPercent: 0, 
-                    duration: 1.1, 
-                    stagger: 0.12, 
-                    ease: 'power4.out',
-                    onComplete: () => {
-                        document.querySelectorAll('.mask-wrap').forEach(w => {
-                            w.style.overflow = 'visible';
-                        });
-                    }
-                },
-                "-=0.5"
-            );
-
-            if (manifesto) {
-                heroTl.from(manifesto, { y: 12, duration: 0.5, ease: 'power2.out' }, "<0.1");
-            }
-            if (ctas.length > 0) {
-                heroTl.fromTo(ctas, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.06, ease: 'power3.out' }, "<0.15");
-            }
-            if (hairlines.length > 0) {
-                heroTl.fromTo(hairlines[0], { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: 1.2, ease: 'power3.inOut' }, "-=0.5");
-            }
+        if (metaBar) {
+            heroTl.fromTo(metaBar, { y: -18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' });
         }
 
-        // 2. Meng To Magnetic Button Physics (Pointer Reactive Inertia)
-        if (!window.matchMedia('(pointer: coarse)').matches) {
-            ctas.forEach(btn => {
-                const xTo = gsap.quickTo(btn, 'x', { duration: 0.4, ease: 'power3.out' });
-                const yTo = gsap.quickTo(btn, 'y', { duration: 0.4, ease: 'power3.out' });
-                let rect = null;
+        heroTl.fromTo(titleLines, 
+            { yPercent: 115, opacity: 0 }, 
+            { 
+                yPercent: 0, 
+                opacity: 1,
+                duration: 1.15, 
+                stagger: 0.12, 
+                ease: 'power4.out',
+                onComplete: () => {
+                    document.querySelectorAll('.mask-wrap').forEach(w => {
+                        w.style.overflow = 'visible';
+                    });
+                }
+            },
+            "-=0.5"
+        );
 
-                btn.addEventListener('pointerenter', () => {
-                    rect = btn.getBoundingClientRect();
-                });
-
-                btn.addEventListener('pointermove', (e) => {
-                    if (!rect) rect = btn.getBoundingClientRect();
-                    const strength = 0.28;
-                    const x = (e.clientX - rect.left - rect.width / 2) * strength;
-                    const y = (e.clientY - rect.top - rect.height / 2) * strength;
-                    xTo(x);
-                    yTo(y);
-                }, { passive: true });
-
-                btn.addEventListener('pointerleave', () => {
-                    rect = null;
-                    xTo(0);
-                    yTo(0);
-                });
-            });
+        if (manifesto) {
+            heroTl.fromTo(manifesto, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, "-=0.6");
         }
+        if (ctas.length > 0) {
+            heroTl.fromTo(ctas, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: 'power3.out' }, "-=0.4");
+        }
+        if (hairlines.length > 0) {
+            heroTl.fromTo(hairlines[0], { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: 1.2, ease: 'power3.inOut' }, "-=0.5");
+        }
+    }
 
-        // 3. Lookbook Section: Meng To Architectural Staggered Reveal
-        const lookbookSection = document.getElementById('lookbook');
-        const lookbookCards = document.querySelectorAll('.lookbook-card');
-        if (lookbookSection && lookbookCards.length > 0 && typeof ScrollTrigger !== 'undefined') {
-            const lookbookTl = gsap.timeline({
+    // 2. SEO Lead Section Reveal
+    const seoLead = document.querySelector('.seo-lead-intro');
+    if (seoLead && typeof ScrollTrigger !== 'undefined') {
+        gsap.fromTo(seoLead,
+            { y: 24, opacity: 0 },
+            {
                 scrollTrigger: {
-                    trigger: '#lookbook',
-                    start: 'top 82%',
+                    trigger: seoLead,
+                    start: 'top 88%',
                     once: true
-                }
-            });
-
-            lookbookTl.fromTo('#lookbook .editorial-section-header',
-                { y: 18, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.5,
-                    ease: 'power2.out'
-                }
-            );
-
-            lookbookTl.fromTo(lookbookCards,
-                { y: 20, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.55,
-                    stagger: 0.06,
-                    ease: 'power2.out',
-                    clearProps: 'transform,opacity,willChange'
                 },
-                "-=0.25"
-            );
-        }
+                y: 0,
+                opacity: 1,
+                duration: 0.75,
+                ease: 'power3.out',
+                clearProps: 'transform,opacity,willChange'
+            }
+        );
+    }
 
-        // 4. Systems Section: Staggered Architectural Spectrum Reveal
-        const systemsSection = document.getElementById('systems');
-        const spectrumCols = document.querySelectorAll('.spectrum-col');
-        if (systemsSection && spectrumCols.length > 0 && typeof ScrollTrigger !== 'undefined') {
-            const systemsTl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: '#systems',
-                    start: 'top 82%',
-                    once: true
-                }
-            });
-
-            systemsTl.fromTo('#systems .editorial-section-header',
-                { y: 24, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.7,
-                    ease: 'power3.out'
-                }
-            );
-
-            systemsTl.fromTo(spectrumCols,
-                { y: 28, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.8,
-                    stagger: 0.08,
-                    ease: 'power3.out',
-                    clearProps: 'transform,opacity,willChange'
-                },
-                "-=0.35"
-            );
-        }
-
-        // 5. Commission Section Reveal
-        const commissionSection = document.getElementById('commission');
-        if (commissionSection && typeof ScrollTrigger !== 'undefined') {
-            gsap.fromTo(commissionSection,
+    // 3. Editorial Section Headers (H2 + Section Tags + Subtitles Reveal on Scroll)
+    const sectionHeaders = document.querySelectorAll('.editorial-section-header');
+    if (sectionHeaders.length > 0 && typeof ScrollTrigger !== 'undefined') {
+        sectionHeaders.forEach(header => {
+            gsap.fromTo(header,
                 { y: 24, opacity: 0 },
                 {
                     scrollTrigger: {
-                        trigger: '#commission',
-                        start: 'top 86%',
+                        trigger: header,
+                        start: 'top 85%',
                         once: true
                     },
                     y: 0,
                     opacity: 1,
-                    duration: 0.8,
+                    duration: 0.7,
+                    ease: 'power3.out',
+                    clearProps: 'transform,opacity,willChange'
+                }
+            );
+        });
+    }
+
+    // 4. Lookbook Section: Meng To Architectural Staggered Reveal
+    const lookbookSection = document.getElementById('lookbook');
+    const lookbookCards = document.querySelectorAll('.lookbook-card');
+    if (lookbookSection && lookbookCards.length > 0 && typeof ScrollTrigger !== 'undefined') {
+        gsap.fromTo(lookbookCards,
+            { y: 30, opacity: 0 },
+            {
+                scrollTrigger: {
+                    trigger: '#lookbook',
+                    start: 'top 78%',
+                    once: true
+                },
+                y: 0,
+                opacity: 1,
+                duration: 0.65,
+                stagger: 0.08,
+                ease: 'power2.out',
+                clearProps: 'transform,opacity,willChange'
+            }
+        );
+    }
+
+    // 5. Systems Section: Staggered Architectural Spectrum Reveal
+    const systemsSection = document.getElementById('systems');
+    const spectrumCols = document.querySelectorAll('.spectrum-col');
+    if (systemsSection && spectrumCols.length > 0 && typeof ScrollTrigger !== 'undefined') {
+        gsap.fromTo(spectrumCols,
+            { y: 32, opacity: 0 },
+            {
+                scrollTrigger: {
+                    trigger: '#systems',
+                    start: 'top 78%',
+                    once: true
+                },
+                y: 0,
+                opacity: 1,
+                duration: 0.75,
+                stagger: 0.1,
+                ease: 'power3.out',
+                clearProps: 'transform,opacity,willChange'
+            }
+        );
+    }
+
+    // 6. Commission Section Reveal
+    const commissionSection = document.getElementById('commission');
+    if (commissionSection && typeof ScrollTrigger !== 'undefined') {
+        const commElements = commissionSection.querySelectorAll('.commission-title, .commission-text, .commission-gate');
+        if (commElements.length > 0) {
+            gsap.fromTo(commElements,
+                { y: 22, opacity: 0 },
+                {
+                    scrollTrigger: {
+                        trigger: '#commission',
+                        start: 'top 85%',
+                        once: true
+                    },
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.7,
+                    stagger: 0.1,
                     ease: 'power3.out',
                     clearProps: 'transform,opacity,willChange'
                 }
             );
         }
     }
-    // About Section
-    const aboutFrame = document.querySelector('#about .section-frame');
-    if (aboutFrame) {
-        gsap.from(aboutFrame, {
-            scrollTrigger: {
-                trigger: '#about',
-                start: 'top 80%',
-            },
-            duration: 1,
-            y: 50,
-            opacity: 0,
-            ease: 'power3.out',
-            clearProps: 'transform,willChange'
+
+    // 7. FAQ Section Reveal
+    const faqSection = document.getElementById('faq');
+    const faqItems = document.querySelectorAll('.faq-item');
+    if (faqSection && faqItems.length > 0 && typeof ScrollTrigger !== 'undefined') {
+        gsap.fromTo(faqItems,
+            { y: 20, opacity: 0 },
+            {
+                scrollTrigger: {
+                    trigger: '#faq',
+                    start: 'top 85%',
+                    once: true
+                },
+                y: 0,
+                opacity: 1,
+                duration: 0.5,
+                stagger: 0.07,
+                ease: 'power2.out',
+                clearProps: 'transform,opacity,willChange'
+            }
+        );
+    }
+
+    // 8. Magnetic Button Physics (Desktop Only)
+    if (!window.matchMedia('(pointer: coarse)').matches) {
+        ctas.forEach(btn => {
+            const xTo = gsap.quickTo(btn, 'x', { duration: 0.4, ease: 'power3.out' });
+            const yTo = gsap.quickTo(btn, 'y', { duration: 0.4, ease: 'power3.out' });
+            let rect = null;
+
+            btn.addEventListener('pointerenter', () => {
+                rect = btn.getBoundingClientRect();
+            });
+
+            btn.addEventListener('pointermove', (e) => {
+                if (!rect) rect = btn.getBoundingClientRect();
+                const strength = 0.28;
+                const x = (e.clientX - rect.left - rect.width / 2) * strength;
+                const y = (e.clientY - rect.top - rect.height / 2) * strength;
+                xTo(x);
+                yTo(y);
+            }, { passive: true });
+
+            btn.addEventListener('pointerleave', () => {
+                rect = null;
+                xTo(0);
+                yTo(0);
+            });
         });
     }
 
-    // Portfolio / Activities Grid
+    // 9. Portfolio / Activities Grid (if present)
     const portfolioTriggerId = document.getElementById('portfolio') ? '#portfolio' : '#activities';
     const portfolioTrigger = document.querySelector(portfolioTriggerId);
     const projectCards = document.querySelectorAll('.project-card');
 
-    if (portfolioTrigger && projectCards.length > 0) {
+    if (portfolioTrigger && projectCards.length > 0 && typeof ScrollTrigger !== 'undefined') {
         gsap.fromTo(projectCards,
-            { y: 50, opacity: 0 },
+            { y: 40, opacity: 0 },
             {
                 scrollTrigger: {
                     trigger: portfolioTrigger,
                     start: 'top 85%',
-                    toggleActions: 'play none none none'
+                    once: true
                 },
                 duration: 0.8,
                 y: 0,
                 opacity: 1,
-                stagger: 0.15,
+                stagger: 0.12,
                 ease: 'power3.out',
                 clearProps: 'transform,willChange'
             }
         );
     }
 
-    // Skills Animation
-    const skillsSection = document.getElementById('skills');
-    const progressBars = document.querySelectorAll('.progress-bar, .skill-bar-fill');
-
-    if (skillsSection && progressBars.length > 0) {
-        ScrollTrigger.create({
-            trigger: '#skills',
-            start: 'top 80%',
-            onEnter: () => {
-                progressBars.forEach(bar => {
-                    const width = bar.getAttribute('data-width');
-                    if (width) bar.style.width = width;
-                });
-            }
-        });
-
-        gsap.from('.skill-category', {
-            scrollTrigger: {
-                trigger: '#skills',
-                start: 'top 80%',
-            },
-            duration: 0.8,
-            y: 30,
-            opacity: 0,
-            stagger: 0.2,
-            ease: 'power3.out',
-            clearProps: 'transform,willChange'
-        });
-    }
-
-    // Community & Academic Records Entrance
-    const academicSection = document.getElementById('community-academic');
-    if (academicSection) {
-        const cards = academicSection.querySelectorAll('.gallery-card:not(.hidden-item)');
-
-        if (cards.length > 0) {
-            gsap.from(cards, {
-                scrollTrigger: {
-                    trigger: academicSection,
-                    start: 'top 95%',
-                    once: true
-                },
-                y: 40,
-                duration: 0.8,
-                stagger: 0.1,
-                ease: 'power3.out',
-                clearProps: 'transform,willChange'
-            });
-        }
-    }
-
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        gsap.fromTo(contactForm,
-            { opacity: 0 },
-            {
-                scrollTrigger: {
-                    trigger: '#contact',
-                    start: 'top 98%',
-                    once: true
-                },
-                duration: 1,
-                opacity: 1,
-                ease: 'power2.out',
-                onComplete: () => {
-                    gsap.set(contactForm, { clearProps: 'all', opacity: 1, visibility: 'visible' });
-                }
-            }
-        );
-    }
-
-    // Safety fallback: Ensure everything is visible after 3 seconds if animations stall
+    // 10. Safety fallback
     setTimeout(() => {
-        const criticalElements = document.querySelectorAll('.social-btn, .project-card, .section-frame, .contact-card');
-        criticalElements.forEach(el => {
+        const checkElements = document.querySelectorAll('.editorial-section-header, .lookbook-card, .spectrum-col, .commission-title');
+        checkElements.forEach(el => {
             if (window.getComputedStyle(el).opacity === '0') {
-                gsap.to(el, { opacity: 1, y: 0, duration: 0.5, clearProps: 'all' });
+                gsap.to(el, { opacity: 1, y: 0, duration: 0.4, clearProps: 'all' });
             }
         });
-    }, 3000);
+    }, 2500);
 }
 
-// High-performance hardware-accelerated background animation (Data / Cyberpunk Grid shift)
 function initBackgroundAnimation() {
-    // High-Performance Guard: Skip continuous canvas simulation on dashboard & admin pages
     if (window.location.pathname.includes('/user')) return;
 
     const canvas = document.getElementById('bg-canvas');
@@ -393,14 +343,9 @@ function initBackgroundAnimation() {
     let particles = [];
     let mouse = { x: null, y: null, targetX: null, targetY: null };
     let isVisible = !document.hidden;
-    let isScrolling = false;
-    let scrollTimeout = null;
     let animId = null;
     let lastTime = 0;
     const targetFpsInterval = 1000 / 60;
-
-    const isCoarse = window.matchMedia('(pointer: coarse)').matches;
-    const isLowPower = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || isCoarse;
 
     window.addEventListener('mousemove', (e) => {
         mouse.targetX = e.clientX;
@@ -411,13 +356,15 @@ function initBackgroundAnimation() {
         }
     }, { passive: true });
 
-    // Pause canvas completely during active user scroll to give 100% frame budget to smooth scrolling
-    window.addEventListener('scroll', () => {
-        isScrolling = true;
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-            isScrolling = false;
-        }, 80);
+    window.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches.length > 0) {
+            mouse.targetX = e.touches[0].clientX;
+            mouse.targetY = e.touches[0].clientY;
+            if (mouse.x === null) {
+                mouse.x = mouse.targetX;
+                mouse.y = mouse.targetY;
+            }
+        }
     }, { passive: true });
 
     function resize() {
@@ -427,20 +374,20 @@ function initBackgroundAnimation() {
         canvas.height = height;
         initParticles();
     }
-
     window.addEventListener('resize', resize, { passive: true });
 
     class Particle {
         constructor() {
             this.x = Math.random() * width;
             this.y = Math.random() * height;
-            this.size = Math.random() * 1.6 + 0.8;
+            this.size = Math.random() * 1.8 + 1.0;
             this.baseX = this.x;
             this.baseY = this.y;
-            this.vx = (Math.random() - 0.5) * 0.3;
-            this.vy = (Math.random() - 0.5) * 0.3;
+            this.vx = (Math.random() - 0.5) * 0.45;
+            this.vy = (Math.random() - 0.5) * 0.45;
             this.density = (Math.random() * 20) + 1;
-            this.colorType = Math.random() > 0.5 ? 1 : 0;
+            // 0 = Cyan, 1 = Purple, 2 = Pink
+            this.colorType = Math.floor(Math.random() * 3);
         }
 
         update() {
@@ -455,12 +402,12 @@ function initBackgroundAnimation() {
             if (mouse.x != null) {
                 const dx = mouse.x - width / 2;
                 const dy = mouse.y - height / 2;
-                const factor = (30 / this.density) * 0.04;
+                const factor = (30 / this.density) * 0.05;
                 const targetX = this.baseX - (dx * factor);
                 const targetY = this.baseY - (dy * factor);
 
-                this.x += (targetX - this.x) * 0.05;
-                this.y += (targetY - this.y) * 0.05;
+                this.x += (targetX - this.x) * 0.06;
+                this.y += (targetY - this.y) * 0.06;
             } else {
                 this.x = this.baseX;
                 this.y = this.baseY;
@@ -470,37 +417,43 @@ function initBackgroundAnimation() {
 
     function initParticles() {
         particles = [];
-        const baseDensity = isLowPower ? 40000 : 26000;
-        const maxParticles = isLowPower ? 14 : 26;
-        const numParticles = Math.min(maxParticles, Math.max(10, Math.floor((width * height) / baseDensity)));
+        const isMobile = width < 768;
+        const maxParticles = isMobile ? 38 : 72;
+        const baseDensity = isMobile ? 22000 : 18000;
+        const numParticles = Math.min(maxParticles, Math.max(20, Math.floor((width * height) / baseDensity)));
         for (let i = 0; i < numParticles; i++) {
             particles.push(new Particle());
         }
     }
 
     function drawParticlesAndConnections(isLight) {
-        const maxDistSq = 12000;
-        ctx.beginPath();
+        const maxDistSq = 14000; // ~118px threshold
+
+        // 1. Draw connection network
         for (let a = 0; a < particles.length; a++) {
             const pa = particles[a];
             for (let b = a + 1; b < particles.length; b++) {
                 const pb = particles[b];
                 const dx = pa.x - pb.x;
                 const dy = pa.y - pb.y;
-                const distance = dx * dx + dy * dy;
+                const distSq = dx * dx + dy * dy;
 
-                if (distance < maxDistSq) {
+                if (distSq < maxDistSq) {
+                    const alpha = (1 - distSq / maxDistSq) * (isLight ? 0.22 : 0.26);
+                    ctx.beginPath();
                     ctx.moveTo(pa.x, pa.y);
                     ctx.lineTo(pb.x, pb.y);
+                    ctx.strokeStyle = isLight 
+                        ? `rgba(2, 132, 199, ${alpha})` 
+                        : `rgba(0, 240, 255, ${alpha})`;
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
                 }
             }
         }
-        ctx.strokeStyle = isLight ? 'rgba(156, 39, 176, 0.14)' : 'rgba(156, 39, 176, 0.18)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
 
-        // Batch purple particles
-        ctx.fillStyle = 'rgba(156, 39, 176, 0.5)';
+        // 2. Batch Cyan particles
+        ctx.fillStyle = isLight ? 'rgba(2, 132, 199, 0.65)' : 'rgba(0, 240, 255, 0.75)';
         ctx.beginPath();
         for (let i = 0; i < particles.length; i++) {
             const p = particles[i];
@@ -511,8 +464,8 @@ function initBackgroundAnimation() {
         }
         ctx.fill();
 
-        // Batch blue particles
-        ctx.fillStyle = 'rgba(33, 150, 243, 0.5)';
+        // 3. Batch Purple particles
+        ctx.fillStyle = isLight ? 'rgba(109, 40, 217, 0.65)' : 'rgba(156, 39, 176, 0.75)';
         ctx.beginPath();
         for (let i = 0; i < particles.length; i++) {
             const p = particles[i];
@@ -522,15 +475,23 @@ function initBackgroundAnimation() {
             }
         }
         ctx.fill();
+
+        // 4. Batch Pink particles
+        ctx.fillStyle = isLight ? 'rgba(219, 39, 119, 0.65)' : 'rgba(233, 30, 99, 0.75)';
+        ctx.beginPath();
+        for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            if (p.colorType === 2) {
+                ctx.moveTo(p.x + p.size, p.y);
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            }
+        }
+        ctx.fill();
     }
 
     function animate(now) {
         if (!isVisible) return;
-
         animId = requestAnimationFrame(animate);
-
-        // While scrolling, freeze canvas to eliminate all GPU competition
-        if (isScrolling) return;
 
         const delta = now - lastTime;
         if (delta < targetFpsInterval - 2) return;
@@ -564,11 +525,6 @@ function initBackgroundAnimation() {
     });
 
     resize();
-    if (isCoarse || width < 768) {
-        // Touch/Mobile optimization: render static subtle snapshot and skip 60fps rAF loop to save 100% mobile CPU
-        drawParticlesAndConnections(document.documentElement.classList.contains('light-mode') || document.body.classList.contains('light-mode'));
-        return;
-    }
     lastTime = performance.now();
     animId = requestAnimationFrame(animate);
 }
@@ -2308,217 +2264,406 @@ if (typeof window.openDashboard === 'undefined') {
  * ================================================================
  */
 function initAdminPanel() {
-    const tbody       = document.getElementById("admin-users-tbody");
-    const searchInput = document.getElementById("admin-search-input");
-    const refreshBtn  = document.getElementById("admin-refresh-btn");
-    const editPanel   = document.getElementById("admin-edit-panel");
-    const editTitle   = document.getElementById("admin-edit-title");
-    const editBalance = document.getElementById("admin-edit-balance");
-    const editRole    = document.getElementById("admin-edit-role");
-    const saveBalBtn  = document.getElementById("admin-save-balance-btn");
-    const saveRoleBtn = document.getElementById("admin-save-role-btn");
-    const closeEditBtn= document.getElementById("admin-edit-close-btn");
-
-    const ordersTbody = document.getElementById("admin-smm-orders-tbody") || document.getElementById("user-admin-smm-orders-tbody");
-    const refreshOrdersBtn = document.getElementById("admin-refresh-orders-btn") || document.getElementById("user-admin-refresh-orders-btn");
-    const pendingBadges = [document.getElementById("admin-pending-badge"), document.getElementById("user-admin-pending-badge")].filter(Boolean);
-
-    let allUsers = [];
-    let allOrders = [];
-    let activeSmmFilter = "all";
-    let selectedUserId = null;
-
+    const getEl = (id) => document.getElementById("user-" + id) || document.getElementById(id);
+    const getAll = (sel) => Array.from(document.querySelectorAll(sel));
     const getToken = () => localStorage.getItem("teemous_jwt");
 
-    // ── Sub-tab Switcher (Users vs SMM Orders) ─────────────────────────────
-    function setupSubTabs(btnUsersId, btnOrdersId, viewUsersId, viewOrdersId) {
-        const btnUsers = document.getElementById(btnUsersId);
-        const btnOrders = document.getElementById(btnOrdersId);
-        const viewUsers = document.getElementById(viewUsersId);
-        const viewOrders = document.getElementById(viewOrdersId);
+    // Badges & Counters
+    const pendingBadges = [
+        document.getElementById("admin-pending-badge"),
+        document.getElementById("user-admin-pending-badge")
+    ].filter(Boolean);
 
-        if (btnUsers && btnOrders) {
-            btnUsers.onclick = () => {
-                btnUsers.classList.add("active");
-                btnOrders.classList.remove("active");
-                if (viewUsers) viewUsers.style.display = "block";
-                if (viewOrders) viewOrders.style.display = "none";
-            };
-            btnOrders.onclick = () => {
-                btnOrders.classList.add("active");
-                btnUsers.classList.remove("active");
-                if (viewUsers) viewUsers.style.display = "none";
-                if (viewOrders) viewOrders.style.display = "block";
-                loadSmmOrders();
-            };
-        }
+    // Subtab Buttons
+    const subtabBtnPending = [getEl("admin-subtab-btn-pending"), getEl("user-admin-subtab-btn-pending")].filter(Boolean);
+    const subtabBtnOrders = [getEl("admin-subtab-btn-orders"), getEl("user-admin-subtab-btn-orders")].filter(Boolean);
+    const subtabBtnUsers = [getEl("admin-subtab-btn-users"), getEl("user-admin-subtab-btn-users")].filter(Boolean);
+
+    // Subview Panes
+    const subviewPending = [getEl("admin-subview-pending"), getEl("user-admin-subview-pending")].filter(Boolean);
+    const subviewOrders = [getEl("admin-subview-orders"), getEl("user-admin-subview-orders")].filter(Boolean);
+    const subviewUsers = [getEl("admin-subview-users"), getEl("user-admin-subview-users")].filter(Boolean);
+
+    // Switch Subview helper
+    function setSubTab(tabName) {
+        const allTabs = [
+            { name: "pending", btns: subtabBtnPending, panes: subviewPending },
+            { name: "orders", btns: subtabBtnOrders, panes: subviewOrders },
+            { name: "users", btns: subtabBtnUsers, panes: subviewUsers }
+        ];
+
+        allTabs.forEach(t => {
+            const isActive = t.name === tabName;
+            t.btns.forEach(b => b.classList.toggle("active", isActive));
+            t.panes.forEach(p => { p.style.display = isActive ? "block" : "none"; });
+        });
+
+        if (tabName === "pending") loadPendingOrders();
+        else if (tabName === "orders") loadAllOrders();
+        else if (tabName === "users") loadUsers();
     }
 
-    setupSubTabs("admin-subtab-btn-users", "admin-subtab-btn-orders", "admin-subview-users", "admin-subview-orders");
-    setupSubTabs("user-admin-subtab-btn-users", "user-admin-subtab-btn-orders", "user-admin-subview-users", "user-admin-subview-orders");
+    // Attach subtab click events
+    subtabBtnPending.forEach(b => { b.onclick = () => setSubTab("pending"); });
+    subtabBtnOrders.forEach(b => { b.onclick = () => setSubTab("orders"); });
+    subtabBtnUsers.forEach(b => { b.onclick = () => setSubTab("users"); });
 
-    // ── Load Users ─────────────────────────────────────────────────────────
-    async function loadUsers() {
-        if (!tbody) return;
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">⏳ Đang tải danh sách người dùng...</td></tr>';
+    // Refresh Buttons
+    const refreshPendingBtns = [getEl("admin-refresh-pending-btn"), getEl("user-admin-refresh-pending-btn")].filter(Boolean);
+    const refreshOrdersBtns = [getEl("admin-refresh-orders-btn"), getEl("user-admin-refresh-orders-btn")].filter(Boolean);
+    const refreshUserBtns = [getEl("admin-refresh-btn"), getEl("user-admin-refresh-btn")].filter(Boolean);
+
+    refreshPendingBtns.forEach(b => { b.onclick = () => loadPendingOrders(); });
+    refreshOrdersBtns.forEach(b => { b.onclick = () => loadAllOrders(); });
+    refreshUserBtns.forEach(b => { b.onclick = () => loadUsers(); });
+
+    // State Variables
+    let allPendingOrders = [];
+    let allOrders = [];
+    let allUsers = [];
+    let filteredUsers = [];
+    let activeOrdersFilter = "all";
+    let currentUsersPage = 1;
+    let usersPageSize = "10";
+    let selectedUserId = null;
+
+    // Helper: Format wait time nicely
+    function getWaitTimeHtml(createdAtStr) {
+        if (!createdAtStr) return '<span style="color:var(--text-muted); font-size:0.75rem;">—</span>';
+        const created = new Date(createdAtStr);
+        const timeFormatted = created.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+        const diffMs = Date.now() - created.getTime();
+        let badge = "";
+        if (diffMs > 0) {
+            const mins = Math.floor(diffMs / 60000);
+            if (mins < 60) {
+                badge = `<div class="admin-wait-badge" style="color:#f59e0b; font-size:0.7rem; margin-top:2px;">⏳ Đã chờ ${mins}p</div>`;
+            } else {
+                const hours = Math.floor(mins / 60);
+                const rm = mins % 60;
+                if (hours < 24) {
+                    badge = `<div class="admin-wait-badge" style="color:#ef4444; font-size:0.7rem; margin-top:2px;">⚠️ Đã chờ ${hours}h ${rm}p</div>`;
+                } else {
+                    const days = Math.floor(hours / 24);
+                    badge = `<div class="admin-wait-badge" style="color:#ef4444; font-weight:800; font-size:0.7rem; margin-top:2px;">🚨 Đã chờ ${days} ngày</div>`;
+                }
+            }
+        }
+        return `<div><div style="font-size:0.76rem; color:var(--text-main);">${timeFormatted}</div>${badge}</div>`;
+    }
+
+    // ==========================================
+    // 1. DUYỆT ĐƠN PENDING (FIFO: Lâu nhất tới gần nhất)
+    // ==========================================
+    async function loadPendingOrders() {
+        const tbodies = [getEl("admin-pending-orders-tbody"), getEl("user-admin-pending-orders-tbody")].filter(Boolean);
+        if (tbodies.length === 0) return;
+
+        tbodies.forEach(tb => {
+            tb.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:var(--text-muted);">⏳ Đang tải hàng chờ duyệt (FIFO)...</td></tr>`;
+        });
+
         try {
-            const res = await fetch("/api/admin/manage?action=users", {
+            const res = await fetch("/api/admin/manage?action=pending_orders", {
                 headers: { "Authorization": "Bearer " + getToken() }
             });
             if (res.status === 403) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:#ff5252;">🚫 Quyền truy cập bị từ chối. Không phải tài khoản admin.</td></tr>';
+                tbodies.forEach(tb => {
+                    tb.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:#ff5252;">🚫 Quyền truy cập bị từ chối. Không phải tài khoản admin.</td></tr>`;
+                });
                 return;
             }
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "API Error");
-            allUsers = data.users || [];
-            renderTable(allUsers);
+
+            let orders = data.orders || [];
+            orders.sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0) || a.id - b.id);
+            allPendingOrders = orders;
+
+            pendingBadges.forEach(b => { b.textContent = orders.length; });
+            renderPendingOrdersTable(allPendingOrders);
         } catch (e) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:#ff5252;">❌ Lỗi: ' + e.message + '</td></tr>';
+            tbodies.forEach(tb => {
+                tb.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:#ff5252;">❌ Lỗi: ${e.message}</td></tr>`;
+            });
         }
     }
 
-    // ── Render Users Table ─────────────────────────────────────────────────
-    function renderTable(users) {
-        if (!tbody) return;
-        if (!users || users.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">Không tìm thấy người dùng.</td></tr>';
+    function renderPendingOrdersTable(orders) {
+        const tbodies = [getEl("admin-pending-orders-tbody"), getEl("user-admin-pending-orders-tbody")].filter(Boolean);
+        if (tbodies.length === 0) return;
+
+        if (!orders || orders.length === 0) {
+            tbodies.forEach(tb => {
+                tb.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2.5rem; color:#10b981; font-weight:700;">` +
+                    "🎉 Không có đơn nào đang chờ duyệt! Tất cả đơn đã được xử lý." +
+                    "</td></tr>";
+            });
             return;
         }
-        tbody.innerHTML = users.map(u => {
-            const roleClass = u.role === "admin" ? "elite" : "standard";
-            const bal = (u.balance || 0).toLocaleString("vi-VN");
-            return '<tr class="admin-user-row" data-userid="' + u.id + '">' +
-                '<td><span class="admin-id-badge">#' + u.id + '</span></td>' +
-                '<td><strong>' + u.username + '</strong></td>' +
-                '<td class="admin-email-cell">' + u.email + '</td>' +
-                '<td><span class="admin-balance-val">' + bal + ' đ</span></td>' +
-                '<td><span class="rank-badge rank-' + roleClass + '">' + u.role + '</span></td>' +
-                '<td>' +
-                    '<button class="admin-edit-btn" onclick="adminOpenEdit(' + u.id + ', &apos;' + u.username + '&apos;, ' + (u.balance || 0) + ', &apos;' + u.role + '&apos;)">✏️ Sửa</button>' +
-                '</td>' +
-            '</tr>';
+
+        const html = orders.map((p) => {
+            const price = (p.price_at_purchase || 0).toLocaleString("vi-VN");
+            const qty = (p.quantity || 0).toLocaleString("vi-VN");
+            const fullLink = (p.link || "").trim();
+            const shortLink = fullLink.length > 25 ? fullLink.slice(0, 23) + "..." : (fullLink || "—");
+
+            return `<tr>
+                <td><strong style="color:var(--cyan-laser); font-family:var(--font-tech);">#${p.id}</strong></td>
+                <td>${getWaitTimeHtml(p.created_at)}</td>
+                <td>
+                    <div style="font-weight:700; color:var(--text-main);">${p.username || "User #" + p.user_id}</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">${p.email || ""}</div>
+                </td>
+                <td>
+                    <div style="font-weight:700; color:var(--text-main);">${p.service_name || "Dịch vụ SMM"}</div>
+                    <div style="font-size:0.74rem; color:var(--text-muted);">Gói ID: #${p.smm_service_id || "317835"}</div>
+                </td>
+                <td><strong style="color:var(--text-main); font-family:var(--font-tech);">${qty}</strong></td>
+                <td>
+                    <div style="display:flex; align-items:center; gap:0.35rem;">
+                        <a href="${fullLink}" target="_blank" style="color:var(--cyan-laser); font-size:0.75rem; text-decoration:underline;" title="${fullLink}">${shortLink}</a>
+                        ${fullLink ? `<button type="button" class="admin-copy-btn" data-copy-link="${fullLink}" title="Copy Link/UID">📋</button>` : ""}
+                    </div>
+                </td>
+                <td><strong style="color:#f59e0b; font-family:var(--font-tech);">${price} đ</strong></td>
+                <td style="text-align:center;">
+                    <div style="display:inline-flex; gap:0.35rem; align-items:center; flex-wrap:wrap; justify-content:center;">
+                        <button type="button" class="admin-btn-approve" data-approve-id="${p.id}" title="Duyệt đơn thủ công (tự thao tác bấm tay)">⚡ Duyệt đơn</button>
+                        <button type="button" class="admin-btn-retry" data-retry-id="${p.id}" title="Gửi lại đơn sang API đối tác">🚀 Gửi lại đơn</button>
+                        <button type="button" class="admin-btn-cancel" data-cancel-id="${p.id}" data-price="${p.price_at_purchase || 0}" title="Hủy đơn & hoàn tiền vào ví khách">❌ Hủy đơn</button>
+                    </div>
+                </td>
+            </tr>`;
         }).join("");
+
+        tbodies.forEach(tb => { tb.innerHTML = html; });
+
+        // Bind Action 1: Duyệt đơn thủ công
+        document.querySelectorAll("[data-approve-id]").forEach(btn => {
+            btn.onclick = async () => {
+                const oid = btn.getAttribute("data-approve-id");
+                const targetOrder = allPendingOrders.find(o => o.id == oid) || {};
+                const confirmMsg = `⚡ Xác nhận DUYỆT ĐƠN #${oid} (${targetOrder.service_name || "Dịch vụ"})?
+
+` +
+                    `Bạn sẽ tự thực hiện/chạy tay đơn này. Trạng thái đơn sẽ chuyển sang "Đang xử lý" (Processing) và không gửi sang API đối tác.`;
+                if (!confirm(confirmMsg)) return;
+
+                btn.disabled = true;
+                btn.textContent = "⏳ Đang duyệt...";
+                try {
+                    const res = await fetch("/api/admin/manage", {
+                        method: "POST",
+                        headers: { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" },
+                        body: JSON.stringify({ action: "approve_smm_order", orderId: oid })
+                    });
+                    const d = await res.json();
+                    if (d.success) {
+                        alert(d.message || "Đã duyệt đơn thành công!");
+                        loadPendingOrders();
+                        loadAllOrders();
+                    } else {
+                        alert("❌ Lỗi duyệt đơn: " + (d.error || d.message));
+                    }
+                } catch (err) {
+                    alert("❌ Lỗi kết nối: " + err.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = "⚡ Duyệt đơn";
+                }
+            };
+        });
+
+        // Bind Action 2: Gửi lại đơn sang API
+        document.querySelectorAll("[data-retry-id]").forEach(btn => {
+            btn.onclick = async () => {
+                const oid = btn.getAttribute("data-retry-id");
+                if (!confirm(`🚀 Bấm xác nhận để GỬI LẠI ĐƠN #${oid} lên máy chủ API đối tác ngay bây giờ?`)) return;
+
+                btn.disabled = true;
+                btn.textContent = "⏳ Đang gửi...";
+                try {
+                    const res = await fetch("/api/admin/manage", {
+                        method: "POST",
+                        headers: { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" },
+                        body: JSON.stringify({ action: "dispatch_smm_order", orderId: oid })
+                    });
+                    const d = await res.json();
+                    if (d.success) {
+                        alert(d.message || "Đã đẩy đơn lên máy chủ đối tác thành công!");
+                        loadPendingOrders();
+                        loadAllOrders();
+                    } else {
+                        alert("⚠️ Không thể đẩy đơn: " + (d.message || d.error || "Máy chủ đối tác từ chối"));
+                    }
+                } catch (err) {
+                    alert("❌ Lỗi kết nối: " + err.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = "🚀 Gửi lại đơn";
+                }
+            };
+        });
+
+        // Bind Action 3: Hủy đơn & hoàn tiền
+        document.querySelectorAll("[data-cancel-id]").forEach(btn => {
+            btn.onclick = async () => {
+                const oid = btn.getAttribute("data-cancel-id");
+                const price = parseInt(btn.getAttribute("data-price") || "0");
+                const reason = prompt(
+                    `❌ NHẬP LÝ DO HỦY ĐƠN #${oid} VÀ HOÀN ${price.toLocaleString("vi-VN")} VND VỀ VÍ KHÁCH:`,
+                    "Link không hợp lệ / Chưa mở quyền riêng tư công khai"
+                );
+                if (reason === null) return;
+                if (!reason.trim()) {
+                    alert("Vui lòng cung cấp lý do hủy đơn để thông báo cho khách hàng!");
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.textContent = "⏳ Đang hủy...";
+                try {
+                    const res = await fetch("/api/admin/manage", {
+                        method: "POST",
+                        headers: { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" },
+                        body: JSON.stringify({ action: "cancel_smm_order", orderId: oid, reason: reason.trim() })
+                    });
+                    const d = await res.json();
+                    if (d.success) {
+                        alert(d.message || "Đã hủy đơn và hoàn tiền thành công!");
+                        loadPendingOrders();
+                        loadAllOrders();
+                        loadUsers();
+                    } else {
+                        alert("❌ Không thể hủy đơn: " + (d.error || d.message));
+                    }
+                } catch (err) {
+                    alert("❌ Lỗi kết nối: " + err.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = "❌ Hủy đơn";
+                }
+            };
+        });
+
+        // Bind Copy Link buttons
+        document.querySelectorAll("[data-copy-link]").forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                const lk = btn.getAttribute("data-copy-link");
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(lk).then(() => {
+                        btn.textContent = "✓";
+                        setTimeout(() => { btn.textContent = "📋"; }, 1200);
+                    });
+                }
+            };
+        });
     }
 
-    // ── Load SMM Orders & Queue ────────────────────────────────────────────
-    async function loadSmmOrders() {
-        const tbodies = [document.getElementById("admin-smm-orders-tbody"), document.getElementById("user-admin-smm-orders-tbody")].filter(Boolean);
+    // ==========================================
+    // 2. TẤT CẢ ĐƠN HÀNG SMM (Sắp xếp mới nhất DESC)
+    // ==========================================
+    async function loadAllOrders() {
+        const tbodies = [getEl("admin-smm-orders-tbody"), getEl("user-admin-smm-orders-tbody")].filter(Boolean);
         if (tbodies.length === 0) return;
 
         tbodies.forEach(tb => {
-            tb.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:2rem; color:var(--text-muted);">⏳ Đang tải danh sách hàng chờ & đơn hàng SMM...</td></tr>';
+            tb.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:2rem; color:var(--text-muted);">⏳ Đang tải toàn bộ đơn hàng...</td></tr>`;
         });
 
         try {
             const res = await fetch("/api/admin/manage?action=smm_orders", {
                 headers: { "Authorization": "Bearer " + getToken() }
             });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "API Error");
+            const d = await res.json();
+            if (!res.ok) throw new Error(d.error || "API Error");
 
-            allOrders = data.orders || [];
-            const pendingCount = data.pending_count !== undefined 
-                ? data.pending_count 
-                : allOrders.filter(o => o.status === "Pending" || !o.smm_order_id).length;
+            allOrders = d.orders || [];
+            const pCount = d.pending_count !== undefined ? d.pending_count : allOrders.filter(o => o.status === "Pending" || !o.smm_order_id).length;
+            pendingBadges.forEach(b => { b.textContent = pCount; });
 
-            pendingBadges.forEach(b => { b.textContent = pendingCount; });
-            renderSmmOrdersTable(allOrders);
+            renderAllOrdersTable(allOrders);
         } catch (e) {
             tbodies.forEach(tb => {
-                tb.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:2rem; color:#ff5252;">❌ Lỗi: ' + e.message + '</td></tr>';
+                tb.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:2rem; color:#ff5252;">❌ Lỗi: ${e.message}</td></tr>`;
             });
         }
     }
 
-    // ── Render SMM Orders Table ────────────────────────────────────────────
-    function renderSmmOrdersTable(orders) {
-        const tbodies = [document.getElementById("admin-smm-orders-tbody"), document.getElementById("user-admin-smm-orders-tbody")].filter(Boolean);
+    function renderAllOrdersTable(orders) {
+        const tbodies = [getEl("admin-smm-orders-tbody"), getEl("user-admin-smm-orders-tbody")].filter(Boolean);
         if (tbodies.length === 0) return;
 
         let filtered = orders || [];
-        if (activeSmmFilter !== "all") {
-            filtered = filtered.filter(o => o.status === activeSmmFilter);
+        if (activeOrdersFilter !== "all") {
+            filtered = filtered.filter(p => (p.status || "").toLowerCase() === activeOrdersFilter.toLowerCase());
         }
 
         if (filtered.length === 0) {
             tbodies.forEach(tb => {
-                tb.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:2rem; color:var(--text-muted);">Không có đơn hàng nào trong mục này.</td></tr>';
+                tb.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:2rem; color:var(--text-muted);">Không có đơn hàng nào trong mục này.</td></tr>`;
             });
             return;
         }
 
-        const rowsHtml = filtered.map(o => {
-            const statusClass = (o.status || "pending").toLowerCase();
-            const partnerBadge = o.smm_order_id 
-                ? '<strong style="color:var(--cyan-laser);">#' + o.smm_order_id + '</strong>'
-                : '<span style="color:#f59e0b; font-weight:800; font-size:0.75rem;">⏳ Chờ đẩy đơn</span>';
+        const html = filtered.map(p => {
+            const statusKey = (p.status || "pending").toLowerCase();
+            const partnerBadge = p.smm_order_id
+                ? `<strong style="color:var(--cyan-laser); font-family:var(--font-tech);">#${p.smm_order_id}</strong>`
+                : (statusKey === "pending"
+                    ? '<span style="color:#f59e0b; font-weight:800; font-size:0.75rem;">⏳ Chờ duyệt</span>'
+                    : '<span style="color:var(--text-muted); font-size:0.75rem;">Thủ công / —</span>');
+            const price = (p.price_at_purchase || 0).toLocaleString("vi-VN");
+            const qty = (p.quantity || 0).toLocaleString("vi-VN");
+            const fullLink = (p.link || "").trim();
+            const shortLink = fullLink.length > 25 ? fullLink.slice(0, 23) + "..." : (fullLink || "—");
+            const created = p.created_at ? new Date(p.created_at).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—";
 
-            const isPending = o.status === "Pending" || !o.smm_order_id;
-            const price = (o.price_at_purchase || 0).toLocaleString("vi-VN");
-            const qty = (o.quantity || 0).toLocaleString("vi-VN");
-            const shortLink = (o.link || "").length > 28 ? (o.link || "").slice(0, 26) + "..." : (o.link || "");
+            let actionsHtml = '<div style="display:flex; gap:0.3rem; flex-wrap:wrap;">';
+            if (p.smm_order_id) {
+                actionsHtml += `<button type="button" class="admin-btn-sync" data-sync-id="${p.id}" title="Đồng bộ tiến độ từ đối tác">🔄 Tiến độ</button>`;
+            }
+            if (p.status === "Pending" || !p.smm_order_id) {
+                if (p.status !== "Cancelled" && p.status !== "Completed") {
+                    actionsHtml += `<button type="button" class="admin-btn-approve" data-approve-id="${p.id}">⚡ Duyệt</button>`;
+                    actionsHtml += `<button type="button" class="admin-btn-cancel" data-cancel-id="${p.id}" data-price="${p.price_at_purchase || 0}">❌ Hủy</button>`;
+                }
+            }
+            actionsHtml += "</div>";
 
-            return '<tr>' +
-                '<td><strong>#' + o.id + '</strong></td>' +
-                '<td>' +
-                    '<div><strong>' + (o.username || "User #" + o.user_id) + '</strong></div>' +
-                    '<div style="font-size:0.75rem; color:var(--text-muted);">' + (o.email || "") + '</div>' +
-                '</td>' +
-                '<td>' +
-                    '<div><strong>' + (o.service_name || "Dịch vụ SMM") + '</strong></div>' +
-                    '<div style="font-size:0.75rem; color:var(--text-muted);">ID gói: #' + (o.smm_service_id || "317835") + '</div>' +
-                '</td>' +
-                '<td><strong style="color:var(--text-main);">' + qty + '</strong></td>' +
-                '<td>' +
-                    '<a href="' + o.link + '" target="_blank" style="color:var(--cyan-laser); font-size:0.75rem; text-decoration:underline;" title="' + o.link + '">' +
-                        shortLink +
-                    '</a>' +
-                '</td>' +
-                '<td><strong>' + price + ' đ</strong></td>' +
-                '<td>' + partnerBadge + '</td>' +
-                '<td><span class="status-badge status-' + statusClass + '">' + (o.status || "Pending") + '</span></td>' +
-                '<td>' +
-                    '<div style="display:flex; gap:0.35rem; flex-wrap:wrap;">' +
-                        (isPending ? '<button type="button" class="admin-btn-dispatch" data-dispatch-id="' + o.id + '">🚀 Đẩy đơn API</button>' : '') +
-                        '<button type="button" class="admin-btn-sync" data-sync-id="' + o.id + '">🔄 Tiến độ</button>' +
-                    '</div>' +
-                '</td>' +
-            '</tr>';
+            return `<tr>
+                <td><strong>#${p.id}</strong></td>
+                <td style="font-size:0.76rem; color:var(--text-muted);">${created}</td>
+                <td>
+                    <div style="font-weight:700;">${p.username || "User #" + p.user_id}</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">${p.email || ""}</div>
+                </td>
+                <td>
+                    <div style="font-weight:700;">${p.service_name || "Dịch vụ SMM"}</div>
+                    <div style="font-size:0.74rem; color:var(--text-muted);">Gói ID: #${p.smm_service_id || "317835"}</div>
+                </td>
+                <td><strong style="color:var(--text-main); font-family:var(--font-tech);">${qty}</strong></td>
+                <td>
+                    <div style="display:flex; align-items:center; gap:0.35rem;">
+                        <a href="${fullLink}" target="_blank" style="color:var(--cyan-laser); font-size:0.75rem; text-decoration:underline;" title="${fullLink}">${shortLink}</a>
+                        ${fullLink ? `<button type="button" class="admin-copy-btn" data-copy-link="${fullLink}">📋</button>` : ""}
+                    </div>
+                </td>
+                <td><strong>${price} đ</strong></td>
+                <td>${partnerBadge}</td>
+                <td>
+                    <span class="status-badge status-${statusKey}">${p.status || "Pending"}</span>
+                    ${p.cancel_reason ? `<div style="font-size:0.7rem; color:#ef4444; margin-top:2px;">Lý do: ${p.cancel_reason}</div>` : ""}
+                </td>
+                <td>${actionsHtml}</td>
+            </tr>`;
         }).join("");
 
-        tbodies.forEach(tb => { tb.innerHTML = rowsHtml; });
+        tbodies.forEach(tb => { tb.innerHTML = html; });
 
-        // Bind dispatch and sync buttons
-        document.querySelectorAll("[data-dispatch-id]").forEach(btn => {
-            btn.onclick = async () => {
-                const oid = btn.getAttribute("data-dispatch-id");
-                if (!confirm("Bấm xác nhận để đẩy đơn #" + oid + " lên máy chủ dichvumxh.vn ngay bây giờ?")) return;
-
-                btn.disabled = true;
-                btn.textContent = "⏳ Đang đẩy...";
-                try {
-                    const res = await fetch("/api/admin/manage", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() },
-                        body: JSON.stringify({ action: "dispatch_smm_order", orderId: oid })
-                    });
-                    const result = await res.json();
-                    if (result.success) {
-                        alert(result.message || "Đã đẩy đơn thành công!");
-                        loadSmmOrders();
-                    } else {
-                        alert("⚠️ Không thể đẩy đơn: " + (result.message || result.error) + "\n\n(Nếu do tài khoản đại lý chưa đủ tiền, bạn hãy nạp thêm tiền bên dichvumxh.vn rồi bấm lại nút này nhé!)");
-                    }
-                } catch(e) {
-                    alert("Lỗi kết nối: " + e.message);
-                } finally {
-                    btn.disabled = false;
-                    btn.textContent = "🚀 Đẩy đơn API";
-                }
-            };
-        });
-
+        // Bind sync buttons
         document.querySelectorAll("[data-sync-id]").forEach(btn => {
             btn.onclick = async () => {
                 const oid = btn.getAttribute("data-sync-id");
@@ -2527,18 +2672,18 @@ function initAdminPanel() {
                 try {
                     const res = await fetch("/api/admin/manage", {
                         method: "POST",
-                        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() },
+                        headers: { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" },
                         body: JSON.stringify({ action: "sync_order_status", orderId: oid })
                     });
-                    const result = await res.json();
-                    if (result.success) {
-                        alert(result.message || ("Trạng thái hiện tại: " + result.status));
-                        loadSmmOrders();
+                    const d = await res.json();
+                    if (d.success) {
+                        alert(d.message || "Trạng thái: " + d.status);
+                        loadAllOrders();
                     } else {
-                        alert("Thông báo: " + (result.message || "Không thể đồng bộ tiến độ"));
+                        alert("Không thể đồng bộ: " + (d.error || "Lỗi server"));
                     }
-                } catch(e) {
-                    alert("Lỗi kết nối: " + e.message);
+                } catch (err) {
+                    alert("Lỗi: " + err.message);
                 } finally {
                     btn.disabled = false;
                     btn.textContent = "🔄 Tiến độ";
@@ -2547,85 +2692,203 @@ function initAdminPanel() {
         });
     }
 
-    // Filter pills
-    document.querySelectorAll("[data-smm-filter]").forEach(pill => {
-        pill.addEventListener("click", () => {
-            document.querySelectorAll("[data-smm-filter]").forEach(p => p.classList.remove("active"));
+    // Filter pills in All Orders
+    getAll(".admin-filter-pill").forEach(pill => {
+        pill.onclick = () => {
+            getAll(".admin-filter-pill").forEach(p => p.classList.remove("active"));
             pill.classList.add("active");
-            activeSmmFilter = pill.getAttribute("data-smm-filter");
-            renderSmmOrdersTable(allOrders);
-        });
+            activeOrdersFilter = pill.getAttribute("data-smm-filter") || "all";
+            renderAllOrdersTable(allOrders);
+        };
     });
 
-    if (refreshOrdersBtn) {
-        refreshOrdersBtn.addEventListener("click", () => loadSmmOrders());
-    }
+    // ==========================================
+    // 3. QUẢN LÝ NGƯỜI DÙNG (Phân trang mượt, chống lag)
+    // ==========================================
+    const userTbodies = [getEl("admin-users-tbody")].filter(Boolean);
+    const searchInputs = [getEl("admin-search-input")].filter(Boolean);
+    const pageSelects = [getEl("admin-users-pagesize")].filter(Boolean);
+    const prevBtns = [getEl("admin-users-prev-btn")].filter(Boolean);
+    const nextBtns = [getEl("admin-users-next-btn")].filter(Boolean);
+    const pageInfoEls = [getEl("admin-users-page-info")].filter(Boolean);
 
-    // ── Search Filter ──────────────────────────────────────────────────────
-    if (searchInput) {
-        let searchDebounceTimer = null;
-        searchInput.addEventListener("input", () => {
-            clearTimeout(searchDebounceTimer);
-            searchDebounceTimer = setTimeout(() => {
-                const q = searchInput.value.toLowerCase().trim();
-                const filtered = allUsers.filter(u =>
-                    (u.username && u.username.toLowerCase().includes(q)) ||
-                    (u.email && u.email.toLowerCase().includes(q)) ||
-                    String(u.id).includes(q)
-                );
-                renderTable(filtered);
-            }, 120);
+    const editPanel = getEl("admin-edit-panel");
+    const editTitle = getEl("admin-edit-title");
+    const editBalance = getEl("admin-edit-balance");
+    const editRole = getEl("admin-edit-role");
+    const saveBalBtn = getEl("admin-save-balance-btn");
+    const saveRoleBtn = getEl("admin-save-role-btn");
+    const closeEditBtn = getEl("admin-edit-close-btn");
+
+    async function loadUsers() {
+        if (userTbodies.length === 0) return;
+        userTbodies.forEach(tb => {
+            tb.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">⏳ Đang tải danh sách người dùng...</td></tr>`;
         });
+
+        try {
+            const res = await fetch("/api/admin/manage?action=users", {
+                headers: { "Authorization": "Bearer " + getToken() }
+            });
+            if (res.status === 403) {
+                userTbodies.forEach(tb => {
+                    tb.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:#ff5252;">🚫 Quyền truy cập bị từ chối. Không phải tài khoản admin.</td></tr>`;
+                });
+                return;
+            }
+            const d = await res.json();
+            if (!res.ok) throw new Error(d.error || "API Error");
+
+            allUsers = d.users || [];
+            applyUserFilters();
+        } catch (e) {
+            userTbodies.forEach(tb => {
+                tb.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:#ff5252;">❌ Lỗi: ${e.message}</td></tr>`;
+            });
+        }
     }
 
-    if (refreshBtn) {
-        refreshBtn.addEventListener("click", () => loadUsers());
+    function applyUserFilters() {
+        const query = (searchInputs[0] ? searchInputs[0].value : "").trim().toLowerCase();
+        if (!query) {
+            filteredUsers = allUsers.slice();
+        } else {
+            filteredUsers = allUsers.filter(u =>
+                (u.username || "").toLowerCase().includes(query) ||
+                (u.email || "").toLowerCase().includes(query) ||
+                String(u.id).includes(query)
+            );
+        }
+        currentUsersPage = 1;
+        renderUsersTable();
     }
 
-    if (closeEditBtn) {
-        closeEditBtn.addEventListener("click", () => {
-            editPanel.style.display = "none";
-            selectedUserId = null;
+    function renderUsersTable() {
+        if (userTbodies.length === 0) return;
+
+        if (filteredUsers.length === 0) {
+            userTbodies.forEach(tb => {
+                tb.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">Không tìm thấy người dùng phù hợp.</td></tr>`;
+            });
+            pageInfoEls.forEach(el => { el.textContent = "Trang 1 / 1 (Tổng 0 người)"; });
+            prevBtns.forEach(b => { b.disabled = true; });
+            nextBtns.forEach(b => { b.disabled = true; });
+            return;
+        }
+
+        const pageSizeNum = usersPageSize === "all" ? filteredUsers.length : parseInt(usersPageSize || "10");
+        const totalPages = Math.max(1, Math.ceil(filteredUsers.length / pageSizeNum));
+        if (currentUsersPage > totalPages) currentUsersPage = totalPages;
+        if (currentUsersPage < 1) currentUsersPage = 1;
+
+        const start = (currentUsersPage - 1) * pageSizeNum;
+        const pageUsers = filteredUsers.slice(start, start + pageSizeNum);
+
+        const html = pageUsers.map(u => {
+            const roleClass = u.role === "admin" ? "elite" : "standard";
+            const bal = (u.balance || 0).toLocaleString("vi-VN");
+            return `<tr class="admin-user-row" data-userid="${u.id}">
+                <td><span class="admin-id-badge">#${u.id}</span></td>
+                <td><strong>${u.username}</strong></td>
+                <td class="admin-email-cell" title="${u.email}">${u.email}</td>
+                <td><span class="admin-balance-val">${bal} đ</span></td>
+                <td><span class="rank-badge rank-${roleClass}">${u.role}</span></td>
+                <td>
+                    <button type="button" class="admin-edit-btn" onclick="adminOpenEdit(${u.id}, '${u.username.replace(/'/g, "\'")}', ${u.balance || 0}, '${u.role}')">✏️ Sửa</button>
+                </td>
+            </tr>`;
+        }).join("");
+
+        userTbodies.forEach(tb => { tb.innerHTML = html; });
+
+        // Update pagination bar
+        pageInfoEls.forEach(el => {
+            el.textContent = `Trang ${currentUsersPage} / ${totalPages} (Tổng ${filteredUsers.length} người)`;
         });
+        prevBtns.forEach(b => { b.disabled = currentUsersPage <= 1; });
+        nextBtns.forEach(b => { b.disabled = currentUsersPage >= totalPages; });
+    }
+
+    // Bind User Search (with debounce)
+    searchInputs.forEach(inp => {
+        let timer = null;
+        inp.oninput = () => {
+            clearTimeout(timer);
+            timer = setTimeout(applyUserFilters, 150);
+        };
+    });
+
+    // Bind Page Size selector
+    pageSelects.forEach(sel => {
+        sel.onchange = () => {
+            usersPageSize = sel.value;
+            currentUsersPage = 1;
+            renderUsersTable();
+        };
+    });
+
+    // Bind Pagination Buttons
+    prevBtns.forEach(b => {
+        b.onclick = () => {
+            if (currentUsersPage > 1) {
+                currentUsersPage--;
+                renderUsersTable();
+            }
+        };
+    });
+    nextBtns.forEach(b => {
+        b.onclick = () => {
+            const pageSizeNum = usersPageSize === "all" ? filteredUsers.length : parseInt(usersPageSize || "10");
+            const totalPages = Math.ceil(filteredUsers.length / pageSizeNum);
+            if (currentUsersPage < totalPages) {
+                currentUsersPage++;
+                renderUsersTable();
+            }
+        };
+    });
+
+    // Edit User Panel Events
+    if (closeEditBtn && editPanel) {
+        closeEditBtn.onclick = () => { editPanel.style.display = "none"; };
     }
 
     if (saveBalBtn) {
-        saveBalBtn.addEventListener("click", async () => {
+        saveBalBtn.onclick = async () => {
             if (!selectedUserId) return;
             const amount = parseInt(editBalance.value);
             if (isNaN(amount) || amount < 0) {
-                alert("Số tiền không hợp lệ.");
+                alert("Vui lòng nhập số dư hợp lệ (>= 0)!");
                 return;
             }
             saveBalBtn.disabled = true;
-            saveBalBtn.innerText = "⏳ Đang lưu...";
+            saveBalBtn.textContent = "⏳ Đang lưu...";
             try {
                 const res = await fetch("/api/admin/manage", {
                     method: "POST",
                     headers: { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" },
                     body: JSON.stringify({ action: "update_balance", userId: selectedUserId, amount })
                 });
-                const data = await res.json();
+                const d = await res.json();
                 if (res.ok) {
                     const u = allUsers.find(x => x.id === selectedUserId);
                     if (u) u.balance = amount;
-                    renderTable(allUsers);
-                    editPanel.style.display = "none";
-                    alert("✅ " + data.message);
+                    applyUserFilters();
+                    if (editPanel) editPanel.style.display = "none";
+                    alert("✅ " + (d.message || "Cập nhật số dư thành công!"));
                 } else {
-                    alert("❌ Lỗi: " + data.error);
+                    alert("❌ Lỗi: " + (d.error || "Không thể lưu số dư"));
                 }
-            } catch (e) {
-                alert("❌ Lỗi mạng: " + e.message);
+            } catch (err) {
+                alert("❌ Lỗi mạng: " + err.message);
             } finally {
                 saveBalBtn.disabled = false;
-                saveBalBtn.innerText = "💾 Save Balance";
+                saveBalBtn.textContent = "💾 Save Balance";
             }
-        });
+        };
     }
 
     if (saveRoleBtn) {
-        saveRoleBtn.addEventListener("click", async () => {
+        saveRoleBtn.onclick = async () => {
             if (!selectedUserId) return;
             const role = editRole.value;
             if (!["user", "admin"].includes(role)) return;
@@ -2638,46 +2901,47 @@ function initAdminPanel() {
             if (!confirmed) return;
 
             saveRoleBtn.disabled = true;
-            saveRoleBtn.innerText = "⏳ Đang lưu...";
+            saveRoleBtn.textContent = "⏳ Đang lưu...";
             try {
                 const res = await fetch("/api/admin/manage", {
                     method: "POST",
                     headers: { "Authorization": "Bearer " + getToken(), "Content-Type": "application/json" },
                     body: JSON.stringify({ action: "update_role", userId: selectedUserId, role })
                 });
-                const data = await res.json();
+                const d = await res.json();
                 if (res.ok) {
                     const u = allUsers.find(x => x.id === selectedUserId);
                     if (u) u.role = role;
-                    renderTable(allUsers);
-                    editPanel.style.display = "none";
-                    alert("✅ " + data.message);
+                    applyUserFilters();
+                    if (editPanel) editPanel.style.display = "none";
+                    alert("✅ " + (d.message || "Cập nhật vai trò thành công!"));
                 } else {
-                    alert("❌ Lỗi: " + data.error);
+                    alert("❌ Lỗi: " + (d.error || "Không thể lưu quyền"));
                 }
-            } catch (e) {
-                alert("❌ Lỗi mạng: " + e.message);
+            } catch (err) {
+                alert("❌ Lỗi mạng: " + err.message);
             } finally {
                 saveRoleBtn.disabled = false;
-                saveRoleBtn.innerText = "💾 Save Role";
+                saveRoleBtn.textContent = "💾 Save Role";
             }
-        });
+        };
     }
-
-    loadUsers();
-    loadSmmOrders();
 
     window.adminOpenEdit = function(userId, username, balance, role) {
         selectedUserId = userId;
-        editTitle.innerText = "Chỉnh sửa: " + username + " (ID #" + userId + ")";
-        editBalance.value = balance || 0;
-        editRole.value = role || "user";
-        editPanel.style.display = "block";
-        if (typeof gsap !== "undefined") {
-            gsap.fromTo(editPanel, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3 });
+        if (editTitle) editTitle.textContent = "Chỉnh sửa: " + username + " (ID #" + userId + ")";
+        if (editBalance) editBalance.value = balance || 0;
+        if (editRole) editRole.value = role || "user";
+        if (editPanel) {
+            editPanel.style.display = "block";
+            editPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
     };
+
+    // Initial Load: Start with Pending Orders tab as default!
+    setSubTab("pending");
 }
+window.initAdminPanel = initAdminPanel;
 
 
 function initLiveTelemetry() {

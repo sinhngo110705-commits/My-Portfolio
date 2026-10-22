@@ -1104,9 +1104,18 @@
 }
 
 .hub-card-school {
-    font-size: 0.72rem;
+    font-size: 0.74rem;
     font-weight: 600;
-    color: #cbd5e1;
+    color: #e2e8f0;
+}
+
+.light-mode .hub-card-name {
+    color: #0f172a !important;
+}
+
+.light-mode .hub-card-school {
+    color: #334155 !important;
+    font-weight: 700 !important;
 }
 
 /* Power Meter Bar on Card */
@@ -1124,6 +1133,11 @@
     font-weight: 700;
     color: #cbd5e1;
     margin-bottom: 0.3rem;
+}
+
+.light-mode .hub-power-score-label {
+    color: #334155 !important;
+    font-weight: 700 !important;
 }
 
 .hub-power-score-val {
@@ -1165,6 +1179,13 @@
     padding: 0.2rem 0.5rem;
     border-radius: 6px;
     letter-spacing: 0.02em;
+}
+
+.light-mode .hub-skill-chip {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-color: rgba(0, 0, 0, 0.12) !important;
+    color: #1e293b !important;
+    font-weight: 700 !important;
 }
 
 /* Card Actions */

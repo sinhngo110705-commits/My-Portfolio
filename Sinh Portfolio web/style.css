@@ -3794,7 +3794,12 @@ select option {
     transition: opacity 0.4s ease, visibility 0.4s ease;
 }
 
+.auth-modal-overlay {
+    display: none !important;
+}
+
 .auth-modal-overlay.active {
+    display: flex !important;
     opacity: 1;
     visibility: visible;
 }
@@ -4736,41 +4741,217 @@ select option {
     font-weight: 700;
 }
 
+/* Action Button (Optimized zero-lag, no transform, no box-shadow repaint) */
 .admin-edit-btn {
     font-size: 0.75rem;
-    padding: 0.35rem 0.75rem;
-    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
     cursor: pointer;
     background: rgba(0, 240, 255, 0.08) !important;
     color: var(--cyan-laser) !important;
     border: 1px solid rgba(0, 240, 255, 0.25) !important;
     font-weight: 700;
     font-family: var(--font-tech);
-    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+    transition: none !important;
     animation: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     box-shadow: none !important;
+    transform: none !important;
 }
 
 .admin-edit-btn:hover {
-    background: var(--cyan-laser) !important;
-    color: #000 !important;
+    background: rgba(0, 240, 255, 0.22) !important;
+    color: #ffffff !important;
     border-color: var(--cyan-laser) !important;
-    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3) !important;
-    transform: translateY(-1px);
+    box-shadow: none !important;
+    transform: none !important;
 }
 
 .light-mode .admin-edit-btn {
     background: rgba(2, 132, 199, 0.08) !important;
     color: #0284c7 !important;
     border: 1px solid rgba(2, 132, 199, 0.25) !important;
+    box-shadow: none !important;
+    transform: none !important;
 }
 
 .light-mode .admin-edit-btn:hover {
     background: #0284c7 !important;
     color: #ffffff !important;
     border-color: #0284c7 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* SMM & Pending Queue Actions */
+.admin-btn-approve {
+    padding: 0.32rem 0.65rem;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    font-family: var(--font-tech);
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #10b981 !important;
+    border: 1px solid rgba(16, 185, 129, 0.45) !important;
+    cursor: pointer;
+    transition: none !important;
+    white-space: nowrap;
+}
+.admin-btn-approve:hover {
+    background: #10b981 !important;
+    color: #000 !important;
+}
+.light-mode .admin-btn-approve {
+    background: #ecfdf5 !important;
+    color: #059669 !important;
+    border-color: #10b981 !important;
+}
+.light-mode .admin-btn-approve:hover {
+    background: #059669 !important;
+    color: #fff !important;
+}
+
+.admin-btn-retry {
+    padding: 0.32rem 0.65rem;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    font-family: var(--font-tech);
+    background: rgba(0, 240, 255, 0.12) !important;
+    color: var(--cyan-laser) !important;
+    border: 1px solid rgba(0, 240, 255, 0.4) !important;
+    cursor: pointer;
+    transition: none !important;
+    white-space: nowrap;
+}
+.admin-btn-retry:hover {
+    background: var(--cyan-laser) !important;
+    color: #000 !important;
+}
+.light-mode .admin-btn-retry {
+    background: #f0f9ff !important;
+    color: #0284c7 !important;
+    border-color: #0284c7 !important;
+}
+.light-mode .admin-btn-retry:hover {
+    background: #0284c7 !important;
+    color: #fff !important;
+}
+
+.admin-btn-cancel {
+    padding: 0.32rem 0.65rem;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    font-family: var(--font-tech);
+    background: rgba(239, 68, 68, 0.12) !important;
+    color: #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.4) !important;
+    cursor: pointer;
+    transition: none !important;
+    white-space: nowrap;
+}
+.admin-btn-cancel:hover {
+    background: #ef4444 !important;
+    color: #fff !important;
+}
+.light-mode .admin-btn-cancel {
+    background: #fef2f2 !important;
+    color: #dc2626 !important;
+    border-color: #ef4444 !important;
+}
+.light-mode .admin-btn-cancel:hover {
+    background: #dc2626 !important;
+    color: #fff !important;
+}
+
+.admin-copy-btn {
+    padding: 0.15rem 0.38rem;
+    font-size: 0.7rem;
+    border-radius: 4px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: none !important;
+}
+.admin-copy-btn:hover {
+    color: var(--cyan-laser);
+    border-color: var(--cyan-laser);
+}
+.light-mode .admin-copy-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: #cbd5e1;
+    color: #475569;
+}
+.light-mode .admin-copy-btn:hover {
+    color: #0284c7;
+    border-color: #0284c7;
+}
+
+.admin-wait-badge {
+    display: inline-block;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-family: var(--font-tech);
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.admin-pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--glass-border);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+.admin-page-btn {
+    padding: 0.25rem 0.7rem;
+    border-radius: 6px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    cursor: pointer;
+    font-weight: 700;
+    transition: none !important;
+}
+.admin-page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.admin-page-btn:not(:disabled):hover {
+    border-color: var(--cyan-laser);
+    color: var(--cyan-laser);
+}
+.light-mode .admin-page-btn {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+.light-mode .admin-page-btn:not(:disabled):hover {
+    border-color: #0284c7;
+    color: #0284c7;
+}
+
+.admin-pagesize-select {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    border-radius: 6px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    outline: none;
+    cursor: pointer;
+}
+.light-mode .admin-pagesize-select {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #1e293b;
 }
 
 /* Edit Panel */
