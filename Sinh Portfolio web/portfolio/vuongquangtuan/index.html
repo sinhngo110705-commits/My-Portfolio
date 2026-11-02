@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="vi" data-lang="vi">
 
 <head>
     <meta charset="UTF-8">
@@ -60,22 +60,25 @@
     <script>
         (function() {
             try {
-                var savedTheme = localStorage.getItem('theme') || localStorage.getItem('td-theme');
-                if (savedTheme === 'light' || (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+                var savedTheme = localStorage.getItem('td-theme') || localStorage.getItem('theme');
+                if (savedTheme === 'light') {
                     document.documentElement.classList.add('light-mode');
                 } else {
                     document.documentElement.classList.remove('light-mode');
                 }
-                var p = new URLSearchParams(window.location.search).get('lang');
-                var l = p || localStorage.getItem('td-lang') || localStorage.getItem('lang') || 'vi';
+                var p = new URLSearchParams(window.location.search);
+                var l = p.get('lang') || localStorage.getItem('td-lang') || localStorage.getItem('lang') || 'vi';
                 document.documentElement.lang = l;
                 document.documentElement.setAttribute('data-lang', l);
+                if (p.get('login') === '1') {
+                    window.__autoOpenLogin = true;
+                }
             } catch(e) {}
         })();
     </script>
 </head>
 
-<body> <!-- Default to light mode -->
+<body>
     <canvas id="bg-canvas"></canvas>
 
     <main class="container">

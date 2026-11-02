@@ -43,12 +43,28 @@ export async function onRequest(context) {
             return new Response(JSON.stringify({ error: "File too large (Max 2MB)" }), { status: 400 });
         }
 
+        // Validate MIME type
+        const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
+        if (!allowedTypes.includes(file.type)) {
+            return new Response(JSON.stringify({ error: "Chỉ chấp nhận file ảnh định dạng PNG, JPEG hoặc WEBP!" }), { status: 400 });
+        }
+
+        // Sanitize file extension and explicitly block SVG/HTML
+        const fileName = (file.name || "").toLowerCase();
+        if (fileName.endsWith(".svg") || fileName.endsWith(".html") || fileName.endsWith(".htm") || fileName.endsWith(".js")) {
+            return new Response(JSON.stringify({ error: "Định dạng file không an toàn!" }), { status: 400 });
+        }
+
+        let ext = "png";
+        if (file.type === "image/jpeg" || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) ext = "jpg";
+        else if (file.type === "image/webp" || fileName.endsWith(".webp")) ext = "webp";
+
         // Generate a unique filename for R2
-        const key = `avatars/${payload.id}-${Date.now()}.png`;
+        const key = `avatars/${payload.id}-${Date.now()}.${ext}`;
 
         // Upload to R2
         await env.BUCKET.put(key, file.stream(), {
-            httpMetadata: { contentType: file.type || 'image/png' }
+            httpMetadata: { contentType: file.type }
         });
 
         // The URL point to the internal avatar viewer API

@@ -1,15 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" data-lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Systems Terminal | Teemous Digital Lab</title>
+    <title>Dịch Vụ Tăng Trưởng Mạng Xã Hội (SMM) Uy Tín | Teemous Digital Lab</title>
     <link rel="icon" href="../../Logo/favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="../../Logo/favicon.png">
     <link rel="canonical" href="https://teemousdigital.id.vn/services/social/">
     <meta name="description"
-        content="High-fidelity social engagement, follower acceleration, and audience infrastructure across Meta & TikTok platforms.">
+        content="Hệ thống tăng trưởng tương tác, follow, like Facebook, Instagram, TikTok an toàn, chất lượng cao và bảo hành vĩnh viễn tại Teemous Digital.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://teemousdigital.id.vn/services/social/">
+    <meta property="og:site_name" content="Teemous Digital Lab">
+    <meta property="og:title" content="Dịch Vụ Tăng Trưởng Mạng Xã Hội (SMM) Uy Tín | Teemous Digital Lab">
+    <meta property="og:description" content="Hệ thống tăng trưởng tương tác, follow, like Facebook, Instagram, TikTok an toàn, chất lượng cao và bảo hành vĩnh viễn tại Teemous Digital.">
+    <meta property="og:image" content="https://teemousdigital.id.vn/Logo/logo.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://teemousdigital.id.vn/services/social/">
+    <meta name="twitter:title" content="Dịch Vụ Tăng Trưởng Mạng Xã Hội (SMM) Uy Tín | Teemous Digital Lab">
+    <meta name="twitter:description" content="Hệ thống tăng trưởng tương tác, follow, like Facebook, Instagram, TikTok an toàn, chất lượng cao và bảo hành vĩnh viễn tại Teemous Digital.">
+    <meta name="twitter:image" content="https://teemousdigital.id.vn/Logo/logo.png">
+
+    <!-- JSON-LD Schema Service -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "serviceType": "Social Media Marketing",
+      "name": "Dịch Vụ Tăng Trưởng Mạng Xã Hội (SMM)",
+      "description": "Hệ thống tăng trưởng tương tác, follow, like Facebook, Instagram, TikTok an toàn, chất lượng cao và bảo hành vĩnh viễn tại Teemous Digital.",
+      "provider": {
+        "@type": "Organization",
+        "name": "Teemous Digital Lab",
+        "url": "https://teemousdigital.id.vn"
+      },
+      "areaServed": "VN",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Dịch vụ SMM",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Tăng Tương Tác Facebook, Instagram, TikTok"
+            }
+          }
+        ]
+      }
+    }
+    </script>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;800;900&display=swap" rel="stylesheet">
@@ -515,16 +560,19 @@
     <script>
         (function() {
             try {
-                var savedTheme = localStorage.getItem('theme') || localStorage.getItem('td-theme');
-                if (savedTheme === 'light' || (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+                var savedTheme = localStorage.getItem('td-theme') || localStorage.getItem('theme');
+                if (savedTheme === 'light') {
                     document.documentElement.classList.add('light-mode');
                 } else {
                     document.documentElement.classList.remove('light-mode');
                 }
-                var p = new URLSearchParams(window.location.search).get('lang');
-                var l = p || localStorage.getItem('td-lang') || localStorage.getItem('lang') || 'vi';
+                var p = new URLSearchParams(window.location.search);
+                var l = p.get('lang') || localStorage.getItem('td-lang') || localStorage.getItem('lang') || 'vi';
                 document.documentElement.lang = l;
                 document.documentElement.setAttribute('data-lang', l);
+                if (p.get('login') === '1') {
+                    window.__autoOpenLogin = true;
+                }
             } catch(e) {}
         })();
     </script>
@@ -954,35 +1002,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="../../script.js?v=perf-v66"></script>
-
-    <!-- Matrix Quick Pill Click Listener -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const pills = document.querySelectorAll('.matrix-pill');
-            const select = document.getElementById('smm-service-select');
-            
-            pills.forEach(pill => {
-                pill.addEventListener('click', () => {
-                    pills.forEach(p => p.classList.remove('selected'));
-                    pill.classList.add('selected');
-                    
-                    const sid = pill.getAttribute('data-sid');
-                    const plat = pill.getAttribute('data-plat');
-                    
-                    // Activate platform tab
-                    const tab = document.querySelector(`.smm-tab-btn[data-platform="${plat}"]`);
-                    if (tab) tab.click();
-                    
-                    setTimeout(() => {
-                        if (select) {
-                            select.value = sid;
-                            select.dispatchEvent(new Event('change'));
-                        }
-                    }, 50);
-                });
-            });
-        });
-    </script>
 </body>
 
 </html>

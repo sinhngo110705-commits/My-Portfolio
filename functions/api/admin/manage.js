@@ -1,24 +1,4 @@
-﻿import { verifyJWT } from "../utils.js";
-
-async function verifyAdmin(request, env) {
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
-
-    const token = authHeader.split(" ")[1];
-    const jwtSecret = env.JWT_SECRET || "fallback_default_secret_please_change_in_production";
-    const payload = await verifyJWT(token, jwtSecret);
-    if (!payload || !payload.id) return null;
-
-    if (!env.teemous_db) return null;
-
-    const userFromDb = await env.teemous_db
-        .prepare("SELECT id, role FROM users WHERE id = ? LIMIT 1")
-        .bind(payload.id)
-        .first();
-
-    if (!userFromDb || userFromDb.role !== "admin") return null;
-    return userFromDb;
-}
+import { verifyJWT, verifyAdmin } from "../utils.js";
 
 export async function onRequest(context) {
     const { request, env } = context;
@@ -164,21 +144,26 @@ export async function onRequest(context) {
 
                 const refundAmount = parseInt(order.price_at_purchase || 0);
 
-                await env.teemous_db.prepare(
-                    "UPDATE orders SET status = 'Cancelled', cancel_reason = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
-                ).bind(reason, orderId).run();
+                const batchOps = [
+                    env.teemous_db.prepare(
+                        "UPDATE orders SET status = 'Cancelled', cancel_reason = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND status NOT IN ('Cancelled', 'Refunded')"
+                    ).bind(reason, orderId)
+                ];
 
                 if (refundAmount > 0 && order.user_id) {
-                    await env.teemous_db.prepare(
-                        "UPDATE users SET balance = balance + ? WHERE id = ?"
-                    ).bind(refundAmount, order.user_id).run();
-
-                    try {
-                        await env.teemous_db.prepare(
+                    batchOps.push(
+                        env.teemous_db.prepare(
+                            "UPDATE users SET balance = balance + ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+                        ).bind(refundAmount, order.user_id)
+                    );
+                    batchOps.push(
+                        env.teemous_db.prepare(
                             "INSERT INTO transactions (user_id, amount, type, status, payment_method, description, ref_id) VALUES (?, ?, 'refund', 'success', 'balance', ?, ?)"
-                        ).bind(order.user_id, refundAmount, `Hoàn tiền đơn hàng #${orderId}${reason ? ': ' + reason : ''}`, `REFUND-${Date.now()}-${order.user_id}`).run();
-                    } catch(e) {}
+                        ).bind(order.user_id, refundAmount, `Hoàn tiền đơn hàng #${orderId}${reason ? ': ' + reason : ''}`, `REFUND-${orderId}-${Date.now()}`)
+                    );
                 }
+
+                await env.teemous_db.batch(batchOps);
 
                 return new Response(JSON.stringify({
                     success: true,

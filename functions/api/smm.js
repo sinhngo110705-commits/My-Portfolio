@@ -1,4 +1,4 @@
-import { verifyJWT } from "./utils.js";
+import { verifyJWT, verifyAdmin } from "./utils.js";
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -126,8 +126,16 @@ export async function onRequest(context) {
       });
     }
 
-    // Action: balance (Check agency balance)
+    // Action: balance (Check agency balance - Admin only)
     if (action === "balance") {
+      const admin = await verifyAdmin(request, env);
+      if (!admin) {
+        return new Response(JSON.stringify({ error: "Forbidden: Admin access required" }), {
+          status: 403,
+          headers: { "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+
       const smmResp = await fetch(smmUrl, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -283,6 +291,18 @@ export async function onRequest(context) {
           ).bind(serviceName, Math.round(unitRate * 1000)).run();
           productId = insertProd.meta?.last_row_id || 1;
         }
+
+        // Deduct user balance safely against race conditions BEFORE upstream dispatch
+        const deductResult = await env.teemous_db.prepare(
+          "UPDATE users SET balance = balance - ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND balance >= ?"
+        ).bind(totalCost, user.id, totalCost).run();
+
+        if (!deductResult || deductResult.meta?.changes === 0) {
+          return new Response(JSON.stringify({
+            error: "Số dư tài khoản không đủ hoặc giao dịch bị trùng lặp!",
+            success: false
+          }), { status: 400, headers: { "Content-Type": "application/json; charset=utf-8" } });
+        }
       }
 
       // 6. Attempt Dispatch to dichvumxh.vn
@@ -322,13 +342,21 @@ export async function onRequest(context) {
 
       // If upstream failed for reasons OTHER than balance/temporary (e.g. invalid format that couldnt be fixed)
       if (!upstreamSuccess && !isBalanceError && smmData && smmData.error && !smmData.error.toLowerCase().includes("số dư")) {
+        // Refund previously deducted balance
+        if (env.teemous_db) {
+          try {
+            await env.teemous_db.prepare(
+              "UPDATE users SET balance = balance + ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+            ).bind(totalCost, user.id).run();
+          } catch(e) {}
+        }
         return new Response(JSON.stringify({
           error: `Thông báo từ hệ thống: ${smmData.error}`,
           success: false
         }), { status: 400, headers: { "Content-Type": "application/json; charset=utf-8" } });
       }
 
-      // 7. Atomic DB Balance Deduction, Transaction Logging & Order Creation
+      // 7. Atomic DB Transaction Logging & Order Creation
       const newBalance = currentBalance - totalCost;
       const partnerOrderId = upstreamSuccess ? String(smmData.order) : "";
       const orderStatus = upstreamSuccess ? "Running" : "Pending";
@@ -340,13 +368,8 @@ export async function onRequest(context) {
       let createdOrderId = null;
 
       if (env.teemous_db) {
-        // Run batch updates for data integrity
+        // Run batch inserts for transaction and order
         const batchResults = await env.teemous_db.batch([
-          // Deduct user balance
-          env.teemous_db.prepare(
-            "UPDATE users SET balance = balance - ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
-          ).bind(totalCost, user.id),
-
           // Record in transactions
           env.teemous_db.prepare(
             "INSERT INTO transactions (user_id, amount, type, status, payment_method, description, ref_id) VALUES (?, ?, 'purchase', 'success', 'balance', ?, ?)"
@@ -358,7 +381,7 @@ export async function onRequest(context) {
           ).bind(user.id, productId, totalCost, orderStatus, serviceName, link, quantity, serviceId, partnerOrderId)
         ]);
 
-        createdOrderId = batchResults[2]?.meta?.last_row_id;
+        createdOrderId = batchResults[1]?.meta?.last_row_id;
       }
 
       // If dispatched immediately

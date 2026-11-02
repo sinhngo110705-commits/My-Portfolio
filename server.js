@@ -1,4 +1,4 @@
-﻿﻿const http = require('http');
+const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
@@ -47,6 +47,34 @@ let mockOrders = [
 let mockTransactions = [
   { id: 201, user_id: 1, amount: 9400, type: "purchase", status: "success", payment_method: "balance", description: "Thanh toán đơn SMM (Hàng chờ): Facebook - Theo dõi trang cá nhân sv8", ref_id: "SMM-Q-101", created_at: new Date().toISOString() }
 ];
+
+function createMockJwt(user) {
+  const header = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString("base64url");
+  const payload = Buffer.from(JSON.stringify({
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    exp: Math.floor(Date.now() / 1000) + 86400 * 7
+  })).toString("base64url");
+  const sig = Buffer.from("mock_local_secret").toString("base64url");
+  return `${header}.${payload}.${sig}`;
+}
+
+function getAuthUser(req) {
+  const auth = req.headers["authorization"] || "";
+  if (auth.startsWith("Bearer ")) {
+    try {
+      const parts = auth.slice(7).split(".");
+      if (parts.length === 3) {
+        const payload = JSON.parse(Buffer.from(parts[1], "base64url").toString("utf8"));
+        const found = mockUsers.find(u => u.id === payload.id);
+        if (found) return found;
+      }
+    } catch(e) {}
+  }
+  return mockUsers[0];
+}
 
 function removeAccents(str) {
   return (str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
@@ -107,7 +135,7 @@ async function callAiBackend(messages) {
   // 2. Try Gemini
   const geminiKey = process.env.GEMINI_API_KEY || envConfig.GEMINI_API_KEY || "";
   if (geminiKey) {
-    const geminiModels = ["gemini-3.6-flash", "gemini-3.7-flash", "gemini-2.5-pro", "gemini-flash-latest"];
+    const geminiModels = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
     for (const m of geminiModels) {
       try {
         const ctrl = new AbortController();
@@ -321,10 +349,85 @@ function handleRequest(req, res) {
     return;
   }
 
-    // Handle /api/user/profile (Local mode)
+  // Handle /api/auth/login (Local mock)
+  if (reqPath === "/api/auth/login" && req.method === "POST") {
+    let bodyStr = "";
+    req.on("data", chunk => { bodyStr += chunk; });
+    req.on("end", () => {
+      try {
+        const { email, password } = JSON.parse(bodyStr || "{}");
+        if (!email || !password) {
+          res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
+          return res.end(JSON.stringify({ error: "Vui lòng nhập email và mật khẩu!" }));
+        }
+        let user = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase() || u.username.toLowerCase() === email.toLowerCase());
+        if (!user) user = mockUsers[0];
+        const token = createMockJwt(user);
+        res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+        return res.end(JSON.stringify({
+          success: true,
+          token,
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            balance: user.balance,
+            avatar_url: user.avatar_url || ""
+          }
+        }));
+      } catch(e) {
+        res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+        return res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  // Handle /api/auth/register (Local mock)
+  if (reqPath === "/api/auth/register" && req.method === "POST") {
+    let bodyStr = "";
+    req.on("data", chunk => { bodyStr += chunk; });
+    req.on("end", () => {
+      try {
+        const { username, email, password } = JSON.parse(bodyStr || "{}");
+        if (!username || !email || !password) {
+          res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
+          return res.end(JSON.stringify({ error: "Vui lòng điền đủ thông tin!" }));
+        }
+        const existing = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase() || u.username.toLowerCase() === username.toLowerCase());
+        if (existing) {
+          res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
+          return res.end(JSON.stringify({ error: "Username hoặc Email đã tồn tại!" }));
+        }
+        const newUser = {
+          id: mockUsers.length + 1,
+          username: username.trim(),
+          email: email.trim().toLowerCase(),
+          balance: 0,
+          role: "user",
+          created_at: new Date().toISOString()
+        };
+        mockUsers.push(newUser);
+        const token = createMockJwt(newUser);
+        res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+        return res.end(JSON.stringify({
+          success: true,
+          token,
+          user: newUser
+        }));
+      } catch(e) {
+        res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+        return res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  // Handle /api/user/profile (Local mode)
   if (reqPath === "/api/user/profile") {
     res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-    const user = mockUsers[0];
+    const user = getAuthUser(req);
     res.end(JSON.stringify({
       user,
       transactions: mockTransactions.filter(t => t.user_id === user.id),
@@ -337,6 +440,59 @@ function handleRequest(req, res) {
       }))
     }));
     return;
+  }
+
+  // Handle /api/user/update-profile (Local mock)
+  if (reqPath === "/api/user/update-profile" && req.method === "POST") {
+    let bodyStr = "";
+    req.on("data", chunk => { bodyStr += chunk; });
+    req.on("end", () => {
+      try {
+        const user = getAuthUser(req);
+        const { username, email } = JSON.parse(bodyStr || "{}");
+        if (username) user.username = username.trim();
+        if (email) user.email = email.trim();
+        res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+        return res.end(JSON.stringify({
+          success: true,
+          message: "Profile updated successfully",
+          user
+        }));
+      } catch(e) {
+        res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+        return res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  // Handle /api/user/upload-avatar (Local mock)
+  if (reqPath === "/api/user/upload-avatar" && req.method === "POST") {
+    let bodyChunks = [];
+    req.on("data", chunk => { bodyChunks.push(chunk); });
+    req.on("end", () => {
+      const user = getAuthUser(req);
+      const avatarUrl = `/api/user/v-avatar?key=avatars/${user.id}-${Date.now()}.png`;
+      user.avatar_url = avatarUrl;
+      res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      return res.end(JSON.stringify({
+        success: true,
+        message: "Avatar updated successfully",
+        avatar_url: avatarUrl
+      }));
+    });
+    return;
+  }
+
+  // Handle /api/user/v-avatar (Local mock)
+  if (reqPath === "/api/user/v-avatar") {
+    const defaultAvatar = path.join(ROOT_DIR, "Avatar", "IMG_5907_compressed.jpg");
+    if (fs.existsSync(defaultAvatar)) {
+      res.writeHead(200, { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=86400" });
+      return res.end(fs.readFileSync(defaultAvatar));
+    }
+    res.writeHead(404);
+    return res.end("Not Found");
   }
 
   // Handle /api/chat (Cloudflare Worker format)

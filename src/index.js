@@ -214,6 +214,17 @@ async function handleSePayWebhook(request, env) {
 
     if (isNaN(amount) || amount <= 0) return new Response("Invalid amount", { status: 400 });
 
+    const refId = referenceCode ? String(referenceCode).trim() : (body.id ? String(body.id).trim() : null);
+    if (!refId) {
+      return new Response(JSON.stringify({ error: "Missing referenceCode" }), { status: 400 });
+    }
+
+    // Kiểm tra ref_id đã tồn tại chưa để chống trùng lặp giao dịch
+    const existingTx = await env.teemous_db.prepare("SELECT id FROM transactions WHERE ref_id = ?").bind(refId).first();
+    if (existingTx) {
+      return new Response(JSON.stringify({ success: true, message: "Already processed" }), { status: 200, headers: { "Content-Type": "application/json" } });
+    }
+
     // Kiểm tra User tồn tại
     const user = await env.teemous_db.prepare("SELECT id FROM users WHERE id = ?").bind(userId).first();
     if (!user) return new Response(JSON.stringify({ success: true, message: "User ID not found in database" }));
@@ -223,7 +234,7 @@ async function handleSePayWebhook(request, env) {
       env.teemous_db.prepare("UPDATE users SET balance = balance + ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
         .bind(amount, userId),
       env.teemous_db.prepare("INSERT INTO transactions (user_id, amount, type, status, payment_method, ref_id, description) VALUES (?, ?, 'topup', 'success', 'mbbank', ?, ?)")
-        .bind(userId, amount, referenceCode || `SP-${Date.now()}`, `SePay Auto: ${content}`)
+        .bind(userId, amount, refId, `SePay Auto: ${content || ""}`)
     ]);
 
     return new Response(JSON.stringify({ success: true }), { status: 200, headers: { "Content-Type": "application/json" } });

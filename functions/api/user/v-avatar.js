@@ -3,8 +3,8 @@ export async function onRequest(context) {
     const url = new URL(request.url);
     const key = url.searchParams.get("key");
 
-    if (!key) {
-        return new Response(JSON.stringify({ error: "Missing key" }), { 
+    if (!key || !key.startsWith("avatars/") || key.includes("..")) {
+        return new Response(JSON.stringify({ error: "Invalid key or forbidden path" }), { 
             status: 400,
             headers: { "Content-Type": "application/json" }
         });
@@ -22,8 +22,10 @@ export async function onRequest(context) {
         object.writeHttpMetadata(headers);
         headers.set("etag", object.httpEtag);
         
-        // Add cache control to avoid repeated loading
+        // Add security and cache control headers
         headers.set("Cache-Control", "public, max-age=86400"); // 1 day
+        headers.set("X-Content-Type-Options", "nosniff");
+        headers.set("Content-Security-Policy", "default-src 'none'");
 
         return new Response(object.body, {
             headers,

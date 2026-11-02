@@ -48,12 +48,25 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener(evt, startNonCritical, { passive: true, once: true });
     });
 
-    if ('requestIdleCallback' in window) {
+    if (new URLSearchParams(window.location.search).get('login') === '1') {
+        startNonCritical();
+    } else if ('requestIdleCallback' in window) {
         requestIdleCallback(startNonCritical, { timeout: 2000 });
     } else {
         setTimeout(startNonCritical, 1000);
     }
 });
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 
 function initScrollProgress() {
     const container = document.createElement('div');
@@ -429,7 +442,9 @@ function initBackgroundAnimation() {
     function drawParticlesAndConnections(isLight) {
         const maxDistSq = 14000; // ~118px threshold
 
-        // 1. Draw connection network
+        // 1. Draw connection network (batched into single draw call)
+        ctx.beginPath();
+        let hasLines = false;
         for (let a = 0; a < particles.length; a++) {
             const pa = particles[a];
             for (let b = a + 1; b < particles.length; b++) {
@@ -439,17 +454,19 @@ function initBackgroundAnimation() {
                 const distSq = dx * dx + dy * dy;
 
                 if (distSq < maxDistSq) {
-                    const alpha = (1 - distSq / maxDistSq) * (isLight ? 0.22 : 0.26);
-                    ctx.beginPath();
                     ctx.moveTo(pa.x, pa.y);
                     ctx.lineTo(pb.x, pb.y);
-                    ctx.strokeStyle = isLight 
-                        ? `rgba(2, 132, 199, ${alpha})` 
-                        : `rgba(0, 240, 255, ${alpha})`;
-                    ctx.lineWidth = 0.8;
-                    ctx.stroke();
+                    hasLines = true;
                 }
             }
+        }
+        if (hasLines) {
+            const alpha = isLight ? 0.18 : 0.22;
+            ctx.strokeStyle = isLight 
+                ? `rgba(2, 132, 199, ${alpha})` 
+                : `rgba(0, 240, 255, ${alpha})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
         }
 
         // 2. Batch Cyan particles
@@ -530,8 +547,9 @@ function initBackgroundAnimation() {
 }
 
 // Multi-language Toggle Logic (Persistent state across entire ecosystem)
-let currentLang = localStorage.getItem('td-lang') || 'vi';
-if (!localStorage.getItem('td-lang')) {
+const urlLang = (typeof window !== 'undefined' && window.location) ? new URLSearchParams(window.location.search).get('lang') : null;
+let currentLang = (urlLang === 'en' || urlLang === 'vi') ? urlLang : (localStorage.getItem('td-lang') || (document.documentElement ? document.documentElement.getAttribute('data-lang') : null) || 'vi');
+if (!localStorage.getItem('td-lang') || urlLang) {
     localStorage.setItem('td-lang', currentLang);
 }
 
@@ -642,12 +660,12 @@ function updateAllTranslations() {
 
 // Light / Dark Mode Toggle Logic
 function initThemeToggle() {
-    // --- localStorage persistence: apply saved theme on page load ---
-    const savedTheme = localStorage.getItem('td-theme');
-    if (savedTheme === 'dark') {
-        document.documentElement.classList.remove('light-mode');
+    // --- localStorage persistence: apply saved theme on page load (Default Dark) ---
+    const savedTheme = localStorage.getItem('td-theme') || localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.documentElement.classList.add('light-mode');
     } else {
-        document.documentElement.classList.add('light-mode'); // default light
+        document.documentElement.classList.remove('light-mode'); // default dark
     }
 
     const themeBtns = document.querySelectorAll('.theme-toggle');
@@ -979,6 +997,7 @@ function initLightbox() {
         img.addEventListener('click', (e) => {
             e.stopPropagation();
             const overlay = document.createElement('div');
+            overlay.className = 'lightbox-overlay';
             overlay.style.position = 'fixed';
             overlay.style.inset = '0';
             overlay.style.background = 'rgba(0,0,0,0.9)';
@@ -1558,6 +1577,14 @@ function initAuthModal() {
         }
     });
 
+    // Auto-open modal if redirected with ?login=1
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('login') === '1' && (!token || !userJson)) {
+            setTimeout(openModal, 80);
+        }
+    } catch(e) {}
+
     closeBtn.addEventListener('click', closeModal);
 
     authOverlay.addEventListener('click', (e) => {
@@ -1644,7 +1671,7 @@ function initAuthModal() {
     }
 
     // Allow Enter key to submit login
-    loginSection.addEventListener('keypress', (e) => {
+    loginSection.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
             if (submitBtnLogin) submitBtnLogin.click();
@@ -1652,7 +1679,7 @@ function initAuthModal() {
     });
 
     // Also handle Enter for signup for completeness
-    signupSection.addEventListener('keypress', (e) => {
+    signupSection.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
             if (submitBtnSignup) submitBtnSignup.click();
@@ -1935,9 +1962,9 @@ function renderOrders(orders) {
 
     tbody.innerHTML = orders.map(order => `
         <tr>
-            <td><strong>${order.product_name}</strong></td>
-            <td>${order.price_at_purchase.toLocaleString()}</td>
-            <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+            <td><strong>${escapeHtml(order.product_name || order.service_name || "Đơn hàng")}</strong></td>
+            <td>${(order.price_at_purchase || 0).toLocaleString()}</td>
+            <td><span class="status-badge status-${escapeHtml(order.status || '')}">${escapeHtml(order.status || '')}</span></td>
         </tr>
     `).join('');
 }
@@ -1953,9 +1980,9 @@ function renderTransactions(txs) {
 
     tbody.innerHTML = txs.map(tx => `
         <tr>
-            <td style="color: ${tx.type === 'topup' ? '#81c784' : '#ff8a80'}">${tx.type === 'topup' ? '+' : '-'}${tx.amount.toLocaleString()}</td>
-            <td>${tx.type}</td>
-            <td><span class="status-badge status-${tx.status}">${tx.status}</span></td>
+            <td style="color: ${tx.type === 'topup' ? '#81c784' : '#ff8a80'}">${tx.type === 'topup' ? '+' : '-'}${(tx.amount || 0).toLocaleString()}</td>
+            <td>${escapeHtml(tx.type || '')}</td>
+            <td><span class="status-badge status-${escapeHtml(tx.status || '')}">${escapeHtml(tx.status || '')}</span></td>
         </tr>
     `).join('');
 }
@@ -2011,9 +2038,15 @@ function initTopUpModal() {
     if (openBtn) openBtn.addEventListener('click', handleOpen);
     if (profileOpenBtn) profileOpenBtn.addEventListener('click', handleOpen);
 
-    closeBtn.addEventListener('click', () => {
+    const handleClose = () => {
         overlay.classList.remove('active');
-        qrArea.style.display = 'none';
+        overlay.style.display = 'none';
+        if (qrArea) qrArea.style.display = 'none';
+    };
+
+    if (closeBtn) closeBtn.addEventListener('click', handleClose);
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) handleClose();
     });
 
     amtBtns.forEach(btn => {
@@ -2064,6 +2097,48 @@ function initTopUpModal() {
         }, 5000);
     });
 }
+
+// Global Modal & Lightbox Escape Key Closer
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        // 1. Close Auth Modal
+        const authOverlay = document.getElementById('auth-modal-overlay');
+        if (authOverlay && authOverlay.classList.contains('active')) {
+            const closeBtn = document.getElementById('close-auth-modal');
+            if (closeBtn) closeBtn.click();
+            else authOverlay.classList.remove('active');
+        }
+        // 2. Close Dashboard Modal
+        const dashOverlay = document.getElementById('dashboard-modal-overlay');
+        if (dashOverlay && (dashOverlay.classList.contains('active') || dashOverlay.style.display === 'flex' || dashOverlay.style.display === 'block')) {
+            if (typeof closeDashboard === 'function') closeDashboard();
+            else {
+                dashOverlay.classList.remove('active');
+                dashOverlay.style.display = 'none';
+            }
+        }
+        // 3. Close Top-Up Modal
+        const topupOverlay = document.getElementById('topup-modal-overlay');
+        if (topupOverlay && (topupOverlay.classList.contains('active') || topupOverlay.style.display === 'flex')) {
+            const closeTopupBtn = document.getElementById('close-topup-modal');
+            if (closeTopupBtn) closeTopupBtn.click();
+            else {
+                topupOverlay.classList.remove('active');
+                topupOverlay.style.display = 'none';
+            }
+        }
+        // 4. Close Lightbox Image
+        const lightboxes = document.querySelectorAll('.lightbox-overlay');
+        lightboxes.forEach(lb => lb.remove());
+
+        // 5. Close Admin Edit Modal
+        const adminOverlay = document.getElementById('admin-edit-modal-overlay');
+        if (adminOverlay && adminOverlay.classList.contains('active')) {
+            if (typeof adminCloseEdit === 'function') adminCloseEdit();
+            else adminOverlay.classList.remove('active');
+        }
+    }
+});
 
 async function refreshBalance() {
     const token = localStorage.getItem('teemous_jwt');
@@ -2405,24 +2480,34 @@ function initAdminPanel() {
         const html = orders.map((p) => {
             const price = (p.price_at_purchase || 0).toLocaleString("vi-VN");
             const qty = (p.quantity || 0).toLocaleString("vi-VN");
-            const fullLink = (p.link || "").trim();
-            const shortLink = fullLink.length > 25 ? fullLink.slice(0, 23) + "..." : (fullLink || "—");
+            const rawLink = (p.link || "").trim();
+            const fullLink = escapeHtml(rawLink);
+            const rawShortLink = rawLink.length > 25 ? rawLink.slice(0, 23) + "..." : (rawLink || "—");
+            const shortLink = escapeHtml(rawShortLink);
+            const safeUsername = escapeHtml(p.username || "User #" + p.user_id);
+            const safeEmail = escapeHtml(p.email || "");
+            const safeServiceName = escapeHtml(p.service_name || "Dịch vụ SMM");
+
+            const isSafeUrl = /^https?:\/\//i.test(rawLink);
+            const linkEl = isSafeUrl
+                ? `<a href="${fullLink}" target="_blank" rel="noopener noreferrer" style="color:var(--cyan-laser); font-size:0.75rem; text-decoration:underline;" title="${fullLink}">${shortLink}</a>`
+                : `<span style="color:var(--cyan-laser); font-size:0.75rem;" title="${fullLink}">${shortLink}</span>`;
 
             return `<tr>
                 <td><strong style="color:var(--cyan-laser); font-family:var(--font-tech);">#${p.id}</strong></td>
                 <td>${getWaitTimeHtml(p.created_at)}</td>
                 <td>
-                    <div style="font-weight:700; color:var(--text-main);">${p.username || "User #" + p.user_id}</div>
-                    <div style="font-size:0.75rem; color:var(--text-muted);">${p.email || ""}</div>
+                    <div style="font-weight:700; color:var(--text-main);">${safeUsername}</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">${safeEmail}</div>
                 </td>
                 <td>
-                    <div style="font-weight:700; color:var(--text-main);">${p.service_name || "Dịch vụ SMM"}</div>
-                    <div style="font-size:0.74rem; color:var(--text-muted);">Gói ID: #${p.smm_service_id || "317835"}</div>
+                    <div style="font-weight:700; color:var(--text-main);">${safeServiceName}</div>
+                    <div style="font-size:0.74rem; color:var(--text-muted);">Gói ID: #${escapeHtml(p.smm_service_id || "317835")}</div>
                 </td>
                 <td><strong style="color:var(--text-main); font-family:var(--font-tech);">${qty}</strong></td>
                 <td>
                     <div style="display:flex; align-items:center; gap:0.35rem;">
-                        <a href="${fullLink}" target="_blank" style="color:var(--cyan-laser); font-size:0.75rem; text-decoration:underline;" title="${fullLink}">${shortLink}</a>
+                        ${linkEl}
                         ${fullLink ? `<button type="button" class="admin-copy-btn" data-copy-link="${fullLink}" title="Copy Link/UID">📋</button>` : ""}
                     </div>
                 </td>
@@ -2609,16 +2694,28 @@ function initAdminPanel() {
         }
 
         const html = filtered.map(p => {
-            const statusKey = (p.status || "pending").toLowerCase();
+            const rawStatusKey = (p.status || "pending").toLowerCase();
+            const safeStatusKey = escapeHtml(rawStatusKey);
             const partnerBadge = p.smm_order_id
-                ? `<strong style="color:var(--cyan-laser); font-family:var(--font-tech);">#${p.smm_order_id}</strong>`
-                : (statusKey === "pending"
+                ? `<strong style="color:var(--cyan-laser); font-family:var(--font-tech);">#${escapeHtml(p.smm_order_id)}</strong>`
+                : (rawStatusKey === "pending"
                     ? '<span style="color:#f59e0b; font-weight:800; font-size:0.75rem;">⏳ Chờ duyệt</span>'
                     : '<span style="color:var(--text-muted); font-size:0.75rem;">Thủ công / —</span>');
             const price = (p.price_at_purchase || 0).toLocaleString("vi-VN");
             const qty = (p.quantity || 0).toLocaleString("vi-VN");
-            const fullLink = (p.link || "").trim();
-            const shortLink = fullLink.length > 25 ? fullLink.slice(0, 23) + "..." : (fullLink || "—");
+            const rawLink = (p.link || "").trim();
+            const fullLink = escapeHtml(rawLink);
+            const rawShortLink = rawLink.length > 25 ? rawLink.slice(0, 23) + "..." : (rawLink || "—");
+            const shortLink = escapeHtml(rawShortLink);
+            const isSafeUrl = /^https?:\/\//i.test(rawLink);
+            const linkEl = isSafeUrl
+                ? `<a href="${fullLink}" target="_blank" rel="noopener noreferrer" style="color:var(--cyan-laser); font-size:0.75rem; text-decoration:underline;" title="${fullLink}">${shortLink}</a>`
+                : `<span style="color:var(--cyan-laser); font-size:0.75rem;" title="${fullLink}">${shortLink}</span>`;
+            const safeUsername = escapeHtml(p.username || "User #" + p.user_id);
+            const safeEmail = escapeHtml(p.email || "");
+            const safeServiceName = escapeHtml(p.service_name || "Dịch vụ SMM");
+            const safeStatus = escapeHtml(p.status || "Pending");
+            const safeReason = p.cancel_reason ? escapeHtml(p.cancel_reason) : "";
             const created = p.created_at ? new Date(p.created_at).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—";
 
             let actionsHtml = '<div style="display:flex; gap:0.3rem; flex-wrap:wrap;">';
@@ -2637,25 +2734,25 @@ function initAdminPanel() {
                 <td><strong>#${p.id}</strong></td>
                 <td style="font-size:0.76rem; color:var(--text-muted);">${created}</td>
                 <td>
-                    <div style="font-weight:700;">${p.username || "User #" + p.user_id}</div>
-                    <div style="font-size:0.75rem; color:var(--text-muted);">${p.email || ""}</div>
+                    <div style="font-weight:700;">${safeUsername}</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">${safeEmail}</div>
                 </td>
                 <td>
-                    <div style="font-weight:700;">${p.service_name || "Dịch vụ SMM"}</div>
-                    <div style="font-size:0.74rem; color:var(--text-muted);">Gói ID: #${p.smm_service_id || "317835"}</div>
+                    <div style="font-weight:700;">${safeServiceName}</div>
+                    <div style="font-size:0.74rem; color:var(--text-muted);">Gói ID: #${escapeHtml(p.smm_service_id || "317835")}</div>
                 </td>
                 <td><strong style="color:var(--text-main); font-family:var(--font-tech);">${qty}</strong></td>
                 <td>
                     <div style="display:flex; align-items:center; gap:0.35rem;">
-                        <a href="${fullLink}" target="_blank" style="color:var(--cyan-laser); font-size:0.75rem; text-decoration:underline;" title="${fullLink}">${shortLink}</a>
+                        ${linkEl}
                         ${fullLink ? `<button type="button" class="admin-copy-btn" data-copy-link="${fullLink}">📋</button>` : ""}
                     </div>
                 </td>
                 <td><strong>${price} đ</strong></td>
                 <td>${partnerBadge}</td>
                 <td>
-                    <span class="status-badge status-${statusKey}">${p.status || "Pending"}</span>
-                    ${p.cancel_reason ? `<div style="font-size:0.7rem; color:#ef4444; margin-top:2px;">Lý do: ${p.cancel_reason}</div>` : ""}
+                    <span class="status-badge status-${safeStatusKey}">${safeStatus}</span>
+                    ${safeReason ? `<div style="font-size:0.7rem; color:#ef4444; margin-top:2px;">Lý do: ${safeReason}</div>` : ""}
                 </td>
                 <td>${actionsHtml}</td>
             </tr>`;
@@ -2787,19 +2884,33 @@ function initAdminPanel() {
         const html = pageUsers.map(u => {
             const roleClass = u.role === "admin" ? "elite" : "standard";
             const bal = (u.balance || 0).toLocaleString("vi-VN");
+            const safeUsername = escapeHtml(u.username || "");
+            const safeEmail = escapeHtml(u.email || "");
+            const safeRole = escapeHtml(u.role || "user");
             return `<tr class="admin-user-row" data-userid="${u.id}">
                 <td><span class="admin-id-badge">#${u.id}</span></td>
-                <td><strong>${u.username}</strong></td>
-                <td class="admin-email-cell" title="${u.email}">${u.email}</td>
+                <td><strong>${safeUsername}</strong></td>
+                <td class="admin-email-cell" title="${safeEmail}">${safeEmail}</td>
                 <td><span class="admin-balance-val">${bal} đ</span></td>
-                <td><span class="rank-badge rank-${roleClass}">${u.role}</span></td>
+                <td><span class="rank-badge rank-${roleClass}">${safeRole}</span></td>
                 <td>
-                    <button type="button" class="admin-edit-btn" onclick="adminOpenEdit(${u.id}, '${u.username.replace(/'/g, "\'")}', ${u.balance || 0}, '${u.role}')">✏️ Sửa</button>
+                    <button type="button" class="admin-edit-btn" data-edit-id="${u.id}" data-username="${encodeURIComponent(u.username || "")}" data-balance="${u.balance || 0}" data-role="${safeRole}">✏️ Sửa</button>
                 </td>
             </tr>`;
         }).join("");
 
-        userTbodies.forEach(tb => { tb.innerHTML = html; });
+        userTbodies.forEach(tb => {
+            tb.innerHTML = html;
+            tb.querySelectorAll(".admin-edit-btn").forEach(btn => {
+                btn.onclick = () => {
+                    const id = btn.getAttribute("data-edit-id");
+                    const uname = decodeURIComponent(btn.getAttribute("data-username") || "");
+                    const b = Number(btn.getAttribute("data-balance") || 0);
+                    const r = btn.getAttribute("data-role") || "user";
+                    adminOpenEdit(id, uname, b, r);
+                };
+            });
+        });
 
         // Update pagination bar
         pageInfoEls.forEach(el => {
@@ -3142,24 +3253,29 @@ function initServicesDirectory() {
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.fillStyle = nodeColor;
             ctx.fill();
+        });
 
-            // Connect nearby nodes
+        // Batch connect nearby nodes into a single GPU draw call
+        ctx.beginPath();
+        let hasLines = false;
+        for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
             for (let j = i + 1; j < particles.length; j++) {
                 const p2 = particles[j];
                 const d = Math.hypot(p.x - p2.x, p.y - p2.y);
                 if (d < 110) {
-                    const lineAlpha = (1 - d / 110) * (isLight ? 0.15 : 0.22);
-                    ctx.beginPath();
                     ctx.moveTo(p.x, p.y);
                     ctx.lineTo(p2.x, p2.y);
-                    ctx.strokeStyle = isLight ? 
-gba(15, 23, 42, ) : 
-gba(0, 240, 255, );
-                    ctx.lineWidth = 0.8;
-                    ctx.stroke();
+                    hasLines = true;
                 }
             }
-        });
+        }
+        if (hasLines) {
+            const lineAlpha = isLight ? 0.15 : 0.22;
+            ctx.strokeStyle = isLight ? `rgba(15, 23, 42, ${lineAlpha})` : `rgba(0, 240, 255, ${lineAlpha})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+        }
 
         if (isVisible) {
             animId = requestAnimationFrame(render);

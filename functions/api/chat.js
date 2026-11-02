@@ -161,7 +161,7 @@ Hãy trả lời trực tiếp câu hỏi của người dùng bằng Tiếng Vi
         // 2. Priority 2: Google Gemini (gemini-3.6-flash)
         const geminiKey = env && (env.GEMINI_API_KEY || env.gemini_api_key || env.GEMINI_API || env.gemini_api || (typeof process !== "undefined" && process.env && process.env.GEMINI_API_KEY));
         if (!reply && geminiKey) {
-            const geminiModels = ["gemini-3.6-flash", "gemini-3.7-flash", "gemini-2.5-pro", "gemini-flash-latest"];
+            const geminiModels = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
             for (const m of geminiModels) {
                 try {
                     const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${geminiKey.trim()}`;

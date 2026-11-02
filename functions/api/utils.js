@@ -110,10 +110,38 @@ export async function verifyJWT(token, secret) {
         );
         
         if (valid) {
-            return JSON.parse(base64UrlDecode(bPayload));
+            const payload = JSON.parse(base64UrlDecode(bPayload));
+            if (payload && payload.exp && typeof payload.exp === 'number') {
+                const nowSec = Math.floor(Date.now() / 1000);
+                if (nowSec > payload.exp) {
+                    return null; // Token expired
+                }
+            }
+            return payload;
         }
         return null;
     } catch(e) {
         return null;
     }
+}
+
+// Admin Role verification helper
+export async function verifyAdmin(request, env) {
+    const authHeader = request.headers.get("Authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
+
+    const token = authHeader.split(" ")[1];
+    const jwtSecret = env.JWT_SECRET || "fallback_default_secret_please_change_in_production";
+    const payload = await verifyJWT(token, jwtSecret);
+    if (!payload || !payload.id) return null;
+
+    if (!env.teemous_db) return null;
+
+    const userFromDb = await env.teemous_db
+        .prepare("SELECT id, username, email, role, balance FROM users WHERE id = ? LIMIT 1")
+        .bind(payload.id)
+        .first();
+
+    if (!userFromDb || userFromDb.role !== "admin") return null;
+    return userFromDb;
 }
