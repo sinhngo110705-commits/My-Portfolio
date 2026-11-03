@@ -127,9 +127,36 @@ Thông tin nền tảng về Teemous Digital Lab:
   3. Shop Liên Quân: Hiện đang tạm ngưng bảo trì hệ thống.
 Hãy trả lời trực tiếp câu hỏi của người dùng bằng Tiếng Việt hoặc ngôn ngữ của người dùng.`;
 
-        // 1. Priority 1: OpenAI (gpt-4o-mini)
+        // 1. Priority 1: Google Gemini (Free Tier 100% - gemini-2.0-flash)
+        const geminiKey = env && (env.GEMINI_API_KEY || env.gemini_api_key || env.GEMINI_API || env.gemini_api || (typeof process !== "undefined" && process.env && process.env.GEMINI_API_KEY));
+        if (geminiKey) {
+            const geminiModels = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
+            for (const m of geminiModels) {
+                try {
+                    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${geminiKey.trim()}`;
+                    const contents = [
+                        { role: "user", parts: [{ text: `${TEEMOUS_PROMPT}\n\nNgười dùng hỏi: ${userMsg}` }] }
+                    ];
+                    const gRes = await fetch(geminiUrl, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ contents, generationConfig: { maxOutputTokens: 600, temperature: 0.7 } })
+                    });
+                    if (gRes.ok) {
+                        const gData = await gRes.json();
+                        const gText = gData.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (gText && gText.trim()) {
+                            reply = gText.trim();
+                            break;
+                        }
+                    }
+                } catch (gErr) {}
+            }
+        }
+
+        // 2. Priority 2: OpenAI Fallback (gpt-4o-mini)
         const openaiKey = env && (env.OPENAI_API_KEY || env.openai_api_key || (typeof process !== "undefined" && process.env && process.env.OPENAI_API_KEY));
-        if (openaiKey) {
+        if (!reply && openaiKey) {
             try {
                 const formattedMsgs = [
                     { role: "system", content: TEEMOUS_PROMPT },
@@ -156,33 +183,6 @@ Hãy trả lời trực tiếp câu hỏi của người dùng bằng Tiếng Vi
                     }
                 }
             } catch (oErr) {}
-        }
-
-        // 2. Priority 2: Google Gemini (gemini-3.6-flash)
-        const geminiKey = env && (env.GEMINI_API_KEY || env.gemini_api_key || env.GEMINI_API || env.gemini_api || (typeof process !== "undefined" && process.env && process.env.GEMINI_API_KEY));
-        if (!reply && geminiKey) {
-            const geminiModels = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
-            for (const m of geminiModels) {
-                try {
-                    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${geminiKey.trim()}`;
-                    const contents = [
-                        { role: "user", parts: [{ text: `${TEEMOUS_PROMPT}\n\nNgười dùng hỏi: ${userMsg}` }] }
-                    ];
-                    const gRes = await fetch(geminiUrl, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ contents, generationConfig: { maxOutputTokens: 600, temperature: 0.7 } })
-                    });
-                    if (gRes.ok) {
-                        const gData = await gRes.json();
-                        const gText = gData.candidates?.[0]?.content?.parts?.[0]?.text;
-                        if (gText && gText.trim()) {
-                            reply = gText.trim();
-                            break;
-                        }
-                    }
-                } catch (gErr) {}
-            }
         }
 
         // 3. Priority 3: Cloudflare Workers AI

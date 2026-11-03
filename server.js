@@ -103,7 +103,35 @@ async function callAiBackend(messages) {
   ];
   const lastUserMsg = (cleanedMessages.length > 0 ? cleanedMessages[cleanedMessages.length - 1].content : "") || "";
 
-  // 1. Try OpenAI
+  // 1. Try Gemini (Free Tier 100% - gemini-2.0-flash)
+  const geminiKey = process.env.GEMINI_API_KEY || envConfig.GEMINI_API_KEY || "";
+  if (geminiKey) {
+    const geminiModels = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
+    for (const m of geminiModels) {
+      try {
+        const ctrl = new AbortController();
+        const tid = setTimeout(() => ctrl.abort(), 18000);
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${geminiKey.trim()}`;
+        const gRes = await fetch(geminiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: `${TEEMOUS_SYSTEM_PROMPT}\n\nNgười dùng hỏi: ${lastUserMsg}` }] }],
+            generationConfig: { maxOutputTokens: 600, temperature: 0.7 }
+          }),
+          signal: ctrl.signal
+        });
+        clearTimeout(tid);
+        if (gRes.ok) {
+          const gData = await gRes.json();
+          const gText = gData.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (gText && gText.trim()) return gText.trim();
+        }
+      } catch (e) {}
+    }
+  }
+
+  // 2. Try OpenAI Fallback (gpt-4o-mini)
   const openaiKey = process.env.OPENAI_API_KEY || envConfig.OPENAI_API_KEY || "";
   if (openaiKey) {
     try {
@@ -130,34 +158,6 @@ async function callAiBackend(messages) {
         if (oText && oText.trim()) return oText.trim();
       }
     } catch (e) {}
-  }
-
-  // 2. Try Gemini
-  const geminiKey = process.env.GEMINI_API_KEY || envConfig.GEMINI_API_KEY || "";
-  if (geminiKey) {
-    const geminiModels = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
-    for (const m of geminiModels) {
-      try {
-        const ctrl = new AbortController();
-        const tid = setTimeout(() => ctrl.abort(), 18000);
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${geminiKey.trim()}`;
-        const gRes = await fetch(geminiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ role: "user", parts: [{ text: `${TEEMOUS_SYSTEM_PROMPT}\n\nNgười dùng hỏi: ${lastUserMsg}` }] }],
-            generationConfig: { maxOutputTokens: 600, temperature: 0.7 }
-          }),
-          signal: ctrl.signal
-        });
-        clearTimeout(tid);
-        if (gRes.ok) {
-          const gData = await gRes.json();
-          const gText = gData.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (gText && gText.trim()) return gText.trim();
-        }
-      } catch (e) {}
-    }
   }
 
   // 3. Try Local 9Router
