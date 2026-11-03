@@ -237,6 +237,11 @@
 
         .auth-modal-overlay{display:none !important;position:fixed;inset:0;z-index:9999;}
         .auth-modal-overlay.active{display:flex !important;}
+
+        /* Prevent Chatbot Window FOUC Flash on Initial Paint */
+        #chatbot-container{position:fixed;bottom:2rem;right:2rem;z-index:10001;}
+        #chatbot-window{position:absolute;bottom:0;right:5rem;opacity:0;pointer-events:none;transform:translateX(10px) translateY(10px) scale(0.9);transform-origin:bottom right;}
+        #chatbot-window.active{opacity:1;pointer-events:all;transform:translateY(0) scale(1);}
     </style>
 
     <!-- Non-render-blocking Full Stylesheet -->
