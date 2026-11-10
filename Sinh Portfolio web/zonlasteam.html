@@ -15,7 +15,9 @@
   <meta property="og:image" content="https://teemousdigital.id.vn/zonlas-assets/cover.png">
   <link rel="icon" type="image/svg+xml" href="/zonlas-assets/mark.svg">
   <link rel="stylesheet" href="/zonlas-assets/styles.css">
+  <link rel="stylesheet" href="/zonlas-assets/motion.css">
   <script defer src="/zonlas-assets/site.js"></script>
+  <script defer src="/zonlas-assets/motion.js"></script>
 </head>
 <body>
   <a class="skip" href="#noi-dung">Đến nội dung chính</a>
@@ -31,7 +33,7 @@
         <a class="desktop-nav" href="#goi-dich-vu">Gói dịch vụ</a>
         <a href="#doi-ngu">Đội ngũ</a>
       </nav>
-      <a class="nav-cta" href="#cuoc-thi">DBC 2026 <span aria-hidden="true">↗</span></a>
+      <a class="nav-cta" href="https://drive.google.com/file/d/1ujByYr3lSjsrr8o7KU1xMNL7wnde58ko/view" target="_blank" rel="noopener">Xem demo <span aria-hidden="true">↗</span></a>
     </div>
   </header>
 
@@ -44,7 +46,7 @@
           <p class="hero-description">Hạ tầng cho sự kiện và đào tạo chuyên nghiệp, từ chuẩn bị và vận hành đến kết nối người tham dự và lưu giữ tri thức.</p>
           <div class="actions">
             <a class="button button-primary" href="#du-an">Khám phá dự án <span aria-hidden="true">↓</span></a>
-            <a class="button button-outline" href="https://drive.google.com/file/d/1Xez9y3EK5DndGOL_06aoe0yTOfncSs_d/view?usp=drivesdk" target="_blank" rel="noopener">Xem thể lệ <span aria-hidden="true">↗</span></a>
+            <a class="button button-outline" href="#khong-gian">Xem sáu phân khu <span aria-hidden="true">↓</span></a>
           </div>
         </div>
         <div class="hero-art" aria-hidden="true">
@@ -95,28 +97,71 @@
         <p class="eyebrow"><span>01</span> ĐỀ ÁN</p>
         <div>
           <h2 id="project-title">Vượt mọi khoảng cách,<br><em>chuẩn hóa tương lai.</em></h2>
-          <p>Sự kiện số đòi hỏi nhiều hơn một buổi phát trực tiếp. Zonlas đề xuất một quy trình chung để ban tổ chức, người tham dự và đối tác có thể làm việc trong cùng một hệ thống.</p>
+          <p>Theo chân ban tổ chức từ lúc chuẩn bị sân khấu đến khi người tham dự tra cứu lại nội dung. Cuộn để xem từng giai đoạn qua giao diện minh họa của Zonlas.</p>
         </div>
       </div>
-      <div class="stages">
-        <article class="stage">
-          <span class="stage-number">01 / CHUẨN BỊ</span>
-          <div class="stage-symbol" aria-hidden="true">⊞</div>
-          <h3>Trước sự kiện</h3>
-          <p>Thiết lập sân khấu, phòng thảo luận và gian hàng đối tác. Chuẩn bị slide, âm thanh và nội dung trong cùng quy trình vận hành.</p>
-        </article>
-        <article class="stage">
-          <span class="stage-number">02 / VẬN HÀNH</span>
-          <div class="stage-symbol" aria-hidden="true">◈</div>
-          <h3>Trong sự kiện</h3>
-          <p>Trình chiếu slide giữ hiệu ứng, điều phối nhạc nền và giọng nói riêng. Người tham dự chuyển giữa sân khấu, phòng kết nối và triển lãm.</p>
-        </article>
-        <article class="stage">
-          <span class="stage-number">03 / ĐO LƯỜNG</span>
-          <div class="stage-symbol" aria-hidden="true">◎</div>
-          <h3>Sau sự kiện</h3>
-          <p>Đề án tích hợp AI để tóm tắt và lưu nội dung cho việc tra cứu. Đối tác có thể xem lượt ghé thăm gian hàng và lượt tải tài liệu.</p>
-        </article>
+      <div class="showcase" data-motion-showcase>
+        <div class="showcase-window" data-motion-visual aria-hidden="true">
+          <div class="showcase-chrome">
+            <span class="showcase-lights"><i></i><i></i><i></i></span>
+            <span>ZONLAS EVENT STUDIO</span>
+            <span>MINH HỌA</span>
+          </div>
+          <div class="showcase-stage">
+            <div class="showcase-screen showcase-prep" data-motion-shot>
+              <div class="screen-rail"><i>01</i><i>02</i><i>03</i></div>
+              <div class="screen-content">
+                <small>THIẾT LẬP SỰ KIỆN</small>
+                <strong>Phòng điều phối</strong>
+                <div class="screen-rows" data-motion-layer>
+                  <span><i>↗</i> Tải slide thuyết trình <b>✓</b></span>
+                  <span><i>◉</i> Tách nhạc nền và lời thoại <b>✓</b></span>
+                  <span><i>⊞</i> Bố trí gian hàng đối tác <b>✓</b></span>
+                </div>
+              </div>
+            </div>
+            <div class="showcase-screen showcase-live" data-motion-shot>
+              <div class="screen-rail"><i>01</i><i>02</i><i>03</i></div>
+              <div class="screen-content">
+                <small><i class="live-dot"></i> ĐANG PHÁT TRỰC TIẾP</small>
+                <strong>Sân khấu chính</strong>
+                <div class="screen-broadcast" data-motion-layer>
+                  <div class="broadcast-slide"><span>02 / 08</span><b>ZONLAS<span>.</span></b></div>
+                  <div class="broadcast-levels"><span>VOICE <i></i></span><span>MUSIC <i></i></span></div>
+                </div>
+              </div>
+            </div>
+            <div class="showcase-screen showcase-recap" data-motion-shot>
+              <div class="screen-rail"><i>01</i><i>02</i><i>03</i></div>
+              <div class="screen-content">
+                <small>TRI THỨC SAU SỰ KIỆN</small>
+                <strong>Kho nội dung</strong>
+                <div class="screen-rows" data-motion-layer>
+                  <span><i>✳</i> Tóm tắt phiên bằng AI <b>↗</b></span>
+                  <span><i>◎</i> Tìm trong nội dung phiên <b>↗</b></span>
+                  <span><i>▥</i> Báo cáo gian hàng <b>↗</b></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="showcase-steps">
+          <article class="showcase-step" data-motion-step>
+            <span class="stage-number">01 / CHUẨN BỊ</span>
+            <h3>Sẵn sàng trước giờ mở cửa.</h3>
+            <p>Tải slide, kiểm tra từng lớp âm thanh và bố trí gian hàng. Đội vận hành chuẩn bị các phân khu trong cùng một quy trình.</p>
+          </article>
+          <article class="showcase-step" data-motion-step>
+            <span class="stage-number">02 / VẬN HÀNH</span>
+            <h3>Sân khấu lên sóng.</h3>
+            <p>Slide giữ hiệu ứng gốc, nhạc nền điều chỉnh độc lập với giọng nói. Khách có thể rời sân khấu để kết nối hoặc ghé triển lãm.</p>
+          </article>
+          <article class="showcase-step" data-motion-step>
+            <span class="stage-number">03 / ĐO LƯỜNG</span>
+            <h3>Giữ lại giá trị sau sự kiện.</h3>
+            <p>AI tóm tắt phiên để người tham dự tra cứu. Đối tác xem lượt ghé gian hàng, lượt tải tài liệu và mức độ tương tác.</p>
+          </article>
+        </div>
       </div>
       <div class="project-outlook">
         <div><h3>Sứ mệnh</h3><p>Chuẩn hóa cách vận hành sự kiện số và đào tạo trực tuyến tại Việt Nam, giúp doanh nghiệp tổ chức ổn định, tạo tương tác và đo lường chuyển đổi.</p></div>
@@ -190,7 +235,7 @@
           <dl>
             <div><dt>Điều phối kỹ thuật</dt><dd>Cloud Presentation giữ hiệu ứng của slide, âm thanh phân lớp và kết nối WebRTC theo mô hình SFU.</dd></div>
             <div><dt>Thương hiệu &amp; trải nghiệm</dt><dd>Đối tác tùy chỉnh gian hàng Virtual Booth, trao đổi 1:1 và chia sẻ tài liệu giới thiệu.</dd></div>
-            <div><dt>AI Copilot &amp; tri thức</dt><dd>Phụ đề và dịch trực tiếp, tóm tắt phiên, lưu nội dung tra cứu và đánh giá khách hàng tiềm năng.</dd></div>
+            <div><dt>AI &amp; kho tri thức</dt><dd>Tạo phụ đề và dịch theo thời gian thực, tóm tắt phiên, lưu nội dung tra cứu và đánh giá khách hàng tiềm năng.</dd></div>
             <div><dt>Đăng ký &amp; tương tác</dt><dd>Check-in, bình chọn, câu đố, bảng xếp hạng và thẻ chia sẻ lên mạng xã hội.</dd></div>
           </dl>
         </div>
@@ -202,21 +247,24 @@
         <p class="eyebrow"><span>03</span> MÔ HÌNH KINH DOANH</p>
         <div>
           <h2 id="pricing-title">Ba gói dịch vụ<br><em>cho doanh nghiệp.</em></h2>
-          <p>Mức giá đề xuất trong hồ sơ dự thi Zonlas.</p>
+          <p>Giá thuê bao đề xuất theo tháng và theo năm, kèm quy mô tổ chức của từng gói.</p>
         </div>
       </div>
       <div class="pricing-grid">
         <article class="price">
           <h3>Plus</h3><p><strong>1.990.000 ₫</strong> / tháng</p>
-          <ul><li>150 người đồng thời mỗi phiên</li><li>3 không gian, tối đa 5 phòng thảo luận</li><li>Trình chiếu 1080p</li></ul>
+          <p class="annual-price">19.900.000 ₫ / năm</p>
+          <ul><li>150 người đồng thời mỗi phiên</li><li>3 không gian, tối đa 5 phòng thảo luận</li><li>Trình chiếu 1080p, phụ đề trực tiếp tiếng Việt và tiếng Anh</li></ul>
         </article>
         <article class="price">
           <h3>Pro</h3><p><strong>4.990.000 ₫</strong> / tháng</p>
-          <ul><li>500 người đồng thời mỗi phiên</li><li>6 không gian, tối đa 20 phòng thảo luận</li><li>Trình chiếu 4K, 5 gian hàng ảo</li></ul>
+          <p class="annual-price">49.900.000 ₫ / năm</p>
+          <ul><li>500 người đồng thời mỗi phiên</li><li>6 không gian, tối đa 20 phòng thảo luận</li><li>5 gian hàng ảo, AI dịch trực tiếp 5 ngôn ngữ</li></ul>
         </article>
         <article class="price">
           <h3>Maximum</h3><p><strong>9.990.000 ₫</strong> / tháng</p>
-          <ul><li>Mở rộng từ 1.500 người mỗi phiên</li><li>Không giới hạn phòng thảo luận</li><li>Phát sóng Hybrid RTMP</li></ul>
+          <p class="annual-price">99.900.000 ₫ / năm</p>
+          <ul><li>Từ 1.500 người đồng thời mỗi phiên</li><li>Không giới hạn phòng thảo luận</li><li>20+ gian hàng ảo, phát sóng Hybrid RTMP</li></ul>
         </article>
       </div>
     </section>
@@ -226,16 +274,16 @@
         <p class="eyebrow"><span>04</span> ĐỘI NGŨ</p>
         <div>
           <h2 id="team-title">Những người<br><em>đứng sau Zonlas.</em></h2>
-          <p>Đội Zonlas đến từ Đại học Duy Tân, với sự hướng dẫn của ThS. Lê Thị Hồng Huệ.</p>
+          <p>Đội dự án Zonlas đến từ Đại học Duy Tân.</p>
         </div>
       </div>
       <div class="team-grid">
         <article class="member">
           <div class="member-visual member-photo"><img src="/Avatar/IMG_5907_compressed.webp" alt="Ngô Quang Sinh" width="400" height="400" loading="lazy"></div>
           <div class="member-body">
-            <p class="member-type">ĐỘI TRƯỞNG</p>
+            <p class="member-type">TRƯỞNG DỰ ÁN</p>
             <h3>Ngô Quang Sinh</h3>
-            <p>Digital Marketing, truyền thông và nghiên cứu hành vi Gen Z.</p>
+            <p>Phụ trách sản phẩm và tăng trưởng.</p>
             <a href="https://teemousdigital.id.vn/portfolio/ngoquangsinh/" target="_blank" rel="noopener">Xem portfolio <span aria-hidden="true">↗</span></a>
           </div>
         </article>
@@ -244,45 +292,46 @@
           <div class="member-body">
             <p class="member-type">THÀNH VIÊN</p>
             <h3>Nguyễn Thị Bích Phương</h3>
-            <p>Quản trị kinh doanh PSU, sáng tạo nội dung và sự kiện.</p>
+            <p>Trưởng bộ phận Vận hành và Tài chính.</p>
             <a href="https://nguyenthibichphuong25.netlify.app/#home" target="_blank" rel="noopener">Xem portfolio <span aria-hidden="true">↗</span></a>
           </div>
         </article>
         <article class="member">
-          <div class="member-visual member-monogram" aria-hidden="true"><span>BT</span></div>
+          <div class="member-visual member-photo portrait-tuyen"><img src="/zonlas-assets/boi-tuyen.jpg" alt="" width="704" height="860" loading="lazy"></div>
           <div class="member-body">
             <p class="member-type">THÀNH VIÊN</p>
             <h3>Trần Bội Tuyền</h3>
-            <p>Quản trị kinh doanh, chuyên ngành Marketing.</p>
+            <p>Trưởng bộ phận Truyền thông và Đối tác B2B.</p>
             <a href="https://drive.google.com/drive/folders/1O-kmvxgF1Q7appJholSUQ_44xv-keJcJ?usp=sharing" target="_blank" rel="noopener">Mở hồ sơ <span aria-hidden="true">↗</span></a>
           </div>
         </article>
         <article class="member">
-          <div class="member-visual member-monogram" aria-hidden="true"><span>QD</span></div>
+          <div class="member-visual member-photo portrait-dung"><img src="/zonlas-assets/quoc-dung.jpg" alt="" width="860" height="860" loading="lazy"></div>
           <div class="member-body">
             <p class="member-type">THÀNH VIÊN</p>
             <h3>Trương Quốc Dũng</h3>
-            <p>Digital Marketing, lập kế hoạch nội dung và sự kiện.</p>
+            <p>Trưởng bộ phận Điều phối Kỹ thuật và Hạ tầng.</p>
             <a href="https://drive.google.com/drive/folders/1NiKh5JKnyKvKpy1OWMXyxP8ToPhyB8-v?usp=drive_link" target="_blank" rel="noopener">Mở hồ sơ <span aria-hidden="true">↗</span></a>
           </div>
         </article>
+        <article class="member">
+          <div class="member-visual member-photo portrait-kha"><img src="/zonlas-assets/anh-kha.jpg" alt="" width="645" height="860" loading="lazy"></div>
+          <div class="member-body">
+            <p class="member-type">THÀNH VIÊN</p>
+            <h3>Lê Nguyễn Anh Kha</h3>
+            <p>Thương mại quốc tế và vận hành đối tác.</p>
+          </div>
+        </article>
+      </div>
+      <div class="mentor">
+        <div class="mentor-portrait"><img src="/zonlas-assets/mentor.jpg" alt="" width="535" height="535" loading="lazy"></div>
+        <div class="mentor-copy">
+          <p class="eyebrow">MENTOR · CỐ VẤN CHUYÊN MÔN</p>
+          <h3>Trần Đình Đăng Khôi</h3>
+        </div>
       </div>
     </section>
 
-    <section class="wrap" id="cuoc-thi" aria-labelledby="contest-title">
-      <div class="contest">
-        <div>
-          <p class="eyebrow"><span>05</span> DBC 2026</p>
-          <h2 id="contest-title">Ý tưởng<br>kinh doanh số.</h2>
-          <p>Cuộc thi Sinh viên Kinh doanh số 2026<br>Nội dung 3 · Vòng sơ loại</p>
-          <p class="contest-deadline">Hạn nộp <time datetime="2026-11-10T23:59:00+07:00">23:59 ngày 10/11/2026</time></p>
-        </div>
-        <div class="contest-links">
-          <a href="https://drive.google.com/file/d/1Xez9y3EK5DndGOL_06aoe0yTOfncSs_d/view?usp=drivesdk" target="_blank" rel="noopener"><span><small>PDF THỂ LỆ</small>Đọc thể lệ cuộc thi</span><b aria-hidden="true">↗</b></a>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdxsL_Lr2PHGxnp8-asCUGxvFRIvkDN75xyGQxC6tWN_Ki5xA/viewform" target="_blank" rel="noopener"><span><small>GOOGLE FORMS</small>Nộp bài dự thi</span><b aria-hidden="true">↗</b></a>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer class="wrap footer">
