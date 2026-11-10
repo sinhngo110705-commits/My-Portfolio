@@ -1,0 +1,239 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" fill="none">
+  <title>Sơ đồ sáu phân khu trong hạ tầng sự kiện Zonlas</title>
+  <defs>
+    <radialGradient id="night" cx=".55" cy=".46" r=".68">
+      <stop stop-color="#53202d"/>
+      <stop offset=".62" stop-color="#2b121d"/>
+      <stop offset="1" stop-color="#160e16"/>
+    </radialGradient>
+    <radialGradient id="spill">
+      <stop stop-color="#ff515f" stop-opacity=".27"/>
+      <stop offset="1" stop-color="#e3294c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="board" x1="400" y1="48" x2="400" y2="431" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5b2635"/>
+      <stop offset=".48" stop-color="#351824"/>
+      <stop offset="1" stop-color="#4e1e2d"/>
+    </linearGradient>
+    <linearGradient id="side" x2="0" y2="1">
+      <stop stop-color="#552231"/>
+      <stop offset="1" stop-color="#200f19"/>
+    </linearGradient>
+    <linearGradient id="deck-top" x2="0" y2="1">
+      <stop stop-color="#8e3c4a"/>
+      <stop offset="1" stop-color="#47202f"/>
+    </linearGradient>
+    <linearGradient id="deck-edge" x2="0" y2="1">
+      <stop stop-color="#c84d60"/>
+      <stop offset="1" stop-color="#632437"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y1="1" x2="1" y2="0">
+      <stop stop-color="#e83351"/>
+      <stop offset=".53" stop-color="#ff755f"/>
+      <stop offset="1" stop-color="#ffc99f"/>
+    </linearGradient>
+    <linearGradient id="beam" x2="0" y2="1">
+      <stop stop-color="#ffbb91" stop-opacity=".46"/>
+      <stop offset="1" stop-color="#ff6a61" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="wire" x2="1" y2="1">
+      <stop stop-color="#ffd7b1"/>
+      <stop offset=".34" stop-color="#ff7969"/>
+      <stop offset="1" stop-color="#e93f59"/>
+    </linearGradient>
+    <pattern id="iso-grid" width="44" height="22" patternUnits="userSpaceOnUse">
+      <path d="M0 11 22 0 44 11 22 22Z" stroke="#ffc0a9" stroke-opacity=".105" stroke-width=".8"/>
+    </pattern>
+    <pattern id="dust" width="17" height="17" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r=".65" fill="#ffae9c" opacity=".21"/>
+    </pattern>
+    <path id="platform" d="M40 231 115 132 400 47 685 132 760 231 626 347 400 425 174 347Z"/>
+    <clipPath id="floor-mask"><use href="#platform"/></clipPath>
+    <g id="room">
+      <path d="M-86 0 0 43 86 0v11L0 54l-86-43Z" fill="#371522"/>
+      <path d="M-86 0 0 43v11l-86-43Z" fill="url(#deck-edge)"/>
+      <path d="M0 43 86 0v11L0 54Z" fill="#713042"/>
+      <path d="M-86 0 0-43 86 0 0 43Z" fill="url(#deck-top)" stroke="#ee857d" stroke-width="1"/>
+      <path d="M-73 0 0-36 73 0 0 36Z" stroke="#f1ab98" stroke-opacity=".29"/>
+      <path d="M-77 8-5 44M7 44 78 8" stroke="#f67778" stroke-opacity=".46"/>
+      <path d="M-64 20l27 13m53 13 20-10" stroke="#ffc4a5" stroke-opacity=".4" stroke-width="1.25"/>
+    </g>
+    <g id="seat">
+      <path d="M-9 1 0 5 9 1v6l-9 4-9-4Z" fill="#632338"/>
+      <path d="M-9 1 0-4 9 1 0 5Z" fill="#ec6a6d" stroke="#ffd4b7" stroke-width=".6"/>
+      <path d="M-9 1v-5l6-3 6 3v5L0 3Z" fill="#ffa58c"/>
+      <path d="M-9-4-3-7 3-4" stroke="#ffd8b7" stroke-width=".8"/>
+    </g>
+    <g id="person">
+      <ellipse cx="0" cy="5" rx="5" ry="2.1" fill="#2a1320" opacity=".7"/>
+      <path d="M-2 5v-6c0-2 4-2 4 0v6" stroke="#ffd5a9" stroke-width="1.7" stroke-linecap="round"/>
+      <circle cy="-4.2" r="2" fill="#fff0cf"/>
+    </g>
+    <g id="display-rack">
+      <path d="M-9 0 5 6 15 1 1-6Z" fill="#bd4e60"/>
+      <path d="M-9 0 5 6v-27l-14-6Z" fill="#723046"/>
+      <path d="M5 6 15 1v-27l-10 5Z" fill="#3e1b2c"/>
+      <path d="M-9-27 5-21 15-26 1-32Z" fill="#ea776f" stroke="#ffbea6" stroke-width=".7"/>
+      <path d="M-7-21 3-17m-10 1 10 4m-10 1 10 4m-10 1 10 4" stroke="#ffc1a5" stroke-width="1"/>
+      <circle cx="1" cy="-18" r=".8" fill="#fff1c4"/>
+      <circle cx="1" cy="-8" r=".8" fill="#fff1c4"/>
+    </g>
+    <g id="exhibit">
+      <path d="M-13 6 0 0 13 6 0 13Z" fill="#a34c57"/>
+      <path d="M-13 6 0 13v4l-13-6Z" fill="#703042"/>
+      <path d="M0 13l13-7v5L0 17Z" fill="#4a2334"/>
+      <path d="M-9 5V-13l16 8v18Z" fill="#401e2d" stroke="#ed9b87" stroke-width=".7"/>
+      <path d="M-7-9 5-3V8L-7 2Z" fill="url(#screen)"/>
+      <path d="M-4-5 2-2m-6 1 4 2" stroke="#fff0d1" stroke-width="1"/>
+    </g>
+  </defs>
+
+  <!-- Chassis and fine-grain plan lines -->
+  <path d="M0 0h800v480H0Z" fill="url(#night)"/>
+  <path d="M0 0h800v480H0Z" fill="url(#dust)"/>
+  <ellipse cx="400" cy="264" rx="372" ry="191" fill="url(#spill)"/>
+  <ellipse cx="400" cy="424" rx="284" ry="38" fill="#120a12" opacity=".72"/>
+  <path d="M20 239 105 119 400 29 695 119 780 239 637 366 400 446 163 366Z" stroke="#e15b6d" stroke-opacity=".29" stroke-width="1.2" stroke-dasharray="3 7"/>
+  <path d="M40 231 174 347 400 425 626 347 760 231v19L626 372 400 455 174 372 40 250Z" fill="url(#side)" stroke="#8a394c" stroke-width="1.2"/>
+  <path d="M40 242 174 361 400 441 626 361 760 242" stroke="#bc5261" stroke-opacity=".66"/>
+  <path d="m174 358 226 83 226-83" stroke="#ff927a" stroke-opacity=".27" stroke-width="2"/>
+  <path d="m207 362 43 15m10 4 11 4m10 4 11 4m216 9 11-4m9-4 11-4m11-4 41-15" stroke="#ff957a" stroke-opacity=".7" stroke-width="2" stroke-linecap="round"/>
+  <path d="m383 433 17 6 17-6m-13 13 40-14m-89 0 39 14" stroke="#ffc4a5" stroke-opacity=".58"/>
+  <use href="#platform" fill="url(#board)" stroke="#cb6770" stroke-width="1.4"/>
+  <g clip-path="url(#floor-mask)">
+    <path d="M0 0h800v480H0Z" fill="url(#iso-grid)"/>
+    <ellipse cx="400" cy="201" rx="280" ry="139" fill="url(#spill)"/>
+    <path d="M62 230 125 144 400 61 675 144 738 230 615 336 400 411 185 336Z" stroke="#ff9f86" stroke-opacity=".45"/>
+    <path d="M100 227 143 160 400 78 658 160 700 227 600 315 400 385 199 315Z" stroke="#ee7b77" stroke-opacity=".2" stroke-dasharray="2 5"/>
+    <path d="M115 132l285 293m285-293L400 425M40 231h720" stroke="#ffb096" stroke-opacity=".10"/>
+  </g>
+  <g fill="#ffb090">
+    <circle cx="40" cy="231" r="2.25"/><circle cx="115" cy="132" r="2.25"/>
+    <circle cx="400" cy="47" r="2.25"/><circle cx="685" cy="132" r="2.25"/>
+    <circle cx="760" cy="231" r="2.25"/><circle cx="626" cy="347" r="2.25"/>
+    <circle cx="400" cy="425" r="2.25"/><circle cx="174" cy="347" r="2.25"/>
+  </g>
+
+  <!-- Wiring spans the raised islands -->
+  <g stroke-linejoin="round" stroke-linecap="round">
+    <path d="M220 166v46l46 24h60l74-37 74 37h60l46-24v-46m-380 125 52-25h64l84-42 84 42h64l52 25m-200-66v129" stroke="#270f1b" stroke-width="12"/>
+    <path d="M220 166v46l46 24h60l74-37 74 37h60l46-24v-46m-380 125 52-25h64l84-42 84 42h64l52 25m-200-66v129" stroke="#ef4c66" stroke-width="6" stroke-opacity=".35"/>
+    <path d="M220 166v46l46 24h60l74-37 74 37h60l46-24v-46m-380 125 52-25h64l84-42 84 42h64l52 25m-200-66v129" stroke="url(#wire)" stroke-width="1.8"/>
+    <path d="m117 210 37 21h65m462-21-37 21h-65M256 320l60 30h36m192-30-60 30h-36m-130-244 48 24m116-24-48 24" stroke="#f09883" stroke-opacity=".66" stroke-width="1.1"/>
+    <path d="M280 243h29l21-11m190 11h-29l-21-11m-70 27v51M82 229l33 18m603-18-33 18" stroke="#ffb292" stroke-opacity=".76" stroke-width="1.3" stroke-dasharray="2 5"/>
+    <g fill="#ffe6bd" stroke="#a83b56" stroke-width="1.5">
+      <circle cx="266" cy="236" r="3"/><circle cx="534" cy="236" r="3"/>
+      <circle cx="316" cy="266" r="3"/><circle cx="484" cy="266" r="3"/>
+      <circle cx="400" cy="291" r="3"/><circle cx="400" cy="315" r="3"/>
+    </g>
+  </g>
+
+  <!-- Networking lounge -->
+  <g transform="translate(220 168)">
+    <use href="#room"/>
+    <path d="M-60-4v-10l38-19 15 8v8l-38 19Z" fill="#9d4958" stroke="#f6ab96" stroke-width=".8"/>
+    <path d="M-60-14-22-33-7-25-45-6Z" fill="#e48179"/>
+    <path d="M-45-6v8m-12-13 34-17" stroke="#ffcfb0" stroke-width=".9"/>
+    <path d="M16-20 46-5v10L16-9Z" fill="#6a2d42" stroke="#ec8c80" stroke-width=".8"/>
+    <path d="m16-20 13-6 30 15-13 6Z" fill="#dd706e" stroke="#ffb49d" stroke-width=".8"/>
+    <ellipse cx="4" cy="15" rx="15" ry="6.5" fill="#f79c88" stroke="#ffe3bc" stroke-width=".8"/>
+    <ellipse cx="4" cy="12.5" rx="15" ry="6.5" fill="#b34d61" stroke="#ffd1af" stroke-width="1"/>
+    <use href="#seat" transform="translate(-16 12)"/>
+    <use href="#seat" transform="translate(23 20)"/>
+    <use href="#person" transform="translate(-35 10)"/>
+    <use href="#person" transform="translate(34 -1)"/>
+  </g>
+
+  <!-- Branded partner booth -->
+  <g transform="translate(580 168)">
+    <use href="#room"/>
+    <path d="M-40 1-40-41-9-57l47 23V8L7 24Z" fill="#6c3043" stroke="#f4a393" stroke-width="1"/>
+    <path d="M-40-41-9-57l47 23L7-18Z" fill="url(#screen)" stroke="#ffb7a0" stroke-width="1"/>
+    <path d="M-40-41 7-18v42L-40 1Z" fill="#9e4353"/>
+    <path d="M7-18l31-16V8L7 24Z" fill="#602a3d"/>
+    <path d="M-35-33 2-15V8L-35-10Z" fill="#311725" stroke="#ffad92"/>
+    <path d="M-30-27-5-15v14l-25-12Z" fill="url(#screen)"/>
+    <path d="M-26-20-10-12m-16-4 10 5" stroke="#fff0cf" stroke-width="1"/>
+    <path d="m12-13 20-10v20L12 7Z" fill="#d25364"/>
+    <path d="m16-7 11-6m-11 10 11-6m-11 10 7-3" stroke="#ffe2bd" stroke-width="1"/>
+    <path d="m-41 9 18-9 22 11-18 9Z" fill="#ee9a87" stroke="#ffd2b1" stroke-width=".8"/>
+    <path d="m-41 9 22 11v9l-22-11Z" fill="#a74858"/>
+    <path d="m-19 20 18-9v9l-18 9Z" fill="#663047"/>
+    <use href="#person" transform="translate(42 4)"/>
+    <use href="#person" transform="translate(21 23)"/>
+  </g>
+
+  <!-- The central theater: a lifted screen, footlights and stage apron -->
+  <g transform="translate(400 192)">
+    <use href="#room" transform="scale(1.28)"/>
+    <path d="M-87 13 0-30l87 43L0 57Z" fill="#2d1323" stroke="#ff9d84" stroke-width="1.4"/>
+    <path d="M-74 12 0-24 74 12 0 49Z" fill="url(#deck-top)" stroke="#f5aa91" stroke-width="1"/>
+    <path d="M-56 14 0-13l56 27L0 41Z" fill="#c64a5b" opacity=".42"/>
+    <path d="M-65 22 0 54 65 22M-50 35 0 60l50-25" stroke="#ffa58a" stroke-width="1" opacity=".75"/>
+    <path d="M-57-49-43 13-1 35l-37-83m76 0L1 35l42-22 14-62" fill="url(#beam)"/>
+    <path d="M-65-19v-48l21-10 90 9 19 10v48L44 1l-88-8Z" fill="#471e32" stroke="#f29087" stroke-width="1.15"/>
+    <path d="M-65-67l21-10v48l-21 10Z" fill="#a34d61"/>
+    <path d="M46-68l19 10v48L46-20Z" fill="#743045"/>
+    <path d="M-56-64-41-71l84 8 13 7v40L43-9l-84-8-15-7Z" fill="url(#screen)" stroke="#ffe1b6" stroke-width="1.1"/>
+    <path d="M-38-63 39-55M-38-22 39-15" stroke="#fff0c6" stroke-opacity=".56"/>
+    <path d="m-13-50 29 3-21 16 18 2v5l-29-3 20-16-17-2Z" fill="#fff3d3"/>
+    <path d="M-64-15v29m128-20v21" stroke="#f5aa90" stroke-width="2"/>
+    <path d="M-64 13-49 21m113-6-15 7" stroke="#ffb396" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M-39 26-29 31m14 6 9 5m12 0 9-5m14-6 10-5" stroke="#ffd3a9" stroke-width="2" stroke-linecap="round"/>
+    <use href="#person" transform="translate(-79 6)"/>
+    <use href="#person" transform="translate(79 6)"/>
+  </g>
+
+  <!-- Community roundtable -->
+  <g transform="translate(200 293)">
+    <use href="#room"/>
+    <ellipse cx="0" cy="3" rx="51" ry="23" fill="#6c2e45" stroke="#ec8f80" stroke-width=".9"/>
+    <ellipse cx="0" cy="3" rx="42" ry="18" stroke="#ffc5a5" stroke-opacity=".42" stroke-dasharray="2 3"/>
+    <use href="#seat" transform="translate(-37 -2)"/>
+    <use href="#seat" transform="translate(-25 -15)"/>
+    <use href="#seat" transform="translate(3 -20)"/>
+    <use href="#seat" transform="translate(29 -11)"/>
+    <use href="#seat" transform="translate(39 3)"/>
+    <use href="#seat" transform="translate(-20 16)"/>
+    <use href="#seat" transform="translate(21 16)"/>
+    <ellipse cx="0" cy="6" rx="24" ry="10.4" fill="#6e2a40"/>
+    <ellipse cx="0" cy="1" rx="24" ry="10.4" fill="#cc5c65" stroke="#ffd1a9" stroke-width="1"/>
+    <ellipse cx="0" cy="1" rx="15" ry="6.5" stroke="#f9ac90" stroke-width=".7"/>
+    <use href="#person" transform="translate(-53 7)"/>
+    <use href="#person" transform="translate(57 -2)"/>
+  </g>
+
+  <!-- Exhibition gallery -->
+  <g transform="translate(600 293)">
+    <use href="#room"/>
+    <path d="M-59 3 0-27l59 30L0 33Z" fill="#773146" stroke="#f19b89" stroke-width=".7"/>
+    <path d="M-45 8 2 31 46 9" stroke="#ffa78b" stroke-width="1" stroke-dasharray="2 2"/>
+    <use href="#exhibit" transform="translate(-43 0)"/>
+    <use href="#exhibit" transform="translate(-21 -14)"/>
+    <use href="#exhibit" transform="translate(19 -13)"/>
+    <use href="#exhibit" transform="translate(42 0)"/>
+    <use href="#person" transform="translate(-27 17)"/>
+    <use href="#person" transform="translate(27 17)"/>
+  </g>
+
+  <!-- Content library and archive terminals -->
+  <g transform="translate(400 355)">
+    <use href="#room" transform="scale(.96)"/>
+    <path d="M-51-2 0-27 52-2 0 25Z" fill="#713047" stroke="#ee9b88" stroke-width=".8"/>
+    <use href="#display-rack" transform="translate(-38 -4)"/>
+    <use href="#display-rack" transform="translate(-23 -12)"/>
+    <use href="#display-rack" transform="translate(19 -14)"/>
+    <use href="#display-rack" transform="translate(34 -5)"/>
+    <path d="m-16 10 17-8 19 9L3 20Z" fill="#e88279" stroke="#ffd2aa" stroke-width=".8"/>
+    <path d="m-16 10 19 10v5l-19-10Zm19 10 17-9v5L3 25Z" fill="#874055"/>
+    <path d="m-8 10 8-4 11 5-8 4Z" fill="#fff0c6" opacity=".85"/>
+    <use href="#person" transform="translate(-23 12)"/>
+    <use href="#person" transform="translate(25 14)"/>
+  </g>
+
+  <g stroke="#fda489" stroke-opacity=".52" stroke-width="1">
+    <path d="M23 81h19m-9-9v18m725-9h19m-10-9v18M23 395h19m-9-9v18m725-9h19m-10-9v18"/>
+    <path d="M21 103V60h42m716 43V60h-42M21 374v42h42m716-42v42h-42" stroke-opacity=".32"/>
+    <path d="M307 63h20m146 0h20M66 312h20m628 0h20m-421 127h20m134 0h20" stroke-dasharray="2 3"/>
+  </g>
+</svg>

@@ -16,6 +16,8 @@
   <link rel="icon" type="image/svg+xml" href="/zonlas-assets/mark.svg">
   <link rel="stylesheet" href="/zonlas-assets/styles.css">
   <link rel="stylesheet" href="/zonlas-assets/motion.css">
+  <link rel="stylesheet" href="/zonlas-assets/venue.css">
+  <link rel="stylesheet" href="/zonlas-assets/venue-scenes.css">
   <script defer src="/zonlas-assets/site.js"></script>
   <script defer src="/zonlas-assets/motion.js"></script>
 </head>
@@ -45,8 +47,8 @@
           <h1 id="hero-title"><span>ZONLAS<span class="title-dot">.</span></span><small>Hạ tầng sự kiện số B2B</small></h1>
           <p class="hero-description">Hạ tầng cho sự kiện và đào tạo chuyên nghiệp, từ chuẩn bị và vận hành đến kết nối người tham dự và lưu giữ tri thức.</p>
           <div class="actions">
-            <a class="button button-primary" href="#du-an">Khám phá dự án <span aria-hidden="true">↓</span></a>
-            <a class="button button-outline" href="#khong-gian">Xem sáu phân khu <span aria-hidden="true">↓</span></a>
+            <a class="button button-primary" href="#khong-gian">Thử bản đồ sự kiện <span aria-hidden="true">↓</span></a>
+            <a class="button button-outline" href="#du-an">Xem hành trình <span aria-hidden="true">↓</span></a>
           </div>
         </div>
         <div class="hero-art" aria-hidden="true">
@@ -179,54 +181,90 @@
           <p class="eyebrow"><span>02</span> TRẢI NGHIỆM</p>
           <div>
             <h2 id="space-title">Sáu không gian,<br><em>sáu cách tham gia.</em></h2>
-            <p>Chọn một phân khu để xem cách mỗi không gian hỗ trợ người tham dự, ban tổ chức hoặc đối tác.</p>
+            <p>Chọn một điểm trên bản đồ rồi thử thao tác của người tham dự. Đây là một sự kiện mẫu để khám phá cách các phân khu kết nối với nhau.</p>
           </div>
         </div>
         <div class="space-grid" data-spaces>
-          <div class="space-tabs" aria-label="Các không gian sự kiện">
-            <a href="#main-stage"><span>01</span> Sân khấu chính <b aria-hidden="true">↗</b></a>
-            <a href="#networking"><span>02</span> Kết nối <b aria-hidden="true">↗</b></a>
-            <a href="#partner"><span>03</span> Gian hàng đối tác <b aria-hidden="true">↗</b></a>
-            <a href="#exhibition"><span>04</span> Triển lãm <b aria-hidden="true">↗</b></a>
-            <a href="#community"><span>05</span> Cộng đồng <b aria-hidden="true">↗</b></a>
-            <a href="#content"><span>06</span> Thư viện nội dung <b aria-hidden="true">↗</b></a>
+          <div class="venue-map">
+            <div class="venue-chrome"><span>BẢN ĐỒ SỰ KIỆN</span><span><i></i> DEMO TƯƠNG TÁC</span></div>
+            <div class="venue-floor">
+              <img src="/zonlas-assets/venue-map.svg" width="800" height="480" alt="">
+              <svg class="venue-route" viewBox="0 0 800 480" aria-hidden="true"><path pathLength="100"/></svg>
+              <div class="space-tabs" aria-label="Các không gian sự kiện">
+              <a href="#main-stage" style="--x:50%;--y:40%"><span class="venue-pin-index">01</span><span class="venue-pin-name">Sân khấu chính</span></a>
+              <a href="#networking" style="--x:27.5%;--y:35%"><span class="venue-pin-index">02</span><span class="venue-pin-name">Kết nối</span></a>
+              <a href="#partner" style="--x:72.5%;--y:35%"><span class="venue-pin-index">03</span><span class="venue-pin-name">Gian hàng đối tác</span></a>
+              <a href="#exhibition" style="--x:75%;--y:61%"><span class="venue-pin-index">04</span><span class="venue-pin-name">Triển lãm</span></a>
+              <a href="#community" style="--x:25%;--y:61%"><span class="venue-pin-index">05</span><span class="venue-pin-name">Cộng đồng</span></a>
+              <a href="#content" style="--x:50%;--y:74%"><span class="venue-pin-index">06</span><span class="venue-pin-name">Thư viện nội dung</span></a>
+              </div>
+            </div>
+            <div class="venue-controls" hidden>
+              <button type="button" data-venue-step="-1" aria-label="Phân khu trước">←</button>
+              <p class="venue-position" aria-live="polite"></p>
+              <button type="button" data-venue-step="1" aria-label="Phân khu tiếp theo">→</button>
+            </div>
           </div>
           <div class="space-panels">
             <article class="space-panel" id="main-stage">
               <span class="space-code">01 / MAIN STAGE</span>
-              <div class="space-glyph" aria-hidden="true">◈</div>
               <h3>Sân khấu chính</h3>
               <p>Nơi diễn ra các phiên trình bày và nội dung chính. Ban tổ chức có thể chiếu slide từ tệp và điều phối từng lớp âm thanh.</p>
+              <div class="venue-demo">
+                <div class="venue-demo-display"><span class="venue-tile">HỘI NGHỊ ZONLAS · 01</span><span class="venue-tile">Giọng nói</span><span class="venue-tile">Nhạc nền</span></div>
+                <p class="venue-demo-result" id="main-stage-result" hidden>Phụ đề minh họa: Chào mừng bạn đến với hội nghị Zonlas.</p>
+                <button class="venue-demo-button" type="button" data-reset-label="Tắt phụ đề" aria-controls="main-stage-result" aria-expanded="false" hidden>Bật phụ đề AI</button>
+              </div>
             </article>
             <article class="space-panel" id="networking">
               <span class="space-code">02 / NETWORKING</span>
-              <div class="space-glyph" aria-hidden="true">✳</div>
               <h3>Kết nối</h3>
               <p>Không gian gặp gỡ, mở rộng mạng lưới và trao đổi theo nhóm nhỏ trong các phòng thảo luận riêng.</p>
+              <div class="venue-demo">
+                <div class="venue-demo-display"><span class="venue-tile">Bàn tròn Marketing</span><span class="venue-tile">Hà · Ở trong phòng</span><span class="venue-tile">Minh · Ở trong phòng</span></div>
+                <p class="venue-demo-result" id="networking-result" hidden>Bạn đã vào phòng. Ba người đang sẵn sàng trao đổi.</p>
+                <button class="venue-demo-button" type="button" data-reset-label="Rời phòng thảo luận" aria-controls="networking-result" aria-expanded="false" hidden>Vào phòng thảo luận</button>
+              </div>
             </article>
             <article class="space-panel" id="partner">
               <span class="space-code">03 / PARTNER BOOTH</span>
-              <div class="space-glyph" aria-hidden="true">⊞</div>
               <h3>Gian hàng đối tác</h3>
               <p>Nhà tài trợ tạo gian hàng riêng, giới thiệu thương hiệu và đo lượt ghé thăm hoặc lượt tải tài liệu.</p>
+              <div class="venue-demo">
+                <div class="venue-demo-display"><span class="venue-tile">Gian hàng đối tác A</span><span class="venue-tile">Brochure · PDF</span><span class="venue-tile">Tư vấn 1:1</span></div>
+                <p class="venue-demo-result" id="partner-result" hidden>Brochure mẫu đang mở. Một lượt xem được ghi nhận trong bản minh họa.</p>
+                <button class="venue-demo-button" type="button" data-reset-label="Đóng brochure" aria-controls="partner-result" aria-expanded="false" hidden>Mở brochure</button>
+              </div>
             </article>
             <article class="space-panel" id="exhibition">
               <span class="space-code">04 / EXHIBITION</span>
-              <div class="space-glyph" aria-hidden="true">◩</div>
               <h3>Triển lãm</h3>
               <p>Không gian trưng bày giúp người tham dự chủ động khám phá các sản phẩm và nội dung giới thiệu.</p>
+              <div class="venue-demo">
+                <div class="venue-demo-display"><span class="venue-tile">Mô hình trưng bày</span><span class="venue-tile">Mặt trước</span><span class="venue-tile">Góc nghiêng</span></div>
+                <p class="venue-demo-result" id="exhibition-result" hidden>Đang xem mô hình từ góc nghiêng.</p>
+                <button class="venue-demo-button" type="button" data-reset-label="Về mặt trước" aria-controls="exhibition-result" aria-expanded="false" hidden>Xoay mô hình</button>
+              </div>
             </article>
             <article class="space-panel" id="community">
               <span class="space-code">05 / COMMUNITY</span>
-              <div class="space-glyph" aria-hidden="true">✣</div>
               <h3>Cộng đồng</h3>
               <p>Không gian để những người cùng mối quan tâm trao đổi theo chủ đề trong sự kiện.</p>
+              <div class="venue-demo">
+                <div class="venue-demo-display"><span class="venue-tile">Bạn muốn xem gì tiếp?</span><span class="venue-tile">Hỏi đáp trực tiếp</span><span class="venue-tile">Tham quan triển lãm</span></div>
+                <p class="venue-demo-result" id="community-result" hidden>Đã ghi nhận phiếu mẫu. Hỏi đáp đang dẫn đầu.</p>
+                <button class="venue-demo-button" type="button" data-reset-label="Bỏ phiếu mẫu" aria-controls="community-result" aria-expanded="false" hidden>Bình chọn cho phiên hỏi đáp</button>
+              </div>
             </article>
             <article class="space-panel" id="content">
               <span class="space-code">06 / CONTENT</span>
-              <div class="space-glyph" aria-hidden="true">◎</div>
               <h3>Thư viện nội dung</h3>
               <p>Tài liệu, nội dung phiên và bản tóm tắt được tập hợp thành kho tri thức để người tham dự tra cứu sau sự kiện.</p>
+              <div class="venue-demo">
+                <div class="venue-demo-display"><span class="venue-tile">Tìm trong các phiên</span><span class="venue-tile">Bản ghi sự kiện</span><span class="venue-tile">Tóm tắt bằng AI</span></div>
+                <p class="venue-demo-result" id="content-result" hidden>Tìm thấy đoạn minh họa lúc 02:14 trong phiên “Hạ tầng sự kiện số”.</p>
+                <button class="venue-demo-button" type="button" data-reset-label="Xóa kết quả tìm kiếm" aria-controls="content-result" aria-expanded="false" hidden>Tìm “hạ tầng”</button>
+              </div>
             </article>
           </div>
         </div>
