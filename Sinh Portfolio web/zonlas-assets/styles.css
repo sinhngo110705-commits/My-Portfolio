@@ -172,6 +172,7 @@ img { display: block; max-width: 100%; }
   .wrap { width: calc(100% - 72px); }
   .hero-grid { min-height: 530px; }
   .team-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .pricing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
   .wrap { width: calc(100% - 36px); }
@@ -223,17 +224,18 @@ img { display: block; max-width: 100%; }
   from { border-radius: 48% 52% 63% 37%; }
   to { border-radius: 63% 37% 44% 56%; }
 }
-.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
-.price { min-width: 0; padding: clamp(16px, 2.7vw, 33px); border: 1px solid var(--line); border-radius: 11px; color: var(--ink); background: #fff4ed; }
-.price:nth-child(2) { background: #fbd9d1; border-color: #eab1b0; }
-.price:nth-child(3) { color: #fff5ef; background: linear-gradient(144deg, #a21634, #6e1128); border-color: #a21634; }
+.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 13px; }
+.price { min-width: 0; display: flex; flex-direction: column; padding: clamp(16px, 2vw, 26px); border: 1px solid var(--line); border-radius: 11px; color: var(--ink); background: #fff4ed; }
+.price:nth-child(2) { background: #fdeee7; border-color: #f0c5be; }
+.price:nth-child(3) { background: #fbd9d1; border-color: #eab1b0; }
+.price:nth-child(4) { color: #fff5ef; background: linear-gradient(144deg, #a21634, #6e1128); border-color: #a21634; }
 .price h3 { font-size: 17px; }
 .price p { margin-top: 6px; font-size: 14px; }
-.price p strong { font-size: clamp(23px, 3.1vw, 42px); letter-spacing: -.055em; white-space: nowrap; }
+.price p strong { font-size: clamp(20px, 2.2vw, 30px); letter-spacing: -.045em; white-space: nowrap; }
 .price .annual-price { color: #713843; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.price:nth-child(3) .annual-price { color: #ffd0c5; }
+.price:nth-child(4) .annual-price { color: #ffd0c5; }
 .price ul { display: grid; gap: 5px; margin: 16px 0 0; padding: 13px 0 0 18px; border-top: 1px solid #bd80836e; font-size: 14px; line-height: 1.45; }
-.price:nth-child(3) ul { border-color: #ffd8cc54; }
+.price:nth-child(4) ul { border-color: #ffd8cc54; }
 .team-section { padding-top: 0; }
 .member-monogram img { position: absolute; inset: 0; }
 @media (max-width: 760px) {
